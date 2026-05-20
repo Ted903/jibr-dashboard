@@ -63,15 +63,23 @@
     const saved = await window._fbLoad();
     if (saved) {
       window.STORE = saved;
+      localStorage.setItem('jibr-okr-v3', JSON.stringify(saved));
+      try {
+        if (window.buildQSelect) buildQSelect();
+        if (window.archiveBannerUpdate) archiveBannerUpdate();
+        if (window.renderDash) renderDash();
+      } catch(e) {}
     }
-    // 실시간 동기화 시작
     let isLocalUpdate = false;
     window._fbListen((data) => {
       if (isLocalUpdate) return;
-      const wasActive = window.STORE?.activeQ;
       window.STORE = data;
-      if (window.buildQSelect) buildQSelect();
-      if (window.renderDash) renderDash();
+      localStorage.setItem('jibr-okr-v3', JSON.stringify(data));
+      try {
+        if (window.buildQSelect) buildQSelect();
+        if (window.archiveBannerUpdate) archiveBannerUpdate();
+        if (window.renderDash) renderDash();
+      } catch(e) {}
     });
     window._isLocalUpdate = (val) => { isLocalUpdate = val; };
   });
