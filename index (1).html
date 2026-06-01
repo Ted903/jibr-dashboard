@@ -990,42 +990,51 @@ function delayed(members){const r=[];members.forEach(m=>{m.okrs.forEach(o=>{if(o
 function byPart(members,part){return members.filter(m=>m.part===part);}
 function getStandup(date){
   if(!CQ().standups[date])CQ().standups[date]={saved:false,todos:[],blockers:{},memo:{}};
-  // 오늘 날짜에 처음 접근할 때 가장 최근 데이터가 있는 날의 미완료 항목 자동 이월
+  return CQ().standups[date];
+}
+
+// Firebase 로드 완료 후 오늘 미완료 항목 이월 실행
+function runCarryOver(){
   const today=todayStr();
-  if(date===today && !CQ().standups[date]._carryDone){
-    // 최근 30일 내에서 데이터가 있는 가장 최근 날짜 찾기
-    let yd=null;
-    for(let i=1;i<=30;i++){
-      const d=new Date();d.setDate(d.getDate()-i);
-      const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      if(CQ().standups[ds] && CQ().standups[ds].todos && CQ().standups[ds].todos.length>0){yd=ds;break;}
-    }
-    const prev=yd?CQ().standups[yd]:null;
-    if(prev && prev.todos){
+  if(!CQ().standups[today])CQ().standups[today]={saved:false,todos:[],blockers:{},memo:{}};
+  if(CQ().standups[today]._carryDone)return;
+  // 최근 30일 내 데이터 있는 가장 최근 날짜 찾기
+  let yd=null;
+  for(let i=1;i<=30;i++){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const s=CQ().standups[ds];
+    if(s&&((s.todos&&s.todos.length>0)||(s.keyTasks&&Object.keys(s.keyTasks).length>0))){yd=ds;break;}
+  }
+  const prev=yd?CQ().standups[yd]:null;
+  if(prev){
+    // 할 일 이월
+    if(prev.todos){
       const unfinished=prev.todos.filter(t=>!t.done);
-      if(unfinished.length>0){
-        // 이미 이월된 항목 제외하고 추가
-        const existTexts=CQ().standups[date].todos.map(t=>t.text);
-        unfinished.forEach(t=>{
-          if(!existTexts.includes(t.text)){
-            CQ().standups[date].todos.push({
-              id:Date.now()+Math.random(),
-              mid:t.mid,
-              text:t.text,
-              prio:t.prio,
-              okr:t.okr||'',
-              done:false,
-              _carried:true // 이월된 항목 표시
-            });
+      const existTexts=CQ().standups[today].todos.map(t=>t.text);
+      unfinished.forEach(t=>{
+        if(!existTexts.includes(t.text)){
+          CQ().standups[today].todos.push({id:Date.now()+Math.random(),mid:t.mid,text:t.text,prio:t.prio,okr:t.okr||'',done:false,_carried:true});
+        }
+      });
+    }
+    // 중요업무 이월
+    if(prev.keyTasks){
+      if(!CQ().standups[today].keyTasks)CQ().standups[today].keyTasks={};
+      Object.keys(prev.keyTasks).forEach(mid=>{
+        const unfinished=(prev.keyTasks[mid]||[]).filter(k=>!k.done);
+        if(!CQ().standups[today].keyTasks[mid])CQ().standups[today].keyTasks[mid]=[];
+        const existTexts=CQ().standups[today].keyTasks[mid].map(k=>k.text);
+        unfinished.forEach(k=>{
+          if(!existTexts.includes(k.text)){
+            CQ().standups[today].keyTasks[mid].push({id:Date.now()+Math.random(),text:k.text,done:false,_carried:true});
           }
         });
-        if(unfinished.length>0) saveStore();
-      }
+      });
     }
-    CQ().standups[date]._carryDone=true;
-    saveStore();
   }
-  return CQ().standups[date];
+  CQ().standups[today]._carryDone=true;
+  saveStore();
 }
 function saveTs(){const n=new Date();document.getElementById('last-saved').textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`;const fb=document.getElementById('fb-status');if(fb)fb.textContent='☁ Firebase 동기화됨';}
 
@@ -1406,9 +1415,10 @@ function renderStandup(){
 
     let keyTaskHtml='';
     keyTasks.forEach(k=>{
+      const carriedTag=k._carried?`<span style="font-size:10px;background:var(--paper2);color:var(--ink3);padding:1px 5px;border-radius:3px;margin-left:5px;font-family:var(--mono);">이월</span>`:'';
       keyTaskHtml+=`<div class="todo-item">
         <div class="todo-cb ${k.done?'done':''}" onclick="toggleKeyTask('${curStandupDate}',${m.id},${k.id})"></div>
-        <div class="todo-text ${k.done?'done-text':''}">${k.text}</div>
+        <div class="todo-text ${k.done?'done-text':''}">${k.text}${carriedTag}</div>
         <button class="todo-del" onclick="delKeyTask('${curStandupDate}',${m.id},${k.id})">✕</button>
       </div>`;
     });
@@ -2435,6 +2445,7 @@ function initRender(){
 // Firebase 데이터 준비 완료 이벤트 대기
 window.addEventListener('firebase-ready', ()=>{
   STORE = window.STORE;
+  runCarryOver(); // Firebase 로드 후 미완료 항목 이월
   initRender();
 });
 
