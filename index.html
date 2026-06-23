@@ -804,10 +804,10 @@ select.fi{cursor:pointer;}
 <!-- Sub-OKR -->
 <div class="mo" id="mo-sokr">
   <div class="modal">
-    <div class="moh"><div class="mot" id="mo-sokr-title">하위 OKR 추가</div><button class="btn bs" onclick="cm('mo-sokr')">✕</button></div>
+    <div class="moh"><div class="mot" id="mo-sokr-title">Key Result 추가</div><button class="btn bs" onclick="cm('mo-sokr')">✕</button></div>
     <div class="mob">
       <input type="hidden" id="se-mid"><input type="hidden" id="se-pid"><input type="hidden" id="se-id">
-      <div class="fg"><label class="fl">하위 OKR 제목 (Key Result)</label><input class="fi" id="se-title" placeholder="측정 가능한 핵심 결과를 입력하세요"></div>
+      <div class="fg"><label class="fl">Key Result</label><input class="fi" id="se-title" placeholder="측정 가능한 핵심 결과를 입력하세요"></div>
       <div class="fg"><label class="fl">진척도: <span id="se-pdis">0</span>%</label>
         <input type="range" min="0" max="100" value="0" step="5" id="se-prog" oninput="document.getElementById('se-pdis').textContent=this.value">
       </div>
@@ -844,7 +844,7 @@ select.fi{cursor:pointer;}
   <div class="modal" style="width:560px;">
     <div class="moh"><div class="mot">할 일 추가</div><button class="btn bs" onclick="cm('mo-todo')">✕</button></div>
     <div class="mob">
-      <div class="fg"><label class="fl">팀원</label><select class="fi" id="td-member"></select></div>
+      <div class="fg"><label class="fl">팀원</label><select class="fi" id="td-member" onchange="updateOkrDropdown()"></select></div>
       <div class="fg">
         <label class="fl">할 일 <span style="font-weight:400;color:var(--ink3);text-transform:none;letter-spacing:0;">(여러 줄 입력 시 각 줄이 별도 항목으로 추가됩니다)</span></label>
         <textarea class="fi" id="td-text" rows="5" placeholder="할 일을 입력하세요.&#10;여러 줄로 입력하면 한 번에 여러 항목이 추가됩니다.&#10;&#10;예시:&#10;주간 매출 데이터 정리&#10;쿠팡 광고 소재 검토&#10;콘텐츠 마케터와 요청서 논의" oninput="previewTodos()"></textarea>
@@ -857,8 +857,16 @@ select.fi{cursor:pointer;}
           <option value="low">🟢 낮음 — 여유 있으면</option>
         </select>
       </div>
-      <div class="fg"><label class="fl">관련 OKR (선택 · 전체 적용)</label>
-        <input class="fi" id="td-okr" placeholder="예: 자사몰 월 매출 20% 성장"></div>
+      <div class="fg"><label class="fl">관련 Objective (선택)</label>
+        <select class="fi" id="td-okr-obj" onchange="updateKrDropdown()">
+          <option value="">— Objective 없음</option>
+        </select>
+      </div>
+      <div class="fg" id="td-kr-group" style="display:none;"><label class="fl">관련 Key Result (선택)</label>
+        <select class="fi" id="td-okr">
+          <option value="">— Key Result 없음</option>
+        </select>
+      </div>
       <!-- 미리보기 -->
       <div class="multiline-preview" id="td-preview">
         <div class="mp-header" id="td-preview-header">추가될 항목 미리보기</div>
@@ -1110,6 +1118,15 @@ let STORE,selMid=null,ciMid=null,okrChart=null,curView='dashboard',curStandupDat
 function loadStore(){
   // 항상 DEF_STORE로 시작 (Firebase가 로드되면 덮어씀)
   STORE=JSON.parse(JSON.stringify(DEF_STORE));
+}
+function updateStandupProgress(date,tid,val){
+  const sd=getStandup(date);if(!sd)return;
+  const t=(sd.todos||[]).find(x=>x.id===tid);if(t){t._progress=val;if(val===100)t.done=true;else if(val<100&&t.done)t.done=false;}
+}
+function updateKeyTaskProgress(date,mid,kid,val){
+  const sd=getStandup(date);if(!sd)return;
+  const ks=(sd.keyTasks&&sd.keyTasks[mid])||[];
+  const k=ks.find(x=>x.id===kid);if(k){k._progress=val;if(val===100)k.done=true;else if(val<100&&k.done)k.done=false;}
 }
 function saveStore(){
   // localStorage 백업 + Firebase 저장
@@ -1535,12 +1552,52 @@ function openAddTodoForMember(mid){
   document.getElementById('td-member').innerHTML=opts;
   document.getElementById('td-text').value='';
   document.getElementById('td-prio').value='mid';
-  document.getElementById('td-okr').value='';
   document.getElementById('td-preview').classList.remove('show');
   document.getElementById('td-preview-list').innerHTML='';
   document.getElementById('td-submit').textContent='추가';
+  updateOkrDropdown();
   om('mo-todo');
   setTimeout(()=>document.getElementById('td-text').focus(),100);
+}
+
+function updateOkrDropdown(){
+  const mid=parseInt(document.getElementById('td-member').value);
+  const m=CQ().members.find(x=>x.id===mid);
+  const objSel=document.getElementById('td-okr-obj');
+  let opts='<option value="">— Objective 없음</option>';
+  if(m&&m.okrs&&m.okrs.length){
+    m.okrs.forEach(o=>{
+      opts+=`<option value="${o.id}">${o.title}</option>`;
+    });
+  }
+  objSel.innerHTML=opts;
+  // KR 드롭다운 초기화
+  document.getElementById('td-okr').innerHTML='<option value="">— Key Result 없음</option>';
+  document.getElementById('td-kr-group').style.display='none';
+  updateKrDropdown();
+}
+
+function updateKrDropdown(){
+  const mid=parseInt(document.getElementById('td-member').value);
+  const oid=parseInt(document.getElementById('td-okr-obj').value);
+  const m=CQ().members.find(x=>x.id===mid);
+  const krSel=document.getElementById('td-okr');
+  const krGroup=document.getElementById('td-kr-group');
+  if(!oid||!m){krGroup.style.display='none';krSel.innerHTML='<option value="">— Key Result 없음</option>';return;}
+  const o=m.okrs&&m.okrs.find(x=>x.id===oid);
+  if(!o||!o.subOkrs||!o.subOkrs.length){
+    // KR 없으면 Objective 자체를 값으로 사용
+    krGroup.style.display='none';
+    krSel.innerHTML=`<option value="${o?o.title:''}">— Key Result 없음 (Objective 직접 연결)</option>`;
+    krSel.value=o?o.title:'';
+    return;
+  }
+  krGroup.style.display='block';
+  let opts='<option value="">— Key Result 없음</option>';
+  o.subOkrs.forEach(s=>{
+    opts+=`<option value="${s.title}">${s.title}</option>`;
+  });
+  krSel.innerHTML=opts;
 }
 
 function parseTodoLines(){
@@ -1761,7 +1818,7 @@ function renderMDetail(id){
         <div style="font-size:11px;font-family:var(--mono);font-weight:600;color:${sc};text-align:right;margin-top:2px;">${s.progress}%</div></div>
         <span class="badge b-${s.status}" style="margin-left:8px;">${sl(s.status)}</span></div>`;
     });
-    sh+=`<div style="padding:10px 16px 12px 30px;"><button class="btn bxs" onclick="openAddSokr(${id},${o.id})">+ 하위 OKR 추가</button></div>`;
+    sh+=`<div style="padding:10px 16px 12px 30px;"><button class="btn bxs" onclick="openAddSokr(${id},${o.id})">+ Key Result 추가</button></div>`;
     oh+=`<div class="okr-item"><div class="okr-header" onclick="openEditOkr(${id},${o.id})">
       <div style="flex:1;"><div class="okr-title">${o.title}</div>
       ${o.note?`<div style="font-size:12px;color:var(--ink3);margin-top:3px;">${o.note}</div>`:''}</div>
@@ -1855,11 +1912,68 @@ function switchTaskTab(tab){
 function renderTTMain(){
   const m=CQ().members.find(x=>x.id===ttMid);if(!m)return;
   const pc=PC[m.part]||PC.tl;
+
+  // 아침 회의 데이터 연동
+  const todaySd2=getStandup(todayStr());
+  const mTodos=(todaySd2.todos||[]).filter(t=>t.mid===m.id);
+  const mKeyTasks=(todaySd2.keyTasks&&todaySd2.keyTasks[m.id])||[];
+  const prioIcon2={high:'🔴',mid:'🟡',low:'🟢'};
+  const prioOrder2=['high','mid','low'];
+
+  let standupSection='';
+  if(mTodos.length>0||mKeyTasks.length>0){
+    standupSection+=`<div class="card" style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;">📋 오늘 아침 회의 업무</div>
+        <div style="font-size:11px;color:var(--ink3);font-family:var(--mono);">${formatDate(todayStr())}</div>
+      </div>`;
+    prioOrder2.forEach(p=>{
+      const pt=mTodos.filter(t=>t.prio===p);
+      if(!pt.length)return;
+      const pn={high:'높음',mid:'중간',low:'낮음'};
+      standupSection+=`<div style="font-size:10px;font-weight:700;color:var(--ink3);font-family:var(--mono);letter-spacing:.05em;margin:10px 0 6px;">${prioIcon2[p]} ${pn[p]}</div>`;
+      pt.forEach(t=>{
+        const pct=t._progress||0;
+        const pc2=progColor(pct);
+        standupSection+=`<div style="margin-bottom:12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <div style="font-size:13px;${t.done?'text-decoration:line-through;color:var(--ink3);':''}">${t.text}</div>
+            <div style="font-size:11px;font-family:var(--mono);font-weight:700;color:${pc2};min-width:36px;text-align:right;">${pct}%</div>
+          </div>
+          <input type="range" min="0" max="100" step="5" value="${pct}"
+            style="width:100%;accent-color:${pc2};"
+            oninput="this.nextElementSibling.textContent=this.value+'%';updateStandupProgress('${todayStr()}',${t.id},parseInt(this.value))"
+            onchange="saveStore()">
+          <div style="font-size:10px;color:var(--ink3);text-align:right;margin-top:2px;">${pct===0?'미시작':pct===100?'완료':'진행중'}</div>
+        </div>`;
+      });
+    });
+    if(mKeyTasks.length){
+      standupSection+=`<div style="font-size:10px;font-weight:700;color:var(--ink3);font-family:var(--mono);letter-spacing:.05em;margin:10px 0 6px;">⭐ 중요 업무</div>`;
+      mKeyTasks.forEach(k=>{
+        const pct=k._progress||0;
+        const pc2=progColor(pct);
+        standupSection+=`<div style="margin-bottom:12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <div style="font-size:13px;${k.done?'text-decoration:line-through;color:var(--ink3);':''}">${k.text}</div>
+            <div style="font-size:11px;font-family:var(--mono);font-weight:700;color:${pc2};min-width:36px;text-align:right;">${pct}%</div>
+          </div>
+          <input type="range" min="0" max="100" step="5" value="${pct}"
+            style="width:100%;accent-color:${pc2};"
+            oninput="this.nextElementSibling.textContent=this.value+'%';updateKeyTaskProgress('${todayStr()}',${m.id},${k.id},parseInt(this.value))"
+            onchange="saveStore()">
+          <div style="font-size:10px;color:var(--ink3);text-align:right;margin-top:2px;">${pct===0?'미시작':pct===100?'완료':'진행중'}</div>
+        </div>`;
+      });
+    }
+    standupSection+=`</div>`;
+  }
+
   let h=`<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:16px 20px;background:white;border:1px solid var(--border);border-radius:4px;">
-    <span class="av av-lg style="${avStyle(m.part)}">${ini(m.name)}</span>
+    <span class="av av-lg" style="${avStyle(m.part)}">${ini(m.name)}</span>
     <div style="flex:1;"><div style="font-size:17px;font-weight:700;">${m.name}</div><div style="font-size:12px;color:var(--ink3);">${m.role}</div></div>
     <button class="btn bp bs" onclick="openAddTaskModal()">+ 업무 추가</button>
-  </div>`;
+  </div>${standupSection}`;
 
   if(ttTab==='weekly'){
     h+=renderWeeklyView(m);
@@ -2465,8 +2579,8 @@ function openAddOkr(mid){document.getElementById('mo-okr-title').textContent='OK
 function openEditOkr(mid,oid){const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);if(!o)return;document.getElementById('mo-okr-title').textContent='OKR 편집';document.getElementById('oe-mid').value=mid;document.getElementById('oe-id').value=oid;document.getElementById('oe-title').value=o.title;document.getElementById('oe-prog').value=o.progress;document.getElementById('oe-pdis').textContent=o.progress;document.getElementById('oe-status').value=o.status;document.getElementById('oe-note').value=o.note||'';document.getElementById('oe-del').style.display='inline-flex';om('mo-okr');}
 function saveOkr(){const mid=parseInt(document.getElementById('oe-mid').value);const eid=parseInt(document.getElementById('oe-id').value);const title=document.getElementById('oe-title').value.trim();const progress=parseInt(document.getElementById('oe-prog').value);const status=document.getElementById('oe-status').value;const note=document.getElementById('oe-note').value.trim();if(!title)return alert('OKR 제목을 입력해주세요');const m=CQ().members.find(x=>x.id===mid);if(!m)return;if(eid){const o=m.okrs.find(x=>x.id===eid);if(o){o.title=title;o.progress=progress;o.status=status;o.note=note;}}else m.okrs.push({id:Date.now(),title,progress,status,note,subOkrs:[]});saveStore();cm('mo-okr');renderMDetail(mid);}
 function delOkr(){const mid=parseInt(document.getElementById('oe-mid').value);const eid=parseInt(document.getElementById('oe-id').value);if(!confirm('삭제하시겠습니까?'))return;const m=CQ().members.find(x=>x.id===mid);if(m)m.okrs=m.okrs.filter(o=>o.id!==eid);saveStore();cm('mo-okr');renderMDetail(mid);}
-function openAddSokr(mid,oid){document.getElementById('mo-sokr-title').textContent='하위 OKR 추가';document.getElementById('se-mid').value=mid;document.getElementById('se-pid').value=oid;document.getElementById('se-id').value='';document.getElementById('se-title').value='';document.getElementById('se-prog').value=0;document.getElementById('se-pdis').textContent='0';document.getElementById('se-status').value='on_track';document.getElementById('se-note').value='';document.getElementById('se-del').style.display='none';om('mo-sokr');}
-function openEditSokr(mid,oid,sid){const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);const s=o?.subOkrs?.find(x=>x.id===sid);if(!s)return;document.getElementById('mo-sokr-title').textContent='하위 OKR 편집';document.getElementById('se-mid').value=mid;document.getElementById('se-pid').value=oid;document.getElementById('se-id').value=sid;document.getElementById('se-title').value=s.title;document.getElementById('se-prog').value=s.progress;document.getElementById('se-pdis').textContent=s.progress;document.getElementById('se-status').value=s.status;document.getElementById('se-note').value=s.note||'';document.getElementById('se-del').style.display='inline-flex';om('mo-sokr');}
+function openAddSokr(mid,oid){document.getElementById('mo-sokr-title').textContent='Key Result 추가';document.getElementById('se-mid').value=mid;document.getElementById('se-pid').value=oid;document.getElementById('se-id').value='';document.getElementById('se-title').value='';document.getElementById('se-prog').value=0;document.getElementById('se-pdis').textContent='0';document.getElementById('se-status').value='on_track';document.getElementById('se-note').value='';document.getElementById('se-del').style.display='none';om('mo-sokr');}
+function openEditSokr(mid,oid,sid){const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);const s=o?.subOkrs?.find(x=>x.id===sid);if(!s)return;document.getElementById('mo-sokr-title').textContent='Key Result 편집';document.getElementById('se-mid').value=mid;document.getElementById('se-pid').value=oid;document.getElementById('se-id').value=sid;document.getElementById('se-title').value=s.title;document.getElementById('se-prog').value=s.progress;document.getElementById('se-pdis').textContent=s.progress;document.getElementById('se-status').value=s.status;document.getElementById('se-note').value=s.note||'';document.getElementById('se-del').style.display='inline-flex';om('mo-sokr');}
 function saveSubOkr(){const mid=parseInt(document.getElementById('se-mid').value);const oid=parseInt(document.getElementById('se-pid').value);const eid=parseInt(document.getElementById('se-id').value);const title=document.getElementById('se-title').value.trim();const progress=parseInt(document.getElementById('se-prog').value);const status=document.getElementById('se-status').value;const note=document.getElementById('se-note').value.trim();if(!title)return alert('하위 OKR 제목을 입력해주세요');const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);if(!o)return;if(!o.subOkrs)o.subOkrs=[];if(eid){const s=o.subOkrs.find(x=>x.id===eid);if(s){s.title=title;s.progress=progress;s.status=status;s.note=note;}}else o.subOkrs.push({id:Date.now(),title,progress,status,note});saveStore();cm('mo-sokr');renderMDetail(mid);}
 function delSubOkr(){const mid=parseInt(document.getElementById('se-mid').value);const oid=parseInt(document.getElementById('se-pid').value);const eid=parseInt(document.getElementById('se-id').value);if(!confirm('삭제하시겠습니까?'))return;const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);if(o)o.subOkrs=o.subOkrs.filter(s=>s.id!==eid);saveStore();cm('mo-sokr');renderMDetail(mid);}
 
