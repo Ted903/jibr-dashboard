@@ -1447,8 +1447,13 @@ function renderStandup(){
     if(!keyTaskHtml)keyTaskHtml=`<div style="font-size:13px;color:var(--ink3);padding:10px 0;">중요 업무를 추가해주세요</div>`;
 
     let blHtml='';
-    blockers.forEach(b=>{blHtml+=`<div class="blocker-item"><div class="blocker-dot"></div><div class="blocker-text">${b.text}</div>
-      <button class="todo-del" onclick="delBlocker('${curStandupDate}',${m.id},${b.id})">✕</button></div>`;});
+    blockers.forEach(b=>{blHtml+=`<div class="blocker-item" id="blocker-item-${b.id}">
+      <div class="blocker-dot"></div>
+      <div class="blocker-text" id="blocker-text-${b.id}">${b.text}${b._carried?'<span style="font-size:10px;background:var(--paper2);color:var(--ink3);padding:1px 5px;border-radius:3px;margin-left:5px;font-family:var(--mono);">이월</span>':''}</div>
+      <button class="todo-del" onclick="startEditBlocker('${curStandupDate}',${m.id},${b.id})" title="수정">✎</button>
+      <button class="todo-del" onclick="carryBlocker('${curStandupDate}',${m.id},${b.id})" title="이월" style="font-size:11px;">↩</button>
+      <button class="todo-del" onclick="delBlocker('${curStandupDate}',${m.id},${b.id})">✕</button>
+    </div>`;});
     if(!blHtml)blHtml=`<div style="font-size:13px;color:var(--ink3);padding:6px 0;">이슈 없음</div>`;
 
     grid+=`<div class="standup-card">
@@ -1532,6 +1537,42 @@ function cancelEditKeyTask(kid, orig){
 }
 function toggleTodo(date,tid){const sd=getStandup(date);const t=sd.todos.find(x=>x.id===tid);if(t){t.done=!t.done;saveStore();renderStandup();renderDashStandupWidget();}}
 function delTodo(date,tid){const sd=getStandup(date);sd.todos=sd.todos.filter(t=>t.id!==tid);saveStore();renderStandup();}
+
+function startEditBlocker(date,mid,bid){
+  const sd=getStandup(date);
+  const b=(sd.blockers&&sd.blockers[mid]||[]).find(x=>x.id===bid);if(!b)return;
+  const textEl=document.getElementById('blocker-text-'+bid);if(!textEl)return;
+  const orig=b.text;
+  textEl.innerHTML=`<input class="todo-edit-input" id="blocker-edit-input-${bid}" value="${orig.replace(/"/g,'&quot;')}" style="width:100%;"/>
+    <div class="todo-edit-actions">
+      <button class="btn bp bxs" onclick="saveEditBlocker('${date}',${mid},${bid})">저장</button>
+      <button class="btn bxs" onclick="renderStandup()">취소</button>
+    </div>`;
+  const input=document.getElementById('blocker-edit-input-'+bid);
+  if(input){input.focus();input.select();input.addEventListener('keydown',e=>{if(e.key==='Enter')saveEditBlocker(date,mid,bid);if(e.key==='Escape')renderStandup();});}
+}
+function saveEditBlocker(date,mid,bid){
+  const input=document.getElementById('blocker-edit-input-'+bid);if(!input)return;
+  const newText=input.value.trim();if(!newText)return;
+  const sd=getStandup(date);
+  const b=(sd.blockers&&sd.blockers[mid]||[]).find(x=>x.id===bid);
+  if(b)b.text=newText;
+  saveStore();renderStandup();
+}
+function carryBlocker(date,mid,bid){
+  const today=todayStr();
+  if(date===today){alert('오늘 날짜는 이월할 수 없어요.');return;}
+  const sd=getStandup(date);
+  const b=(sd.blockers&&sd.blockers[mid]||[]).find(x=>x.id===bid);if(!b)return;
+  const todaySd=getStandup(today);
+  if(!todaySd.blockers)todaySd.blockers={};
+  if(!todaySd.blockers[mid])todaySd.blockers[mid]=[];
+  // 중복 체크
+  if(todaySd.blockers[mid].find(x=>x.text===b.text)){alert('이미 오늘에 같은 이슈가 있어요.');return;}
+  todaySd.blockers[mid].push({id:Date.now(),text:b.text,_carried:true});
+  saveStore();
+  alert('오늘 날짜로 이월됐어요!');
+}
 function delBlocker(date,mid,bid){const sd=getStandup(date);if(sd.blockers&&sd.blockers[mid])sd.blockers[mid]=sd.blockers[mid].filter(b=>b.id!==bid);saveStore();renderStandup();}
 
 function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
