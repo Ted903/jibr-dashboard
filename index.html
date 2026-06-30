@@ -1043,6 +1043,20 @@ function runCarryOver(){
         });
       });
     }
+    // 이슈/블로커 이월 (완료 개념 없이, 삭제 전까지 계속 이월)
+    if(prev.blockers){
+      if(!CQ().standups[today].blockers)CQ().standups[today].blockers={};
+      Object.keys(prev.blockers).forEach(mid=>{
+        const items=prev.blockers[mid]||[];
+        if(!CQ().standups[today].blockers[mid])CQ().standups[today].blockers[mid]=[];
+        const existTexts=CQ().standups[today].blockers[mid].map(b=>b.text);
+        items.forEach(b=>{
+          if(!existTexts.includes(b.text)){
+            CQ().standups[today].blockers[mid].push({id:Date.now()+Math.random(),text:b.text,_carried:true});
+          }
+        });
+      });
+    }
   }
   // 날짜 문자열로 저장해서 매일 새로 실행되도록
   CQ().standups[today]._carryDone=today;
@@ -1452,7 +1466,6 @@ function renderStandup(){
       <div class="blocker-dot"></div>
       <div class="blocker-text" id="blocker-text-${b.id}">${b.text}${b._carried?'<span style="font-size:10px;background:var(--paper2);color:var(--ink3);padding:1px 5px;border-radius:3px;margin-left:5px;font-family:var(--mono);">이월</span>':''}</div>
       <button class="todo-del" onclick="startEditBlocker('${curStandupDate}',${m.id},${b.id})" title="수정">✎</button>
-      <button class="todo-del" onclick="carryBlocker('${curStandupDate}',${m.id},${b.id})" title="이월" style="font-size:11px;">↩</button>
       <button class="todo-del" onclick="delBlocker('${curStandupDate}',${m.id},${b.id})">✕</button>
     </div>`;});
     if(!blHtml)blHtml=`<div style="font-size:13px;color:var(--ink3);padding:6px 0;">이슈 없음</div>`;
@@ -1477,14 +1490,10 @@ function renderStandup(){
             <button class="btn bxs" onclick="openAddKeyTask(${m.id})">+ 추가</button>
           </div>${keyTaskHtml}
         </div>
-        <div class="todo-section">
+        <div class="todo-section" style="margin-bottom:0;">
           <div class="todo-section-title">이슈 / 블로커
             <button class="btn bxs" onclick="openAddBlocker(${m.id})">+ 추가</button>
           </div>${blHtml}
-        </div>
-        <div class="todo-section" style="margin-bottom:0;">
-          <div class="todo-section-title">메모</div>
-          <div class="memo-box" contenteditable="true" id="memo-${m.id}" oninput="saveMemoDebounced(${m.id})" onblur="saveMemo(${m.id})">${escHtml(memo)}</div>
         </div>
       </div>
     </div>`;
@@ -1582,7 +1591,6 @@ function saveMemoDebounced(mid){clearTimeout(memoTimer[mid]);memoTimer[mid]=setT
 function saveMemo(mid){const el=document.getElementById(`memo-${mid}`);if(!el)return;const sd=getStandup(curStandupDate);if(!sd.memo)sd.memo={};sd.memo[mid]=el.innerText||'';saveStore();}
 
 function finishMeeting(){
-  CQ().members.forEach(m=>{const el=document.getElementById(`memo-${m.id}`);if(el){const sd=getStandup(curStandupDate);if(!sd.memo)sd.memo={};sd.memo[m.id]=el.innerText||'';}});
   const sd=getStandup(curStandupDate);sd.saved=true;saveStore();renderStandup();
   alert(`${formatDate(curStandupDate)} 회의가 저장되었습니다.`);
 }
@@ -1714,8 +1722,8 @@ function renderLogDetail(dt){
     <button class="btn bp bs" onclick="copyDayLog('${dt}')">⎘ 구글챗 복사</button>
   </div><div style="padding:20px 24px;">`;
   CQ().members.forEach(m=>{
-    const todos=(sd.todos||[]).filter(t=>t.mid===m.id);const keyTasks=(sd.keyTasks&&sd.keyTasks[m.id])||[];const blockers=(sd.blockers&&sd.blockers[m.id])||[];const memo=(sd.memo&&sd.memo[m.id])||'';
-    if(!todos.length&&!keyTasks.length&&!blockers.length&&!memo)return;
+    const todos=(sd.todos||[]).filter(t=>t.mid===m.id);const keyTasks=(sd.keyTasks&&sd.keyTasks[m.id])||[];const blockers=(sd.blockers&&sd.blockers[m.id])||[];
+    if(!todos.length&&!keyTasks.length&&!blockers.length)return;
     const pc2=PC[m.part]||PC.tl;
     h+=`<div style="margin-bottom:18px;padding:16px 18px;background:var(--paper);border:1px solid var(--border-soft);border-radius:4px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
@@ -1732,7 +1740,7 @@ function renderLogDetail(dt){
       </div>`;});});}
     if(keyTasks.length){h+=`<div style="font-size:11px;font-weight:700;color:var(--md-col);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">⭐ 중요 업무</div>`;keyTasks.forEach(k=>{h+=`<div style="display:flex;gap:9px;padding:5px 0;font-size:13px;"><span style="color:${k.done?'var(--olive)':'var(--md-col)'};font-weight:700;flex-shrink:0;">${k.done?'✓':'◆'}</span><span style="${k.done?'text-decoration:line-through;color:var(--ink3);':''}">${k.text}</span></div>`;});}
     if(blockers.length){h+=`<div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">이슈 / 블로커</div>`;blockers.forEach(b=>{h+=`<div style="display:flex;gap:9px;font-size:13px;padding:4px 0;"><span style="color:var(--accent);font-weight:700;">⚠</span>${b.text}</div>`;});}
-    if(memo){h+=`<div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">메모</div><div style="font-size:13px;color:var(--ink2);line-height:1.7;">${memo}</div>`;}
+
     h+='</div>';
   });
   h+='</div>';
