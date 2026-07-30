@@ -3,7 +3,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;background:#f4f5f7;color:#1c2024;padding:20px 22px 48px;-webkit-font-smoothing:antialiased}
-.hd{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
 h1{font-size:22px;font-weight:800;letter-spacing:-.5px}
 h2{font-size:15.5px;font-weight:800;margin:26px 0 6px;letter-spacing:-.3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 h2 .n{background:#111827;color:#fff;width:20px;height:20px;border-radius:5px;font-size:11.5px;display:inline-flex;align-items:center;justify-content:center;flex:none}
@@ -33,18 +32,20 @@ tbody tr:hover{background:#fafbfc}
 tbody tr.bad{background:#fffbfb}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;color:#8b95a1}
-.nm{font-weight:600;max-width:250px;overflow:hidden;text-overflow:ellipsis}
+.nm{font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis}
 .nm2{font-weight:700;font-size:13px}
 .cd2{font-family:ui-monospace,Menlo,monospace;font-size:10px;color:#9ca3af;font-weight:400;margin-top:1px}
-.big{font-size:16px;font-weight:800;letter-spacing:-.5px}
-.big .u{font-size:10px;color:#9ca3af;margin-left:2px;font-weight:600}
+.spec{font-size:10.5px;color:#64748b;background:#f1f5f9;border-radius:3px;padding:1px 5px;font-weight:600}
+.qty{font-weight:800;font-size:13.5px}
+.qty u{font-size:10.5px;color:#94a3b8;font-weight:700;margin-left:1px;text-decoration:none}
+.conv{display:block;font-size:10.5px;color:#0f766e;font-weight:700;margin-top:1px}
+.big{font-size:17px;font-weight:800;letter-spacing:-.5px}
+.big u{font-size:10.5px;color:#9ca3af;margin-left:1px;font-weight:700;text-decoration:none}
 .sm{font-size:11.5px;color:#6b7280}
-.tot{font-weight:800;font-size:13px}
 .neg{color:#dc2626}.pos{color:#059669}
 .dim{color:#cbd5e1}
-.sf{color:#7c3aed;font-weight:600}.nd{color:#0891b2;font-weight:600}.cp{color:#c2410c;font-weight:600}
-.kg{font-size:10px;color:#9ca3af;display:block}
-.dt{font-size:11.5px;color:#4b5563;white-space:normal;line-height:1.55;min-width:340px}
+.sf{color:#7c3aed;font-weight:700}.nd{color:#0891b2;font-weight:700}.cp{color:#c2410c;font-weight:700}
+.dt{font-size:11.5px;color:#4b5563;white-space:normal;line-height:1.55;min-width:330px}
 .chip{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:700}
 .c0{background:#dbeafe;color:#1d4ed8}.c1{background:#fef3c7;color:#a16207}.c2{background:#dcfce7;color:#15803d}
 .c3{background:#fce7f3;color:#be185d}.c4{background:#e0e7ff;color:#4338ca}.c5{background:#f1f5f9;color:#475569}.c6{background:#f5f3ff;color:#6d28d9}
@@ -53,71 +54,71 @@ tbody tr.bad{background:#fffbfb}
 .sb{background:#dbeafe;color:#1d4ed8}.sg{background:#f1f5f9;color:#94a3b8}.sn{color:#cbd5e1}
 .note{margin-top:11px;font-size:11.5px;color:#6b7280;line-height:1.8}
 .note b{color:#374151}
+.lg{display:inline-block;background:#e6fffa;color:#0f766e;border-radius:3px;padding:1px 5px;font-weight:700;font-size:10.5px}
 .plan thead th{background:#fef2f2;color:#991b1b}
 #err{background:#fee2e2;color:#b91c1c;padding:14px;border-radius:8px;font-size:13px;display:none}
 @media(max-width:700px){body{padding:14px}h1{font-size:19px}.card{min-width:96px}}
 </style></head><body>
 <div id="err"></div>
-<div class="hd"><div>
 <h1>집반찬연구소 생산 재고 현황<span class="badge">전날 기준</span></h1>
 <div class="sub" id="meta"></div>
-</div></div>
 <div class="cards" id="cards"></div>
 
 <h2><span class="n">1</span>생산계획 참고 — 다가오는 소요량 <small id="m1"></small></h2>
 <div class="wrap"><table class="plan"><thead><tr>
-<th>품목</th><th class="num">총 필요</th><th class="num">식단</th><th class="num">쿠팡</th><th class="num">현재고</th><th class="num">부족/여유</th><th>판정</th>
+<th>품목</th><th class="num">규격</th><th class="num">총 필요</th><th class="num">식단</th><th class="num">쿠팡</th><th class="num">현재고</th><th class="num">부족/여유</th><th>판정</th>
 </tr></thead><tbody id="tb1"></tbody></table></div>
-<div class="note"><b>총 필요</b> = 식단 필요량 + 쿠팡 월요일 입고량 · <b>식단</b> = 식단표 품목코드 × 식단별 예상출고수량(회차 = 3일분, 한 식단에 같은 품목이 2개 들어가면 2배로 계산) · <b>쿠팡</b> = 2026_쿠팡 냉동국 탭의 차주 월요일 값</div>
+<div class="note"><b>총 필요</b> = 식단 필요량 + 쿠팡 월요일 입고량 · <b>식단</b> = 식단표 품목코드 × 식단별 예상출고수량(회차 = 3일분, 한 식단에 같은 품목이 2개 들어가면 2배) · <b>쿠팡</b> = 2026_쿠팡 냉동국 탭의 차주 월요일 값 · 이 표의 수량은 모두 <b>개</b> 단위다</div>
 
 <h2><span class="n">2</span>전체 재고 현황 <small>조회용 · 창고별 분해</small></h2>
 <div class="tabs" id="tabs"></div>
 <div class="wrap"><table><thead>
-<tr><th colspan="3"></th><th class="num">재고<br>합계</th><th class="grp" id="whhead"></th><th class="num">안전<br>재고</th><th class="num">식단<br>필요</th><th class="num" id="cph">쿠팡</th><th></th></tr>
+<tr><th colspan="4"></th><th class="num">재고 합계</th><th class="grp" id="whhead"></th><th class="num">안전<br>재고</th><th class="num">식단<br>필요</th><th class="num" id="cph">쿠팡</th><th></th></tr>
 <tr id="hr2"></tr>
 </thead><tbody id="tb2"></tbody></table></div>
 <div class="note" id="note2"></div>
 
 <h2><span class="n">3</span>데이터 점검 필요 <small id="m3"></small></h2>
-<div class="wrap"><table><thead><tr><th style="width:130px">유형</th><th style="width:115px">품목코드</th><th style="width:200px">품목명</th><th>내용</th></tr></thead><tbody id="tb3"></tbody></table></div>
-<div class="note"><b>안전재고 판정 방식</b> — 이카운트는 모든 품목을 <b>EA(개/통)</b>로 센다. 안전재고가 <b>KG</b>으로 적힌 품목은 이카운트 규격(5KG통, 2KG, 700G 등)으로 환산해서 비교한다. 예: 맛간장 재고 38.2통 × 5KG = <b>191KG</b> vs 안전재고 110KG → 정상. 환산하지 않으면 거짓 경고가 뜬다.</div>
+<div class="wrap"><table><thead><tr><th style="width:130px">유형</th><th style="width:115px">품목코드</th><th style="width:195px">품목명</th><th>내용</th></tr></thead><tbody id="tb3"></tbody></table></div>
+<div class="note"><b>안전재고 판정 방식</b> — 이카운트는 대부분 품목을 <b>개(EA)</b>로 센다. 안전재고가 <b>KG</b>으로 적힌 품목은 규격(5KG통·2KG·700G 등)으로 환산해서 비교한다. 예: 맛간장 재고 38.2개 × 5KG = <span class="lg">191KG</span> vs 안전재고 110KG → 정상. 환산하지 않으면 거짓 경고가 뜬다.</div>
 <script>
-const E=s=>document.createElement(s);
-const rnd=v=>{const n=Math.round(v*10)/10;return Number.isInteger(n)?n:n.toFixed(1)};
+const rd=v=>{const n=Math.round(v*10)/10;return Number.isInteger(n)?n:n.toFixed(1)};
 fetch('stock-data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
  const {meta,stat,rows,audit,wh,cats}=D;
  document.getElementById('meta').innerHTML='재고 기준일 <b>'+meta.baseDate+'</b> · 마지막 갱신 <b>'+meta.updated+'</b> · 출처 이카운트 ERP<br>식단 회차 <b>'+meta.mealRound+'</b> · 쿠팡 입고일 <b>'+meta.coupangDate+'</b>';
  document.getElementById('m1').textContent=meta.mealRound+' 식단 + '+meta.coupangDate+' 쿠팡 · 부족한 순';
- document.getElementById('m3').textContent=audit.length+'건 · 원본 시트 또는 ERP를 고쳐야 정확해지는 항목';
+ document.getElementById('m3').textContent=audit.length+'건 · 원본 시트 또는 이카운트를 고쳐야 정확해지는 항목';
  const C=[['전체 품목','',stat.total,''],['수량 추적 가능','b',stat.tracked,'/'+stat.total],['긴급 (부족·마이너스)','r',stat.alert,''],['주의 (안전재고 미달)','o',stat.warn,''],['안전재고 설정됨','p',stat.sfSet,'/'+stat.total],['데이터 점검 필요','r',stat.audit,'']];
  document.getElementById('cards').innerHTML=C.map(c=>'<div class="card '+c[1]+'"><div class="k">'+c[0]+'</div><div class="v">'+c[2]+(c[3]?'<small>'+c[3]+'</small>':'')+'</div></div>').join('');
- // 1부
  const plan=rows.filter(r=>r.req>0).map(r=>({...r,short:r.req-r.qty})).sort((a,b)=>b.short-a.short);
  document.getElementById('tb1').innerHTML=plan.map(p=>'<tr class="'+(p.short>0?'bad':'')+'">'
   +'<td><div class="nm2">'+p.name+'</div><div class="cd2">'+p.code+'</div></td>'
-  +'<td class="num big">'+rnd(p.req)+'<span class="u">개</span></td>'
-  +'<td class="num sm">'+(p.need||'·')+'</td><td class="num sm">'+(p.cp||'·')+'</td>'
-  +'<td class="num big '+(p.qty<0?'neg':'')+'">'+rnd(p.qty)+'</td>'
-  +'<td class="num big '+(p.short>0?'neg':'pos')+'">'+(p.short>0?'-'+rnd(p.short):'여유 '+rnd(-p.short))+'</td>'
+  +'<td class="num"><span class="spec">'+(p.size||'-')+'</span></td>'
+  +'<td class="num big">'+rd(p.req)+'<u>개</u></td>'
+  +'<td class="num sm">'+(p.need?p.need+'개':'·')+'</td><td class="num sm">'+(p.cp?p.cp+'개':'·')+'</td>'
+  +'<td class="num big '+(p.qty<0?'neg':'')+'">'+rd(p.qty)+'<u>개</u></td>'
+  +'<td class="num big '+(p.short>0?'neg':'pos')+'">'+(p.short>0?'-'+rd(p.short):'여유 '+rd(-p.short))+'<u>개</u></td>'
   +'<td>'+(p.short>0?'<span class="st sr">생산 필요</span>':'<span class="st sb">충족</span>')+'</td></tr>').join('');
- // 헤더
  document.getElementById('whhead').colSpan=wh.length; document.getElementById('whhead').textContent='창고별 재고';
  document.getElementById('cph').innerHTML='쿠팡<br>'+meta.coupangDate.split(' ')[0];
- document.getElementById('hr2').innerHTML='<th>품목코드</th><th>품목명</th><th>카테고리</th><th class="num"></th>'
+ document.getElementById('hr2').innerHTML='<th>품목코드</th><th>품목명</th><th>카테고리</th><th class="num">규격</th><th class="num"></th>'
   +wh.map(w=>'<th class="num" title="'+w[1]+'">'+w[0]+'</th>').join('')+'<th></th><th></th><th></th><th>상태</th>';
- // 2부
  const cls={r:'sr',o:'so',y:'sy',b:'sb',g:'sg',n:'sn'};
- document.getElementById('tb2').innerHTML=rows.map(r=>'<tr data-cat="'+r.cat+'" data-lv="'+r.lv+'">'
+ document.getElementById('tb2').innerHTML=rows.map(r=>{
+  let q;
+  if(!r.tracked) q='<span class="dim">—</span>';
+  else { q='<span class="qty '+(r.qty<0?'neg':'')+'">'+rd(r.qty)+'<u>'+r.baseUnit+'</u></span>';
+   if(r.baseUnit==='개'&&r.kgShow!==null) q+='<span class="conv">= '+rd(r.kgShow)+' KG</span>'; }
+  return '<tr data-cat="'+r.cat+'" data-lv="'+r.lv+'">'
   +'<td class="code">'+r.code+'</td><td class="nm" title="'+(r.ecName||'')+'">'+r.name+'</td>'
   +'<td><span class="chip c'+cats.indexOf(r.cat)+'">'+r.cat+'</span></td>'
-  +'<td class="num tot '+(r.qty<0?'neg':'')+'">'+(r.tracked?rnd(r.qty):'<span class="dim">—</span>')
-    +(r.sfState==='conv'?'<span class="kg">'+rnd(r.kgStock)+'KG</span>':'')+'</td>'
-  +wh.map(w=>{const v=r.wh[w[0]];return '<td class="num '+(v<0?'neg':'')+'">'+(v===undefined?'<span class="dim">·</span>':rnd(v))+'</td>';}).join('')
+  +'<td class="num">'+(r.size?'<span class="spec">'+r.size+'</span>':'<span class="dim">·</span>')+'</td>'
+  +'<td class="num">'+q+'</td>'
+  +wh.map(w=>{const v=r.wh[w[0]];return '<td class="num '+(v<0?'neg':'')+'">'+(v===undefined?'<span class="dim">·</span>':rd(v))+'</td>';}).join('')
   +'<td class="num sf">'+(r.safety||'<span class="dim">·</span>')+'</td>'
-  +'<td class="num nd">'+(r.need||'<span class="dim">·</span>')+'</td>'
-  +'<td class="num cp">'+(r.cp||'<span class="dim">·</span>')+'</td>'
-  +'<td><span class="st '+cls[r.lv]+'">'+r.status+'</span></td></tr>').join('');
- // 탭
+  +'<td class="num nd">'+(r.need?r.need+'개':'<span class="dim">·</span>')+'</td>'
+  +'<td class="num cp">'+(r.cp?r.cp+'개':'<span class="dim">·</span>')+'</td>'
+  +'<td><span class="st '+cls[r.lv]+'">'+r.status+'</span></td></tr>';}).join('');
  const badge={}; cats.forEach(c=>badge[c]=rows.filter(r=>r.cat===c&&['r','o'].includes(r.lv)).length);
  document.getElementById('tabs').innerHTML='<span class="tab on" data-f="all">전체 '+rows.length+'</span>'
   +cats.map(c=>'<span class="tab" data-f="'+c+'">'+c+' '+rows.filter(r=>r.cat===c).length+(badge[c]?'<i>'+badge[c]+'</i>':'')+'</span>').join('')
@@ -128,10 +129,11 @@ fetch('stock-data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
   document.querySelectorAll('#tb2 tr').forEach(r=>{
    r.style.display = f==='all'?'':(f==='__a'?(['r','o','y'].includes(r.dataset.lv)?'':'none'):(r.dataset.cat===f?'':'none'));});
  });
- document.getElementById('note2').innerHTML='<b>창고</b> '+wh.map(w=>w[0]+' '+w[1]).join(' / ')
+ document.getElementById('note2').innerHTML='<b>단위</b> 재고 합계는 이카운트 등록 단위 그대로 표시한다. <b>개</b> = 개수로 세는 품목, <b>KG</b> = 중량으로 세는 품목.'
+  +' 개수로 세지만 규격을 아는 품목은 그 아래 <span class="lg">= ○○ KG</span> 로 환산 중량을 같이 보여준다.'
+  +'<br><b>창고</b> '+wh.map(w=>w[0]+' '+w[1]).join(' / ')+' (창고별 열의 숫자 단위는 재고 합계와 동일)'
   +'<br><b>·</b> = 해당 창고 재고 0 (이카운트는 재고 0인 품목을 응답에서 제외하므로 0으로 표시)'
   +'<br><b>—</b> = 이카운트 <b>수량관리 제외</b> 품목. ERP가 재고를 세지 않아 수량 표시 불가'
-  +'<br><b>재고 합계 아래 작은 KG</b> = 안전재고와 비교하기 위해 규격으로 환산한 중량'
   +'<br><b>마이너스</b> = 출고는 기록됐으나 생산입고 미기록으로 추정. 창고별 열에서 발생 위치 확인 가능';
  document.getElementById('tb3').innerHTML=audit.map(a=>'<tr><td><span class="st '+cls[a[0]]+'">'+a[1]+'</span></td>'
   +'<td class="code">'+a[2]+'</td><td class="nm">'+a[3]+'</td><td class="dt">'+a[4]+'</td></tr>').join('');
