@@ -80,7 +80,7 @@ tbody tr.bad{background:#fffbfb}
 
 <h2><span class="n">3</span>데이터 점검 필요 <small id="m3"></small></h2>
 <div class="wrap"><table><thead><tr><th style="width:130px">유형</th><th style="width:115px">품목코드</th><th style="width:195px">품목명</th><th>내용</th></tr></thead><tbody id="tb3"></tbody></table></div>
-<div class="note"><b>안전재고 판정 방식</b> — 이카운트는 대부분 품목을 <b>개(EA)</b>로 센다. 안전재고가 <b>KG</b>으로 적힌 품목은 규격(5KG통·2KG·700G 등)으로 환산해서 비교한다. 예: 맛간장 재고 38.2개 × 5KG = <span class="lg">191KG</span> vs 안전재고 110KG → 정상. 환산하지 않으면 거짓 경고가 뜬다.</div>
+<div class="note"><b>안전재고 판정 방식</b> — <b>냉동국·상품</b>은 안전재고도 개수 기준이라 그대로 비교한다(예: 오징어무국 42개 vs 50개 → 미달). <b>소스·반제품·반가</b>는 이카운트가 개수로 세는데 안전재고는 KG 기준이라 규격으로 환산해서 비교한다. 예: 맛간장 재고 38.2개 × 5KG = <span class="lg">191KG</span> vs 안전재고 110KG → 정상. 환산하지 않으면 거짓 경고가 뜬다.</div>
 <script>
 const rd=v=>{const n=Math.round(v*10)/10;return Number.isInteger(n)?n:n.toFixed(1)};
 fetch('stock-data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
@@ -108,7 +108,7 @@ fetch('stock-data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
   let q;
   if(!r.tracked) q='<span class="dim">—</span>';
   else { q='<span class="qty '+(r.qty<0?'neg':'')+'">'+rd(r.qty)+'<u>'+r.baseUnit+'</u></span>';
-   if(r.baseUnit==='개'&&r.kgShow!==null) q+='<span class="conv">= '+rd(r.kgShow)+' KG</span>'; }
+   if(r.baseUnit==='개'&&r.kgShow!==null&&!['냉동국','상품'].includes(r.cat)) q+='<span class="conv">= '+rd(r.kgShow)+' KG</span>'; }
   return '<tr data-cat="'+r.cat+'" data-lv="'+r.lv+'">'
   +'<td class="code">'+r.code+'</td><td class="nm" title="'+(r.ecName||'')+'">'+r.name+'</td>'
   +'<td><span class="chip c'+cats.indexOf(r.cat)+'">'+r.cat+'</span></td>'
@@ -129,8 +129,8 @@ fetch('stock-data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
   document.querySelectorAll('#tb2 tr').forEach(r=>{
    r.style.display = f==='all'?'':(f==='__a'?(['r','o','y'].includes(r.dataset.lv)?'':'none'):(r.dataset.cat===f?'':'none'));});
  });
- document.getElementById('note2').innerHTML='<b>단위</b> 재고 합계는 이카운트 등록 단위 그대로 표시한다. <b>개</b> = 개수로 세는 품목, <b>KG</b> = 중량으로 세는 품목.'
-  +' 개수로 세지만 규격을 아는 품목은 그 아래 <span class="lg">= ○○ KG</span> 로 환산 중량을 같이 보여준다.'
+ document.getElementById('note2').innerHTML='<b>단위</b> 재고 합계는 이카운트 등록 단위 그대로 표시한다. <b>냉동국·상품</b>은 개수로 관리하므로 <b>개</b>로만 표시한다.'
+  +' 소스·반제품·반가 등 <b>중량으로 관리하는 품목</b>은 그 아래 <span class="lg">= ○○ KG</span> 로 환산 중량을 같이 보여준다(안전재고가 KG 기준이라 비교하려면 환산이 필요하다).'
   +'<br><b>창고</b> '+wh.map(w=>w[0]+' '+w[1]).join(' / ')+' (창고별 열의 숫자 단위는 재고 합계와 동일)'
   +'<br><b>·</b> = 해당 창고 재고 0 (이카운트는 재고 0인 품목을 응답에서 제외하므로 0으로 표시)'
   +'<br><b>—</b> = 이카운트 <b>수량관리 제외</b> 품목. ERP가 재고를 세지 않아 수량 표시 불가'
