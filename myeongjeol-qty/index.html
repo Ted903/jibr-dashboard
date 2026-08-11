@@ -2,200 +2,289 @@
 <html lang="ko"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>집반찬연구소 명절 제품 판매량</title>
+<title>집반찬연구소 · 명절 상품 판매 분석</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f6f7f9;color:#1a1a1a;-webkit-font-smoothing:antialiased;font-size:14px}
-.wrap{max-width:1180px;margin:0 auto;padding:20px 18px 40px}
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid #1f2430;padding-bottom:12px;margin-bottom:14px}
-h1{font-size:21px;letter-spacing:-.5px}
-.sub{font-size:12.5px;color:#6b7280;margin-top:5px}
-.pills{display:flex;gap:6px;flex-wrap:wrap}
-.pill{background:#fff;border:1px solid #e2e5ea;border-radius:7px;padding:6px 11px;font-size:11.5px;color:#555;text-align:center}
-.pill b{display:block;font-size:12.5px;color:#1f2430}
-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-nav button{border:1px solid #dfe3e8;background:#fff;color:#4b5563;padding:8px 15px;border-radius:8px;font-size:13.5px;cursor:pointer;font-weight:600;font-family:inherit;transition:.12s}
+body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f5f6f8;color:#191c22;-webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding:18px 16px 40px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:2px solid #1f2430;padding-bottom:11px;margin-bottom:12px}
+h1{font-size:20px;letter-spacing:-.5px}
+.sub{font-size:12px;color:#6b7280;margin-top:4px}
+.pills{display:flex;gap:5px;flex-wrap:wrap}
+.pill{background:#fff;border:1px solid #e2e5ea;border-radius:7px;padding:5px 10px;font-size:11px;color:#666;text-align:center}
+.pill b{display:block;font-size:12px;color:#1f2430}
+nav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+nav button{border:1px solid #dfe3e8;background:#fff;color:#4b5563;padding:7px 13px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;font-family:inherit;transition:.12s}
 nav button:hover{background:#eef1f5}
 nav button.on{background:#1f2430;color:#fff;border-color:#1f2430}
-.panel{display:none;animation:fi .18s ease}
-.panel.on{display:block}
+.panel{display:none;animation:fi .18s ease}.panel.on{display:block}
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.card{background:#fff;border:1px solid #e6e9ed;border-radius:11px;padding:16px 18px;margin-bottom:14px}
-.card h2{font-size:15px;margin-bottom:12px;letter-spacing:-.3px}
-.card h2 span{font-weight:400;color:#8b919b;font-size:12px;margin-left:7px}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{background:#f1f3f6;color:#3b4252;font-weight:700;padding:9px 8px;font-size:12px;text-align:center;border-bottom:1px solid #dfe3e8;white-space:nowrap}
-th.l{text-align:left;padding-left:12px}
-td{padding:9px 8px;border-bottom:1px solid #f0f2f4}
-td.nm{padding-left:12px;font-weight:600}
-td.nm .s{font-weight:400;color:#9aa0a9;font-size:12px}
+.card{background:#fff;border:1px solid #e6e9ed;border-radius:11px;padding:15px 17px;margin-bottom:12px}
+.card h2{font-size:14.5px;margin-bottom:10px;letter-spacing:-.3px}
+.card h2 span{font-weight:400;color:#8b919b;font-size:11.5px;margin-left:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f1f3f6;color:#3b4252;font-weight:700;padding:8px 7px;font-size:11.5px;text-align:center;border-bottom:1px solid #dfe3e8;white-space:nowrap}
+th.l{text-align:left;padding-left:11px}
+td{padding:8px 7px;border-bottom:1px solid #f0f2f4}
+td.nm{padding-left:11px;font-weight:600}
+td.nm .s{font-weight:400;color:#9aa0a9;font-size:11.5px}
 .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .up{color:#0a7d3d;font-weight:700}.dn{color:#c0392b;font-weight:700}.fl{color:#8b919b}.nw{color:#1a6fd4;font-weight:700}
-tr.grp td{background:#eef1f6;font-weight:700;font-size:11.5px;color:#5a6478;letter-spacing:.4px;padding:6px 12px}
+tr.grp td{background:#eef1f6;font-weight:700;font-size:11.5px;color:#5a6478;letter-spacing:.3px;padding:6px 11px}
 tr.st td{background:#fafbfc;font-weight:700;color:#1f2430;border-bottom:1px solid #e2e5ea}
-tr.tot td{background:#1f2430;color:#fff;font-weight:800;font-size:14.5px;padding:11px 8px}
-tr.tot td:first-child{padding-left:12px}
+tr.tot td{background:#1f2430;color:#fff;font-weight:800;font-size:13.5px;padding:10px 7px}
+tr.tot td:first-child{padding-left:11px}
 tbody tr:hover td{background:#f8fafc}
 tr.tot:hover td,tr.grp:hover td,tr.st:hover td{background:inherit}
-.tag{display:inline-block;margin-left:6px;background:#fff2e0;color:#b06a00;font-size:10px;padding:1px 5px;border-radius:4px;font-weight:700;vertical-align:middle}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
-.kpi{background:#fff;border:1px solid #e6e9ed;border-radius:11px;padding:14px 16px}
-.kpi .t{font-size:11.5px;color:#8b919b;font-weight:600}
-.kpi .v{font-size:25px;font-weight:800;letter-spacing:-1px;margin-top:5px;font-variant-numeric:tabular-nums}
-.kpi .d{font-size:11.5px;margin-top:3px;color:#6b7280}
-.bars{display:flex;align-items:flex-end;gap:3px;height:34px}
-.b{flex:1;background:#c3cbdb;border-radius:2px 2px 0 0;min-height:2px}
-.b.b2{background:#7b8bb0}.b.b3{background:#1f2430}
-.chart{display:flex;align-items:flex-end;gap:24px;height:230px;padding:26px 6px 0;border-bottom:1px solid #e2e5ea;overflow-x:auto}
-.cg{flex:0 0 auto;min-width:74px;display:flex;flex-direction:column;align-items:center;height:100%}
+.tag{display:inline-block;margin-left:5px;font-size:10px;padding:1px 5px;border-radius:4px;font-weight:700;vertical-align:middle}
+.tag.h{background:#ffeaea;color:#c0392b}.tag.n{background:#e7f1ff;color:#1a6fd4}.tag.w{background:#fff2e0;color:#b06a00}.tag.g{background:#e6f6ec;color:#0a7d3d}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:12px}
+.kpi{background:#fff;border:1px solid #e6e9ed;border-radius:11px;padding:13px 15px}
+.kpi .t{font-size:11px;color:#8b919b;font-weight:600}
+.kpi .v{font-size:23px;font-weight:800;letter-spacing:-1px;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .d{font-size:11px;margin-top:2px;color:#6b7280}
+.bars{display:flex;align-items:flex-end;gap:2px;height:30px}
+.b{flex:1;border-radius:2px 2px 0 0;min-height:2px}
+.chart{display:flex;align-items:flex-end;gap:18px;height:210px;padding:26px 6px 0;border-bottom:1px solid #e2e5ea;overflow-x:auto}
+.cg{flex:0 0 auto;min-width:70px;display:flex;flex-direction:column;align-items:center;height:100%}
 .cbs{display:flex;align-items:flex-end;gap:4px;flex:1;width:100%;justify-content:center}
-.cb{width:19px;border-radius:3px 3px 0 0;position:relative;min-height:2px}
-.cb span{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:10px;color:#5a6478;font-variant-numeric:tabular-nums;white-space:nowrap}
-.cl{font-size:10.5px;color:#5a6478;margin-top:7px;text-align:center;line-height:1.3;height:28px;word-break:keep-all}
-.lg{display:flex;gap:14px;margin-top:12px;font-size:11.5px;color:#5a6478;flex-wrap:wrap}
-.lg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-.note{font-size:12.5px;color:#4b5563;line-height:1.85}
-.note b{color:#1f2430}
-.note li{margin-left:16px;margin-bottom:5px}
+.cb{width:18px;border-radius:3px 3px 0 0;position:relative;min-height:2px}
+.cb span{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:9.5px;color:#5a6478;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cl{font-size:10px;color:#5a6478;margin-top:6px;text-align:center;line-height:1.25;height:26px;word-break:keep-all}
+.lg{display:flex;gap:12px;margin-top:10px;font-size:11px;color:#5a6478;flex-wrap:wrap}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.note{font-size:12.5px;color:#3f4653;line-height:1.8}
+.note b{color:#191c22}
+.note li{margin-left:15px;margin-bottom:6px}
 .scroll{overflow-x:auto}
-footer{margin-top:18px;font-size:11.5px;color:#9aa0a9;text-align:center}
-@media(max-width:640px){h1{font-size:18px}.wrap{padding:14px 11px 30px}table{font-size:12.5px}.kpi .v{font-size:21px}}
+.find{border-left:3px solid #1f2430;padding:9px 13px;background:#fafbfc;margin-bottom:9px;border-radius:0 7px 7px 0}
+.find .h{font-weight:800;font-size:13px;margin-bottom:3px}
+.find .b2{font-size:12.5px;color:#3f4653;line-height:1.75}
+.find.r{border-left-color:#c0392b}.find.g2{border-left-color:#0a7d3d}.find.o{border-left-color:#b06a00}
+.q{background:#f7f8fa;border:1px solid #e6e9ed;border-left:3px solid #9aa0a9;padding:8px 12px;border-radius:0 6px 6px 0;font-size:12px;color:#4b5563;margin:7px 0;line-height:1.7;white-space:pre-line}
+.q .src{display:block;font-size:10.5px;color:#9aa0a9;margin-top:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:820px){.two{grid-template-columns:1fr}}
+footer{margin-top:16px;font-size:11px;color:#9aa0a9;text-align:center}
+@media(max-width:640px){h1{font-size:17px}.wrap{padding:12px 10px 28px}table{font-size:12px}.kpi .v{font-size:20px}}
 </style></head>
 <body><div class="wrap">
 <header>
- <div><h1>집반찬연구소 · 명절 제품 판매량</h1>
- <div class="sub">이카운트 판매현황 기준 · 명절 당일 포함 직전 3주 · 단위 EA</div></div>
+ <div><h1>집반찬연구소 · 명절 상품 판매 분석</h1>
+ <div class="sub">이카운트 판매현황 기준 · 명절 당일 포함 직전 3주 · 세트 / 전류 / 나물 / 고기 · 잡채 / 국 전수 취합</div></div>
  <div class="pills" id="pills"></div>
 </header>
 <nav id="nav"></nav>
 <div id="panels"></div>
-<footer>데이터 출처: 이카운트 판매현황(집계·품목별) · 3개 구간 모두 총합계 검증 완료</footer>
+<footer>이카운트 판매현황(집계·품목별) 직접 조회 · 3개 명절 구간 총합계 검증 완료 · 전략 인용은 노션 원문</footer>
 </div>
 <script>
-var D = {"periods":[{"key":"2025 설날","label":"2025 설날","date":"2025.01.29","range":"2025.01.08 ~ 01.29"},{"key":"2025 추석","label":"2025 추석","date":"2025.10.06","range":"2025.09.15 ~ 10.06"},{"key":"2026 설날","label":"2026 설날","date":"2026.02.17","range":"2026.01.27 ~ 02.17"}],"cat":{"단품":["소고기무국","동그랑땡","동태전","깻잎전","녹두전","소고기육전과 파채"],"모둠전":["모둠전3종_동태전,동그랑땡,깻잎전","모둠전3종_육전,녹두전,새우전","모둠전3종_달콤옥수수전,새우전,동그랑땡","모둠전3종_해물야채전,매콤김치전,감자전","한끼모둠전"]},"items":[{"name":"소고기무국","skus":[{"code":"ZIP_P_2062","nm":"소고기무국_냉동","spec":"650G","q":{"2025 설날":243,"2025 추석":656,"2026 설날":542},"a":{"2025 설날":1687421,"2025 추석":4012870,"2026 설날":3136990}},{"code":"ZIP_P_2076","nm":"1인용 소고기무국_냉동","spec":"300G","q":{"2025 설날":0,"2025 추석":157,"2026 설날":194},"a":{"2025 설날":0,"2025 추석":488583,"2026 설날":633704}}],"q":{"2025 설날":243,"2025 추석":813,"2026 설날":736},"a":{"2025 설날":1687421,"2025 추석":4501453,"2026 설날":3770694}},{"name":"동그랑땡","skus":[{"code":"ZIP_P_3099","nm":"동그랑땡","spec":"160G","q":{"2025 설날":865,"2025 추석":2694,"2026 설날":2712},"a":{"2025 설날":3723790,"2025 추석":10336082,"2026 설날":11044443}},{"code":"ZIP_P_3159","nm":"동그랑땡_대용량","spec":"450G","q":{"2025 설날":220,"2025 추석":323,"2026 설날":286},"a":{"2025 설날":2982001,"2025 추석":4015740,"2026 설날":3655683}},{"code":"ZIP_P_3151","nm":"동그랑땡_대용량","spec":"650G","q":{"2025 설날":1,"2025 추석":0,"2026 설날":0},"a":{"2025 설날":21957,"2025 추석":0,"2026 설날":0}}],"q":{"2025 설날":1086,"2025 추석":3017,"2026 설날":2998},"a":{"2025 설날":6727748,"2025 추석":14351822,"2026 설날":14700126}},{"name":"동태전","skus":[{"code":"ZIP_P_3012","nm":"동태전","spec":"250G","q":{"2025 설날":2,"2025 추석":0,"2026 설날":0},"a":{"2025 설날":0,"2025 추석":0,"2026 설날":0}},{"code":"ZIP_P_3170","nm":"동태전","spec":"150G","q":{"2025 설날":0,"2025 추석":918,"2026 설날":1164},"a":{"2025 설날":0,"2025 추석":4395056,"2026 설날":6996894}},{"code":"ZIP_P_3171","nm":"동태전_대용량","spec":"500G","q":{"2025 설날":0,"2025 추석":0,"2026 설날":108},"a":{"2025 설날":0,"2025 추석":0,"2026 설날":2740431}}],"q":{"2025 설날":2,"2025 추석":918,"2026 설날":1272},"a":{"2025 설날":0,"2025 추석":4395056,"2026 설날":9737325}},{"name":"깻잎전","skus":[{"code":"ZIP_P_3002","nm":"깻잎전","spec":"250G","q":{"2025 설날":2,"2025 추석":1053,"2026 설날":1239},"a":{"2025 설날":0,"2025 추석":4847640,"2026 설날":7286501}},{"code":"ZIP_P_3154","nm":"깻잎전_대용량","spec":"500G","q":{"2025 설날":213,"2025 추석":177,"2026 설날":146},"a":{"2025 설날":3792820,"2025 추석":2896387,"2026 설날":2475004}}],"q":{"2025 설날":215,"2025 추석":1230,"2026 설날":1385},"a":{"2025 설날":3792820,"2025 추석":7744027,"2026 설날":9761505}},{"name":"모둠전3종_동태전,동그랑땡,깻잎전","skus":[{"code":"ZIP_P_3075","nm":"모둠전3종_동태전,동그랑땡,깻잎전","spec":"350G","q":{"2025 설날":2429,"2025 추석":2518,"2026 설날":2236},"a":{"2025 설날":23277651,"2025 추석":24593260,"2026 설날":22042563}},{"code":"ZIP_P_3155","nm":"동 대용량","spec":"820G","q":{"2025 설날":3,"2025 추석":0,"2026 설날":0},"a":{"2025 설날":87378,"2025 추석":0,"2026 설날":0}}],"q":{"2025 설날":2432,"2025 추석":2518,"2026 설날":2236},"a":{"2025 설날":23365029,"2025 추석":24593260,"2026 설날":22042563}},{"name":"소고기육전과 파채","skus":[{"code":"ZIP_P_0038","nm":"소고기육전과새콤파채","spec":"240G","q":{"2025 설날":2063,"2025 추석":2149,"2026 설날":2705},"a":{"2025 설날":16949599,"2025 추석":16155397,"2026 설날":23410805}},{"code":"ZIP_P_3153","nm":"소고기육전과파채_대용량","spec":"480G","q":{"2025 설날":230,"2025 추석":165,"2026 설날":0},"a":{"2025 설날":4919647,"2025 추석":3599841,"2026 설날":0}}],"q":{"2025 설날":2293,"2025 추석":2314,"2026 설날":2705},"a":{"2025 설날":21869246,"2025 추석":19755238,"2026 설날":23410805}},{"name":"녹두전","skus":[{"code":"ZIP_P_3044","nm":"녹두전","spec":"280G","q":{"2025 설날":2,"2025 추석":875,"2026 설날":820},"a":{"2025 설날":0,"2025 추석":5161518,"2026 설날":5276786}},{"code":"ZIP_P_3156","nm":"녹두전_대용량","spec":"600G","q":{"2025 설날":0,"2025 추석":0,"2026 설날":59},"a":{"2025 설날":0,"2025 추석":0,"2026 설날":1205738}}],"q":{"2025 설날":2,"2025 추석":875,"2026 설날":879},"a":{"2025 설날":0,"2025 추석":5161518,"2026 설날":6482524}},{"name":"모둠전3종_육전,녹두전,새우전","skus":[{"code":"ZIP_P_3169","nm":"모둠전3종_육전,녹두전,새우전","spec":"470G","q":{"2025 설날":0,"2025 추석":264,"2026 설날":176},"a":{"2025 설날":0,"2025 추석":3868320,"2026 설날":2618880}}],"q":{"2025 설날":0,"2025 추석":264,"2026 설날":176},"a":{"2025 설날":0,"2025 추석":3868320,"2026 설날":2618880}},{"name":"모둠전3종_달콤옥수수전,새우전,동그랑땡","skus":[{"code":"ZIP_P_3074","nm":"모둠전3종_달콤옥수수전,새우전,동그랑땡","spec":"330G","q":{"2025 설날":270,"2025 추석":575,"2026 설날":523},"a":{"2025 설날":2386654,"2025 추석":5070969,"2026 설날":4698550}}],"q":{"2025 설날":270,"2025 추석":575,"2026 설날":523},"a":{"2025 설날":2386654,"2025 추석":5070969,"2026 설날":4698550}},{"name":"모둠전3종_해물야채전,매콤김치전,감자전","skus":[{"code":"ZIP_P_3077","nm":"모둠전3종_해물야채전,매콤김치전,감자전","spec":"400G","q":{"2025 설날":165,"2025 추석":269,"2026 설날":298},"a":{"2025 설날":1449903,"2025 추석":2304772,"2026 설날":2593666}}],"q":{"2025 설날":165,"2025 추석":269,"2026 설날":298},"a":{"2025 설날":1449903,"2025 추석":2304772,"2026 설날":2593666}},{"name":"한끼모둠전","skus":[{"code":"ZIP_P_3166","nm":"한끼모둠전","spec":"150G","q":{"2025 설날":0,"2025 추석":259,"2026 설날":731},"a":{"2025 설날":0,"2025 추석":700595,"2026 설날":1977355}}],"q":{"2025 설날":0,"2025 추석":259,"2026 설날":731},"a":{"2025 설날":0,"2025 추석":700595,"2026 설날":1977355}}],"grand":{"2025 설날":6708,"2025 추석":13052,"2026 설날":13939},"grandA":{"2025 설날":61278821,"2025 추석":92447030,"2026 설날":101793993},"totals":{"2025 설날":94174,"2025 추석":180400,"2026 설날":226615},"totalsAmt":{"2025 설날":674622865,"2025 추석":1005961407,"2026 설날":1100388603}};
-var P = D.periods.map(function(p){return p.key});
-var nf = function(n){return (n||0).toLocaleString()};
-var man = function(n){return Math.round(n/10000).toLocaleString()};
-function pct(a,b){ if(b===0) return a===0?null:'NEW'; return (a-b)/b*100; }
-function pctHtml(v){ if(v===null) return '<span class="fl">-</span>'; if(v==='NEW') return '<span class="nw">신규</span>';
-  var c = v>=5?'up':v<=-5?'dn':'fl'; return '<span class="'+c+'">'+(v>0?'+':'')+v.toFixed(0)+'%</span>'; }
-var byName={}; D.items.forEach(function(r){byName[r.name]=r});
-var MAX = Math.max.apply(null, D.items.map(function(r){return Math.max(r.q[P[0]],r.q[P[1]],r.q[P[2]])}));
 
-document.getElementById('pills').innerHTML = D.periods.map(function(p){
-  return '<div class="pill"><b>'+p.label+'</b>'+p.range+'</div>'}).join('');
+var D = {"periods":[{"k":"25설","label":"2025 설날","d":"2025.01.29","r":"2025.01.08~01.29"},{"k":"25추석","label":"2025 추석","d":"2025.10.06","r":"2025.09.15~10.06"},{"k":"26설","label":"2026 설날","d":"2026.02.17","r":"2026.01.27~02.17"}],"companyTotal":{"25설":94174,"25추석":180400,"26설":226615},"companyLift":1.47,"baseline":{"label":"2026.04.01~04.30 전월 실적을 22일로 환산","total22":153727},"sets":{"byHol":{"25설":[{"nm":"설 명절 음식 Set(3~4인)","spec":"2800G","q":176,"a":8125744,"asp":46169},{"nm":"시골나물4종세트","spec":"310g","q":144,"a":1534896,"asp":10659},{"nm":"추석나물세트","spec":"EA","q":117,"a":3600423,"asp":30773},{"nm":"표준제사상","spec":"EA","q":90,"a":6744368,"asp":74937},{"nm":"듬뿍 설 한상세트 (4~6인)","spec":"3440G","q":83,"a":7175467,"asp":86451},{"nm":"설 떡국세트(1~2인)","spec":"1935g","q":73,"a":2014600,"asp":27597},{"nm":"풍성 설 한상세트 (4~6인)","spec":"5000G","q":65,"a":8393554,"asp":129132},{"nm":"알찬 설 한상세트(2인)","spec":"2150G","q":53,"a":2937861,"asp":55431},{"nm":"정성제사상","spec":"EA","q":49,"a":5605158,"asp":114391},{"nm":"추석건나물세트","spec":"EA","q":39,"a":1169335,"asp":29983},{"nm":"더 풍성 설 한상세트 (8~10인)","spec":"8210G","q":32,"a":6705278,"asp":209540},{"nm":"풍성차례상세트","spec":"EA","q":25,"a":4400583,"asp":176023},{"nm":"더 듬뿍 설 한상세트 (8~10인)","spec":"7100G","q":17,"a":2978360,"asp":175198},{"nm":"설음식세트(3~4인)","spec":"3170g","q":15,"a":510615,"asp":34041},{"nm":"냉동 실속세트(6종)","spec":"3440G","q":8,"a":186014,"asp":23252},{"nm":"보름달 설 한상세트 (12인 이상)","spec":"10380G","q":6,"a":1502466,"asp":250411}],"25추석":[{"nm":"차례상(소)_2025추석","spec":"3740G","q":239,"a":18495654,"asp":77388},{"nm":"[로켓프레시] 집반찬연구소 명절 음식 세트 (3~4인)","spec":"2570G","q":176,"a":7975760,"asp":45317},{"nm":"차례상(중)_2025추석","spec":"5210G","q":83,"a":12233109,"asp":147387},{"nm":"식사세트(대)_2025추석","spec":"9800G","q":76,"a":17736498,"asp":233375},{"nm":"식사세트(특소)_2025추석","spec":"1750G","q":63,"a":1851589,"asp":29390},{"nm":"식사세트(소)_2025추석","spec":"3640G","q":62,"a":5268896,"asp":84982},{"nm":"나물세트 5종","spec":"430G","q":58,"a":1097460,"asp":18922},{"nm":"식사세트(중)_2025추석","spec":"6570G","q":49,"a":7824864,"asp":159691},{"nm":"차례상(대)_2025추석","spec":"9470G","q":19,"a":4691246,"asp":246908},{"nm":"건나물세트5종","spec":"340G","q":18,"a":334890,"asp":18605},{"nm":"식사세트(특대)_2025추석","spec":"14730G","q":5,"a":1306363,"asp":261273}],"26설":[{"nm":"(2026설)차례상(소)","spec":"3360G","q":196,"a":13890278,"asp":70869},{"nm":"나물세트 5종","spec":"430G","q":143,"a":2478991,"asp":17336},{"nm":"[로켓프레시] 집반찬연구소 명절 음식 세트 (3~4인)","spec":"2570G","q":67,"a":2970780,"asp":44340},{"nm":"(2026설)설음식세트(소)","spec":"3790G","q":63,"a":5556312,"asp":88195},{"nm":"(2026설)설음식세트(중)","spec":"6820G","q":56,"a":9937853,"asp":177462},{"nm":"건나물세트5종","spec":"340G","q":48,"a":890539,"asp":18553},{"nm":"(2026설)차레상(중)","spec":"7440G","q":32,"a":5508313,"asp":172135},{"nm":"(2026설)설음식세트(대)","spec":"9530G","q":20,"a":6324127,"asp":316206},{"nm":"(2026설)차례상(대)","spec":"11420G","q":5,"a":1238772,"asp":247754},{"nm":"표준제사상","spec":"EA","q":1,"a":66364,"asp":66364},{"nm":"정성제사상","spec":"EA","q":1,"a":89636,"asp":89636}]},"byType":{"25설":{"음식세트":{"q":199,"a":8822373},"차례상":{"q":164,"a":16750109},"나물세트":{"q":300,"a":6304654},"한상세트":{"q":256,"a":29692986},"식사세트":{"q":0,"a":0},"떡국세트":{"q":73,"a":2014600}},"25추석":{"음식세트":{"q":176,"a":7975760},"차례상":{"q":341,"a":35420009},"나물세트":{"q":76,"a":1432350},"한상세트":{"q":0,"a":0},"식사세트":{"q":255,"a":33988210},"떡국세트":{"q":0,"a":0}},"26설":{"음식세트":{"q":206,"a":24789072},"차례상":{"q":235,"a":20793363},"나물세트":{"q":191,"a":3369530},"한상세트":{"q":0,"a":0},"식사세트":{"q":0,"a":0},"떡국세트":{"q":0,"a":0}}},"types":["음식세트","차례상","나물세트","한상세트","식사세트","떡국세트"]},"cats":{"전류":[{"nm":"모둠전3종_동태전,동그랑땡,깻잎전","codes":["ZIP_P_3075","ZIP_P_3155"],"q":{"25설":2432,"25추석":2518,"26설":2236},"a":{"25설":23365029,"25추석":24593260,"26설":22042563},"b22":515,"lift":4.34,"skus":[{"code":"ZIP_P_3075","nm":"모둠전3종_동태전,동그랑땡,깻잎전","spec":"350G","q":{"25설":2429,"25추석":2518,"26설":2236},"a":{"25설":23277651,"25추석":24593260,"26설":22042563}},{"code":"ZIP_P_3155","nm":"모둠전3종_동태전,동그랑땡,깻잎전_대용량","spec":"820G","q":{"25설":3},"a":{"25설":87378,"25추석":0,"26설":0}}]},{"nm":"소고기육전과 파채","codes":["ZIP_P_0038","ZIP_P_3153"],"q":{"25설":2293,"25추석":2314,"26설":2705},"a":{"25설":21869246,"25추석":19755238,"26설":23410805},"b22":1046,"lift":2.59,"skus":[{"code":"ZIP_P_0038","nm":"소고기육전과새콤파채","spec":"240G","q":{"25설":2063,"25추석":2149,"26설":2705},"a":{"25설":16949599,"25추석":16155397,"26설":23410805}},{"code":"ZIP_P_3153","nm":"소고기육전과파채_대용량","spec":"480G","q":{"25설":230,"25추석":165},"a":{"25설":4919647,"25추석":3599841,"26설":0}}]},{"nm":"동그랑땡","codes":["ZIP_P_3099","ZIP_P_3159","ZIP_P_3151"],"q":{"25설":1086,"25추석":3017,"26설":2998},"a":{"25설":6727748,"25추석":14351822,"26설":14700126},"b22":1279,"lift":2.34,"skus":[{"code":"ZIP_P_3099","nm":"동그랑땡","spec":"160G","q":{"25설":865,"25추석":2694,"26설":2712},"a":{"25설":3723790,"25추석":10336082,"26설":11044443}},{"code":"ZIP_P_3159","nm":"동그랑땡_대용량","spec":"450G","q":{"25설":220,"25추석":323,"26설":286},"a":{"25설":2982001,"25추석":4015740,"26설":3655683}},{"code":"ZIP_P_3151","nm":"동그랑땡_대용량","spec":"650G","q":{"25설":1},"a":{"25설":21957,"25추석":0,"26설":0}}]},{"nm":"동태전","codes":["ZIP_P_3170","ZIP_P_3012","ZIP_P_3171"],"q":{"25설":2,"25추석":918,"26설":1272},"a":{"25설":0,"25추석":4395056,"26설":9737325},"b22":88,"lift":14.45,"skus":[{"code":"ZIP_P_3170","nm":"동태전","spec":"150G","q":{"25추석":918,"26설":1164},"a":{"25설":0,"25추석":4395056,"26설":6996894}},{"code":"ZIP_P_3012","nm":"동태전","spec":"250G","q":{"25설":2},"a":{"25설":0,"25추석":0,"26설":0}},{"code":"ZIP_P_3171","nm":"동태전_대용량","spec":"500G","q":{"26설":108},"a":{"25설":0,"25추석":0,"26설":2740431}}]},{"nm":"깻잎전","codes":["ZIP_P_3002","ZIP_P_3154","ZIP_P_3103"],"q":{"25설":215,"25추석":1230,"26설":1386},"a":{"25설":3792820,"25추석":7744027,"26설":9766265},"b22":128,"lift":10.83,"skus":[{"code":"ZIP_P_3002","nm":"깻잎전","spec":"250G","q":{"25설":2,"25추석":1053,"26설":1239},"a":{"25설":0,"25추석":4847640,"26설":7286501}},{"code":"ZIP_P_3154","nm":"깻잎전_대용량","spec":"500G","q":{"25설":213,"25추석":177,"26설":146},"a":{"25설":3792820,"25추석":2896387,"26설":2475004}},{"code":"ZIP_P_3103","nm":"참치깻잎전","spec":"150G","q":{"26설":1},"a":{"25설":0,"25추석":0,"26설":4760}}]},{"nm":"녹두전","codes":["ZIP_P_3044","ZIP_P_3156"],"q":{"25설":2,"25추석":875,"26설":879},"a":{"25설":0,"25추석":5161518,"26설":6482524},"b22":79,"lift":11.13,"skus":[{"code":"ZIP_P_3044","nm":"녹두전","spec":"280G","q":{"25설":2,"25추석":875,"26설":820},"a":{"25설":0,"25추석":5161518,"26설":5276786}},{"code":"ZIP_P_3156","nm":"녹두전_대용량","spec":"600G","q":{"26설":59},"a":{"25설":0,"25추석":0,"26설":1205738}}]},{"nm":"한끼모둠전","codes":["ZIP_P_3166"],"q":{"25설":0,"25추석":259,"26설":731},"a":{"25설":0,"25추석":700595,"26설":1977355},"b22":343,"lift":2.13,"skus":[{"code":"ZIP_P_3166","nm":"한끼모둠전","spec":"150G","q":{"25추석":259,"26설":731},"a":{"25설":0,"25추석":700595,"26설":1977355}}]},{"nm":"모둠전3종_달콤옥수수전,새우전,동그랑땡","codes":["ZIP_P_3074"],"q":{"25설":270,"25추석":575,"26설":523},"a":{"25설":2386654,"25추석":5070969,"26설":4698550},"b22":177,"lift":2.95,"skus":[{"code":"ZIP_P_3074","nm":"모둠전3종_달콤옥수수전,새우전,동그랑땡","spec":"330G","q":{"25설":270,"25추석":575,"26설":523},"a":{"25설":2386654,"25추석":5070969,"26설":4698550}}]},{"nm":"모둠전3종_해물야채전,매콤김치전,감자전","codes":["ZIP_P_3077"],"q":{"25설":165,"25추석":269,"26설":298},"a":{"25설":1449903,"25추석":2304772,"26설":2593666},"b22":125,"lift":2.38,"skus":[{"code":"ZIP_P_3077","nm":"모둠전3종_해물야채전,매콤김치전,감자전","spec":"400G","q":{"25설":165,"25추석":269,"26설":298},"a":{"25설":1449903,"25추석":2304772,"26설":2593666}}]},{"nm":"모둠전3종_육전,녹두전,새우전","codes":["ZIP_P_3169"],"q":{"25설":0,"25추석":264,"26설":176},"a":{"25설":0,"25추석":3868320,"26설":2618880},"b22":0,"lift":null,"skus":[{"code":"ZIP_P_3169","nm":"모둠전3종_육전,녹두전,새우전","spec":"470G","q":{"25추석":264,"26설":176},"a":{"25설":0,"25추석":3868320,"26설":2618880}}]},{"nm":"계란두부부침","codes":["ZIP_P_3160"],"q":{"25설":115,"25추석":1078,"26설":1067},"a":{"25설":524312,"25추석":3070075,"26설":3454698},"b22":665,"lift":1.6,"skus":[{"code":"ZIP_P_3160","nm":"계란두부부침","spec":"170G","q":{"25설":115,"25추석":1078,"26설":1067},"a":{"25설":524312,"25추석":3070075,"26설":3454698}}]},{"nm":"새우전","codes":["ZIP_P_3158"],"q":{"25설":2,"25추석":0,"26설":234},"a":{"25설":0,"25추석":0,"26설":1930731},"b22":0,"lift":null,"skus":[{"code":"ZIP_P_3158","nm":"새우전","spec":"120g","q":{"25설":2,"26설":234},"a":{"25설":0,"25추석":0,"26설":1930731}}]},{"nm":"애호박전","codes":["ZIP_P_3043","ZIP_P_3104"],"q":{"25설":1,"25추석":108,"26설":124},"a":{"25설":0,"25추석":1435663,"26설":1652668},"b22":0,"lift":null,"skus":[{"code":"ZIP_P_3043","nm":"애호박전_대용량","spec":"300G","q":{"25추석":108,"26설":124},"a":{"25설":0,"25추석":1435663,"26설":1652668}},{"code":"ZIP_P_3104","nm":"애호박전","spec":"160G","q":{"25설":1},"a":{"25설":0,"25추석":0,"26설":0}}]},{"nm":"해물야채전","codes":["ZIP_P_3105"],"q":{"25설":216,"25추석":233,"26설":96},"a":{"25설":841489,"25추석":972853,"26설":466249},"b22":68,"lift":1.41,"skus":[{"code":"ZIP_P_3105","nm":"해물야채전","spec":"160G","q":{"25설":216,"25추석":233,"26설":96},"a":{"25설":841489,"25추석":972853,"26설":466249}}]},{"nm":"매콤김치전","codes":["ZIP_P_3101"],"q":{"25설":70,"25추석":126,"26설":88},"a":{"25설":321855,"25추석":545846,"26설":395970},"b22":75,"lift":1.17,"skus":[{"code":"ZIP_P_3101","nm":"매콤김치전","spec":"150G","q":{"25설":70,"25추석":126,"26설":88},"a":{"25설":321855,"25추석":545846,"26설":395970}}]},{"nm":"야채소세지부침","codes":["ZIP_P_3134"],"q":{"25설":213,"25추석":0,"26설":0},"a":{"25설":733023,"25추석":0,"26설":0},"b22":0,"lift":null,"skus":[{"code":"ZIP_P_3134","nm":"야채소세지부침","spec":"85G","q":{"25설":213},"a":{"25설":733023,"25추석":0,"26설":0}}]}],"고기·잡채":[{"nm":"잡채","codes":["ZIP_P_0012","ZIP_P_0044"],"q":{"25설":737,"25추석":1445,"26설":1536},"a":{"25설":9386281,"25추석":13002256,"26설":12971843},"b22":186,"lift":8.26,"skus":[{"code":"ZIP_P_0012","nm":"잡채","spec":"450G","q":{"25설":566,"25추석":1325,"26설":1536},"a":{"25설":5656175,"25추석":10479951,"26설":12971843}},{"code":"ZIP_P_0044","nm":"잡채_대용량","spec":"900G","q":{"25설":171,"25추석":120},"a":{"25설":3730106,"25추석":2522305,"26설":0}}]},{"nm":"소불고기_반조리","codes":["ZIP_P_0181"],"q":{"25설":192,"25추석":715,"26설":2073},"a":{"25설":709193,"25추석":1792979,"26설":5245997},"b22":1706,"lift":1.22,"skus":[{"code":"ZIP_P_0181","nm":"한우야채짜장_150g","spec":"150G","q":{"25설":192,"25추석":715,"26설":2073},"a":{"25설":709193,"25추석":1792979,"26설":5245997}}]},{"nm":"소불고기_완조리","codes":["ZIP_P_0180"],"q":{"25설":223,"25추석":904,"26설":2017},"a":{"25설":879965,"25추석":2303192,"26설":5161894},"b22":1778,"lift":1.13,"skus":[{"code":"ZIP_P_0180","nm":"한우야채카레_150G","spec":"150G","q":{"25설":223,"25추석":904,"26설":2017},"a":{"25설":879965,"25추석":2303192,"26설":5161894}}]},{"nm":"버섯 돼지갈비찜","codes":["ZIP_P_0187","ZIP_P_0172"],"q":{"25설":102,"25추석":144,"26설":198},"a":{"25설":2239172,"25추석":3035957,"26설":4138428},"b22":0,"lift":null,"skus":[{"code":"ZIP_P_0187","nm":"버섯 돼지갈비찜","spec":"800G","q":{"25추석":144,"26설":198},"a":{"25설":0,"25추석":3035957,"26설":4138428}},{"code":"ZIP_P_0172","nm":"버섯 돼지갈비찜","spec":"1000G","q":{"25설":102},"a":{"25설":2239172,"25추석":0,"26설":0}}]},{"nm":"한입수제떡갈비","codes":["ZIP_P_3157","ZIP_P_0186"],"q":{"25설":77,"25추석":214,"26설":501},"a":{"25설":122894,"25추석":655739,"26설":1574943},"b22":275,"lift":1.82,"skus":[{"code":"ZIP_P_3157","nm":"된장찌개양념","spec":"100G","q":{"25설":77,"25추석":32},"a":{"25설":122894,"25추석":49019,"26설":0}},{"code":"ZIP_P_0186","nm":"한우토마토소스","spec":"150G","q":{"25추석":182,"26설":501},"a":{"25설":0,"25추석":606720,"26설":1574943}}]},{"nm":"불고기잡채","codes":["ZIP_P_6256"],"q":{"25설":176,"25추석":307,"26설":295},"a":{"25설":2061421,"25추석":3351222,"26설":3274887},"b22":160,"lift":1.84,"skus":[{"code":"ZIP_P_6256","nm":"불고기잡채","spec":"450G","q":{"25설":176,"25추석":307,"26설":295},"a":{"25설":2061421,"25추석":3351222,"26설":3274887}}]},{"nm":"천사채잡채","codes":["ZIP_P_6294"],"q":{"25설":238,"25추석":231,"26설":302},"a":{"25설":1289085,"25추석":1214674,"26설":1568608},"b22":188,"lift":1.61,"skus":[{"code":"ZIP_P_6294","nm":"천사채잡채","spec":"330G","q":{"25설":238,"25추석":231,"26설":302},"a":{"25설":1289085,"25추석":1214674,"26설":1568608}}]}],"나물류":[{"nm":"건고사리볶음","codes":["ZIP_P_6208"],"q":{"25설":0,"25추석":1693,"26설":1678},"a":{"25설":0,"25추석":3849022,"26설":4416905},"b22":144,"lift":11.65,"skus":[{"code":"ZIP_P_6208","nm":"건고사리볶음","spec":"80G","q":{"25추석":1693,"26설":1678},"a":{"25설":0,"25추석":3849022,"26설":4416905}}]},{"nm":"도라지볶음","codes":["ZIP_P_6232"],"q":{"25설":0,"25추석":1366,"26설":1377},"a":{"25설":0,"25추석":3480237,"26설":4009718},"b22":153,"lift":9,"skus":[{"code":"ZIP_P_6232","nm":"도라지볶음","spec":"80G","q":{"25추석":1366,"26설":1377},"a":{"25설":0,"25추석":3480237,"26설":4009718}}]},{"nm":"건취나물볶음","codes":["ZIP_P_6126","ZIP_P_6213"],"q":{"25설":259,"25추석":220,"26설":488},"a":{"25설":934896,"25추석":612990,"26설":1583725},"b22":176,"lift":2.77,"skus":[{"code":"ZIP_P_6126","nm":"건취나물볶음","spec":"60G","q":{"25설":112,"25추석":220,"26설":488},"a":{"25설":312032,"25추석":612990,"26설":1583725}},{"code":"ZIP_P_6213","nm":"건취나물볶음","spec":"80G","q":{"25설":147},"a":{"25설":622864,"25추석":0,"26설":0}}]},{"nm":"건가지볶음","codes":["ZIP_P_6125","ZIP_P_6207","ZIP_P_6281"],"q":{"25설":344,"25추석":221,"26설":357},"a":{"25설":1173299,"25추석":517800,"26설":964707},"b22":145,"lift":2.46,"skus":[{"code":"ZIP_P_6125","nm":"건가지볶음","spec":"60G","q":{"25설":212,"25추석":221,"26설":357},"a":{"25설":496080,"25추석":517800,"26설":964707}},{"code":"ZIP_P_6207","nm":"건가지볶음","spec":"90G","q":{"25설":100},"a":{"25설":427747,"25추석":0,"26설":0}},{"code":"ZIP_P_6281","nm":"건가지볶음","spec":"300G","q":{"25설":32},"a":{"25설":249472,"25추석":0,"26설":0}}]},{"nm":"사색나물(쿠팡)","codes":["ZIP_P_9552","ZIP_P_9261"],"q":{"25설":3951,"25추석":4584,"26설":5652},"a":{"25설":30482992,"25추석":27228960,"26설":33100166},"b22":4048,"lift":1.4,"skus":[{"code":"ZIP_P_9552","nm":"빛깔고운 알록달록 사색나물 (쿠팡)","spec":"270g","q":{"25추석":4584,"26설":5652},"a":{"25설":0,"25추석":27228960,"26설":33100166}},{"code":"ZIP_P_9261","nm":"빛깔고운 알록달록 국내산 사색나물","spec":"360g","q":{"25설":3951},"a":{"25설":30482992,"25추석":0,"26설":0}}]},{"nm":"비빔밥용사색나물(쿠팡)","codes":["ZIP_P_9550"],"q":{"25설":0,"25추석":1524,"26설":1416},"a":{"25설":0,"25추석":9052560,"26설":8292608},"b22":660,"lift":2.15,"skus":[{"code":"ZIP_P_9550","nm":"비빔밥용사색나물 (쿠팡)","spec":"285g","q":{"25추석":1524,"26설":1416},"a":{"25설":0,"25추석":9052560,"26설":8292608}}]},{"nm":"계절삼색나물","codes":["ZIP_P_9125","ZIP_P_9392"],"q":{"25설":576,"25추석":276,"26설":196},"a":{"25설":4620976,"25추석":1947142,"26설":1386459},"b22":138,"lift":1.42,"skus":[{"code":"ZIP_P_9125","nm":"계절삼색나물","spec":"290G","q":{"25설":492,"25추석":140,"26설":108},"a":{"25설":4135260,"25추석":1176770,"26설":895023}},{"code":"ZIP_P_9392","nm":"국내산삼색나물2","spec":"280g","q":{"25설":84,"25추석":136,"26설":88},"a":{"25설":485716,"25추석":770372,"26설":491436}}]},{"nm":"시금치나물","codes":["ZIP_P_5080","ZIP_P_5166"],"q":{"25설":370,"25추석":1843,"26설":5143},"a":{"25설":1553551,"25추석":5142284,"26설":14830340},"b22":2646,"lift":1.94,"skus":[{"code":"ZIP_P_5080","nm":"시금치나물","spec":"90G","q":{"25추석":1843,"26설":5143},"a":{"25설":0,"25추석":5142284,"26설":14830340}},{"code":"ZIP_P_5166","nm":"시금치나물","spec":"120G","q":{"25설":370},"a":{"25설":1553551,"25추석":0,"26설":0}}]},{"nm":"무나물","codes":["ZIP_P_5005","ZIP_P_5092"],"q":{"25설":859,"25추석":1409,"26설":1804},"a":{"25설":2027135,"25추석":3054736,"26설":3883937},"b22":1136,"lift":1.59,"skus":[{"code":"ZIP_P_5005","nm":"무나물","spec":"200G","q":{"25설":859,"25추석":1172,"26설":1472},"a":{"25설":2027135,"25추석":2498495,"26설":3093874}},{"code":"ZIP_P_5092","nm":"무나물","spec":"100G","q":{"25추석":237,"26설":332},"a":{"25설":0,"25추석":556241,"26설":790063}}]},{"nm":"건나물 국내산 4종","codes":["ZIP_P_9128","ZIP_P_9240"],"q":{"25설":251,"25추석":0,"26설":0},"a":{"25설":2708732,"25추석":0,"26설":0},"b22":0,"lift":null,"skus":[{"code":"ZIP_P_9128","nm":"건나물 국내산 4종(건호박80g+건가지60g+건취나물60g+건피마자60g)","spec":"260g","q":{"25설":192},"a":{"25설":1800960,"25추석":0,"26설":0}},{"code":"ZIP_P_9240","nm":"건나물 국내산 4종","spec":"340G","q":{"25설":59},"a":{"25설":907772,"25추석":0,"26설":0}}]}],"국·탕":[{"nm":"소고기무국","codes":["ZIP_P_2062","ZIP_P_2076"],"q":{"25설":243,"25추석":813,"26설":736},"a":{"25설":1687421,"25추석":4501453,"26설":3770694},"b22":715,"lift":1.03,"skus":[{"code":"ZIP_P_2062","nm":"소고기무국_냉동","spec":"650G","q":{"25설":243,"25추석":656,"26설":542},"a":{"25설":1687421,"25추석":4012870,"26설":3136990}},{"code":"ZIP_P_2076","nm":"1인용 소고기무국_냉동","spec":"300G","q":{"25추석":157,"26설":194},"a":{"25설":0,"25추석":488583,"26설":633704}}]},{"nm":"경상도식소고기무국","codes":["ZIP_P_2079"],"q":{"25설":0,"25추석":0,"26설":108},"a":{"25설":0,"25추석":0,"26설":967397},"b22":92,"lift":1.17,"skus":[{"code":"ZIP_P_2079","nm":"경상도식소고기무국_냉동","spec":"650G","q":{"26설":108},"a":{"25설":0,"25추석":0,"26설":967397}}]},{"nm":"아이들한우소고기무국_원더스푼","codes":["ZIP_P_8076"],"q":{"25설":0,"25추석":0,"26설":538},"a":{"25설":0,"25추석":0,"26설":1643705},"b22":548,"lift":0.98,"skus":[{"code":"ZIP_P_8076","nm":"아이들한우소고기무국_원더스푼","spec":"300G","q":{"26설":538},"a":{"25설":0,"25추석":0,"26설":1643705}}]}]},"catTot":{"전류":{"25설":{"q":7082,"a":62012079},"25추석":{"q":13784,"a":93970014},"26설":{"q":14813,"a":105928375}},"고기·잡채":{"25설":{"q":1745,"a":16688011},"25추석":{"q":3960,"a":25356019},"26설":{"q":6922,"a":33936600}},"나물류":{"25설":{"q":6610,"a":43501581},"25추석":{"q":13136,"a":54885731},"26설":{"q":18111,"a":72468565}},"국·탕":{"25설":{"q":243,"a":1687421},"25추석":{"q":813,"a":4501453},"26설":{"q":1382,"a":6381796}},"명절세트":{"25설":{"q":992,"a":63584722},"25추석":{"q":848,"a":78816329},"26설":{"q":632,"a":48951965}}},"liftRank":[{"cat":"전류","nm":"모둠전3종_육전,녹두전,새우전","q":{"25설":0,"25추석":264,"26설":176},"b22":0,"lift":null},{"cat":"전류","nm":"새우전","q":{"25설":2,"25추석":0,"26설":234},"b22":0,"lift":null},{"cat":"전류","nm":"애호박전","q":{"25설":1,"25추석":108,"26설":124},"b22":0,"lift":null},{"cat":"고기·잡채","nm":"버섯 돼지갈비찜","q":{"25설":102,"25추석":144,"26설":198},"b22":0,"lift":null},{"cat":"전류","nm":"동태전","q":{"25설":2,"25추석":918,"26설":1272},"b22":88,"lift":14.45},{"cat":"나물류","nm":"건고사리볶음","q":{"25설":0,"25추석":1693,"26설":1678},"b22":144,"lift":11.65},{"cat":"전류","nm":"녹두전","q":{"25설":2,"25추석":875,"26설":879},"b22":79,"lift":11.13},{"cat":"전류","nm":"깻잎전","q":{"25설":215,"25추석":1230,"26설":1386},"b22":128,"lift":10.83},{"cat":"나물류","nm":"도라지볶음","q":{"25설":0,"25추석":1366,"26설":1377},"b22":153,"lift":9},{"cat":"고기·잡채","nm":"잡채","q":{"25설":737,"25추석":1445,"26설":1536},"b22":186,"lift":8.26},{"cat":"전류","nm":"모둠전3종_동태전,동그랑땡,깻잎전","q":{"25설":2432,"25추석":2518,"26설":2236},"b22":515,"lift":4.34},{"cat":"전류","nm":"모둠전3종_달콤옥수수전,새우전,동그랑땡","q":{"25설":270,"25추석":575,"26설":523},"b22":177,"lift":2.95},{"cat":"나물류","nm":"건취나물볶음","q":{"25설":259,"25추석":220,"26설":488},"b22":176,"lift":2.77},{"cat":"전류","nm":"소고기육전과 파채","q":{"25설":2293,"25추석":2314,"26설":2705},"b22":1046,"lift":2.59},{"cat":"나물류","nm":"건가지볶음","q":{"25설":344,"25추석":221,"26설":357},"b22":145,"lift":2.46},{"cat":"전류","nm":"모둠전3종_해물야채전,매콤김치전,감자전","q":{"25설":165,"25추석":269,"26설":298},"b22":125,"lift":2.38},{"cat":"전류","nm":"동그랑땡","q":{"25설":1086,"25추석":3017,"26설":2998},"b22":1279,"lift":2.34},{"cat":"나물류","nm":"비빔밥용사색나물(쿠팡)","q":{"25설":0,"25추석":1524,"26설":1416},"b22":660,"lift":2.15},{"cat":"전류","nm":"한끼모둠전","q":{"25설":0,"25추석":259,"26설":731},"b22":343,"lift":2.13},{"cat":"나물류","nm":"시금치나물","q":{"25설":370,"25추석":1843,"26설":5143},"b22":2646,"lift":1.94},{"cat":"고기·잡채","nm":"불고기잡채","q":{"25설":176,"25추석":307,"26설":295},"b22":160,"lift":1.84},{"cat":"고기·잡채","nm":"한입수제떡갈비","q":{"25설":77,"25추석":214,"26설":501},"b22":275,"lift":1.82},{"cat":"고기·잡채","nm":"천사채잡채","q":{"25설":238,"25추석":231,"26설":302},"b22":188,"lift":1.61},{"cat":"전류","nm":"계란두부부침","q":{"25설":115,"25추석":1078,"26설":1067},"b22":665,"lift":1.6},{"cat":"나물류","nm":"무나물","q":{"25설":859,"25추석":1409,"26설":1804},"b22":1136,"lift":1.59},{"cat":"나물류","nm":"계절삼색나물","q":{"25설":576,"25추석":276,"26설":196},"b22":138,"lift":1.42},{"cat":"전류","nm":"해물야채전","q":{"25설":216,"25추석":233,"26설":96},"b22":68,"lift":1.41},{"cat":"나물류","nm":"사색나물(쿠팡)","q":{"25설":3951,"25추석":4584,"26설":5652},"b22":4048,"lift":1.4},{"cat":"고기·잡채","nm":"소불고기_반조리","q":{"25설":192,"25추석":715,"26설":2073},"b22":1706,"lift":1.22},{"cat":"전류","nm":"매콤김치전","q":{"25설":70,"25추석":126,"26설":88},"b22":75,"lift":1.17},{"cat":"국·탕","nm":"경상도식소고기무국","q":{"25설":0,"25추석":0,"26설":108},"b22":92,"lift":1.17},{"cat":"고기·잡채","nm":"소불고기_완조리","q":{"25설":223,"25추석":904,"26설":2017},"b22":1778,"lift":1.13},{"cat":"국·탕","nm":"소고기무국","q":{"25설":243,"25추석":813,"26설":736},"b22":715,"lift":1.03},{"cat":"국·탕","nm":"아이들한우소고기무국_원더스푼","q":{"25설":0,"25추석":0,"26설":538},"b22":548,"lift":0.98}]};
+var P = D.periods.map(function(p){return p.k});
+var PL = D.periods.map(function(p){return p.label});
+var nf=function(n){return (n||0).toLocaleString()};
+var man=function(n){return Math.round((n||0)/10000).toLocaleString()};
+var CLR=['#c3cbdb','#7b8bb0','#1f2430'];
+function pct(a,b){ if(!b) return a? 'NEW':null; return (a-b)/b*100; }
+function pctH(v){ if(v===null) return '<span class="fl">-</span>'; if(v==='NEW') return '<span class="nw">신규</span>';
+  var c=v>=5?'up':v<=-5?'dn':'fl'; return '<span class="'+c+'">'+(v>0?'+':'')+v.toFixed(0)+'%</span>'; }
+function liftH(v){ if(v===null||v===undefined) return '<span class="nw">명절전용</span>';
+  var c=v>=3?'h':v>=2?'w':'';
+  return '<span class="tag '+(v>=3?'h':v>=2?'w':'g')+'">'+v.toFixed(1)+'x</span>'; }
+function splitN(n){ var i=n.indexOf('_'); return i<0?n:n.slice(0,i)+' <span class="s">'+n.slice(i+1)+'</span>'; }
+function bars(q,mx){ return '<div class="bars">'+P.map(function(p,i){
+  var h=q[p]>0?Math.max(q[p]/mx*100,4):0;
+  return '<div class="b" style="height:'+h+'%;background:'+CLR[i]+'"></div>'}).join('')+'</div>'; }
 
-function splitName(n){ var i=n.indexOf('_'); return i<0? n : n.slice(0,i)+' <span class="s">'+n.slice(i+1)+'</span>'; }
-function miniBars(r){ return '<div class="bars">'+P.map(function(p,i){
-  var h=r.q[p]>0?Math.max(r.q[p]/MAX*100,4):0;
-  return '<div class="b b'+(i+1)+'" style="height:'+h+'%"></div>'}).join('')+'</div>'; }
+document.getElementById('pills').innerHTML=D.periods.map(function(p){
+  return '<div class="pill"><b>'+p.label+'</b>'+p.r+'</div>'}).join('');
 
-function itemRows(list){ return list.map(function(n){
-  var r=byName[n], ch=pct(r.q[P[2]],r.q[P[1]]);
-  var tag = (r.q[P[0]]<=5 && r.q[P[1]]>50) ? '<span class="tag">25설 미출시</span>' : '';
-  return '<tr><td class="nm">'+splitName(n)+tag+'</td>'
-    + P.map(function(p){return '<td class="num">'+(r.q[p]?nf(r.q[p]):'-')+'</td>'}).join('')
-    + '<td style="width:78px">'+miniBars(r)+'</td>'
-    + '<td class="num">'+pctHtml(ch)+'</td>'
-    + '<td class="num" style="color:#6b7280">'+man(r.a[P[2]])+'</td></tr>'; }).join(''); }
-
-function subRow(label,list){
-  var s={},sa=0; P.forEach(function(p){s[p]=list.reduce(function(a,n){return a+byName[n].q[p]},0)});
-  sa=list.reduce(function(a,n){return a+byName[n].a[P[2]]},0);
-  return '<tr class="st"><td>'+label+' 소계</td>'+P.map(function(p){return '<td class="num">'+nf(s[p])+'</td>'}).join('')
-   +'<td></td><td class="num">'+pctHtml(pct(s[P[2]],s[P[1]]))+'</td><td class="num">'+man(sa)+'</td></tr>'; }
-
-/* ---- 탭 1: 요약 ---- */
-function tabSummary(){
-  var g=D.grand, ch=pct(g[P[2]],g[P[1]]), ch2=pct(g[P[2]],g[P[0]]);
-  var kpi='<div class="kpis">'
-   + '<div class="kpi"><div class="t">2026 설날 판매량</div><div class="v">'+nf(g[P[2]])+'</div><div class="d">2025 추석 대비 '+((ch>0?'+':'')+ch.toFixed(1))+'%</div></div>'
-   + '<div class="kpi"><div class="t">2026 설날 매출</div><div class="v">'+man(D.grandA[P[2]])+'<span style="font-size:14px;font-weight:600"> 만원</span></div><div class="d">11개 품목 합산</div></div>'
-   + '<div class="kpi"><div class="t">2025 추석 판매량</div><div class="v">'+nf(g[P[1]])+'</div><div class="d">매출 '+man(D.grandA[P[1]])+' 만원</div></div>'
-   + '<div class="kpi"><div class="t">2025 설날 판매량</div><div class="v">'+nf(g[P[0]])+'</div><div class="d">일부 SKU 미출시 구간</div></div>'
-   + '</div>';
-  var s1={},s2={};
-  P.forEach(function(p){ s1[p]=D.cat['단품'].reduce(function(a,n){return a+byName[n].q[p]},0);
-                         s2[p]=D.cat['모둠전'].reduce(function(a,n){return a+byName[n].q[p]},0); });
-  var tb='<div class="card"><h2>명절별 총계 <span>단위 EA</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">구분</th>'+D.periods.map(function(p){return '<th>'+p.label+'</th>'}).join('')+'<th>26설 vs 25추석</th></tr></thead><tbody>'
-   +'<tr><td class="nm">단품류 (6종)</td>'+P.map(function(p){return '<td class="num">'+nf(s1[p])+'</td>'}).join('')+'<td class="num">'+pctHtml(pct(s1[P[2]],s1[P[1]]))+'</td></tr>'
-   +'<tr><td class="nm">모둠전류 (5종)</td>'+P.map(function(p){return '<td class="num">'+nf(s2[p])+'</td>'}).join('')+'<td class="num">'+pctHtml(pct(s2[P[2]],s2[P[1]]))+'</td></tr>'
-   +'<tr class="tot"><td>명절 11개 품목 합계</td>'+P.map(function(p){return '<td class="num">'+nf(g[p])+'</td>'}).join('')+'<td class="num">'+((ch>0?'+':'')+ch.toFixed(0))+'%</td></tr>'
-   +'<tr><td class="nm" style="color:#8b919b">전사 전체 판매량</td>'+P.map(function(p){return '<td class="num" style="color:#8b919b">'+nf(D.totals[p])+'</td>'}).join('')+'<td class="num fl">+26%</td></tr>'
-   +'<tr><td class="nm" style="color:#8b919b">명절 품목 비중</td>'+P.map(function(p){return '<td class="num" style="color:#8b919b">'+(g[p]/D.totals[p]*100).toFixed(1)+'%</td>'}).join('')+'<td></td></tr>'
-   +'</tbody></table></div></div>';
-  var top='<div class="card"><h2>2026 설날 판매량 TOP 5</h2><div class="scroll"><table><thead><tr><th class="l">순위 / 품목</th><th>수량</th><th>매출(만원)</th><th>26설 vs 25추석</th></tr></thead><tbody>'
-   + D.items.slice().sort(function(a,b){return b.q[P[2]]-a.q[P[2]]}).slice(0,5).map(function(r,i){
-       return '<tr><td class="nm">'+(i+1)+'. '+splitName(r.name)+'</td><td class="num">'+nf(r.q[P[2]])+'</td><td class="num" style="color:#6b7280">'+man(r.a[P[2]])+'</td><td class="num">'+pctHtml(pct(r.q[P[2]],r.q[P[1]]))+'</td></tr>'}).join('')
-   +'</tbody></table></div></div>';
-  return kpi+tb+top;
+/* ---------- 1. 요약 ---------- */
+function tSummary(){
+  var ct=D.catTot, cats=Object.keys(ct);
+  var tq={},ta={};
+  P.forEach(function(p){ tq[p]=cats.reduce(function(s,c){return s+ct[c][p].q},0);
+                         ta[p]=cats.reduce(function(s,c){return s+ct[c][p].a},0); });
+  var ch=pct(tq[P[2]],tq[P[1]]);
+  var k='<div class="kpis">'
+   +'<div class="kpi"><div class="t">2026 설날 명절상품 판매량</div><div class="v">'+nf(tq[P[2]])+'</div><div class="d">2025 추석 대비 '+(ch>0?'+':'')+ch.toFixed(1)+'%</div></div>'
+   +'<div class="kpi"><div class="t">2026 설날 명절상품 매출</div><div class="v">'+man(ta[P[2]])+'<span style="font-size:13px;font-weight:600"> 만원</span></div><div class="d">공급가액 기준</div></div>'
+   +'<div class="kpi"><div class="t">명절세트 판매량</div><div class="v">'+nf(ct['명절세트'][P[2]].q)+'</div><div class="d">25설 992 → 25추석 848 → <b>632</b></div></div>'
+   +'<div class="kpi"><div class="t">전사 명절 배수</div><div class="v">'+D.companyLift.toFixed(2)+'x</div><div class="d">평상시 3주 대비 전사 판매량</div></div></div>';
+  var rows=cats.map(function(c){
+    var r=ct[c], cc=pct(r[P[2]].q,r[P[1]].q);
+    return '<tr><td class="nm">'+c+'</td>'+P.map(function(p){return '<td class="num">'+nf(r[p].q)+'</td>'}).join('')
+     +'<td class="num">'+pctH(cc)+'</td>'+P.map(function(p){return '<td class="num" style="color:#6b7280">'+man(r[p].a)+'</td>'}).join('')+'</tr>'}).join('');
+  var tb='<div class="card"><h2>카테고리별 명절 판매 규모 <span>수량 EA · 매출 만원(공급가액)</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">카테고리</th>'+PL.map(function(l){return '<th>'+l+'</th>'}).join('')+'<th>26설 vs 25추석</th>'+PL.map(function(l){return '<th>'+l+'<br>매출</th>'}).join('')+'</tr></thead><tbody>'
+   +rows
+   +'<tr class="tot"><td>합계</td>'+P.map(function(p){return '<td class="num">'+nf(tq[p])+'</td>'}).join('')+'<td class="num">'+(ch>0?'+':'')+ch.toFixed(0)+'%</td>'
+   +P.map(function(p){return '<td class="num">'+man(ta[p])+'</td>'}).join('')+'</tr></tbody></table></div></div>';
+  var f='<div class="card"><h2>핵심 발견</h2>'
+   +'<div class="find r"><div class="h">1. 세트는 3연속 축소, 단품은 3연속 성장</div><div class="b2">명절세트 <b>992 → 848 → 632개(-36%)</b>, 매출 6,358 → 7,882 → <b>4,895만원</b>. 반대로 전류는 7,082 → 13,784 → <b>14,813개</b>, 나물류는 6,610 → 13,136 → <b>18,111개</b>로 계속 늘었습니다. 명절 수요 자체가 줄어든 게 아니라 <b>세트에서 단품으로 이동</b>했습니다.</div></div>'
+   +'<div class="find o"><div class="h">2. 세트 라인업이 매 명절 전면 교체됐습니다</div><div class="b2">2025 설 한상세트 5단계(알찬/듬뿍/풍성/더풍성/보름달) → 2025 추석 식사세트 5단계(특소~특대) → 2026 설 전량 폐지. <b>3개 명절 연속 살아남은 세트는 차례상 계열뿐</b>입니다. 매번 SKU·패키지를 새로 만들면서 학습이 누적되지 않았습니다.</div></div>'
+   +'<div class="find g2"><div class="h">3. 나물세트가 유일하게 역주행 중</div><div class="b2">나물세트 5종 <b>58 → 143개(+147%)</b>, 건나물세트 5종 <b>18 → 48개(+167%)</b>. 세트 전체가 줄어드는 와중에 나물세트만 성장했습니다. 노션 2026 설 리뷰의 &ldquo;나물 비중 1% → 14% 급증&rdquo; 기록과 일치합니다.</div></div>'
+   +'<div class="find"><div class="h">4. 진짜 명절 상품과 명절과 무관한 상품이 섞여 있습니다</div><div class="b2">평상시 대비 명절 배수를 보면 <b>동태전 14.5x · 건고사리 11.7x · 녹두전 11.1x · 깻잎전 10.8x · 잡채 8.3x</b>가 진짜 명절 특수 품목입니다. 반면 <b>소고기무국 1.03x · 사색나물 1.4x · 소불고기 1.1~1.2x</b>는 전사 평균 배수(1.47x)에도 못 미쳐 명절 특수가 사실상 없습니다.</div></div>'
+   +'<div class="find r"><div class="h">5. 차례상(소) 1개 SKU가 세트 매출을 떠받치고 있습니다</div><div class="b2">2026 설 차례상(소) <b>196개 / 1,389만원</b>으로 세트 판매량의 31%. 2025 추석에도 차례상(소)가 239개로 1위였습니다. 세트를 3종으로 줄인다면 <b>차례상(소)는 반드시 골격에 포함</b>돼야 합니다.</div></div></div>';
+  return k+tb+f;
 }
 
-/* ---- 탭 2: 품목별 상세 ---- */
-function tabItems(){
-  var g=D.grand;
-  return '<div class="card"><h2>품목별 판매량 <span>규격 변형 합산 · 단위 EA</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">품목명</th>'+D.periods.map(function(p){return '<th>'+p.label+'</th>'}).join('')+'<th>추이</th><th>26설 vs 25추석</th><th>26설 매출<br>(만원)</th></tr></thead><tbody>'
-   +'<tr class="grp"><td colspan="7">단품류</td></tr>'+itemRows(D.cat['단품'])+subRow('단품',D.cat['단품'])
-   +'<tr class="grp"><td colspan="7">모둠전류</td></tr>'+itemRows(D.cat['모둠전'])+subRow('모둠전',D.cat['모둠전'])
-   +'<tr class="tot"><td>전체 합계</td>'+P.map(function(p){return '<td class="num">'+nf(g[p])+'</td>'}).join('')+'<td></td><td class="num">'+((pct(g[P[2]],g[P[1]])>0?'+':'')+pct(g[P[2]],g[P[1]]).toFixed(0))+'%</td><td class="num">'+man(D.grandA[P[2]])+'</td></tr>'
-   +'</tbody></table></div>'
-   +'<div class="lg"><span><i style="background:#c3cbdb"></i>2025 설날</span><span><i style="background:#7b8bb0"></i>2025 추석</span><span><i style="background:#1f2430"></i>2026 설날</span></div></div>';
+/* ---------- 2. 명절 세트 ---------- */
+function tSets(){
+  var bt=D.sets.byType, types=D.sets.types;
+  var mxT=Math.max.apply(null,types.map(function(t){return Math.max(bt[P[0]][t].q,bt[P[1]][t].q,bt[P[2]][t].q)}));
+  var trows=types.map(function(t){
+    var q={}; P.forEach(function(p){q[p]=bt[p][t].q});
+    return '<tr><td class="nm">'+t+'</td>'+P.map(function(p){return '<td class="num">'+(bt[p][t].q?nf(bt[p][t].q):'-')+'</td>'}).join('')
+     +'<td style="width:70px">'+bars(q,mxT)+'</td>'
+     +P.map(function(p){return '<td class="num" style="color:#6b7280">'+(bt[p][t].a?man(bt[p][t].a):'-')+'</td>'}).join('')+'</tr>'}).join('');
+  var sum={}; P.forEach(function(p){ sum[p]={q:types.reduce(function(s,t){return s+bt[p][t].q},0), a:types.reduce(function(s,t){return s+bt[p][t].a},0)}; });
+  var t1='<div class="card"><h2>세트 유형별 추이 <span>수량 EA · 매출 만원</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">유형</th>'+PL.map(function(l){return '<th>'+l+'</th>'}).join('')+'<th>추이</th>'+PL.map(function(l){return '<th>'+l+'<br>매출</th>'}).join('')+'</tr></thead><tbody>'+trows
+   +'<tr class="tot"><td>합계</td>'+P.map(function(p){return '<td class="num">'+nf(sum[p].q)+'</td>'}).join('')+'<td></td>'+P.map(function(p){return '<td class="num">'+man(sum[p].a)+'</td>'}).join('')+'</tr>'
+   +'<tr class="st"><td>객단가(ASP)</td>'+P.map(function(p){return '<td class="num">'+nf(Math.round(sum[p].a/sum[p].q))+'원</td>'}).join('')+'<td colspan="4"></td></tr>'
+   +'</tbody></table></div><div class="lg"><span><i style="background:#c3cbdb"></i>2025 설날</span><span><i style="background:#7b8bb0"></i>2025 추석</span><span><i style="background:#1f2430"></i>2026 설날</span></div></div>';
+  var t2=D.periods.map(function(pp,i){
+    var arr=D.sets.byHol[pp.k]; if(!arr||!arr.length) return '';
+    var q=arr.reduce(function(s,x){return s+x.q},0), a=arr.reduce(function(s,x){return s+x.a},0);
+    return '<div class="card"><h2>'+pp.label+' 판매 세트 <span>'+arr.length+'종 · '+nf(q)+'개 · '+man(a)+'만원 · ASP '+nf(Math.round(a/q))+'원</span></h2><div class="scroll"><table>'
+     +'<thead><tr><th class="l">세트명</th><th>규격</th><th>수량</th><th>매출(만원)</th><th>단가</th></tr></thead><tbody>'
+     +arr.map(function(x){return '<tr><td class="nm">'+x.nm+'</td><td class="num" style="color:#8b919b">'+x.spec+'</td><td class="num">'+nf(x.q)+'</td><td class="num" style="color:#6b7280">'+man(x.a)+'</td><td class="num" style="color:#6b7280">'+nf(x.asp)+'원</td></tr>'}).join('')
+     +'<tr class="tot"><td>합계</td><td></td><td class="num">'+nf(q)+'</td><td class="num">'+man(a)+'</td><td class="num">'+nf(Math.round(a/q))+'원</td></tr>'
+     +'</tbody></table></div></div>'; }).join('');
+  var t3='<div class="card"><h2>세트 SKU 승계 현황</h2><div class="note"><ul>'
+   +'<li><b>3연속 생존: 차례상 계열뿐</b> — 2025 설 풍성차례상세트/표준제사상 → 2025 추석 차례상(소·중·대) → 2026 설 차례상(소·중·대). 이름과 코드는 매번 바뀌었지만 상품 개념은 유지됐습니다.</li>'
+   +'<li><b>1회성으로 사라진 라인</b> — 한상세트 5단계(2025 설, 256개), 식사세트 5단계(2025 추석, 255개), 떡국세트(2025 설, 73개), 냉동 실속세트(8개). 모두 다음 명절에 재출시되지 않았습니다.</li>'
+   +'<li><b>대형 세트는 실질 수요가 거의 없습니다</b> — 보름달(12인 이상) 6개, 식사세트(특대) 5개, 차례상(대) 5~19개. 노션 2025 추석 피드백의 &ldquo;특대(50만원)는 미끼상품 의도&rdquo;와 일치하지만, 미끼 역할 대비 SKU 유지비용을 따져볼 필요가 있습니다.</li>'
+   +'<li><b>외부몰 세트는 사실상 실패</b> — 2026 설 쿠팡 세트 77ea / 341만원, 컬리 세트 판매 없음(노션 2026 설 리뷰). 로켓프레시 명절음식세트도 176 → 67개로 급감했습니다.</li>'
+   +'</ul></div></div>';
+  return t1+t2+t3;
 }
 
-/* ---- 탭 3: 규격(SKU)별 ---- */
-function tabSku(){
-  var rows=D.items.map(function(r){
-    return '<tr class="grp"><td colspan="6">'+r.name+'</td></tr>'
-     + r.skus.map(function(s){
-        return '<tr><td class="nm" style="padding-left:24px;font-weight:500">'+s.nm+' <span class="s">'+s.spec+'</span><br><span class="s" style="font-size:11px">'+s.code+'</span></td>'
-         + P.map(function(p){return '<td class="num">'+(s.q[p]?nf(s.q[p]):'-')+'</td>'}).join('')
-         + '<td class="num" style="color:#6b7280">'+man(s.a[P[2]])+'</td>'
-         + '<td class="num">'+pctHtml(pct(s.q[P[2]],s.q[P[1]]))+'</td></tr>'}).join('')
-     + '<tr class="st"><td style="padding-left:24px">소계</td>'+P.map(function(p){return '<td class="num">'+nf(r.q[p])+'</td>'}).join('')+'<td class="num">'+man(r.a[P[2]])+'</td><td class="num">'+pctHtml(pct(r.q[P[2]],r.q[P[1]]))+'</td></tr>'; }).join('');
-  return '<div class="card"><h2>규격(SKU)별 상세 <span>이카운트 품목코드 기준</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">품목코드 / 규격</th>'+D.periods.map(function(p){return '<th>'+p.label+'</th>'}).join('')+'<th>26설 매출<br>(만원)</th><th>26설 vs 25추석</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+/* ---------- 3~4. 카테고리 상세 ---------- */
+function catTable(cat){
+  var arr=D.cats[cat]; if(!arr) return '';
+  var mx=Math.max.apply(null,arr.map(function(x){return Math.max(x.q[P[0]],x.q[P[1]],x.q[P[2]])}));
+  var rows=arr.slice().sort(function(a,b){return b.q[P[2]]-a.q[P[2]]}).map(function(x){
+    var ch=pct(x.q[P[2]],x.q[P[1]]);
+    return '<tr><td class="nm">'+splitN(x.nm)+'</td>'
+     +P.map(function(p){return '<td class="num">'+(x.q[p]?nf(x.q[p]):'-')+'</td>'}).join('')
+     +'<td style="width:66px">'+bars(x.q,mx)+'</td>'
+     +'<td class="num">'+pctH(ch)+'</td>'
+     +'<td class="num">'+liftH(x.lift)+'</td>'
+     +'<td class="num" style="color:#6b7280">'+man(x.a[P[2]])+'</td></tr>'}).join('');
+  var s={}; P.forEach(function(p){s[p]=arr.reduce(function(a,x){return a+x.q[p]},0)});
+  var sa=arr.reduce(function(a,x){return a+x.a[P[2]]},0);
+  return '<div class="card"><h2>'+cat+' <span>규격 변형 합산 · 단위 EA</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">품목</th>'+PL.map(function(l){return '<th>'+l+'</th>'}).join('')+'<th>추이</th><th>26설 vs<br>25추석</th><th>명절배수</th><th>26설<br>매출(만원)</th></tr></thead><tbody>'+rows
+   +'<tr class="tot"><td>합계</td>'+P.map(function(p){return '<td class="num">'+nf(s[p])+'</td>'}).join('')+'<td></td><td class="num">'+((pct(s[P[2]],s[P[1]])>0?'+':'')+pct(s[P[2]],s[P[1]]).toFixed(0))+'%</td><td></td><td class="num">'+man(sa)+'</td></tr>'
+   +'</tbody></table></div><div class="lg"><span><i style="background:#c3cbdb"></i>2025 설날</span><span><i style="background:#7b8bb0"></i>2025 추석</span><span><i style="background:#1f2430"></i>2026 설날</span><span style="margin-left:auto">명절배수 = 명절 3주 판매량 ÷ 평상시 22일 환산 판매량</span></div></div>';
 }
+function tJeon(){ return catTable('전류')
+ +'<div class="card"><h2>전류 해석</h2><div class="note"><ul>'
+ +'<li><b>단품 전류가 모둠전을 대체하고 있습니다.</b> 동태전 918 → 1,272(+39%), 깻잎전 1,230 → 1,386(+13%)이 오르는 동안 대표 조합인 모둠전3종(동태전,동그랑땡,깻잎전)은 2,518 → 2,236(-11%)으로 줄었습니다.</li>'
+ +'<li><b>한끼모둠전이 가장 빠르게 성장했습니다.</b> 259 → 731개(+182%). 1인 가구·소량 구매 수요를 흡수한 것으로 보이며, 2026 추석 예상판매량 표에 아직 반영돼 있지 않습니다.</li>'
+ +'<li><b>대용량 전류는 명절 전용 SKU입니다.</b> 깻잎전·동태전·녹두전·애호박전 대용량은 평상시 판매가 0에 가깝고 명절에만 나갑니다. 명절 한정 운영으로 관리하는 편이 재고 부담이 적습니다.</li>'
+ +'<li><b>계란두부부침·매콤김치전·해물야채전은 명절 상품이 아닙니다.</b> 명절배수 1.2~1.6x로 전사 평균(1.47x) 수준입니다. 명절 기획전 구성에서 우선순위를 낮춰도 됩니다.</li>'
+ +'<li class="dn"><b>품질 리스크</b> — 노션 2026 설 리뷰에 &ldquo;전 제품(동태전, 새우전, 세가지전) 파손·쪼가리 혼입·계란물 불량&rdquo; 기록이 있습니다. 물량 확대와 함께 QC 강화가 전제돼야 합니다.</li>'
+ +'</ul></div></div>'; }
+function tOther(){ return catTable('나물류')+catTable('고기·잡채')+catTable('국·탕')
+ +'<div class="card"><h2>해석</h2><div class="note"><ul>'
+ +'<li><b>건나물 3종이 명절 나물의 핵심입니다.</b> 건고사리 11.7x, 도라지 9.0x, 건취나물 2.8x. 2025 설에는 0개였다가 2025 추석에 진입해 곧바로 1,700개대로 안착했습니다. 성공적으로 신설된 몇 안 되는 명절 라인입니다.</li>'
+ +'<li><b>사색나물·시금치나물은 명절 상품이 아닙니다.</b> 사색나물(쿠팡) 5,652개로 물량은 가장 크지만 명절배수 1.4x로 전사 평균 이하입니다. 비빔밥용 상시 수요이며 명절 기획전 실적으로 잡으면 착시가 생깁니다.</li>'
+ +'<li><b>잡채는 숨은 명절 스타입니다.</b> 명절배수 8.3x, 737 → 1,445 → 1,536개로 3연속 성장. 다만 노션에 &ldquo;잡채 품질 이슈 다수 발생(면 불음, 뻑뻑함, 고기 냄새)&rdquo; 기록이 있어 확대 전 공정 개선이 필요합니다.</li>'
+ +'<li><b>소불고기는 명절 특수가 없습니다.</b> 완조리 1.13x / 반조리 1.22x. 물량은 2,000개대로 크지만 평상시에도 그만큼 팔립니다. 명절 예상판매량에 넣더라도 &lsquo;명절 증분&rsquo;으로 계산하면 과대추정이 됩니다.</li>'
+ +'<li><b>소고기무국은 명절 상품이 아닙니다(1.03x).</b> 다만 냉동국은 사전 생산 리드타임이 필요해 별도 항목으로 관리되는 것으로 보입니다. 확보 물량은 명절 증분이 아니라 <b>상시 판매 물량 + 연휴 결품 방지분</b> 기준으로 잡는 것이 맞습니다. 계열 전체(경상도식·원더스푼 포함) 2026 설 3주 실적은 1,382개입니다.</li>'
+ +'</ul></div></div>'; }
 
-/* ---- 탭 4: 추이 차트 ---- */
-function tabChart(){
-  var mx=MAX;
-  var bars=D.items.map(function(r){
-    return '<div class="cg"><div class="cbs">'+P.map(function(p,i){
-      var h=r.q[p]>0?Math.max(r.q[p]/mx*88,1.5):0;
-      var c=['#c3cbdb','#7b8bb0','#1f2430'][i];
-      return '<div class="cb" style="height:'+h+'%;background:'+c+'">'+(i===2&&r.q[p]>0?'<span>'+nf(r.q[p])+'</span>':'')+'</div>'}).join('')
-    +'</div><div class="cl">'+r.name.split('_')[0]+(r.name.indexOf('_')>0?'<br>'+r.name.split('_')[1].slice(0,10):'')+'</div></div>'}).join('');
-  var tot=P.map(function(p,i){
-    var h=D.grand[p]/Math.max(D.grand[P[0]],D.grand[P[1]],D.grand[P[2]])*86;
-    return '<div class="cg" style="min-width:110px"><div class="cbs"><div class="cb" style="width:52px;height:'+h+'%;background:'+['#c3cbdb','#7b8bb0','#1f2430'][i]+'"><span>'+nf(D.grand[p])+'</span></div></div><div class="cl">'+D.periods[i].label+'</div></div>'}).join('');
-  return '<div class="card"><h2>명절별 전체 합계 추이</h2><div class="chart" style="height:180px">'+tot+'</div></div>'
-   +'<div class="card"><h2>품목별 추이 <span>3개 명절 비교</span></h2><div class="chart">'+bars+'</div>'
-   +'<div class="lg"><span><i style="background:#c3cbdb"></i>2025 설날</span><span><i style="background:#7b8bb0"></i>2025 추석</span><span><i style="background:#1f2430"></i>2026 설날</span></div></div>';
-}
-
-/* ---- 탭 5: 기준/주의 ---- */
-function tabNote(){
-  return '<div class="card"><h2>집계 기준</h2><div class="scroll"><table><thead><tr><th class="l">명절</th><th>명절 당일</th><th>집계 기간 (당일 포함 직전 3주)</th><th>전사 총 판매량</th></tr></thead><tbody>'
-   + D.periods.map(function(p){return '<tr><td class="nm">'+p.label+'</td><td class="num" style="text-align:center">'+p.date+'</td><td class="num" style="text-align:center">'+p.range+'</td><td class="num">'+nf(D.totals[p.key])+'</td></tr>'}).join('')
-   +'</tbody></table></div></div>'
-   +'<div class="card"><h2>해석 시 주의사항</h2><div class="note"><ul>'
-   +'<li><b>2025 설날 수치 주의</b> — 동태전 · 녹두전 · 깻잎전(250G) · 모둠전3종(육전,녹두전,새우전) · 한끼모둠전은 2025년 설 시점 미출시 SKU입니다. 증감 판단은 <b>2025 추석 → 2026 설날</b> 기준으로 보는 것이 정확합니다.</li>'
-   +'<li><b>규격 변형 합산</b> — 대용량 · 1인용 등 동일 품목의 규격 변형은 하나로 합산했습니다. 개별 SKU 수치는 「규격별 상세」 탭에서 확인할 수 있습니다.</li>'
-   +'<li><b>모둠전 3종 4종 + 한끼모둠전</b>을 모두 포함해 취합했습니다. 단품 전류(동태전 · 깻잎전 · 녹두전)가 성장하는 동안 대표 조합인 모둠전3종(동태전,동그랑땡,깻잎전)은 역성장했습니다 — 수요 분산 가능성.</li>'
-   +'<li><b>소고기무국 계열</b> — 본 취합은 소고기무국_냉동(650G) + 1인용(300G)만 포함합니다. 경상도식소고기무국(108) · 아이들한우소고기무국 원더스푼(538)을 더하면 2026 설날 기준 1,382개가 됩니다.</li>'
-   +'<li><b>검증</b> — 3개 구간 모두 이카운트 조회제한 경고 없음, 총합계 행 존재, 데이터행 수량 합계 = 총합계 일치 확인.</li>'
+/* ---------- 5. 명절 특수도 ---------- */
+function tLift(){
+  var arr=D.liftRank;
+  var rows=arr.map(function(x){
+    var band = (x.lift===null)?'명절전용':(x.lift>=3?'명절 핵심':(x.lift>=2?'명절 강화':'상시 상품'));
+    var cls = (x.lift===null)?'n':(x.lift>=3?'h':(x.lift>=2?'w':'g'));
+    return '<tr><td class="nm">'+splitN(x.nm)+'</td><td class="num" style="color:#8b919b">'+x.cat+'</td>'
+     +'<td class="num">'+nf(x.q[P[2]])+'</td><td class="num" style="color:#8b919b">'+nf(x.b22)+'</td>'
+     +'<td class="num">'+(x.lift===null?'<span class="nw">전용</span>':x.lift.toFixed(1)+'x')+'</td>'
+     +'<td><span class="tag '+cls+'">'+band+'</span></td></tr>'}).join('');
+  return '<div class="card"><h2>평상시 대비 명절 배수 랭킹 <span>2026 설날 3주 판매량 ÷ 평상시 22일 환산(2026년 4월 실적)</span></h2>'
+   +'<div class="note" style="margin-bottom:9px">전사 전체의 명절 배수는 <b>'+D.companyLift.toFixed(2)+'x</b> 입니다. 이 값보다 낮으면 명절 특수가 없다는 뜻이고, 2배 이상이면 명절 수요가 실재하는 품목입니다.</div>'
+   +'<div class="scroll"><table><thead><tr><th class="l">품목</th><th>카테고리</th><th>26설 3주</th><th>평상시 22일</th><th>명절배수</th><th>구분</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'
+   +'<div class="card"><h2>이 지표를 쓰는 이유</h2><div class="note"><ul>'
+   +'<li>명절 판매량이 크다고 명절 상품인 것은 아닙니다. 사색나물은 5,652개로 물량 1위지만 평상시에도 4,048개가 나가므로 <b>명절 증분은 1,604개뿐</b>입니다.</li>'
+   +'<li>반대로 동태전은 1,164개로 물량은 작지만 평상시 88개 → <b>명절 증분 1,076개</b>로 사색나물과 실질 증분이 거의 같습니다. 생산 준비 우선순위는 물량이 아니라 증분으로 봐야 합니다.</li>'
+   +'<li>명절 기획전 성과를 측정할 때도 총매출이 아니라 <b>평상시 대비 증분</b>으로 봐야 실제 기여를 알 수 있습니다.</li>'
    +'</ul></div></div>';
 }
 
-var TABS=[['요약',tabSummary],['품목별 상세',tabItems],['규격별 상세',tabSku],['추이 차트',tabChart],['집계 기준·주의',tabNote]];
-document.getElementById('nav').innerHTML = TABS.map(function(t,i){return '<button data-i="'+i+'"'+(i===0?' class="on"':'')+'>'+t[0]+'</button>'}).join('');
-document.getElementById('panels').innerHTML = TABS.map(function(t,i){return '<div class="panel'+(i===0?' on':'')+'" data-i="'+i+'">'+t[1]()+'</div>'}).join('');
+/* ---------- 6. 전략 ---------- */
+function tStrategy(){
+  var s1='<div class="card"><h2>노션에 이미 기록된 2026 추석 방향</h2>'
+   +'<div class="q">세트 3개로만 운영하는 방향으로 논의\n명절 관련 제품 단품 판매에 니즈가 확인 / 전류 위주로 판매\n다만, 외부몰에서는 힘을 뺄 예정 → 자사 집중<span class="src">출처: 「2026년 추석 준비」 IV-1</span></div>'
+   +'<div class="q">30만원대 대형 세트 축소 / 10~15만원대 기본 세트 중심 구조 재편\n차례상 기본형 + 전·나물·갈비찜 옵션 추가 구조 설계\n전 3종, 나물 4종 등 번들 상품 강화 / 상징 SKU 1~2개 집중 운영\n→ 목표: 풀세트 판매가 아닌 선택형 조합 구조로 객단가 방어<span class="src">출처: 「2026 설 리뷰 (온라인본부)」 2026 추석 전략</span></div>'
+   +'<div class="q">2026 추석은 &lsquo;구조 안정화&rsquo;를 통한 &lsquo;규모의 확대&rsquo;\n세트 비중 과도 확대 지양 / 단품·번들 강화<span class="src">출처: 「2026 설 리뷰 (온라인본부)」 운영 기조</span></div></div>';
+  var s2='<div class="card"><h2>데이터가 이 방향을 뒷받침하는 부분</h2><div class="note"><ul>'
+   +'<li><b>&ldquo;세트 축소, 단품 강화&rdquo;는 데이터와 정확히 일치합니다.</b> 세트 992→848→632개인 반면 전류 7,082→13,784→14,813개, 나물류 6,610→13,136→18,111개. 방향 전환의 근거가 충분합니다.</li>'
+   +'<li><b>&ldquo;세트 3종&rdquo;은 적정합니다.</b> 2026 설 세트 11종 중 상위 3종(차례상 소 196 / 나물세트5종 143 / 로켓 명절음식세트 67)이 전체의 <b>64%</b>를 차지했습니다. 하위 5종은 합쳐서 100개 미만입니다.</li>'
+   +'<li><b>&ldquo;외부몰 힘 빼기&rdquo;도 타당합니다.</b> 로켓프레시 명절음식세트 176→67개(-62%), 쿠팡 세트 77ea·341만원, 컬리 세트 0. 반면 외부몰 <b>단품</b>은 &lsquo;전류 판매 증가&rsquo;로 기록돼 있어, 외부몰은 세트가 아닌 단품 채널로 정의하는 편이 맞습니다.</li>'
+   +'<li><b>&ldquo;10~15만원대 중심&rdquo;도 맞습니다.</b> 세트 ASP가 2025 추석 92,944원 → 2026 설 77,456원으로 내려왔고, 대형 세트(차례상 대 5개, 식사세트 특대 5개)는 실질 수요가 없습니다.</li>'
+   +'</ul></div></div>';
+  var s3='<div class="card"><h2>데이터가 보완을 요구하는 부분</h2>'
+   +'<div class="find r"><div class="h">① 세트 3종 골격은 &ldquo;차례상 + 나물세트 + 음식세트&rdquo; 여야 합니다</div><div class="b2">가격대(10/20/30만원)로 3종을 나누는 안이 노션에 있지만, 데이터상 3연속 생존한 것은 <b>차례상</b>뿐이고 유일하게 성장한 것은 <b>나물세트(+147%)</b>입니다. 가격대 축이 아니라 <b>용도 축</b>으로 3종을 잡고, 각 세트 안에서 크기(소/중)만 두는 구조가 실적과 맞습니다.</div></div>'
+   +'<div class="find o"><div class="h">② 한끼모둠전이 예상판매량 표에서 빠져 있습니다</div><div class="b2">259 → 731개(+182%)로 전류 중 성장률 1위인데 3번 예상판매량 표에도, 4번 전 생산 강화 방안에도 없습니다. 소포장·1인 수요를 대표하는 SKU라 &lsquo;선택형 조합&rsquo; 전략의 핵심 후보입니다.</div></div>'
+   +'<div class="find o"><div class="h">③ &ldquo;전 3종 번들&rdquo;은 이미 역성장 중인 상품입니다</div><div class="b2">모둠전3종(동태전,동그랑땡,깻잎전)은 2,518 → 2,236개(-11%)로 유일하게 줄어든 전류입니다. 반대로 단품 전류는 모두 성장했습니다. 번들을 강화하려면 <b>기존 3종 조합을 그대로 미는 것이 아니라</b> 단품 성장세를 반영한 새 조합(동태전·깻잎전·녹두전 등)이 필요합니다.</div></div>'
+   +'<div class="find"><div class="h">④ 소고기무국·소불고기·사색나물은 명절 기획전에서 분리해야 합니다</div><div class="b2">명절배수가 각각 1.03x / 1.13~1.22x / 1.40x로 전사 평균(1.47x)에도 못 미칩니다. 명절 실적에 포함하면 기획전 성과가 실제보다 크게 보입니다. 사전 생산 계획(냉동국)은 명절 증분이 아닌 <b>상시 물량 + 연휴 결품 방지분</b>으로 산정해야 합니다.</div></div>'
+   +'<div class="find r"><div class="h">⑤ 물량 확대보다 QC가 먼저입니다</div><div class="b2">노션에 기록된 2026 설 사고 3건 — 세트 구성품 3종 누락, 판매 차단 세팅 누락, 잡채·전류 품질 불만 — 은 모두 <b>확대하려는 바로 그 품목</b>에서 났습니다. 전류·잡채 물량을 늘리기 전에 오븐 전환/반죽 기기 도입과 검수 체크리스트가 선행돼야 합니다.</div></div></div>';
+  var s4='<div class="card"><h2>세트 구성 제안</h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">세트</th><th>역할</th><th>근거 실적</th><th>구성 방향</th><th>가격대</th></tr></thead><tbody>'
+   +'<tr><td class="nm">① 차례상 세트<br><span class="s">소 / 중</span></td><td>명절 상징 · 진입</td><td class="num">25추석 341개<br>26설 235개</td><td>3연속 생존한 유일 라인. 기본형 고정 + 전·나물·갈비찜을 <b>옵션 추가</b>로 붙이는 구조</td><td class="num">10~15만원</td></tr>'
+   +'<tr><td class="nm">② 나물 세트<br><span class="s">생나물 5종 / 건나물 5종</span></td><td>성장 · 저가 진입</td><td class="num">58 → 143개<br>(+147%)</td><td>유일한 성장 세트. 건고사리·도라지 등 명절배수 9~12x 품목으로 구성</td><td class="num">2~4만원</td></tr>'
+   +'<tr><td class="nm">③ 명절 음식 세트<br><span class="s">소 / 중</span></td><td>객단가 · 선물</td><td class="num">26설 139개<br>(소 63 + 중 56)</td><td>전류 중심 + 잡채·갈비찜. 단품 성장세 반영한 새 조합</td><td class="num">15~25만원</td></tr>'
+   +'<tr class="st"><td>폐지 검토</td><td colspan="4">대형 세트(차례상 대 5개 · 식사세트 특대 5개 · 보름달 6개) — 3개 명절 모두 한 자릿수. 미끼 효과 대비 SKU 유지비용 재검토</td></tr>'
+   +'</tbody></table></div></div>';
+  var s5='<div class="card"><h2>단품 운영 우선순위 <span>명절 증분(명절 3주 − 평상시 22일) 기준</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">순위</th><th class="l">품목</th><th>26설 3주</th><th>평상시 22일</th><th>명절 증분</th><th>등급</th></tr></thead><tbody>'
+   +D.liftRank.map(function(x){return {nm:x.nm,cat:x.cat,q:x.q[P[2]],b:x.b22,inc:x.q[P[2]]-x.b22,lift:x.lift}})
+     .sort(function(a,b){return b.inc-a.inc}).slice(0,14)
+     .map(function(x,i){ var g=x.inc>=1500?'S':(x.inc>=700?'A':(x.inc>=300?'B':'C'));
+       var cl=g==='S'?'h':(g==='A'?'w':(g==='B'?'n':'g'));
+       return '<tr><td class="num" style="text-align:center;color:#8b919b">'+(i+1)+'</td><td class="nm">'+splitN(x.nm)+' <span class="s">'+x.cat+'</span></td><td class="num">'+nf(x.q)+'</td><td class="num" style="color:#8b919b">'+nf(x.b)+'</td><td class="num"><b>'+nf(x.inc)+'</b></td><td><span class="tag '+cl+'">'+g+'</span></td></tr>'}).join('')
+   +'</tbody></table></div><div class="note" style="margin-top:8px">생산·발주 준비는 총 판매량이 아니라 <b>명절 증분</b> 순으로 잡는 것이 맞습니다. 평상시에도 나가는 물량은 이미 상시 생산 계획에 들어가 있기 때문입니다.</div></div>';
+  var s6='<div class="card"><h2>실행 체크리스트</h2><div class="note"><ul>'
+   +'<li><b>D-45 (8월 중순)</b> — 세트 3종 구성·가격 확정, 온올림 미결정 항목(세트 개수·가격대·원가표·OEM 단가) 마감. 노션 2025 추석 피드백의 &ldquo;경쟁사 대비 오픈 시점 늦음(3주 전)&rdquo; 반성 반영.</li>'
+   +'<li><b>D-35</b> — 메타 광고 집행 시작(노션: &ldquo;연휴가 길 경우 최소 35일 전&rdquo;), 사전예약 오픈.</li>'
+   +'<li><b>D-30</b> — 명절 판매 차단·노출 점검 체크리스트 운영(2026 설 사고 재발 방지). 생산·MD·운영 3자 교차 확인.</li>'
+   +'<li><b>D-21</b> — 전류·잡채 QC 강화 시작. 세트 구성품 2중 검수 프로세스 가동.</li>'
+   +'<li><b>D-14 / D-7</b> — 판매량 급증 구간(노션 기록). 이 시점 결품이 나지 않도록 D-21까지 물량 확보 완료.</li>'
+   +'</ul></div></div>';
+  return s1+s2+s3+s4+s5+s6;
+}
+
+/* ---------- 7. 기준 ---------- */
+function tNote(){
+  return '<div class="card"><h2>집계 기준</h2><div class="scroll"><table><thead><tr><th class="l">구분</th><th>명절 당일</th><th>집계 기간</th><th>전사 총 판매량</th></tr></thead><tbody>'
+   +D.periods.map(function(p){return '<tr><td class="nm">'+p.label+'</td><td class="num" style="text-align:center">'+p.d+'</td><td class="num" style="text-align:center">'+p.r+'</td><td class="num">'+nf(D.companyTotal[p.k])+'</td></tr>'}).join('')
+   +'<tr><td class="nm">평상시 기준선</td><td class="num" style="text-align:center">-</td><td class="num" style="text-align:center">'+D.baseline.label+'</td><td class="num">'+nf(D.baseline.total22)+'</td></tr>'
+   +'</tbody></table></div></div>'
+   +'<div class="card"><h2>데이터 출처와 검증</h2><div class="note"><ul>'
+   +'<li><b>출처</b> — 이카운트 판매현황(집계 · 품목별), 명절 3개 구간과 평상시 1개 구간을 각각 직접 조회했습니다. 3개 명절 구간 모두 조회제한 경고 없음, 총합계 행 존재, 데이터행 수량 합계 = 총합계 일치를 확인했습니다.</li>'
+   +'<li><b>평상시 기준선</b> — 2026년 4월 전월 실적(총 209,628개)을 22일로 환산해 사용했습니다. 3주 단위로 쪼갠 조회는 전표 일자 분포 때문에 값이 불안정해 월 단위 실적을 환산하는 방식을 택했습니다.</li>'
+   +'<li><b>규격 변형 합산</b> — 대용량 · 1인용 등 동일 품목의 규격 변형은 하나로 묶었습니다.</li>'
+   +'<li><b>2025 설날 수치 주의</b> — 동태전 · 녹두전 · 깻잎전 · 건고사리 · 도라지 · 한끼모둠전 등은 2025년 설 시점 미출시 SKU입니다. 증감 판단은 <b>2025 추석 → 2026 설날</b> 기준으로 보는 것이 정확합니다.</li>'
+   +'<li><b>세트 판매 기간</b> — 선물세트는 명절 3주보다 앞서 팔리는 경우가 있어, 3주 창 기준 수치는 실제 세트 총판매의 하한일 수 있습니다.</li>'
+   +'<li><b>노션 근거</b> — 전략 탭의 인용문은 「2026년 추석 준비」, 「2026 설 리뷰 (온라인본부)」, 「2025 추석 피드백 (온라인본부)」, 「온올림 선물세트 통합 기획」에서 원문 그대로 옮긴 것입니다.</li>'
+   +'</ul></div></div>';
+}
+
+var TABS=[['요약',tSummary],['명절 세트',tSets],['전류',tJeon],['나물·고기·국',tOther],['명절 특수도',tLift],['2026 추석 전략',tStrategy],['집계 기준',tNote]];
+document.getElementById('nav').innerHTML=TABS.map(function(t,i){return '<button data-i="'+i+'"'+(i===0?' class="on"':'')+'>'+t[0]+'</button>'}).join('');
+document.getElementById('panels').innerHTML=TABS.map(function(t,i){return '<div class="panel'+(i===0?' on':'')+'" data-i="'+i+'">'+t[1]()+'</div>'}).join('');
 document.getElementById('nav').addEventListener('click',function(e){
   var b=e.target.closest('button'); if(!b) return; var i=b.dataset.i;
   [].forEach.call(document.querySelectorAll('#nav button'),function(x){x.classList.toggle('on',x.dataset.i===i)});
   [].forEach.call(document.querySelectorAll('.panel'),function(x){x.classList.toggle('on',x.dataset.i===i)});
   window.scrollTo(0,0);
 });
+
 </script></body></html>
