@@ -70,6 +70,15 @@ ul.ls b{color:#17191c}
 .legend{display:flex;gap:12px;font-size:11px;color:#6b7280;margin-top:8px;flex-wrap:wrap}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
 footer{margin-top:26px;padding-top:12px;border-top:1px solid #e3e6ea;font-size:11px;color:#9aa0a6;line-height:1.7}
+
+.cv{width:100%;height:auto;display:block;margin:6px 0}
+text.ax{font-size:9.5px;fill:#9aa0a6;font-family:inherit}
+text.ax2{font-size:10.5px;fill:#5f6368;font-weight:700;font-family:inherit}
+text.ax3{font-size:10.5px;fill:#3c4043;font-weight:600;font-family:inherit}
+text.ax4{font-size:9px;fill:#6b7280;font-family:inherit}
+text.ax5{font-size:9.5px;fill:#3c4043;font-weight:600;font-family:inherit}
+text.bv2{font-size:9.5px;fill:#5f6368;font-weight:700;font-family:inherit}
+text.bv3{font-size:10px;fill:#17191c;font-weight:800;font-family:inherit;dominant-baseline:middle}
 </style>
 </head><body>
 <div class="wrap">
@@ -90,6 +99,133 @@ footer{margin-top:26px;padding-top:12px;border-top:1px solid #e3e6ea;font-size:1
 </footer>
 </div>
 <script>
+var CL={쿠팡:'#1a73e8',컬리:'#e8710a',자사몰:'#0f9d58',base:'#ccd4de',hi:'#1f2430',g:'#0f9d58',r:'#d93025'};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function fmtK(v){ return v>=10000? (v/10000).toFixed(1)+'만' : (v>=1000? (v/1000).toFixed(1)+'k' : String(v)); }
+
+/* 세로 막대 (단일 시리즈) */
+function svgVBar(items, o){
+  o=o||{}; var W=o.w||900, H=o.h||230, pl=o.pl||46, pr=12, pt=22, pb=o.pb||30;
+  var iw=W-pl-pr, ih=H-pt-pb, mx=0;
+  for(var i=0;i<items.length;i++) if(items[i].v>mx) mx=items[i].v;
+  mx=mx*1.12;
+  var bw=iw/items.length, s='<svg viewBox="0 0 '+W+' '+H+'" class="cv">';
+  for(var g=0;g<=4;g++){ var yy=pt+ih-ih*g/4;
+    s+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" stroke="#eceff2"/>';
+    s+='<text x="'+(pl-6)+'" y="'+(yy+3.5)+'" class="ax" text-anchor="end">'+fmtK(Math.round(mx*g/4))+'</text>'; }
+  for(var i2=0;i2<items.length;i2++){ var it=items[i2], bh=it.v/mx*ih, x=pl+bw*i2+bw*0.16, w2=bw*0.68;
+    s+='<rect x="'+x+'" y="'+(pt+ih-bh)+'" width="'+w2+'" height="'+bh+'" rx="2" fill="'+(it.c||CL.base)+'"/>';
+    if(o.val!==false) s+='<text x="'+(x+w2/2)+'" y="'+(pt+ih-bh-4)+'" class="bv2" text-anchor="middle">'+(it.lab||fmtK(it.v))+'</text>';
+    s+='<text x="'+(x+w2/2)+'" y="'+(pt+ih+13)+'" class="ax" text-anchor="middle">'+esc(it.n)+'</text>'; }
+  return s+'</svg>';
+}
+/* 세로 그룹 막대 */
+function svgGroup(cats, series, o){
+  o=o||{}; var W=o.w||900,H=o.h||250,pl=48,pr=12,pt=24,pb=34;
+  var iw=W-pl-pr, ih=H-pt-pb, mx=0;
+  for(var a=0;a<series.length;a++) for(var b=0;b<series[a].v.length;b++) if(series[a].v[b]>mx) mx=series[a].v[b];
+  mx=mx*1.14;
+  var gw=iw/cats.length, bw=gw*0.72/series.length;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" class="cv">';
+  for(var g=0;g<=4;g++){ var yy=pt+ih-ih*g/4;
+    s+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" stroke="#eceff2"/>';
+    s+='<text x="'+(pl-6)+'" y="'+(yy+3.5)+'" class="ax" text-anchor="end">'+fmtK(Math.round(mx*g/4))+'</text>'; }
+  for(var c=0;c<cats.length;c++){
+    for(var k=0;k<series.length;k++){ var v=series[k].v[c], bh=v/mx*ih;
+      var x=pl+gw*c+gw*0.14+bw*k;
+      s+='<rect x="'+x+'" y="'+(pt+ih-bh)+'" width="'+(bw*0.86)+'" height="'+bh+'" rx="2" fill="'+series[k].c+'"/>';
+      s+='<text x="'+(x+bw*0.43)+'" y="'+(pt+ih-bh-4)+'" class="bv2" text-anchor="middle">'+v.toLocaleString()+'</text>'; }
+    s+='<text x="'+(pl+gw*c+gw/2)+'" y="'+(pt+ih+15)+'" class="ax2" text-anchor="middle">'+esc(cats[c])+'</text>'; }
+  return s+'</svg>';
+}
+/* 가로 막대 */
+function svgHBar(items, o){
+  o=o||{}; var W=o.w||900, rh=o.rh||21, pl=o.pl||210, pr=64, pt=6;
+  var H=pt+items.length*rh+6, iw=W-pl-pr, mx=0;
+  for(var i=0;i<items.length;i++) if(items[i].v>mx) mx=items[i].v;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" class="cv">';
+  for(var i2=0;i2<items.length;i2++){ var it=items[i2], y=pt+rh*i2, bw=it.v/mx*iw;
+    s+='<text x="'+(pl-7)+'" y="'+(y+rh/2+3.6)+'" class="ax3" text-anchor="end">'+esc(it.n)+'</text>';
+    s+='<rect x="'+pl+'" y="'+(y+3)+'" width="'+bw+'" height="'+(rh-7)+'" rx="2" fill="'+(it.c||CL.base)+'"/>';
+    s+='<text x="'+(pl+bw+6)+'" y="'+(y+rh/2+3.6)+'" class="bv3">'+(it.lab||it.v.toLocaleString())+'</text>'; }
+  return s+'</svg>';
+}
+/* 파레토: 막대 + 누적선 */
+function svgPareto(items, o){
+  o=o||{}; var W=o.w||900,H=240,pl=44,pr=44,pt=16,pb=54;
+  var iw=W-pl-pr, ih=H-pt-pb, mx=0;
+  for(var i=0;i<items.length;i++) if(items[i].v>mx) mx=items[i].v;
+  mx=mx*1.1;
+  var bw=iw/items.length, s='<svg viewBox="0 0 '+W+' '+H+'" class="cv">';
+  for(var g=0;g<=4;g++){ var yy=pt+ih-ih*g/4;
+    s+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" stroke="#eceff2"/>';
+    s+='<text x="'+(pl-6)+'" y="'+(yy+3.5)+'" class="ax" text-anchor="end">'+fmtK(Math.round(mx*g/4))+'</text>';
+    s+='<text x="'+(W-pr+6)+'" y="'+(yy+3.5)+'" class="ax" fill="#e8710a">'+(g*25)+'%</text>'; }
+  var pts='';
+  for(var i2=0;i2<items.length;i2++){ var it=items[i2], bh=it.v/mx*ih, x=pl+bw*i2+bw*0.14;
+    s+='<rect x="'+x+'" y="'+(pt+ih-bh)+'" width="'+(bw*0.72)+'" height="'+bh+'" rx="2" fill="'+(i2<4?CL.hi:CL.base)+'"/>';
+    var cy=pt+ih-ih*(it.c/100);
+    pts+=(pl+bw*i2+bw*0.5)+','+cy+' ';
+    s+='<text transform="translate('+(pl+bw*i2+bw*0.5)+','+(pt+ih+8)+') rotate(38)" class="ax4">'+esc(it.n)+'</text>'; }
+  s+='<polyline points="'+pts+'" fill="none" stroke="#e8710a" stroke-width="1.8"/>';
+  var arr=pts.trim().split(' ');
+  for(var p=0;p<arr.length;p++){ var xy=arr[p].split(',');
+    s+='<circle cx="'+xy[0]+'" cy="'+xy[1]+'" r="2.6" fill="#e8710a"/>'; }
+  return s+'</svg>';
+}
+/* 산점도: 명절탄력 x 평시물량 */
+function svgScatter(pts, o){
+  o=o||{}; var W=o.w||900,H=300,pl=52,pr=16,pt=16,pb=40;
+  var iw=W-pl-pr, ih=H-pt-pb;
+  var xmax=o.xmax||7, ymax=0;
+  for(var i=0;i<pts.length;i++) if(pts[i].y>ymax) ymax=pts[i].y;
+  ymax=ymax*1.12;
+  var X=function(v){return pl+Math.min(v,xmax)/xmax*iw;}, Y=function(v){return pt+ih-v/ymax*ih;};
+  var s='<svg viewBox="0 0 '+W+' '+H+'" class="cv">';
+  for(var g=0;g<=4;g++){ var yy=pt+ih-ih*g/4;
+    s+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" stroke="#eceff2"/>';
+    s+='<text x="'+(pl-6)+'" y="'+(yy+3.5)+'" class="ax" text-anchor="end">'+Math.round(ymax*g/4).toLocaleString()+'</text>'; }
+  for(var v2=1;v2<=7;v2++){ var xx=X(v2);
+    s+='<line x1="'+xx+'" y1="'+pt+'" x2="'+xx+'" y2="'+(pt+ih)+'" stroke="'+(v2===2?'#f7d774':'#f4f6f8')+'" stroke-dasharray="'+(v2===2?'4 3':'0')+'"/>';
+    s+='<text x="'+xx+'" y="'+(pt+ih+14)+'" class="ax" text-anchor="middle">'+v2+'배</text>'; }
+  s+='<text x="'+(pl+iw/2)+'" y="'+(H-4)+'" class="ax" text-anchor="middle" font-weight="700">명절 탄력 (2026년 2월 ÷ 평시 월평균)</text>';
+  s+='<text transform="translate(11,'+(pt+ih/2)+') rotate(-90)" class="ax" text-anchor="middle" font-weight="700">평시 월평균 판매량 (개)</text>';
+  for(var i3=0;i3<pts.length;i3++){ var p=pts[i3];
+    s+='<circle cx="'+X(p.x)+'" cy="'+Y(p.y)+'" r="'+p.r+'" fill="'+p.c+'" fill-opacity=".55" stroke="'+p.c+'" stroke-width="1"/>';
+    s+='<text x="'+(X(p.x)+p.r+4)+'" y="'+(Y(p.y)+3.4)+'" class="ax5">'+esc(p.n)+'</text>'; }
+  return s+'</svg>';
+}
+/* 워터폴 */
+function svgWater(steps, o){
+  o=o||{}; var W=o.w||900,H=250,pl=52,pr=14,pt=22,pb=44;
+  var iw=W-pl-pr, ih=H-pt-pb, run=0, mx=0, acc=[];
+  for(var i=0;i<steps.length;i++){ if(steps[i].t){ acc.push({s:0,e:steps[i].v}); run=steps[i].v; if(steps[i].v>mx)mx=steps[i].v; }
+    else { acc.push({s:run,e:run+steps[i].v}); run+=steps[i].v; if(run>mx)mx=run; } }
+  mx=mx*1.12;
+  var bw=iw/steps.length, s='<svg viewBox="0 0 '+W+' '+H+'" class="cv">';
+  for(var g=0;g<=4;g++){ var yy=pt+ih-ih*g/4;
+    s+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" stroke="#eceff2"/>';
+    s+='<text x="'+(pl-6)+'" y="'+(yy+3.5)+'" class="ax" text-anchor="end">'+Math.round(mx*g/4/10000).toLocaleString()+'만</text>'; }
+  for(var i2=0;i2<steps.length;i2++){ var st=steps[i2], a=acc[i2];
+    var y1=pt+ih-a.e/mx*ih, y2=pt+ih-a.s/mx*ih, x=pl+bw*i2+bw*0.18;
+    s+='<rect x="'+x+'" y="'+y1+'" width="'+(bw*0.64)+'" height="'+Math.max(y2-y1,1)+'" rx="2" fill="'+st.c+'"/>';
+    s+='<text x="'+(x+bw*0.32)+'" y="'+(y1-5)+'" class="bv2" text-anchor="middle">'+(st.t?'':'+')+Math.round(st.v/10000).toLocaleString()+'만</text>';
+    s+='<text x="'+(x+bw*0.32)+'" y="'+(pt+ih+14)+'" class="ax2" text-anchor="middle">'+esc(st.n)+'</text>';
+    if(st.n2) s+='<text x="'+(x+bw*0.32)+'" y="'+(pt+ih+26)+'" class="ax" text-anchor="middle">'+esc(st.n2)+'</text>'; }
+  return s+'</svg>';
+}
+/* 스택 비율 바 (HTML) */
+function stack(parts){
+  var h='<div class="stk">';
+  for(var i=0;i<parts.length;i++) h+='<div style="background:'+parts[i].c+';width:'+parts[i].p+'%">'+parts[i].n+' '+parts[i].p+'%</div>';
+  return h+'</div>';
+}
+function lg(items){
+  var h='<div class="legend">';
+  for(var i=0;i<items.length;i++) h+='<span><i style="background:'+items[i].c+'"></i>'+items[i].n+'</span>';
+  return h+'</div>';
+}
+
 var D = {"periods":[{"k":"2025설날","label":"2025 설날","day":"2025-01-29","range":"2025-01-08 ~ 01-29","items":313,"totalQty":94174},{"k":"2025추석","label":"2025 추석","day":"2025-10-06","range":"2025-09-15 ~ 10-06","items":295,"totalQty":145372},{"k":"2026설날","label":"2026 설날","day":"2026-02-17","range":"2026-01-27 ~ 02-17","items":324,"totalQty":170424}],"jeon":[{"name":"모둠전3종_동태전,동그랑땡,깻잎전","spec":"350G","q":[2429,1887,2004]},{"name":"소고기육전과새콤파채","spec":"240G","q":[2063,1772,2295]},{"name":"동그랑땡","spec":"160G","q":[865,2245,2260]},{"name":"깻잎전","spec":"250G","q":[2,1016,1190]},{"name":"동태전","spec":"150G","q":[0,861,1110]},{"name":"계란두부부침","spec":"170G","q":[115,922,814]},{"name":"녹두전","spec":"280G","q":[2,792,787]},{"name":"모둠전3종_달콤옥수수전,새우전,동그랑땡","spec":"330G","q":[270,447,418]},{"name":"동그랑땡_대용량","spec":"450G","q":[220,290,260]},{"name":"한끼모둠전","spec":"150G","q":[0,199,565]},{"name":"모둠전3종_해물야채전,매콤김치전,감자전","spec":"400G","q":[165,230,246]},{"name":"깻잎전_대용량","spec":"500G","q":[213,175,144]},{"name":"해물야채전","spec":"160G","q":[216,208,74]},{"name":"소고기육전과파채_대용량","spec":"480G","q":[230,164,0]},{"name":"모둠전3종_육전,녹두전,새우전","spec":"470G","q":[0,244,116]},{"name":"매콤김치전","spec":"150G","q":[70,106,59]},{"name":"새우전","spec":"120g","q":[2,0,233]},{"name":"애호박전_대용량","spec":"300G","q":[0,105,122]},{"name":"삼색전과양파장아찌(감자전,매콤김치전,깻잎전)","spec":"380G","q":[29,92,0]},{"name":"동태전_대용량","spec":"500G","q":[0,0,106]},{"name":"녹두전_대용량","spec":"600G","q":[0,0,59]},{"name":"모둠전 3종_맛살버섯전, 아이들김치전, 한입수제떡갈비","spec":"400g","q":[22,0,0]},{"name":"모둠전3종_동태전,동그랑땡,깻잎전_대용량","spec":"820G","q":[3,0,0]},{"name":"동태전","spec":"250G","q":[2,0,0]},{"name":"감자전","spec":"250G","q":[0,0,1]},{"name":"동그랑땡_대용량","spec":"650G","q":[1,0,0]},{"name":"맛살버섯전","spec":"160g","q":[0,0,1]},{"name":"버섯두부전","spec":"160G","q":[0,0,1]},{"name":"애호박전","spec":"160G","q":[1,0,0]},{"name":"참치깻잎전","spec":"150G","q":[0,0,1]}],"sets":[{"name":"[로켓프레시] 집반찬연구소 명절 음식 세트 (3~4인)","q":[0,172,67]},{"name":"차례상(소)_2025추석","q":[0,215,0]},{"name":"설 명절 음식 Set(3~4인)","q":[176,0,0]},{"name":"(2026설)차례상(소)","q":[0,0,164]},{"name":"듬뿍 설 한상세트 (4~6인)","q":[83,0,0]},{"name":"차례상(중)_2025추석","q":[0,72,0]},{"name":"풍성 설 한상세트 (4~6인)","q":[65,0,0]},{"name":"(2026설)설음식세트(소)","q":[0,0,58]},{"name":"알찬 설 한상세트(2인)","q":[53,0,0]},{"name":"(2026설)설음식세트(중)","q":[0,0,52]},{"name":"더 풍성 설 한상세트 (8~10인)","q":[32,0,0]},{"name":"풍성차례상세트","q":[25,0,0]},{"name":"(2026설)설음식세트(대)","q":[0,0,19]},{"name":"차례상(대)_2025추석","q":[0,18,0]},{"name":"더 듬뿍 설 한상세트 (8~10인)","q":[17,0,0]},{"name":"설음식세트(3~4인)","q":[15,0,0]},{"name":"보름달 설 한상세트 (12인 이상)","q":[6,0,0]},{"name":"(2026설)차례상(대)","q":[0,0,5]}],"jeonTot":[6920,11755,12866],"setTot":[472,477,365],"monthly":[{"m":"25.1","all":127333,"jeon":8106,"쿠팡":5010,"컬리":142,"자사몰":1944,"hol":true},{"m":"25.2","all":126369,"jeon":4915,"쿠팡":3824,"컬리":188,"자사몰":903,"hol":false},{"m":"25.3","all":155185,"jeon":5639,"쿠팡":4516,"컬리":213,"자사몰":904,"hol":false},{"m":"25.4","all":158188,"jeon":5655,"쿠팡":3886,"컬리":1026,"자사몰":742,"hol":false},{"m":"25.5","all":166654,"jeon":7186,"쿠팡":4552,"컬리":1960,"자사몰":674,"hol":false},{"m":"25.6","all":172614,"jeon":7006,"쿠팡":4248,"컬리":1981,"자사몰":775,"hol":false},{"m":"25.7","all":193545,"jeon":8198,"쿠팡":5026,"컬리":2230,"자사몰":942,"hol":false},{"m":"25.8","all":205229,"jeon":8237,"쿠팡":4866,"컬리":2485,"자사몰":886,"hol":false},{"m":"25.9","all":210226,"jeon":11348,"쿠팡":6410,"컬리":3850,"자사몰":1088,"hol":true},{"m":"25.10","all":175911,"jeon":11079,"쿠팡":5880,"컬리":3710,"자사몰":1489,"hol":true},{"m":"25.11","all":188666,"jeon":6403,"쿠팡":4206,"컬리":1593,"자사몰":604,"hol":false},{"m":"25.12","all":183266,"jeon":6025,"쿠팡":3773,"컬리":1482,"자사몰":770,"hol":false},{"m":"26.1","all":238683,"jeon":8180,"쿠팡":5020,"컬리":2212,"자사몰":948,"hol":true},{"m":"26.2","all":195404,"jeon":13788,"쿠팡":5645,"컬리":5749,"자사몰":2394,"hol":true},{"m":"26.3","all":230522,"jeon":7154,"쿠팡":3968,"컬리":2349,"자사몰":837,"hol":false},{"m":"26.4","all":222307,"jeon":6683,"쿠팡":3734,"컬리":2140,"자사몰":803,"hol":false},{"m":"26.5","all":231318,"jeon":7190,"쿠팡":4338,"컬리":2105,"자사몰":736,"hol":false},{"m":"26.6","all":229166,"jeon":7720,"쿠팡":4600,"컬리":2345,"자사몰":751,"hol":false},{"m":"26.7","all":226650,"jeon":7311,"쿠팡":4410,"컬리":2249,"자사몰":626,"hol":false}],"uplift":[{"label":"2025 설날","all":{"hol":8106,"base":5647,"inc":2459},"쿠팡":{"hol":5010,"base":4201,"inc":809},"컬리":{"hol":142,"base":620,"inc":-477},"자사몰":{"hol":1944,"base":823,"inc":1121}},{"label":"2025 추석","all":{"hol":22427,"base":14432,"inc":7996},"쿠팡":{"hol":12290,"base":8936,"inc":3355},"컬리":{"hol":7560,"base":3895,"inc":3665},"자사몰":{"hol":2577,"base":1601,"inc":976}},{"label":"2026 설날","all":{"hol":21968,"base":13133,"inc":8836},"쿠팡":{"hol":10665,"base":7841,"inc":2825},"컬리":{"hol":7961,"base":3782,"inc":4179},"자사몰":{"hol":3342,"base":1507,"inc":1835}}],"lifecycle":[{"name":"동그랑땡","first":"25.1","base":1781,"hol":2484,"total":34533},{"name":"소고기육전과새콤파채","first":"25.1","base":1643,"hol":2526,"total":33729},{"name":"계란두부부침","first":"25.1","base":961,"hol":945,"total":14086},{"name":"모둠전3종_동태전,동그랑땡,깻잎전","first":"25.1","base":745,"hol":2055,"total":24232},{"name":"한끼모둠전","first":"25.5","base":621,"hol":661,"total":6897},{"name":"모둠전3종_달콤옥수수전,새우전,동그랑땡","first":"25.1","base":312,"hol":455,"total":6714},{"name":"깻잎전","first":"25.1","base":232,"hol":1213,"total":3874},{"name":"모둠전3종_해물야채전,매콤김치전,감자전","first":"25.1","base":230,"hol":271,"total":4463},{"name":"동태전","first":"25.9","base":190,"hol":1119,"total":3635},{"name":"동그랑땡_대용량","first":"25.1","base":169,"hol":269,"total":3079},{"name":"녹두전","first":"25.1","base":126,"hol":805,"total":3129},{"name":"매콤김치전","first":"25.1","base":102,"hol":80,"total":1704},{"name":"해물야채전","first":"25.1","base":98,"hol":83,"total":3831},{"name":"모둠전3종_육전,녹두전,새우전","first":"25.8","base":2,"hol":188,"total":463},{"name":"동태전","first":"25.1","base":0,"hol":0,"total":11},{"name":"애호박전_대용량","first":"25.9","base":0,"hol":117,"total":248},{"name":"애호박전","first":"25.1","base":0,"hol":0,"total":13},{"name":"동그랑땡_대용량","first":"25.1","base":0,"hol":0,"total":8},{"name":"소고기육전과파채_대용량","first":"25.1","base":0,"hol":0,"total":413},{"name":"깻잎전_대용량","first":"25.1","base":0,"hol":144,"total":545},{"name":"모둠전3종_동태전,동그랑땡,깻잎전_대용량","first":"25.1","base":0,"hol":0,"total":13},{"name":"녹두전_대용량","first":"26.1","base":0,"hol":57,"total":64},{"name":"새우전","first":"25.1","base":0,"hol":212,"total":259},{"name":"모둠전 3종_맛살버섯전, 아이들김치전, 한입수제떡갈비","first":"25.1","base":0,"hol":0,"total":65},{"name":"동태전_대용량","first":"26.1","base":0,"hol":104,"total":109},{"name":"삼색전과양파장아찌(감자전,매콤김치전,깻잎전)","first":"25.1","base":0,"hol":0,"total":1706}],"conc":[{"n":"동그랑땡","t":34533,"p":"23.4","c":"23.4"},{"n":"소고기육전과새콤파채","t":33729,"p":"22.8","c":"46.2"},{"n":"모둠전3종_동태전,동그랑땡,깻잎전","t":24232,"p":"16.4","c":"62.6"},{"n":"계란두부부침","t":14086,"p":"9.5","c":"72.1"},{"n":"한끼모둠전","t":6897,"p":"4.7","c":"76.8"},{"n":"모둠전3종_달콤옥수수전,새우전,동그랑땡","t":6714,"p":"4.5","c":"81.3"},{"n":"모둠전3종_해물야채전,매콤김치전,감자전","t":4463,"p":"3.0","c":"84.3"},{"n":"깻잎전","t":3874,"p":"2.6","c":"86.9"},{"n":"해물야채전","t":3831,"p":"2.6","c":"89.5"},{"n":"동태전","t":3635,"p":"2.5","c":"92.0"},{"n":"녹두전","t":3129,"p":"2.1","c":"94.1"},{"n":"동그랑땡_대용량","t":3079,"p":"2.1","c":"96.2"},{"n":"삼색전과양파장아찌(감자전,매콤김치전,깻잎전)","t":1706,"p":"1.2","c":"97.4"},{"n":"매콤김치전","t":1704,"p":"1.2","c":"98.5"},{"n":"깻잎전_대용량","t":545,"p":"0.4","c":"98.9"},{"n":"모둠전3종_육전,녹두전,새우전","t":463,"p":"0.3","c":"99.2"},{"n":"소고기육전과파채_대용량","t":413,"p":"0.3","c":"99.5"},{"n":"새우전","t":259,"p":"0.2","c":"99.6"},{"n":"애호박전_대용량","t":248,"p":"0.2","c":"99.8"},{"n":"동태전_대용량","t":109,"p":"0.1","c":"99.9"},{"n":"모둠전 3종_맛살버섯전, 아이들김치전, 한입수제떡갈비","t":65,"p":"0.0","c":"99.9"},{"n":"녹두전_대용량","t":64,"p":"0.0","c":"100.0"},{"n":"애호박전","t":13,"p":"0.0","c":"100.0"},{"n":"모둠전3종_동태전,동그랑땡,깻잎전_대용량","t":13,"p":"0.0","c":"100.0"},{"n":"동태전","t":11,"p":"0.0","c":"100.0"},{"n":"동그랑땡_대용량","t":8,"p":"0.0","c":"100.0"}],"margin":[{"name":"새우전","spec":"120g","ch":"자사몰","q":259,"unit":7755,"std":2092,"cm":5663,"cmr":73,"cmKg":47196},{"name":"동태전","spec":"150G","ch":"자사몰","q":215,"unit":7968,"std":1681,"cm":6287,"cmr":79,"cmKg":41915},{"name":"동태전","spec":"500G","ch":"자사몰","q":109,"unit":25357,"std":5519,"cm":19838,"cmr":78,"cmKg":39676},{"name":"소고기육전과새콤파채","spec":"240G","ch":"자사몰","q":2849,"unit":11596,"std":2750,"cm":8846,"cmr":76,"cmKg":36857},{"name":"애호박전","spec":"300G","ch":"자사몰","q":248,"unit":13286,"std":2347,"cm":10939,"cmr":82,"cmKg":36463},{"name":"소고기육전과새콤파채","spec":"480G","ch":"자사몰","q":413,"unit":21290,"std":5234,"cm":16056,"cmr":75,"cmKg":33450},{"name":"모둠전3종_동태전,동그랑땡,깻잎전","spec":"350G","ch":"자사몰","q":1655,"unit":12803,"std":2686,"cm":10117,"cmr":79,"cmKg":28907},{"name":"깻잎전","spec":"500G","ch":"자사몰","q":545,"unit":17072,"std":2641,"cm":14431,"cmr":85,"cmKg":28861},{"name":"녹두전","spec":"600G","ch":"자사몰","q":64,"unit":20520,"std":3311,"cm":17209,"cmr":84,"cmKg":28682},{"name":"동그랑땡","spec":"160G","ch":"자사몰","q":2457,"unit":5605,"std":1033,"cm":4572,"cmr":82,"cmKg":28574},{"name":"동태전","spec":"150G","ch":"쿠팡","q":1824,"unit":5821,"std":1681,"cm":4140,"cmr":71,"cmKg":27598},{"name":"모둠전3종_달콤옥수수전,새우전,동그랑땡","spec":"330G","ch":"자사몰","q":893,"unit":11506,"std":2503,"cm":9003,"cmr":78,"cmKg":27283},{"name":"깻잎전","spec":"250G","ch":"자사몰","q":432,"unit":7751,"std":1292,"cm":6459,"cmr":83,"cmKg":25836},{"name":"매콤김치전","spec":"150G","ch":"자사몰","q":1703,"unit":4395,"std":542,"cm":3853,"cmr":88,"cmKg":25689},{"name":"동그랑땡_대용량","spec":"450G","ch":"자사몰","q":611,"unit":13919,"std":2579,"cm":11340,"cmr":81,"cmKg":25201},{"name":"녹두전","spec":"280G","ch":"자사몰","q":559,"unit":8401,"std":1358,"cm":7043,"cmr":84,"cmKg":25153},{"name":"모둠전3종_맛살버섯전,아이들김치전,한입수제떡갈비)","spec":"400g","ch":"자사몰","q":64,"unit":12219,"std":2463,"cm":9756,"cmr":80,"cmKg":24389},{"name":"동태전","spec":"150G","ch":"컬리","q":1596,"unit":5285,"std":1681,"cm":3604,"cmr":68,"cmKg":24028},{"name":"해물야채전","spec":"160G","ch":"자사몰","q":2005,"unit":4645,"std":848,"cm":3797,"cmr":82,"cmKg":23730},{"name":"소고기육전과새콤파채","spec":"240G","ch":"쿠팡","q":24918,"unit":8155,"std":2750,"cm":5405,"cmr":66,"cmKg":22519},{"name":"계란두부부침","spec":"170G","ch":"자사몰","q":2791,"unit":4461,"std":635,"cm":3826,"cmr":86,"cmKg":22509},{"name":"모둠전3종_해물야채전,매콤김치전,감자전","spec":"400G","ch":"자사몰","q":750,"unit":10745,"std":1882,"cm":8863,"cmr":82,"cmKg":22157},{"name":"소고기육전과새콤파채","spec":"240G","ch":"컬리","q":5101,"unit":7543,"std":2750,"cm":4793,"cmr":64,"cmKg":19969},{"name":"모둠전3종_동태전,동그랑땡,깻잎전","spec":"350G","ch":"쿠팡","q":22376,"unit":9460,"std":2686,"cm":6774,"cmr":72,"cmKg":19354},{"name":"동그랑땡","spec":"160G","ch":"쿠팡","q":21996,"unit":4081,"std":1033,"cm":3048,"cmr":75,"cmKg":19051},{"name":"깻잎전","spec":"250G","ch":"쿠팡","q":1456,"unit":5812,"std":1292,"cm":4520,"cmr":78,"cmKg":18079},{"name":"녹두전","spec":"280G","ch":"쿠팡","q":1332,"unit":6420,"std":1358,"cm":5062,"cmr":79,"cmKg":18079},{"name":"모둠전3종_달콤옥수수전,새우전,동그랑땡","spec":"330G","ch":"쿠팡","q":5814,"unit":8342,"std":2503,"cm":5839,"cmr":70,"cmKg":17694},{"name":"동그랑땡","spec":"160G","ch":"컬리","q":10076,"unit":3761,"std":1033,"cm":2728,"cmr":73,"cmKg":17053},{"name":"동그랑땡_대용량","spec":"450G","ch":"쿠팡","q":2468,"unit":9997,"std":2579,"cm":7418,"cmr":74,"cmKg":16484},{"name":"녹두전","spec":"280G","ch":"컬리","q":1237,"unit":5850,"std":1358,"cm":4492,"cmr":77,"cmKg":16041},{"name":"깻잎전","spec":"250G","ch":"컬리","q":1985,"unit":5274,"std":1292,"cm":3982,"cmr":76,"cmKg":15929},{"name":"모둠전3종_해물야채전,매콤김치전,감자전","spec":"400G","ch":"쿠팡","q":3708,"unit":7741,"std":1882,"cm":5859,"cmr":76,"cmKg":14648},{"name":"해물야채전","spec":"160G","ch":"컬리","q":1824,"unit":3156,"std":848,"cm":2308,"cmr":73,"cmKg":14425},{"name":"계란두부부침","spec":"170G","ch":"컬리","q":11293,"unit":2961,"std":635,"cm":2326,"cmr":79,"cmKg":13685},{"name":"한끼모둠전3종","spec":"150G","ch":"컬리","q":6897,"unit":2698,"std":745,"cm":1953,"cmr":72,"cmKg":13021}],"feb":{"쿠팡":{"q":5645,"r":45034591,"cm":29881195,"kg":1503.6999999999998},"컬리":{"q":5749,"r":27617341,"cm":20054280,"kg":1124.91},"자사몰":{"q":2394,"r":26450168,"cm":21385546,"kg":674.2399999999999}},"febTot":{"q":13788,"r":99102100,"cm":71321021,"kg":3303},"febMix":{"쿠팡":[{"n":"모둠전3종_동태전,동그랑땡,깻잎전","q":1864,"r":17685956},{"n":"소고기육전과새콤파채","q":1542,"r":12778966},{"n":"동그랑땡","q":1016,"r":4118495},{"n":"모둠전3종_달콤옥수수전,새우전,동그랑땡","q":366,"r":3033145},{"n":"모둠전3종_육전,녹두전,새우전","q":188,"r":2797440},{"n":"모둠전3종_해물야채전,매콤김치전,감자전","q":174,"r":1337422},{"n":"동태전","q":156,"r":904371},{"n":"깻잎전","q":144,"r":834804},{"n":"녹두전","q":111,"r":709179},{"n":"동그랑땡_대용량","q":84,"r":834813}],"컬리":[{"n":"동그랑땡","q":1279,"r":4902407},{"n":"깻잎전","q":935,"r":5164940},{"n":"동태전","q":797,"r":4402628},{"n":"계란두부부침","q":786,"r":2347782},{"n":"소고기육전과새콤파채","q":682,"r":5304596},{"n":"한끼모둠전","q":661,"r":1788005},{"n":"녹두전","q":609,"r":3706983}],"자사몰":[{"n":"소고기육전과새콤파채","q":302,"r":3744998},{"n":"새우전","q":212,"r":1741694},{"n":"모둠전3종_동태전,동그랑땡,깻잎전","q":191,"r":2592229},{"n":"동그랑땡","q":189,"r":1094799},{"n":"동그랑땡_대용량","q":185,"r":2626539},{"n":"동태전","q":166,"r":1380285},{"n":"계란두부부침","q":159,"r":711944},{"n":"깻잎전_대용량","q":144,"r":2439877},{"n":"깻잎전","q":134,"r":1107747},{"n":"애호박전_대용량","q":117,"r":1556631},{"n":"동태전_대용량","q":104,"r":2662368},{"n":"모둠전3종_해물야채전,매콤김치전,감자전","q":97,"r":1037445},{"n":"모둠전3종_달콤옥수수전,새우전,동그랑땡","q":89,"r":1052785},{"n":"녹두전","q":85,"r":755133},{"n":"해물야채전","q":83,"r":402262},{"n":"매콤김치전","q":80,"r":359257},{"n":"녹두전_대용량","q":57,"r":1184175}]},"chPrice":[{"n":"동태전","spec":"150G","쿠팡":38804,"컬리":35234,"자사몰":53122},{"n":"소고기육전과새콤파채","spec":"240G","쿠팡":33977,"컬리":31428,"자사몰":48315},{"n":"모둠전3종_육전,녹두전,새우전","spec":"470G","쿠팡":31382,"컬리":null,"자사몰":null},{"n":"모둠전3종_동태전,동그랑땡,깻잎전","spec":"350G","쿠팡":27029,"컬리":null,"자사몰":36581},{"n":"동그랑땡","spec":"160G","쿠팡":25507,"컬리":23509,"자사몰":35030},{"n":"모둠전3종_달콤옥수수전,새우전,동그랑땡","spec":"330G","쿠팡":25279,"컬리":null,"자사몰":34867},{"n":"깻잎전","spec":"250G","쿠팡":23247,"컬리":21097,"자사몰":31004},{"n":"녹두전","spec":"280G","쿠팡":22929,"컬리":20891,"자사몰":30003},{"n":"동그랑땡_대용량","spec":"450G","쿠팡":22215,"컬리":null,"자사몰":30932},{"n":"해물야채전","spec":"160G","쿠팡":null,"컬리":19725,"자사몰":29030},{"n":"모둠전3종_해물야채전,매콤김치전,감자전","spec":"400G","쿠팡":19353,"컬리":null,"자사몰":26862},{"n":"한끼모둠전","spec":"150G","쿠팡":null,"컬리":17988,"자사몰":null},{"n":"계란두부부침","spec":"170G","쿠팡":null,"컬리":17420,"자사몰":26244},{"n":"삼색전과양파장아찌(감자전,매콤김치전,깻잎전)","spec":"380G","쿠팡":16460,"컬리":null,"자사몰":23196},{"n":"애호박전_대용량","spec":"300G","쿠팡":null,"컬리":null,"자사몰":44286},{"n":"매콤김치전","spec":"150G","쿠팡":null,"컬리":null,"자사몰":29302},{"n":"소고기육전과파채_대용량","spec":"480G","쿠팡":null,"컬리":null,"자사몰":44354},{"n":"깻잎전_대용량","spec":"500G","쿠팡":null,"컬리":null,"자사몰":34143},{"n":"새우전","spec":"120g","쿠팡":null,"컬리":null,"자사몰":64629}]};
 var KL = ['2025 설날','2025 추석','2026 설날'];
 function n(v){ return (v===0||v===null||v===undefined) ? '-' : Number(v).toLocaleString(); }
@@ -320,6 +456,169 @@ function go(i){
   window.scrollTo(0,0);
   if(window.parent!==window){ try{ window.parent.scrollTo(0,0);}catch(e){} }
 }
+
+
+function p1(){
+  var u=D.uplift, F=D.feb, T=D.febTot;
+  var dday = Math.round((new Date(2026,8,25) - new Date())/864e5);
+  var h='';
+  /* KPI */
+  h+='<div class="grid g4">';
+  h+='<div class="kpi" style="background:#1f2430;border-color:#1f2430"><div class="l" style="color:#9aa7b8">2026 추석</div><div class="d" style="color:#7b8798">9월 25일 (금) · 집계 9/4~9/25</div><div class="v" style="color:#fff">D-'+dday+'</div><div class="g" style="color:#8ab4f8">생산 계획 확정 시한 8월 4주</div></div>';
+  for(var i=0;i<3;i++){ var p=D.periods[i];
+    var g = i===0?'<div class="g gy">기준점</div>':'<div class="g up">직전 명절 대비 '+(i===1?'+69.9%':'+9.4%')+'</div>';
+    h+='<div class="kpi"><div class="l">'+p.label+'</div><div class="d">'+p.range+'</div><div class="v">'+nn(D.jeonTot[i])+'<small>개</small></div>'+g+'</div>'; }
+  h+='</div>';
+
+  /* 차트 1 : 3주 판매량 vs 명절 순증 */
+  h+='<h2>명절별 전 판매량 — 3주 판매량 vs 실제 명절 순증</h2><div class="card">';
+  h+=svgGroup(['2025 설날','2025 추석','2026 설날'],
+    [{n:'3주 판매량',c:'#ccd4de',v:D.jeonTot},
+     {n:'명절 순증 (평시 제외)',c:'#1a73e8',v:[u[0].all.inc,u[1].all.inc,u[2].all.inc]}],{h:245});
+  h+=lg([{n:'3주 판매량 (평시 수요 포함)',c:'#ccd4de'},{n:'명절 순증 = 명절 때문에 추가로 팔린 양',c:'#1a73e8'}]);
+  h+='<div class="warn" style="margin-top:11px"><b>"2026 설 +85.9%"는 착시다.</b> 3주 판매량에는 평상시에도 팔렸을 물량이 그대로 섞여 있다. 평시분을 걷어낸 <b>명절 순증</b>은 2,459 → 7,996 → 8,836개로, 직전 명절 대비 <b>+10.5%</b>에 그친다. 진짜 도약은 2025 추석 한 번(+225%)이었고 이후 정체다.</div></div>';
+
+  /* 차트 2 : 월별 추이 */
+  var mi=[]; for(var m=0;m<D.monthly.length;m++){ var x=D.monthly[m];
+    mi.push({n:x.m, v:x.jeon, c:x.hol?'#1a73e8':'#ccd4de', lab:(x.jeon/1000).toFixed(1)+'k'}); }
+  h+='<h2>전류 월별 판매량 추이 (2025.01 ~ 2026.07)</h2><div class="card">';
+  h+=svgVBar(mi,{h:235,pb:26});
+  h+=lg([{n:'명절 포함 월',c:'#1a73e8'},{n:'평시',c:'#ccd4de'}]);
+  h+='<div class="note"><b>평시 7,000~7,300개 박스권에 14개월째 고착.</b> 2025.04 컬리 입점으로 baseline이 5,600 → 7,200으로 한 단계 올라선 뒤 제자리다. 명절월만 튀는 구조라 <b>성장의 병목은 명절이 아니라 평시 수요</b>에 있다. 전류 연간 물량 약 86,500개 중 명절 순증은 <b>19%</b>뿐이다.</div></div>';
+
+  /* 차트 3 : 채널 캐파 vs 이익 */
+  h+='<h2>채널별 — 생산 캐파는 이렇게 쓰고, 이익은 이렇게 나온다</h2><div class="grid g2"><div class="card">';
+  h+='<h3>2026년 2월(설 피크월) 캐파 vs 공헌이익 비중</h3>';
+  h+='<div style="font-size:11px;color:#9aa0a6;margin:9px 0 2px">생산 캐파(kg) 비중</div>';
+  h+=stack([{n:'자사몰',p:20,c:'#0f9d58'},{n:'쿠팡',p:46,c:'#1a73e8'},{n:'컬리',p:34,c:'#e8710a'}]);
+  h+='<div style="font-size:11px;color:#9aa0a6;margin:11px 0 2px">공헌이익 비중</div>';
+  h+=stack([{n:'자사몰',p:30,c:'#0f9d58'},{n:'쿠팡',p:42,c:'#1a73e8'},{n:'컬리',p:28,c:'#e8710a'}]);
+  h+='<div class="ok" style="margin-top:12px"><b>자사몰은 캐파의 20%로 이익의 30%를 만든다.</b> 반대로 컬리는 캐파 34%를 쓰고 이익은 28%. 생산이 병목이면 이 격차가 그대로 기회손실이다.</div></div>';
+  h+='<div class="card"><h3>kg당 공헌이익 — 같은 1kg를 어디에 쓰느냐</h3>';
+  h+=svgHBar([{n:'자사몰',v:31718,c:'#0f9d58',lab:'31,718원'},{n:'쿠팡',v:19872,c:'#1a73e8',lab:'19,872원'},{n:'컬리',v:17827,c:'#e8710a',lab:'17,827원'}],{rh:34,pl:64,w:520});
+  h+='<div style="font-size:11px;color:#9aa0a6;margin-top:2px">명절 탄력 — 자사몰 2.22배 · 컬리 2.11배 · 쿠팡 1.36배</div>';
+  h+='<div class="info" style="margin-top:11px"><b>같은 동그랑땡도 자사몰에서 팔면 컬리의 1.68배다.</b><br>자사몰 동그랑땡(28,574) &gt; 쿠팡 동태전(27,598) &gt; 컬리 동태전(24,028) &gt; 쿠팡 동그랑땡(19,051).<br>캐파가 병목이면 <b>어떤 전을 만드느냐보다 어디서 파느냐</b>가 더 큰 레버다.</div></div></div>';
+
+  /* 핵심 결론 */
+  h+='<h2>핵심 결론</h2><div class="grid g2">';
+  var C=[
+   ['①','명절 순증은 정체됐다','2,459 → 7,996 → <b>8,836개(+10.5%)</b>. 다만 2026년 설에 <b>결품·생산 미달이 전반적으로 발생</b>했으므로, 8,836개는 수요 상한이 아니라 <b>공급 상한</b>이었을 가능성이 크다.','p3'],
+   ['②','전류는 명절 상품이 아니라 상시 상품','평시 baseline 월 7,212개(연 약 86,500개). 명절 순증은 연간의 <b>19%</b>. 캐파 증설의 근거는 명절이 아니라 평시 수요에 있다.','p1'],
+   ['③','명절 전투는 컬리·자사몰에서 벌어진다','명절 탄력 자사몰 2.22배 · 컬리 2.11배 · 쿠팡 1.36배. 2026 설 순증 8,836개 중 <b>컬리가 4,179개(47%)</b>를 만들었다. 쿠팡은 물량 60%를 담당하지만 명절엔 안 늘어난다.','p2'],
+   ['④','채널이 SKU보다 큰 레버다','kg당 공헌이익 자사몰 31,718 / 쿠팡 19,872 / 컬리 17,827원. 컬리는 물량이 쿠팡과 같은데(5,749 vs 5,645) 매출은 61%다 — <b>가장 잘 터지는 채널에서 가장 싼 걸 팔고 있다.</b>','p1']];
+  for(var j=0;j<C.length;j++) h+='<div class="card"><span class="pill '+C[j][3]+'">'+C[j][0]+'</span><h3 style="display:inline;margin-left:7px;font-size:13.5px">'+C[j][1]+'</h3><div class="note" style="margin-top:8px;font-size:12.2px">'+C[j][2]+'</div></div>';
+  h+='</div>';
+
+  /* 전략 요약 + 워터폴 */
+  h+='<h2>2026 추석 전략 3축과 기대효과</h2><div class="card">';
+  h+=svgWater([{n:'2026.2 실적',n2:'공헌이익',v:71321021,c:'#9aa0a6',t:1},
+    {n:'① 자사몰 비중 확대',n2:'캐파 20%→30%',v:4600000,c:'#0f9d58'},
+    {n:'② 컬리 믹스 전환',n2:'저마진→동태전',v:2500000,c:'#e8710a'},
+    {n:'③ 캐파 +15% 증설',n2:'자사몰 우선 배정',v:12800000,c:'#1a73e8'},
+    {n:'목표',n2:'+28%',v:91221021,c:'#1f2430',t:1}],{h:255});
+  h+='<div class="note">①②는 <b>추가 생산 없이 배분만 바꾸는 것</b>이라 실행 난이도가 낮다. ③은 증설 투자가 필요하지만 손익분기(kg당 17,827원)가 명확하다. 상세는 <b>[6. 향후 전략]</b> 탭 참조.</div></div>';
+
+  h+='<div class="info" style="margin-top:11px"><b>이 자료의 기준</b> — 이카운트 판매현황(전 채널) 19개월 원장(2025.01~2026.07) + 명절 3주 구간 3회 조회. 3개 구간 모두 이카운트 <b>총합계 행과 수량 일치 검증</b> 완료. 원가는 회계파트 표준원가표 2026.08판(재료비+부재료비) 기준.</div>';
+  el('pg1').innerHTML=h;
+}
+
+/* P2에 상위 10종 차트 추가 */
+var _p2=p2;
+p2=function(){ _p2();
+  var top=D.jeon.slice(0,10), h='';
+  h+='<h2>상위 10종 — 명절별 판매 추이</h2><div class="card">';
+  h+=svgGroup(top.map(function(r){return r.name.replace('모둠전3종_','모둠전_').replace(/,.*$/,'外').replace('소고기육전과새콤파채','소고기육전').substring(0,11);}),
+    [{n:'2025 설날',c:'#c7d0da',v:top.map(function(r){return r.q[0];})},
+     {n:'2025 추석',c:'#7fa8e0',v:top.map(function(r){return r.q[1];})},
+     {n:'2026 설날',c:'#1a73e8',v:top.map(function(r){return r.q[2];})}],{h:265});
+  h+=lg([{n:'2025 설날',c:'#c7d0da'},{n:'2025 추석',c:'#7fa8e0'},{n:'2026 설날',c:'#1a73e8'}]);
+  h+='<div class="note"><b>2025 설날엔 사실상 안 팔리던 깻잎전(2개)·녹두전(2개)·동태전150G(0개)이 2025 추석부터 1,000/790/860개 수준으로 올라왔다.</b> 라인업 확장이 전체 성장의 핵심 동력이었다. 반대로 상위 3종(모둠전3종·소고기육전·동그랑땡)은 3개 명절 합계의 <b>56%</b>를 차지한다.</div></div>';
+  el('pg2').innerHTML = h + el('pg2').innerHTML;
+};
+
+/* P3에 차트 추가 */
+var _p3=p3;
+p3=function(){ _p3();
+  var h='';
+  /* 채널별 월별 스택 */
+  var m=D.monthly;
+  h+='<h2>채널별 월별 판매 추이</h2><div class="card">';
+  var W=900,H=250,pl=48,pr=12,pt=18,pb=30,iw=W-pl-pr,ih=H-pt-pb,mx=0;
+  for(var i=0;i<m.length;i++) if(m[i].jeon>mx) mx=m[i].jeon;
+  mx=mx*1.1;
+  var bw=iw/m.length, s='<svg viewBox="0 0 '+W+' '+H+'" class="cv">';
+  for(var g=0;g<=4;g++){ var yy=pt+ih-ih*g/4;
+    s+='<line x1="'+pl+'" y1="'+yy+'" x2="'+(W-pr)+'" y2="'+yy+'" stroke="#eceff2"/>';
+    s+='<text x="'+(pl-6)+'" y="'+(yy+3.5)+'" class="ax" text-anchor="end">'+fmtK(Math.round(mx*g/4))+'</text>'; }
+  for(var i2=0;i2<m.length;i2++){ var x=m[i2], base=pt+ih, xx=pl+bw*i2+bw*0.16, w2=bw*0.68;
+    var seq=[['자사몰','#0f9d58'],['컬리','#e8710a'],['쿠팡','#1a73e8']];
+    for(var k=0;k<seq.length;k++){ var v=x[seq[k][0]]||0, bh=v/mx*ih;
+      s+='<rect x="'+xx+'" y="'+(base-bh)+'" width="'+w2+'" height="'+bh+'" fill="'+seq[k][1]+'"/>'; base-=bh; }
+    s+='<text x="'+(xx+w2/2)+'" y="'+(pt+ih+13)+'" class="ax" text-anchor="middle">'+x.m+'</text>'; }
+  s+='</svg>'; h+=s;
+  h+=lg([{n:'쿠팡',c:'#1a73e8'},{n:'컬리',c:'#e8710a'},{n:'자사몰',c:'#0f9d58'}]);
+  h+='<div class="note"><b>2025.04 컬리 입점이 baseline을 한 단계 끌어올린 유일한 사건이다.</b> 그 이후 채널 구성은 거의 고정돼 있고, 명절월(25.1 / 25.9~10 / 26.1~2)에만 컬리·자사몰 층이 두꺼워진다.</div></div>';
+
+  /* 명절 순증 채널 기여 */
+  h+='<h2>명절 순증의 채널별 기여</h2><div class="card">';
+  h+=svgGroup(['2025 설날','2025 추석','2026 설날'],
+    [{n:'쿠팡',c:'#1a73e8',v:D.uplift.map(function(x){return Math.max(x['쿠팡'].inc,0);})},
+     {n:'컬리',c:'#e8710a',v:D.uplift.map(function(x){return Math.max(x['컬리'].inc,0);})},
+     {n:'자사몰',c:'#0f9d58',v:D.uplift.map(function(x){return Math.max(x['자사몰'].inc,0);})}],{h:235});
+  h+=lg([{n:'쿠팡',c:'#1a73e8'},{n:'컬리',c:'#e8710a'},{n:'자사몰',c:'#0f9d58'}]);
+  h+='<div class="note">상시 볼륨은 쿠팡 60% / 컬리 30% / 자사몰 10% 구조인데, <b>명절 순증은 컬리 47% / 쿠팡 32% / 자사몰 21%</b>로 완전히 뒤바뀐다. 2025 설날엔 컬리가 미입점 상태라 자사몰이 순증의 46%를 만들었다.</div></div>';
+
+  /* 파레토 */
+  h+='<h2>SKU 집중도 — 상위 4종이 72%</h2><div class="card">';
+  h+=svgPareto(D.conc.slice(0,14).map(function(z){return {n:z.n.replace('모둠전3종_','모둠전_').replace(/,.*$/,'外').substring(0,10), v:z.t, c:Number(z.c)};}));
+  h+=lg([{n:'누적 판매량 (상위 4종)',c:'#1f2430'},{n:'그 외',c:'#ccd4de'},{n:'누적 비중(%)',c:'#e8710a'}]);
+  h+='<div class="note">상위 4종 <b>72.1%</b>, 상위 7종 <b>84.3%</b>. 선택과 집중은 이미 극단적으로 진행돼 있다. 정리의 목적은 매출이 아니라 <b>캐파 회수</b>여야 한다.</div></div>';
+
+  /* 산점도 */
+  h+='<h2>명절형 vs 상시형 — 어떤 전이 명절에 터지나</h2><div class="card">';
+  var sc=[], lf=D.lifecycle.filter(function(x){return x.base>=50;});
+  var rmx=0; for(var q=0;q<lf.length;q++) if(lf[q].hol>rmx) rmx=lf[q].hol;
+  for(var q2=0;q2<lf.length;q2++){ var L=lf[q2], e=L.hol/L.base;
+    sc.push({x:e, y:L.base, r:6+Math.sqrt(L.hol/rmx)*16, c:(e>=2.5?'#e8710a':(e>=1.3?'#1a73e8':'#0f9d58')),
+      n:L.name.replace('모둠전3종_','모둠전_').replace(/,.*$/,'外').substring(0,12)}); }
+  h+=svgScatter(sc);
+  h+=lg([{n:'명절형 (탄력 2.5배 이상)',c:'#e8710a'},{n:'혼합 (1.3~2.5배)',c:'#1a73e8'},{n:'상시형 (1.3배 미만)',c:'#0f9d58'},{n:'원 크기 = 2026년 2월 판매량',c:'#c7d0da'}]);
+  h+='<div class="note"><b>오른쪽 아래(명절형)</b> — 동태전 5.9배 · 녹두전 6.4배 · 깻잎전 5.2배. 평시 물량이 작아 <b>명절 결품 위험이 가장 큰 그룹</b>이다.<br><b>왼쪽 위(상시형)</b> — 동그랑땡 · 소고기육전 · 계란두부부침 · 한끼모둠전. 평시 물량은 크지만 명절에 캐파를 더 밀어도 팔리지 않는다.</div></div>';
+  el('pg3').innerHTML = h + el('pg3').innerHTML;
+};
+
+/* P4에 차트 추가 */
+var _p4=p4;
+p4=function(){ _p4();
+  var h='<h2>SKU × 채널 — kg당 공헌이익 상위 18</h2><div class="card">';
+  h+=svgHBar(D.margin.slice(0,18).map(function(M){
+     return {n:M.name.replace('모둠전3종_','모둠전_').replace(/,.*$/,'外').substring(0,13)+' · '+M.ch,
+             v:M.cmKg, c:(M.ch==='자사몰'?'#0f9d58':(M.ch==='쿠팡'?'#1a73e8':'#e8710a')), lab:M.cmKg.toLocaleString()+'원'};}),{rh:22,pl:230});
+  h+=lg([{n:'자사몰',c:'#0f9d58'},{n:'쿠팡',c:'#1a73e8'},{n:'컬리',c:'#e8710a'}]);
+  h+='<div class="note"><b>상위권이 자사몰로 도배된다.</b> 채널을 빼고 SKU만 보면 동태전 · 소고기육전 · 모둠전3종 순이지만, 채널을 넣으면 <b>자사몰 하위 SKU가 쿠팡·컬리 상위 SKU보다 높다.</b></div></div>';
+
+  h+='<h2>같은 제품, 채널만 바꿨을 때</h2><div class="card">';
+  h+=svgGroup(['동태전 150G','소고기육전 240G','동그랑땡 160G','깻잎전 250G','녹두전 280G'],
+   [{n:'자사몰',c:'#0f9d58',v:[41915,36857,28574,25836,25153]},
+    {n:'쿠팡',c:'#1a73e8',v:[27598,22519,19051,18079,18079]},
+    {n:'컬리',c:'#e8710a',v:[24028,19969,17053,15929,16041]}],{h:250});
+  h+=lg([{n:'자사몰',c:'#0f9d58'},{n:'쿠팡',c:'#1a73e8'},{n:'컬리',c:'#e8710a'}]);
+  h+='<div class="note">단위 = kg당 공헌이익(원). 동일 SKU 기준 <b>자사몰이 쿠팡보다 +37~42%, 컬리보다 +57~74%</b> 높다. 쿠팡·컬리는 납품가, 자사몰은 소비자가이기 때문이며, 배송비·수수료를 감안해도 순위는 유지된다.</div></div>';
+  el('pg4').innerHTML = h + el('pg4').innerHTML;
+};
+
+/* P5에 차트 추가 */
+var _p5=p5;
+p5=function(){ _p5();
+  var h='<h2>캐파 배분 우선순위 — kg당 공헌이익</h2><div class="card">';
+  var P=[['동태전 · 자사몰',41915,'#0f9d58'],['소고기육전 · 자사몰',36857,'#0f9d58'],['모둠전3종 · 자사몰',28907,'#0f9d58'],['동그랑땡 · 자사몰',28574,'#0f9d58'],
+   ['동태전 · 쿠팡',27598,'#1a73e8'],['동태전 · 컬리',24028,'#e8710a'],['소고기육전 · 쿠팡',22519,'#1a73e8'],['소고기육전 · 컬리',19969,'#e8710a'],
+   ['모둠전3종 · 쿠팡',19354,'#1a73e8'],['동그랑땡 · 쿠팡',19051,'#1a73e8'],['깻잎전/녹두전 · 쿠팡',18079,'#1a73e8'],['동그랑땡 · 컬리',17053,'#e8710a'],
+   ['해물야채전 · 컬리',14425,'#e8710a'],['계란두부부침 · 컬리',13685,'#e8710a'],['한끼모둠전 · 컬리',13021,'#e8710a']];
+  h+=svgHBar(P.map(function(r){return {n:r[0],v:r[1],c:r[2],lab:r[1].toLocaleString()+'원'};}),{rh:22,pl:190});
+  h+='<div class="note">추가 생산 1kg의 가치가 최상단(자사몰 동태전 41,915원)과 최하단(컬리 한끼모둠전 13,021원) 사이에 <b>3.2배</b> 차이가 난다. 생산이 병목이라면 이 순서대로 캐파를 채우는 것이 정답이다.</div></div>';
+  el('pg5').innerHTML = h + el('pg5').innerHTML;
+};
 p1();p2();p3();p4();p5();p6();go(0);
 </script>
 </body></html>
