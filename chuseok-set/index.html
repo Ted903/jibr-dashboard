@@ -216,13 +216,16 @@ var ONO = {"master":[{"n":"온올림 LA 양념갈비 (미국산)","w":850,"mkt":
 var BC = {}; CAT.forEach(function(x){BC[x.c]=x});
 var nf=function(n){return Math.round(n||0).toLocaleString()};
 var man=function(n){return Math.round((n||0)/10000).toLocaleString()};
-var SLOTS=[
+var DEFSLOTS=[
  {id:'ch1',g:'차례상',n:'차례상 A',grp:'g1'},{id:'ch2',g:'차례상',n:'차례상 B',grp:'g1'},
  {id:'ms1',g:'식사세트',n:'식사세트 1',grp:'g2'},{id:'ms2',g:'식사세트',n:'식사세트 2',grp:'g2'},{id:'ms3',g:'식사세트',n:'식사세트 3',grp:'g2'},
  {id:'on1',g:'온올림',n:'온올림 #6',grp:'g3'},{id:'on2',g:'온올림',n:'온올림 #3',grp:'g3'},{id:'on3',g:'온올림',n:'온올림 #7',grp:'g3'},
  {id:'nm1',g:'나물세트',n:'나물 3종',grp:'g4'},{id:'nm2',g:'나물세트',n:'나물 4종',grp:'g4'},{id:'nm3',g:'나물세트',n:'나물 5종',grp:'g4'},
  {id:'jn1',g:'전세트',n:'전 3종',grp:'g5'},{id:'jn2',g:'전세트',n:'전 4종',grp:'g5'}
 ];
+var GRPMAP={'차례상':'g1','식사세트':'g2','온올림':'g3','나물세트':'g4','전세트':'g5'};
+var SLOTS=JSON.parse(localStorage.getItem('ck_slots_v1')||'null')||JSON.parse(JSON.stringify(DEFSLOTS));
+SLOTS.forEach(function(s){ if(!s.grp) s.grp=GRPMAP[s.g]||'g6'; });
 var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},ms1:{n:'식사세트 1',p:0,pk:0,q:0},ms2:{n:'식사세트 2',p:0,pk:0,q:0},ms3:{n:'식사세트 3',p:0,pk:0,q:0},
  on1:{n:'온올림 #6',p:69800,pk:6510,q:200,it:{ONO_LA:1,ONO_BUL:1,ONO_TANG:1}},
  on2:{n:'온올림 #3',p:84800,pk:6510,q:250,it:{ONO_LA:2,ONO_TANG:1}},
