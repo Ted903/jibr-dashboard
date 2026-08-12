@@ -141,10 +141,13 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
    <h2>세트 구성</h2>
    <div class="fields">
     <div class="f"><label>세트명</label><input type="text" id="pname" placeholder="예: 온올림 실속"></div>
-    <div class="f"><label>판매가 (VAT 포함)</label><input type="number" id="pprice" placeholder="69800"></div>
+    <div class="f"><label>표시가 (상세페이지 정가)</label><input type="number" id="pdisp" placeholder="72400"></div>
+    <div class="f"><label>표시 할인율 (합산 대비)</label><input type="number" id="pdiscL" placeholder="0" step="0.1"></div>
+    <div class="f"><label><b>실판매가</b> (실제 결제가)</label><input type="number" id="pprice" placeholder="69800"></div>
+    <div class="f"><label>추가 할인율 (표시가 대비)</label><input type="number" id="pdiscA" placeholder="0" step="0.1"></div>
     <div class="f"><label>세트 포장비 (VAT 별도)</label><input type="number" id="ppack" placeholder="6510"></div>
     <div class="f"><label>계획 수량 (세트)</label><input type="number" id="pqty" placeholder="200"></div>
-    <div class="f"><label>&nbsp;</label><button class="btn" id="autop">할인율로 가격계산</button></div>
+    <div class="f"><label>&nbsp;</label><button class="btn" id="autop">합산가 → 표시가 자동</button></div>
     <div class="f"><label>&nbsp;</label><button class="btn" id="clr">구성 비우기</button></div>
    </div>
    <div class="cmp" id="cmp"></div>
@@ -224,7 +227,7 @@ var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},m
  on3:{n:'온올림 #7',p:99800,pk:6510,q:300,it:{ONO_LA:1,ONO_BUL:1,ONO_GALBI:1}}};
 var ST = JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null') || (function(){
   var o={}; SLOTS.forEach(function(s){var d=DEF[s.id]; o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p,name:d.n,pack:d.pk,qty:d.q}}); return o;})();
-SLOTS.forEach(function(s){ if(ST[s.id].pack===undefined) ST[s.id].pack=0; if(ST[s.id].qty===undefined) ST[s.id].qty=0; });
+SLOTS.forEach(function(s){ if(ST[s.id].pack===undefined) ST[s.id].pack=0; if(ST[s.id].qty===undefined) ST[s.id].qty=0; if(ST[s.id].list===undefined) ST[s.id].list=Number(ST[s.id].price)||0; });
 var SHIP = Number(localStorage.getItem('ck_ship')||3500);
 var cur='ch1', filt='전체', kw='';
 function save(){ localStorage.setItem('chuseok2026sim_v2', JSON.stringify(ST)); localStorage.setItem('ck_ship',SHIP); }
@@ -235,10 +238,13 @@ function calcS(STx,slot){
     sum+=it.price*q; pcost+=it.cost*q; wt+=(it.w||0)*q; n+=q; kinds++;
     mkt+=(it.mkt||it.price)*q; if(it.cat==='온올림') ono+=it.cost*q; });
   var pack=Number(s.pack)||0, price=Number(s.price)||0, vx=price/1.1;
+  var list=Number(s.list)||price;
   var cost=pcost+pack, total=cost+SHIP;
   return {sum:sum,mkt:mkt,pcost:pcost,pack:pack,cost:cost,total:total,wt:wt,n:n,kinds:kinds,price:price,vx:vx,
     rate: vx? cost/vx*100 : 0, rateS: vx? total/vx*100 : 0,
     disc: sum? (sum-price)/sum*100 : 0, perMenu: kinds? price/kinds : 0,
+    list:list, discL: sum? (sum-list)/sum*100 : 0, discA: list? (list-price)/list*100 : 0,
+    rateL: list? (pcost+pack+SHIP)/(list/1.1)*100 : 0,
     onoShare: pcost? ono/pcost*100:0, margin: vx-total, profitR: vx? (vx-total)/vx*100 : 0,
     qty: Number(s.qty)||0 };
 }
@@ -297,16 +303,22 @@ function renderComp(){
   var rc=rateClass(k.rateS);
   document.getElementById('sum').innerHTML=
     '<div class="sm"><div class="k">단품 합산가</div><div class="v">'+nf(k.sum)+'</div><div class="d">'+k.kinds+'종 / '+k.n+'개</div></div>'
-   +'<div class="sm"><div class="k">할인율</div><div class="v">'+(k.sum?k.disc.toFixed(1):'0')+'%</div><div class="d">합산 대비</div></div>'
+   +'<div class="sm"><div class="k">표시가</div><div class="v">'+nf(k.list)+'</div><div class="d">합산 대비 '+(k.sum?k.discL.toFixed(1):'0')+'% 할인</div></div>'
+   +'<div class="sm"><div class="k">실판매가</div><div class="v">'+nf(k.price)+'</div><div class="d">표시가 대비 '+(k.list?k.discA.toFixed(1):'0')+'% 추가</div></div>'
+   +'<div class="sm"><div class="k">총 할인율</div><div class="v">'+(k.sum?k.disc.toFixed(1):'0')+'%</div><div class="d">합산 → 실판매가</div></div>'
    +'<div class="sm"><div class="k">제품 원가</div><div class="v">'+nf(k.pcost)+'</div><div class="d">+포장 '+nf(k.pack)+' +택배 '+nf(SHIP)+'</div></div>'
-   +'<div class="sm '+rc+'"><div class="k">총원가율</div><div class="v">'+k.rateS.toFixed(1)+'%</div><div class="d">제품만 '+k.rate.toFixed(1)+'%</div></div>'
+   +'<div class="sm '+rc+'"><div class="k">총원가율 <span style="font-size:9.5px;color:#8b919b">실판매가 기준</span></div><div class="v">'+k.rateS.toFixed(1)+'%</div><div class="d">표시가 기준 '+k.rateL.toFixed(1)+'% · 제품만 '+k.rate.toFixed(1)+'%</div></div>'
    +'<div class="sm '+(k.profitR>=30?'good':(k.profitR>=20?'warn':'bad'))+'"><div class="k">이익율</div><div class="v">'+k.profitR.toFixed(1)+'%</div><div class="d">세트당 '+nf(k.margin)+'원</div></div>'
    +'<div class="sm"><div class="k">총 중량</div><div class="v">'+nf(k.wt)+'<span style="font-size:11px">g</span></div><div class="d">100g당 '+(k.wt?nf(k.price/k.wt*100):0)+'원</div></div>'
    +'<div class="sm"><div class="k">메뉴당 가격</div><div class="v">'+nf(k.perMenu)+'</div><div class="d">'+k.kinds+'종 기준</div></div>'
    +(k.onoShare>0?'<div class="sm warn"><div class="k">온올림 원가 비중</div><div class="v">'+k.onoShare.toFixed(0)+'%</div><div class="d">제품원가 중</div></div>':'')
    +(k.qty?'<div class="sm"><div class="k">계획 매출</div><div class="v">'+man(k.price*k.qty)+'<span style="font-size:11px">만</span></div><div class="d">'+nf(k.qty)+'세트 × '+nf(k.price)+'</div></div>':'');
-  document.getElementById('pname').value=s.name||'';
-  document.getElementById('pprice').value=s.price||'';
+  var setv=function(id,v){var el=document.getElementById(id); if(document.activeElement===el) return; el.value=v;};
+  setv('pname', s.name||'');
+  setv('pprice', s.price||'');
+  setv('pdisp', s.list||'');
+  setv('pdiscL', k.sum?Number(k.discL.toFixed(1)):'');
+  setv('pdiscA', k.list?Number(k.discA.toFixed(1)):'');
   document.getElementById('ppack').value=s.pack||0;
   document.getElementById('pqty').value=s.qty||0;
 }
@@ -321,12 +333,12 @@ function renderLine(){
     return '<div class="lc"><div class="lb2" style="height:'+h+'%;background:'+col+'"><b>'+(r.k.price?nf(r.k.price/10000)+'만':'-')+'</b><span>'+r.k.kinds+'종</span></div>'
      +'<div class="ll">'+(ST[r.s.id].name||r.s.n)+'<small>이익 '+r.k.profitR.toFixed(0)+'%</small></div></div>'}).join('');
   var g={}; rows.forEach(function(r){ g[r.s.g]=g[r.s.g]||[]; g[r.s.g].push(r); });
-  var tb='<table><thead><tr><th class="l">세트</th><th>구성</th><th>단품합산</th><th>판매가</th><th>할인율</th><th>제품원가</th><th>포장</th><th>총원가율</th><th>이익율</th><th>계획수량</th><th>계획매출</th><th>계획이익</th></tr></thead><tbody>';
+  var tb='<table><thead><tr><th class="l">세트</th><th>구성</th><th>단품합산</th><th>표시가</th><th>실판매가</th><th>총할인율</th><th>제품원가</th><th>포장</th><th>총원가율</th><th>이익율</th><th>계획수량</th><th>계획매출</th><th>계획이익</th></tr></thead><tbody>';
   Object.keys(g).forEach(function(gn){
-    tb+='<tr class="grp"><td colspan="12">'+gn+'</td></tr>';
+    tb+='<tr class="grp"><td colspan="13">'+gn+'</td></tr>';
     g[gn].forEach(function(r){ var rc=rateClass(r.k.rateS);
       tb+='<tr><td class="nm">'+(ST[r.s.id].name||r.s.n)+'</td><td class="num">'+r.k.kinds+'종 '+r.k.n+'개</td>'
-       +'<td class="num">'+nf(r.k.sum)+'</td><td class="num"><b>'+nf(r.k.price)+'</b></td>'
+       +'<td class="num">'+nf(r.k.sum)+'</td><td class="num">'+nf(r.k.list)+'</td><td class="num"><b>'+nf(r.k.price)+'</b></td>'
        +'<td class="num">'+(r.k.sum?r.k.disc.toFixed(1)+'%':'-')+'</td><td class="num">'+nf(r.k.pcost)+'</td>'
        +'<td class="num">'+nf(r.k.pack)+'</td>'
        +'<td class="num '+(rc==='bad'?'dn':(rc==='good'?'up':'fl'))+'">'+r.k.rateS.toFixed(1)+'%</td>'
@@ -337,7 +349,7 @@ function renderLine(){
   });
   var tp=rows.reduce(function(a,r){return a+r.k.price*r.k.qty},0), tm=rows.reduce(function(a,r){return a+r.k.margin*r.k.qty},0);
   var tq=rows.reduce(function(a,r){return a+r.k.qty},0);
-  tb+='<tr class="tot"><td>합계</td><td class="num">'+nf(tq)+'세트</td><td colspan="8"></td><td class="num">'+man(tp)+'만</td><td class="num">'+man(tm)+'만</td></tr></tbody></table>';
+  tb+='<tr class="tot"><td>합계</td><td class="num">'+nf(tq)+'세트</td><td colspan="9"></td><td class="num">'+man(tp)+'만</td><td class="num">'+man(tm)+'만</td></tr></tbody></table>';
   document.getElementById('linetbl').innerHTML=tb;
   var ch=rows.filter(function(r){return r.s.g==='차례상'&&r.k.price>0}).length;
   var ms=rows.filter(function(r){return r.s.g==='식사세트'&&r.k.price>0});
@@ -388,8 +400,22 @@ document.getElementById('cmp').addEventListener('click',function(e){
   if(p){ST[cur].items[p.dataset.p]++;}
   else if(m){var c=m.dataset.m;ST[cur].items[c]--;if(ST[cur].items[c]<=0)delete ST[cur].items[c];}
   else if(d){delete ST[cur].items[d.dataset.d];} else return; renderAll();});
-['pprice','ppack','pqty'].forEach(function(id){ document.getElementById(id).addEventListener('input',function(e){
-  var v=Number(e.target.value)||0; if(id==='pprice')ST[cur].price=v; else if(id==='ppack')ST[cur].pack=v; else ST[cur].qty=v;
+function priceSync(src){
+  var s=ST[cur], k=calc(cur), sum=k.sum;
+  var list=Number(s.list)||0, price=Number(s.price)||0;
+  if(src==='pdiscL'){ var d=Number(document.getElementById('pdiscL').value)||0;
+    if(sum){ list=Math.round(sum*(1-d/100)); s.list=list; if(price>list) { s.price=list; } } }
+  else if(src==='pdisp'){ list=Number(document.getElementById('pdisp').value)||0; s.list=list;
+    if(!price||price>list) s.price=list; }
+  else if(src==='pdiscA'){ var a=Number(document.getElementById('pdiscA').value)||0;
+    if(list){ s.price=Math.round(list*(1-a/100)); } }
+  else if(src==='pprice'){ s.price=Number(document.getElementById('pprice').value)||0;
+    if(!s.list) s.list=s.price; }
+}
+['pdisp','pdiscL','pprice','pdiscA','ppack','pqty'].forEach(function(id){ document.getElementById(id).addEventListener('input',function(e){
+  if(id==='ppack') ST[cur].pack=Number(e.target.value)||0;
+  else if(id==='pqty') ST[cur].qty=Number(e.target.value)||0;
+  else priceSync(id);
   renderComp(); renderSlots(); renderLine(); save(); }); });
 document.getElementById('pname').addEventListener('input',function(e){ST[cur].name=e.target.value;renderSlots();renderLine();save();});
 document.getElementById('ship').addEventListener('input',function(e){SHIP=Number(e.target.value)||0;renderComp();renderLine();save();});
@@ -399,8 +425,8 @@ document.getElementById('preset').addEventListener('change',function(e){
   e.target.value=''; renderAll();});
 document.getElementById('clr').addEventListener('click',function(){if(confirm('현재 세트 구성을 비울까요?')){ST[cur].items={};renderAll();}});
 document.getElementById('autop').addEventListener('click',function(){
-  var k=calc(cur); if(!k.sum)return; var d=Number(prompt('할인율을 입력하세요 (%)','10')); if(isNaN(d))return;
-  ST[cur].price=Math.round(k.sum*(1-d/100)/100)*100; renderAll();});
+  var k=calc(cur); if(!k.sum)return; var d=Number(prompt('단품 합산가 대비 표시 할인율을 입력하세요 (%)','10')); if(isNaN(d))return;
+  var L=Math.round(k.sum*(1-d/100)/100)*100; ST[cur].list=L; if(!ST[cur].price||ST[cur].price>L) ST[cur].price=L; renderAll();});
 var PROP = {"ch1":{"name":"차례상 1~2인","price":79000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3044":1,"ZIP_P_3158":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_5187":1,"ZIP_P_7069":1},"qty":250},"ch2":{"name":"차례상 3~4인","price":169000,"pack":2300,"items":{"ZIP_P_2062":2,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3044":2,"ZIP_P_3158":2,"ZIP_P_3002":2,"ZIP_P_0012":1,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":2,"ZIP_P_3071":1},"qty":80},"ms1":{"name":"실속 한상 1~2인","price":52000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_6232":1,"ZIP_P_6208":1},"qty":120},"ms2":{"name":"기본 한상 3~4인","price":88000,"pack":2300,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_3071":1},"qty":150},"ms3":{"name":"프리미엄 한상 5인+ (갈비탕)","price":199000,"pack":2300,"items":{"ZIP_P_2062":2,"ONO_TANG":1,"ZIP_P_0012":2,"ZIP_P_0203":1,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3002":2,"ZIP_P_3044":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":1},"qty":60},"on1":{"name":"온올림 #6 (LA+소불+갈비탕)","price":70200,"pack":6510,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_TANG":1},"qty":500},"on2":{"name":"온올림 #3 (LA×2+갈비탕)","price":83800,"pack":6510,"items":{"ONO_LA":2,"ONO_TANG":1},"qty":100},"on3":{"name":"온올림 #9 (LA+갈비탕+소갈비)","price":99300,"pack":6510,"items":{"ONO_LA":1,"ONO_TANG":1,"ONO_GALBI":1},"qty":300},"_single":{"ONO_TANG":40}}; delete PROP._single;
 document.getElementById('prop').addEventListener('click',function(){
   if(!confirm('제안안을 8개 슬롯에 모두 불러올까요? 현재 구성은 덮어씁니다.')) return;

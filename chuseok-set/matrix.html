@@ -97,7 +97,7 @@ var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},m
  on2:{n:'온올림 #3',p:84800,pk:6510,q:250,it:{ONO_LA:2,ONO_TANG:1}},
  on3:{n:'온올림 #7',p:99800,pk:6510,q:300,it:{ONO_LA:1,ONO_BUL:1,ONO_GALBI:1}}};
 var ST=JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null')||(function(){var o={};SLOTS.forEach(function(s){var d=DEF[s.id];o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p,name:d.n,pack:d.pk,qty:d.q}});return o})();
-SLOTS.forEach(function(s){ if(!ST[s.id]) ST[s.id]={items:{},price:0,name:SM[s.id].n,pack:0,qty:0}; if(ST[s.id].pack===undefined)ST[s.id].pack=0; if(ST[s.id].qty===undefined)ST[s.id].qty=0; if(!ST[s.id].items)ST[s.id].items={}; });
+SLOTS.forEach(function(s){ if(!ST[s.id]) ST[s.id]={items:{},price:0,name:SM[s.id].n,pack:0,qty:0}; if(ST[s.id].pack===undefined)ST[s.id].pack=0; if(ST[s.id].qty===undefined)ST[s.id].qty=0; if(ST[s.id].list===undefined)ST[s.id].list=Number(ST[s.id].price)||0; if(!ST[s.id].items)ST[s.id].items={}; });
 var SHIP=Number(localStorage.getItem('ck_ship')||3500);
 var VIEW=JSON.parse(localStorage.getItem('ck_matrix_view')||'null')||{cols:SLOTS.map(function(s){return s.id}),rows:[],collapsed:{},diff:true,hideEmpty:false};
 if(!VIEW.cols||VIEW.cols.length!==SLOTS.length){VIEW.cols=SLOTS.map(function(s){return s.id})}
@@ -108,10 +108,11 @@ function nf(n){return (Math.round(n)||0).toLocaleString('ko-KR')}
 function man(n){return Math.round((n||0)/10000).toLocaleString('ko-KR')}
 function calcS(slot){var s=ST[slot],sum=0,pcost=0,wt=0,n=0,kinds=0;
  Object.keys(s.items).forEach(function(c){var it=BC[c];var q=s.items[c];if(!it||!q)return;sum+=it.price*q;pcost+=it.cost*q;wt+=(it.w||0)*q;n+=q;kinds++});
- var pack=Number(s.pack)||0,price=Number(s.price)||0,vx=price/1.1;var cost=pcost+pack,total=cost+SHIP;
+ var pack=Number(s.pack)||0,price=Number(s.price)||0,vx=price/1.1;var cost=pcost+pack,total=cost+SHIP;var list=Number(s.list)||price;
  return{sum:sum,pcost:pcost,pack:pack,cost:cost,total:total,wt:wt,n:n,kinds:kinds,price:price,vx:vx,
   rate:vx?cost/vx*100:0,rateS:vx?total/vx*100:0,disc:sum?(sum-price)/sum*100:0,perMenu:kinds?price/kinds:0,
-  margin:vx-total,profitR:vx?(vx-total)/vx*100:0,qty:Number(s.qty)||0}}
+  margin:vx-total,profitR:vx?(vx-total)/vx*100:0,qty:Number(s.qty)||0,
+  list:list,discL:sum?(sum-list)/sum*100:0,discA:list?(list-price)/list*100:0,rateL:list?(pcost+pack+SHIP)/(list/1.1)*100:0}}
 var CATORD=['온올림','고기·메인','전류','국·탕','나물류','김치·장아찌','대용량','세트','기타'];
 function rowList(){
  var used={};VIEW.cols.forEach(function(id){Object.keys(ST[id].items).forEach(function(c){if(ST[id].items[c]>0)used[c]=1})});
@@ -136,7 +137,7 @@ function render(){
    +'<div class="g">'+s.g+' <span style="color:#c3c9d4">⠿</span></div>'
    +'<input data-f="name" data-id="'+id+'" value="'+(ST[id].name||s.n).replace(/"/g,'&quot;')+'">'+'</th>'});
  h+='</tr>';
- h+='<tr><th class="stick0" style="top:40px">판매가 (VAT 포함)</th>';
+ h+='<tr><th class="stick0" style="top:40px">실판매가 (실제 결제가)</th>';
  cols.forEach(function(id){h+='<th class="setcol" style="top:40px"><input class="num" data-f="price" data-id="'+id+'" type="number" value="'+(ST[id].price||'')+'" placeholder="0"></th>'});
  h+='</tr></thead><tbody>';
  function mrow(label,fn,cls){var r='<tr class="mrow"><th class="stick0">'+label+'</th>';
@@ -144,9 +145,13 @@ function render(){
  h+='<tr class="mrow"><th class="stick0">계획 수량 (세트)</th>'+cols.map(function(id){return '<td><input class="num" data-f="qty" data-id="'+id+'" type="number" value="'+(ST[id].qty||'')+'" placeholder="0"></td>'}).join('')+'</tr>';
  h+='<tr class="mrow"><th class="stick0">세트 포장비 (VAT 별도)</th>'+cols.map(function(id){return '<td><input class="num" data-f="pack" data-id="'+id+'" type="number" value="'+(ST[id].pack||'')+'" placeholder="0"></td>'}).join('')+'</tr>';
  h+=mrow('단품 합산가',function(id){var k=calcS(id);return k.sum?nf(k.sum):'-'});
- h+=mrow('할인율',function(id){var k=calcS(id);return k.sum&&k.price?k.disc.toFixed(1)+'%':'-'});
+ h+='<tr class="mrow"><th class="stick0">↓ 표시 할인율 (합산 대비)</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="discL" data-id="'+id+'" type="number" step="0.1" value="'+(k.sum?Number(k.discL.toFixed(1)):'')+'" placeholder="0"></td>'}).join('')+'</tr>';
+ h+='<tr class="mrow"><th class="stick0"><b>표시가</b> (상세페이지 정가)</th>'+cols.map(function(id){return '<td><input class="num" data-f="list" data-id="'+id+'" type="number" value="'+(ST[id].list||'')+'" placeholder="0"></td>'}).join('')+'</tr>';
+ h+='<tr class="mrow"><th class="stick0">↓ 추가 할인율 (표시가 대비)</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="discA" data-id="'+id+'" type="number" step="0.1" value="'+(k.list?Number(k.discA.toFixed(1)):'')+'" placeholder="0"></td>'}).join('')+'</tr>';
+ h+=mrow('총 할인율 (합산 → 실판매가)',function(id){var k=calcS(id);return k.sum&&k.price?k.disc.toFixed(1)+'%':'-'});
  h+=mrow('제품 원가',function(id){var k=calcS(id);return k.pcost?nf(k.pcost):'-'});
- h+=mrow('총원가율',function(id){var k=calcS(id);if(!k.price)return '-';var cl=k.rateS<=22?'b-ok':(k.rateS<=30?'b-warn':'b-bad');return '<span class="badge '+cl+'">'+k.rateS.toFixed(1)+'%</span>'});
+ h+=mrow('총원가율 (실판매가 기준)',function(id){var k=calcS(id);if(!k.price)return '-';var cl=k.rateS<=22?'b-ok':(k.rateS<=30?'b-warn':'b-bad');return '<span class="badge '+cl+'">'+k.rateS.toFixed(1)+'%</span>'});
+ h+=mrow('참고: 표시가 기준 원가율',function(id){var k=calcS(id);return k.list?k.rateL.toFixed(1)+'%':'-'});
  h+=mrow('이익율',function(id){var k=calcS(id);return k.price?k.profitR.toFixed(1)+'%':'-'});
  h+=mrow('총 중량',function(id){var k=calcS(id);return k.wt?nf(k.wt)+'g':'-'});
  h+=mrow('품목 수',function(id){var k=calcS(id);return k.kinds?k.kinds+'종 / '+k.n+'개':'-'});
@@ -175,8 +180,18 @@ function render(){
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'\u0026lt;').replace(/>/g,'\u0026gt;')}
 var mx=document.getElementById('mx');
 var dragQ=null,dragging=false;
-mx.addEventListener('input',function(e){var t=e.target;if(!t.dataset||!t.dataset.f)return;var id=t.dataset.id,f=t.dataset.f;
- if(f==='name')ST[id].name=t.value; else ST[id][f]=Number(t.value)||0; saveST(); render()});
+mx.addEventListener('input',function(e){var t=e.target;if(!t.dataset||!t.dataset.f)return;var id=t.dataset.id,f=t.dataset.f;var s=ST[id];
+ var v=Number(t.value)||0;
+ if(f==='name'){s.name=t.value}
+ else if(f==='discL'){var k=calcS(id); if(k.sum){s.list=Math.round(k.sum*(1-v/100)); if(!s.price||s.price>s.list)s.price=s.list;}}
+ else if(f==='list'){s.list=v; if(!s.price||s.price>v)s.price=v;}
+ else if(f==='discA'){var L=Number(s.list)||0; if(L){s.price=Math.round(L*(1-v/100));}}
+ else if(f==='price'){s.price=v; if(!s.list)s.list=v;}
+ else {s[f]=v}
+ saveST();
+ var keep=t.dataset.f, kid=t.dataset.id; render();
+ var el=mx.querySelector('[data-f="'+keep+'"][data-id="'+kid+'"]'); if(el){el.focus(); try{el.setSelectionRange(el.value.length,el.value.length)}catch(x){}}
+});
 mx.addEventListener('click',function(e){
  var g=e.target.closest('.grp'); if(g){VIEW.collapsed[g.dataset.cat]=!VIEW.collapsed[g.dataset.cat];saveView();render();return}
  var b=e.target.closest('.stp b'); if(b){var td=b.closest('.cell');var d=b.dataset.pl?1:-1;setQty(td.dataset.id,td.dataset.c,qty(td.dataset.id,td.dataset.c)+d);render();e.stopPropagation();return}
