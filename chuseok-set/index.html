@@ -127,7 +127,7 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
 </nav>
 <div class="panel on" data-i="0">
  <div class="card" style="padding:11px 14px">
-  <div style="font-size:11.5px;color:#6b7280;margin-bottom:7px">세트 슬롯을 고르고 왼쪽 카탈로그에서 품목을 클릭해 담으세요. 차례상 2 · 식사세트 3(최대 30만원) · 온올림 3 · 나물세트 2 · 전세트 2 구조입니다. <b>계획수량</b>을 넣으면 「라인업 · 원재료」 탭에서 온올림 재고 소진과 손익이 계산됩니다.</div>
+  <div style="font-size:11.5px;color:#6b7280;margin-bottom:7px">세트 슬롯을 고르고 왼쪽 카탈로그에서 품목을 클릭해 담으세요. 차례상 2 · 식사세트 3(최대 30만원) · 온올림 3 · 나물세트 3(3·4·5종) · 전세트 2(3·4종) 구조입니다. <b>계획수량</b>을 넣으면 「라인업 · 원재료」 탭에서 온올림 재고 소진과 손익이 계산됩니다.</div>
   <div class="slots" id="slots"></div>
  </div>
  <div class="sim">
@@ -172,7 +172,7 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
  <div class="card"><h2>가격 사다리</h2><div class="ladder" id="ladder"></div><div class="rule" id="rules"></div></div>
  <div class="card"><h2>온올림 원재료 소진 현황 <span>세트 계획수량 기준 · 단품 전환 필요량 자동 계산</span></h2><div class="scroll" id="mat"></div><div class="matsum" id="matsum"></div>
   <div class="note" style="margin-top:8px">원재료는 이미 발주가 확정된 물량입니다(LA 1,000 · 소불고기 500 · 갈비탕 1,000 · 소갈비 300). <b>세트에서 쓰고 남는 수량 = 단품으로 팔아야 하는 수량</b>입니다. 단품도 못 팔면 그대로 손실이 됩니다.</div></div>
- <div class="card"><h2>라인업 종합 <span>12개 슬롯</span></h2><div class="scroll" id="linetbl"></div></div>
+ <div class="card"><h2>라인업 종합 <span>13개 슬롯</span></h2><div class="scroll" id="linetbl"></div></div>
 </div>
 <div class="panel" data-i="2">
  <div class="card"><h2>저장된 안 <span>구성을 잡을 때마다 상단 「현재안 저장」으로 기록하세요</span></h2><div id="snaps"></div></div>
@@ -183,7 +183,7 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
 <div class="panel" data-i="5"><div id="onoref"></div></div>
 <div class="panel" data-i="6">
  <div class="card"><h2>이번 추석 설계 제약</h2><div class="note"><ul>
-  <li><b>차례상 최대 2개</b> · <b>식사세트 최대 3개(최고가 30만원 이하)</b> · <b>온올림 3개</b> · <b>나물세트 2개</b> · <b>전세트 2개</b></li>
+  <li><b>차례상 최대 2개</b> · <b>식사세트 최대 3개(최고가 30만원 이하)</b> · <b>온올림 3개</b> · <b>나물세트 3개(3·4·5종)</b> · <b>전세트 2개(3·4종)</b></li>
   <li>2025 추석 8종 → 2026 설 11종으로 늘렸는데 판매는 848 → 632개로 줄었습니다. 종수 축소가 맞습니다.</li>
   <li>온올림 갈비탕 3종 세트(#17)는 최종 제외 → <b>갈비탕 550개 잔여 문제</b>가 생깁니다. 자사 식사세트로 흡수할지 결정 필요.</li>
  </ul></div></div>
@@ -220,15 +220,15 @@ var SLOTS=[
  {id:'ch1',g:'차례상',n:'차례상 A',grp:'g1'},{id:'ch2',g:'차례상',n:'차례상 B',grp:'g1'},
  {id:'ms1',g:'식사세트',n:'식사세트 1',grp:'g2'},{id:'ms2',g:'식사세트',n:'식사세트 2',grp:'g2'},{id:'ms3',g:'식사세트',n:'식사세트 3',grp:'g2'},
  {id:'on1',g:'온올림',n:'온올림 #6',grp:'g3'},{id:'on2',g:'온올림',n:'온올림 #3',grp:'g3'},{id:'on3',g:'온올림',n:'온올림 #7',grp:'g3'},
- {id:'nm1',g:'나물세트',n:'나물세트 A',grp:'g4'},{id:'nm2',g:'나물세트',n:'나물세트 B',grp:'g4'},
- {id:'jn1',g:'전세트',n:'전세트 A',grp:'g5'},{id:'jn2',g:'전세트',n:'전세트 B',grp:'g5'}
+ {id:'nm1',g:'나물세트',n:'나물 3종',grp:'g4'},{id:'nm2',g:'나물세트',n:'나물 4종',grp:'g4'},{id:'nm3',g:'나물세트',n:'나물 5종',grp:'g4'},
+ {id:'jn1',g:'전세트',n:'전 3종',grp:'g5'},{id:'jn2',g:'전세트',n:'전 4종',grp:'g5'}
 ];
 var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},ms1:{n:'식사세트 1',p:0,pk:0,q:0},ms2:{n:'식사세트 2',p:0,pk:0,q:0},ms3:{n:'식사세트 3',p:0,pk:0,q:0},
  on1:{n:'온올림 #6',p:69800,pk:6510,q:200,it:{ONO_LA:1,ONO_BUL:1,ONO_TANG:1}},
  on2:{n:'온올림 #3',p:84800,pk:6510,q:250,it:{ONO_LA:2,ONO_TANG:1}},
  on3:{n:'온올림 #7',p:99800,pk:6510,q:300,it:{ONO_LA:1,ONO_BUL:1,ONO_GALBI:1}},
- nm1:{n:'나물세트 A',p:0,pk:0,q:0},nm2:{n:'나물세트 B',p:0,pk:0,q:0},
- jn1:{n:'전세트 A',p:0,pk:0,q:0},jn2:{n:'전세트 B',p:0,pk:0,q:0}};
+ nm1:{n:'나물 3종',p:0,pk:0,q:0},nm2:{n:'나물 4종',p:0,pk:0,q:0},nm3:{n:'나물 5종',p:0,pk:0,q:0},
+ jn1:{n:'전 3종',p:0,pk:0,q:0},jn2:{n:'전 4종',p:0,pk:0,q:0}};
 var ST = JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null') || (function(){
   var o={}; SLOTS.forEach(function(s){var d=DEF[s.id]; o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p,name:d.n,pack:d.pk,qty:d.q}}); return o;})();
 SLOTS.forEach(function(s){ if(!ST[s.id]){var d=DEF[s.id]||{n:s.n,p:0,pk:0,q:0}; ST[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p||0,name:d.n||s.n,pack:d.pk||0,qty:d.q||0};} if(ST[s.id].pack===undefined) ST[s.id].pack=0; if(ST[s.id].qty===undefined) ST[s.id].qty=0; if(ST[s.id].list===undefined) ST[s.id].list=Number(ST[s.id].price)||0; });
@@ -365,7 +365,7 @@ function renderLine(){
     '<span class="rl '+(ch<=2?'ok':'no')+'">차례상 '+ch+'개 / 최대 2</span>'
    +'<span class="rl '+(ms.length<=3?'ok':'no')+'">식사세트 '+ms.length+'개 / 최대 3</span>'
    +'<span class="rl '+(maxms<=300000?'ok':'no')+'">식사세트 최고가 '+nf(maxms)+' / 30만 이하</span>'
-   +'<span class="rl '+(nmc<=2?'ok':'no')+'">나물세트 '+nmc+'개 / 최대 2</span>'
+   +'<span class="rl '+(nmc<=3?'ok':'no')+'">나물세트 '+nmc+'개 / 최대 3</span>'
    +'<span class="rl '+(jnc<=2?'ok':'no')+'">전세트 '+jnc+'개 / 최대 2</span>'
    +'<span class="rl '+(low.length===0?'ok':'no')+'">이익율 20% 미만 '+low.length+'개</span>';
   /* 온올림 원재료 소진 */

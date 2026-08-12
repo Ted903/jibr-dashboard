@@ -91,15 +91,15 @@ var BC={}; CAT.forEach(function(x){BC[x.c]=x});
 var SLOTS=[{id:'ch1',g:'차례상',n:'차례상 A'},{id:'ch2',g:'차례상',n:'차례상 B'},
  {id:'ms1',g:'식사세트',n:'식사세트 1'},{id:'ms2',g:'식사세트',n:'식사세트 2'},{id:'ms3',g:'식사세트',n:'식사세트 3'},
  {id:'on1',g:'온올림',n:'온올림 #6'},{id:'on2',g:'온올림',n:'온올림 #3'},{id:'on3',g:'온올림',n:'온올림 #7'},
- {id:'nm1',g:'나물세트',n:'나물세트 A'},{id:'nm2',g:'나물세트',n:'나물세트 B'},
- {id:'jn1',g:'전세트',n:'전세트 A'},{id:'jn2',g:'전세트',n:'전세트 B'}];
+ {id:'nm1',g:'나물세트',n:'나물 3종'},{id:'nm2',g:'나물세트',n:'나물 4종'},{id:'nm3',g:'나물세트',n:'나물 5종'},
+ {id:'jn1',g:'전세트',n:'전 3종'},{id:'jn2',g:'전세트',n:'전 4종'}];
 var SM={}; SLOTS.forEach(function(s){SM[s.id]=s});
 var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},ms1:{n:'식사세트 1',p:0,pk:0,q:0},ms2:{n:'식사세트 2',p:0,pk:0,q:0},ms3:{n:'식사세트 3',p:0,pk:0,q:0},
  on1:{n:'온올림 #6',p:69800,pk:6510,q:200,it:{ONO_LA:1,ONO_BUL:1,ONO_TANG:1}},
  on2:{n:'온올림 #3',p:84800,pk:6510,q:250,it:{ONO_LA:2,ONO_TANG:1}},
  on3:{n:'온올림 #7',p:99800,pk:6510,q:300,it:{ONO_LA:1,ONO_BUL:1,ONO_GALBI:1}},
- nm1:{n:'나물세트 A',p:0,pk:0,q:0},nm2:{n:'나물세트 B',p:0,pk:0,q:0},
- jn1:{n:'전세트 A',p:0,pk:0,q:0},jn2:{n:'전세트 B',p:0,pk:0,q:0}};
+ nm1:{n:'나물 3종',p:0,pk:0,q:0},nm2:{n:'나물 4종',p:0,pk:0,q:0},nm3:{n:'나물 5종',p:0,pk:0,q:0},
+ jn1:{n:'전 3종',p:0,pk:0,q:0},jn2:{n:'전 4종',p:0,pk:0,q:0}};
 var ST=JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null')||(function(){var o={};SLOTS.forEach(function(s){var d=DEF[s.id];o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p,name:d.n,pack:d.pk,qty:d.q}});return o})();
 SLOTS.forEach(function(s){ if(!ST[s.id]) ST[s.id]={items:{},price:0,name:SM[s.id].n,pack:0,qty:0}; if(ST[s.id].pack===undefined)ST[s.id].pack=0; if(ST[s.id].qty===undefined)ST[s.id].qty=0; if(ST[s.id].list===undefined)ST[s.id].list=Number(ST[s.id].price)||0; if(!ST[s.id].items)ST[s.id].items={}; });
 var SHIP=Number(localStorage.getItem('ck_ship')||3500);
