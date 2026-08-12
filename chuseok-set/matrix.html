@@ -149,7 +149,7 @@ function render(){
  h+='<tr class="mrow"><th class="stick0">계획 수량 (세트)</th>'+cols.map(function(id){return '<td><input class="num" data-f="qty" data-id="'+id+'" type="number" value="'+(ST[id].qty||'')+'" placeholder="0"></td>'}).join('')+'</tr>';
  h+='<tr class="mrow"><th class="stick0">세트 포장비 (VAT 별도)</th>'+cols.map(function(id){return '<td><input class="num" data-f="pack" data-id="'+id+'" type="number" value="'+(ST[id].pack||'')+'" placeholder="0"></td>'}).join('')+'</tr>';
  h+=mrow('단품 합산가',function(id){var k=calcS(id);return k.sum?nf(k.sum):'-'});
- h+='<tr class="mrow"><th class="stick0">↓ 표시 할인율 (합산 대비)</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="discL" data-id="'+id+'" type="number" step="0.1" value="'+(k.sum?Number(k.discL.toFixed(1)):'')+'" placeholder="0"></td>'}).join('')+'</tr>';
+ h+='<tr class="mrow"><th class="stick0">↓ 표시 할인율 (합산 대비)</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="discL" data-id="'+id+'" type="number" step="0.1" value="'+(k.sum&&k.list?Number(k.discL.toFixed(1)):'')+'" placeholder="0"></td>'}).join('')+'</tr>';
  h+='<tr class="mrow"><th class="stick0"><b>표시가</b> (상세페이지 정가)</th>'+cols.map(function(id){return '<td><input class="num" data-f="list" data-id="'+id+'" type="number" value="'+(ST[id].list||'')+'" placeholder="0"></td>'}).join('')+'</tr>';
  h+='<tr class="mrow"><th class="stick0">↓ 추가 할인율 (표시가 대비)</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="discA" data-id="'+id+'" type="number" step="0.1" value="'+(k.list?Number(k.discA.toFixed(1)):'')+'" placeholder="0"></td>'}).join('')+'</tr>';
  h+=mrow('총 할인율 (합산 → 실판매가)',function(id){var k=calcS(id);return k.sum&&k.price?k.disc.toFixed(1)+'%':'-'});

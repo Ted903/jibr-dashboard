@@ -307,8 +307,8 @@ function renderComp(){
   var rc=rateClass(k.rateS);
   document.getElementById('sum').innerHTML=
     '<div class="sm"><div class="k">단품 합산가</div><div class="v">'+nf(k.sum)+'</div><div class="d">'+k.kinds+'종 / '+k.n+'개</div></div>'
-   +'<div class="sm"><div class="k">표시가</div><div class="v">'+nf(k.list)+'</div><div class="d">합산 대비 '+(k.sum?k.discL.toFixed(1):'0')+'% 할인</div></div>'
-   +'<div class="sm"><div class="k">실판매가</div><div class="v">'+nf(k.price)+'</div><div class="d">표시가 대비 '+(k.list?k.discA.toFixed(1):'0')+'% 추가</div></div>'
+   +'<div class="sm"><div class="k">표시가</div><div class="v">'+(k.list?nf(k.list):'-')+'</div><div class="d">'+((k.sum&&k.list)?'합산 대비 '+k.discL.toFixed(1)+'% 할인':'미입력')+'</div></div>'
+   +'<div class="sm"><div class="k">실판매가</div><div class="v">'+(k.price?nf(k.price):'-')+'</div><div class="d">'+(k.list&&k.price?'표시가 대비 '+k.discA.toFixed(1)+'% 추가':'미입력')+'</div></div>'
    +'<div class="sm"><div class="k">총 할인율</div><div class="v">'+(k.sum?k.disc.toFixed(1):'0')+'%</div><div class="d">합산 → 실판매가</div></div>'
    +'<div class="sm"><div class="k">제품 원가</div><div class="v">'+nf(k.pcost)+'</div><div class="d">+포장 '+nf(k.pack)+' +택배 '+nf(SHIP)+'</div></div>'
    +'<div class="sm '+rc+'"><div class="k">총원가율 <span style="font-size:9.5px;color:#8b919b">실판매가 기준</span></div><div class="v">'+k.rateS.toFixed(1)+'%</div><div class="d">표시가 기준 '+k.rateL.toFixed(1)+'% · 제품만 '+k.rate.toFixed(1)+'%</div></div>'
@@ -321,7 +321,7 @@ function renderComp(){
   setv('pname', s.name||'');
   setv('pprice', s.price||'');
   setv('pdisp', s.list||'');
-  setv('pdiscL', k.sum?Number(k.discL.toFixed(1)):'');
+  setv('pdiscL', (k.sum&&k.list)?Number(k.discL.toFixed(1)):'');
   setv('pdiscA', k.list?Number(k.discA.toFixed(1)):'');
   document.getElementById('ppack').value=s.pack||0;
   document.getElementById('pqty').value=s.qty||0;
