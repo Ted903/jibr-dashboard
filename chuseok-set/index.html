@@ -657,4 +657,54 @@ renderSnapsInline();
 
 refreshSnaps();
 
+
+// ===== 팀 공유 저장소 (Firebase Realtime DB) =====
+(function(){
+  var FB='https://zipbanchan-review-db-default-rtdb.firebaseio.com/chuseok2026';
+  var rev=0;
+  var bar=document.createElement('div');
+  bar.id='syncbar';
+  bar.style.cssText='position:fixed;right:14px;bottom:14px;z-index:9999;background:#fff;border:1px solid #e2e6ee;border-radius:9px;padding:7px 11px;font-size:11.5px;font-weight:700;color:#5a6478;box-shadow:0 3px 10px rgba(0,0,0,.10);cursor:pointer';
+  bar.title='클릭하면 팀 공유 저장소를 즉시 새로고침합니다';
+  bar.textContent='팀 공유 저장소 연결 중...';
+  document.body.appendChild(bar);
+  function st(t,c){ bar.textContent=t; bar.style.color=c||'#5a6478'; }
+  function okmsg(){ st('팀 공유 저장소 · 저장된 안 '+SNAPS.length+'개','#1f7a4d'); }
+  function apply(rs){
+    SNAPS.length=0; rs.forEach(function(s){SNAPS.push(s)});
+    localStorage.setItem('ck_snaps', JSON.stringify(SNAPS));
+    refreshSnaps();
+  }
+  function push(){
+    rev=Date.now();
+    st('공유 저장소에 올리는 중...');
+    fetch(FB+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({snaps:SNAPS,rev:rev})})
+      .then(function(r){ if(!r.ok) throw 0; okmsg(); })
+      .catch(function(){ st('올리기 실패 · 이 브라우저에만 저장됨','#c0392b'); });
+  }
+  function pull(first){
+    fetch(FB+'.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){
+      var rs=(d&&d.snaps)||[];
+      var rrev=Number((d&&d.rev)||0);
+      if(first){
+        var map={}, added=false;
+        rs.forEach(function(s){ map[s.id]=s; });
+        SNAPS.forEach(function(s){ if(!map[s.id]){ map[s.id]=s; added=true; } });
+        var merged=Object.keys(map).map(function(k){return map[k]}).sort(function(a,b){return a.id<b.id?1:-1});
+        rev=rrev; apply(merged);
+        if(added || !rs.length){ if(SNAPS.length) push(); else okmsg(); } else okmsg();
+        return;
+      }
+      if(rrev>rev){ rev=rrev; apply(rs); }
+      okmsg();
+    }).catch(function(){ st('공유 저장소 연결 안 됨 · 이 브라우저에만 저장','#c0392b'); });
+  }
+  var orig=saveSnaps;
+  saveSnaps=function(){ orig(); push(); };
+  bar.addEventListener('click',function(){ pull(false); });
+  pull(true);
+  setInterval(function(){ if(document.visibilityState==='visible') pull(false); }, 10000);
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') pull(false); });
+})();
+
 </script></body></html>
