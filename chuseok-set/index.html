@@ -96,6 +96,16 @@ tr.grp td{background:#eef1f6;font-weight:700;font-size:11px;color:#5a6478;paddin
 .btn:hover{background:#eef1f5}
 .btn.p{background:#1f2430;color:#fff;border-color:#1f2430}
 footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
+.fields{display:grid;grid-template-columns:1.4fr .9fr .9fr .8fr auto auto;gap:7px;margin-bottom:9px;align-items:end}
+@media(max-width:760px){.fields{grid-template-columns:1fr 1fr}}
+.f{display:flex;flex-direction:column;gap:3px}
+.f label{font-size:10.5px;color:#8b919b;font-weight:700;letter-spacing:-.2px}
+.f input,.f button{width:100%}
+.f .btn{padding:6px 8px;height:30px}
+.matsum{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:10px}
+
+@media print{ nav,header .btn,#snapbtn,#prop,#exp,#rst,.panel:not(.on){display:none!important}
+ body{background:#fff} .card{break-inside:avoid;border-color:#ccc} @page{size:A4;margin:12mm} }
 </style></head>
 <body>
 <div class="wrap">
@@ -104,14 +114,16 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
  <div class="sub">자사 원가 = 2026 표준원가시트 · 온올림 = 2026 OEM 관련 가격 정리 · 구성 프리셋 = 노션 명절 공지</div></div>
  <div style="display:flex;gap:6px;align-items:center">
   <label style="font-size:11.5px;color:#5a6478;font-weight:700">택배비</label><input type="number" id="ship" style="width:74px">
-  <button class="btn p" id="prop">제안안 불러오기</button><button class="btn" id="exp">시트로 복사</button><button class="btn" id="rst">초기화</button></div>
+  <button class="btn p" id="snapbtn">현재안 저장</button><button class="btn" id="prop">제안안 불러오기</button><button class="btn" id="exp">시트로 복사</button><button class="btn" id="rst">초기화</button></div>
 </header>
 <nav id="nav">
  <button data-i="0" class="on">시뮬레이터</button>
  <button data-i="1">라인업 · 원재료</button>
- <button data-i="2">세트 판매 이력</button>
- <button data-i="3">온올림 기준</button>
- <button data-i="4">설계 기준</button>
+ <button data-i="2">저장 · 비교</button>
+ <button data-i="3">최종 확정안</button>
+ <button data-i="4">세트 판매 이력</button>
+ <button data-i="5">온올림 기준</button>
+ <button data-i="6">설계 기준</button>
 </nav>
 <div class="panel on" data-i="0">
  <div class="card" style="padding:11px 14px">
@@ -127,27 +139,46 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
   </div>
   <div class="card">
    <h2>세트 구성</h2>
-   <div class="tools">
-    <input type="text" id="pname" placeholder="세트명" style="flex:1;min-width:110px">
-    <input type="number" id="pprice" placeholder="판매가" style="width:96px">
-    <input type="number" id="ppack" placeholder="포장비" style="width:82px" title="세트 포장·부재료비(VAT-)">
-    <input type="number" id="pqty" placeholder="계획수량" style="width:82px">
-    <button class="btn" id="autop">할인율</button><button class="btn" id="clr">비우기</button>
+   <div class="fields">
+    <div class="f"><label>세트명</label><input type="text" id="pname" placeholder="예: 온올림 실속"></div>
+    <div class="f"><label>판매가 (VAT 포함)</label><input type="number" id="pprice" placeholder="69800"></div>
+    <div class="f"><label>세트 포장비 (VAT 별도)</label><input type="number" id="ppack" placeholder="6510"></div>
+    <div class="f"><label>계획 수량 (세트)</label><input type="number" id="pqty" placeholder="200"></div>
+    <div class="f"><label>&nbsp;</label><button class="btn" id="autop">할인율로 가격계산</button></div>
+    <div class="f"><label>&nbsp;</label><button class="btn" id="clr">구성 비우기</button></div>
    </div>
    <div class="cmp" id="cmp"></div>
    <div class="sum" id="sum"></div>
   </div>
  </div>
+
+ <div class="card" style="border:1px solid #cfd6e0">
+  <h2 style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+   구성 저장 로그
+   <span>구성을 바꿀 때마다 저장해서 비교하세요</span>
+   <span style="margin-left:auto;display:flex;gap:6px">
+    <button class="btn p" id="snapbtn2">이 구성 저장</button>
+    <button class="btn" id="gocmp">자세히 비교</button>
+    <button class="btn" id="gofinal">최종 확정안 보기</button>
+   </span>
+  </h2>
+  <div id="snapsInline"></div>
+ </div>
 </div>
 <div class="panel" data-i="1">
  <div class="card"><h2>가격 사다리</h2><div class="ladder" id="ladder"></div><div class="rule" id="rules"></div></div>
- <div class="card"><h2>온올림 원재료 소진 현황 <span>세트 계획수량 + 단품 판매 계획</span></h2><div class="scroll" id="mat"></div>
-  <div class="note" style="margin-top:8px">원재료는 이미 발주가 확정된 물량입니다(LA 1,000 · 소불고기 500 · 갈비탕 1,000 · 소갈비 300). <b>남기면 그대로 손실</b>이므로 온올림 3세트만으로 못 쓰는 물량은 자사 식사세트에 넣어 소진해야 합니다.</div></div>
+ <div class="card"><h2>온올림 원재료 소진 현황 <span>세트 계획수량 기준 · 단품 전환 필요량 자동 계산</span></h2><div class="scroll" id="mat"></div><div class="matsum" id="matsum"></div>
+  <div class="note" style="margin-top:8px">원재료는 이미 발주가 확정된 물량입니다(LA 1,000 · 소불고기 500 · 갈비탕 1,000 · 소갈비 300). <b>세트에서 쓰고 남는 수량 = 단품으로 팔아야 하는 수량</b>입니다. 단품도 못 팔면 그대로 손실이 됩니다.</div></div>
  <div class="card"><h2>라인업 종합 <span>8개 슬롯</span></h2><div class="scroll" id="linetbl"></div></div>
 </div>
-<div class="panel" data-i="2"><div id="hist"></div></div>
-<div class="panel" data-i="3"><div id="onoref"></div></div>
-<div class="panel" data-i="4">
+<div class="panel" data-i="2">
+ <div class="card"><h2>저장된 안 <span>구성을 잡을 때마다 상단 「현재안 저장」으로 기록하세요</span></h2><div id="snaps"></div></div>
+ <div id="cmpbox"></div>
+</div>
+<div class="panel" data-i="3"><div id="final"></div></div>
+<div class="panel" data-i="4"><div id="hist"></div></div>
+<div class="panel" data-i="5"><div id="onoref"></div></div>
+<div class="panel" data-i="6">
  <div class="card"><h2>이번 추석 설계 제약</h2><div class="note"><ul>
   <li><b>차례상 최대 2개</b> · <b>식사세트 최대 3개(최고가 30만원 이하)</b> · <b>온올림 3개</b></li>
   <li>2025 추석 8종 → 2026 설 11종으로 늘렸는데 판매는 848 → 632개로 줄었습니다. 종수 축소가 맞습니다.</li>
@@ -195,12 +226,11 @@ var ST = JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null') || (funct
   var o={}; SLOTS.forEach(function(s){var d=DEF[s.id]; o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p,name:d.n,pack:d.pk,qty:d.q}}); return o;})();
 SLOTS.forEach(function(s){ if(ST[s.id].pack===undefined) ST[s.id].pack=0; if(ST[s.id].qty===undefined) ST[s.id].qty=0; });
 var SHIP = Number(localStorage.getItem('ck_ship')||3500);
-var SINGLE = JSON.parse(localStorage.getItem('ck_single')||'null') || {ONO_LA:0,ONO_BUL:0,ONO_TANG:300,ONO_GALBI:0};
 var cur='ch1', filt='전체', kw='';
-function save(){ localStorage.setItem('chuseok2026sim_v2', JSON.stringify(ST)); localStorage.setItem('ck_ship',SHIP); localStorage.setItem('ck_single',JSON.stringify(SINGLE)); }
+function save(){ localStorage.setItem('chuseok2026sim_v2', JSON.stringify(ST)); localStorage.setItem('ck_ship',SHIP); }
 
-function calc(slot){
-  var s=ST[slot], sum=0,pcost=0,wt=0,n=0,kinds=0,ono=0,mkt=0;
+function calcS(STx,slot){
+  var s=STx[slot], sum=0,pcost=0,wt=0,n=0,kinds=0,ono=0,mkt=0;
   Object.keys(s.items).forEach(function(c){ var it=BC[c]; var q=s.items[c]; if(!it||!q) return;
     sum+=it.price*q; pcost+=it.cost*q; wt+=(it.w||0)*q; n+=q; kinds++;
     mkt+=(it.mkt||it.price)*q; if(it.cat==='온올림') ono+=it.cost*q; });
@@ -211,6 +241,18 @@ function calc(slot){
     disc: sum? (sum-price)/sum*100 : 0, perMenu: kinds? price/kinds : 0,
     onoShare: pcost? ono/pcost*100:0, margin: vx-total, profitR: vx? (vx-total)/vx*100 : 0,
     qty: Number(s.qty)||0 };
+}
+function calc(slot){ return calcS(ST,slot); }
+function planSum(STx){
+  var sets=0,rev=0,prof=0,cost=0;
+  var used={ONO_LA:0,ONO_BUL:0,ONO_TANG:0,ONO_GALBI:0};
+  SLOTS.forEach(function(s){ var k=calcS(STx,s.id); sets+=k.qty; rev+=k.price*k.qty; prof+=k.margin*k.qty; cost+=k.total*k.qty;
+    var it=STx[s.id].items; Object.keys(it).forEach(function(c){ if(used[c]!==undefined) used[c]+=it[c]*k.qty; }); });
+  var stock={ONO_LA:1000,ONO_BUL:500,ONO_TANG:1000,ONO_GALBI:300};
+  var left=0,dead=0;
+  Object.keys(stock).forEach(function(c){ var l=Math.max(stock[c]-used[c],0); left+=l; dead+=l*((BC[c]||{}).cost||0); });
+  return {sets:sets,rev:rev,prof:prof,cost:cost,left:left,dead:dead,used:used,
+    rate: rev? cost/(rev/1.1)*100 : 0};
 }
 function rateClass(r){ return r===0?'':(r<=22?'good':(r<=30?'warn':'bad')); }
 function renderSlots(){
@@ -311,17 +353,27 @@ function renderLine(){
   var used={ONO_LA:0,ONO_BUL:0,ONO_TANG:0,ONO_GALBI:0};
   rows.forEach(function(r){ var it=ST[r.s.id].items, q=r.k.qty;
     Object.keys(it).forEach(function(c){ if(used[c]!==undefined) used[c]+=it[c]*q; }); });
-  var mh='<table><thead><tr><th class="l">원재료</th><th>재고</th><th>세트 소진</th><th>단품 판매</th><th>합계 소진</th><th>잔여</th><th class="l">소진율</th><th>잔여 매입금액</th></tr></thead><tbody>';
-  Object.keys(stock).forEach(function(c){ var it=BC[c]||{}; var sg=Number(SINGLE[c])||0; var u=used[c]+sg, left=stock[c]-u, pr=u/stock[c]*100;
-    mh+='<tr><td class="nm">'+(it.n||c)+'</td><td class="num">'+nf(stock[c])+'</td><td class="num">'+nf(used[c])+'</td>'
-     +'<td class="num"><input type="number" data-sg="'+c+'" value="'+sg+'" style="width:70px;text-align:right"></td>'
-     +'<td class="num">'+nf(u)+'</td>'
-     +'<td class="num '+(left>100?'dn':(left<0?'dn':'up'))+'"><b>'+nf(left)+'</b></td>'
-     +'<td style="width:26%"><div style="background:#eef1f6;border-radius:4px;height:16px"><div style="width:'+Math.min(pr,100)+'%;height:100%;background:'+(pr>=95?'#0a7d3d':(pr>=70?'#b06a00':'#c0392b'))+';border-radius:4px"></div></div></td>'
-     +'<td class="num">'+man(Math.max(left,0)*(it.cost||0))+'만</td></tr>'; });
-  var tl=Object.keys(stock).reduce(function(a,c){return a+Math.max(stock[c]-used[c]-(Number(SINGLE[c])||0),0)*((BC[c]||{}).cost||0)},0);
-  var sgRev=Object.keys(stock).reduce(function(a,c){return a+(Number(SINGLE[c])||0)*((BC[c]||{}).price||0)},0);
-  mh+='<tr class="tot"><td>잔여 재고 부담</td><td colspan="5"></td><td class="num">단품매출 '+man(sgRev)+'만</td><td class="num">'+man(tl)+'만</td></tr></tbody></table>';
+  var mh='<table><thead><tr><th class="l">원재료</th><th>확보 재고</th><th>세트에서 소진</th><th>단품 전환 필요</th><th class="l">세트 소진율</th><th>단품 예상매출</th><th>단품 미판매 시 손실</th></tr></thead><tbody>';
+  var sgTot=0,sgRev=0,sgProf=0,dead=0,over=0;
+  Object.keys(stock).forEach(function(c){ var it=BC[c]||{}; var u=used[c], left=stock[c]-u, pr=u/stock[c]*100;
+    if(left<0){ over+=-left; }
+    var lp=Math.max(left,0); sgTot+=lp; sgRev+=lp*(it.price||0); dead+=lp*(it.cost||0);
+    var mg=Math.round((it.price||0)/1.1-(it.cost||0)-SHIP); sgProf+=lp*mg;
+    mh+='<tr><td class="nm">'+(it.n||c)+'</td><td class="num">'+nf(stock[c])+'</td><td class="num">'+nf(u)+'</td>'
+     +'<td class="num '+(left>0?'dn':(left<0?'dn':'up'))+'"><b>'+(left<0?'재고초과 '+nf(-left):nf(left))+'</b></td>'
+     +'<td style="width:22%"><div style="background:#eef1f6;border-radius:4px;height:16px"><div style="width:'+Math.min(pr,100)+'%;height:100%;background:'+(pr>=95?'#0a7d3d':(pr>=70?'#b06a00':'#c0392b'))+';border-radius:4px"></div></div></td>'
+     +'<td class="num">'+(lp?man(lp*(it.price||0))+'만':'-')+'</td>'
+     +'<td class="num">'+(lp?man(lp*(it.cost||0))+'만':'-')+'</td></tr>'; });
+  mh+='<tr class="tot"><td>합계</td><td class="num">'+nf(2800)+'</td><td class="num">'+nf(Object.keys(used).reduce(function(a,c){return a+used[c]},0))+'</td>'
+   +'<td class="num">'+nf(sgTot)+'</td><td></td><td class="num">'+man(sgRev)+'만</td><td class="num">'+man(dead)+'만</td></tr></tbody></table>';
+  var setQty=rows.filter(function(r){return r.s.g==='온올림'}).reduce(function(a,r){return a+r.k.qty},0);
+  document.getElementById('matsum').innerHTML=
+    '<div class="sm"><div class="k">온올림 세트 계획</div><div class="v">'+nf(setQty)+'<span style="font-size:11px">세트</span></div><div class="d">3입 기준 최대 933세트</div></div>'
+   +'<div class="sm '+(sgTot===0?'good':(sgTot<=150?'warn':'bad'))+'"><div class="k">단품으로 팔아야 하는 수량</div><div class="v">'+nf(sgTot)+'<span style="font-size:11px">개</span></div><div class="d">'+(sgTot===0?'전량 세트 소진':'세트에서 못 쓴 물량')+'</div></div>'
+   +'<div class="sm"><div class="k">단품 예상 매출</div><div class="v">'+man(sgRev)+'<span style="font-size:11px">만</span></div><div class="d">자사권장가 기준</div></div>'
+   +'<div class="sm"><div class="k">단품 예상 이익</div><div class="v">'+man(sgProf)+'<span style="font-size:11px">만</span></div><div class="d">택배비 '+nf(SHIP)+'원 차감</div></div>'
+   +'<div class="sm '+(dead===0?'good':'bad')+'"><div class="k">단품 미판매 시 손실</div><div class="v">'+man(dead)+'<span style="font-size:11px">만</span></div><div class="d">매입원가 기준</div></div>'
+   +(over?'<div class="sm bad"><div class="k">재고 초과</div><div class="v">'+nf(over)+'<span style="font-size:11px">개</span></div><div class="d">계획수량을 줄이세요</div></div>':'');
   document.getElementById('mat').innerHTML=mh;
 }
 
@@ -349,12 +401,11 @@ document.getElementById('clr').addEventListener('click',function(){if(confirm('�
 document.getElementById('autop').addEventListener('click',function(){
   var k=calc(cur); if(!k.sum)return; var d=Number(prompt('할인율을 입력하세요 (%)','10')); if(isNaN(d))return;
   ST[cur].price=Math.round(k.sum*(1-d/100)/100)*100; renderAll();});
-var PROP = {"ch1":{"name":"차례상 1~2인","price":79000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3044":1,"ZIP_P_3158":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_5187":1,"ZIP_P_7069":1},"qty":250},"ch2":{"name":"차례상 3~4인","price":169000,"pack":2300,"items":{"ZIP_P_2062":2,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3044":2,"ZIP_P_3158":2,"ZIP_P_3002":2,"ZIP_P_0012":1,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":2,"ZIP_P_3071":1},"qty":80},"ms1":{"name":"실속 한상 1~2인","price":52000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_6232":1,"ZIP_P_6208":1},"qty":120},"ms2":{"name":"기본 한상 3~4인 (갈비탕)","price":99000,"pack":2300,"items":{"ZIP_P_2062":1,"ONO_TANG":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_3071":1},"qty":150},"ms3":{"name":"프리미엄 한상 5인+ (갈비탕2)","price":209000,"pack":2300,"items":{"ZIP_P_2062":2,"ONO_TANG":2,"ZIP_P_0012":2,"ZIP_P_0203":1,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3002":2,"ZIP_P_3044":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":1},"qty":60},"on1":{"name":"온올림 #6","price":69800,"pack":6510,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_TANG":1},"qty":200},"on2":{"name":"온올림 #3","price":84800,"pack":6510,"items":{"ONO_LA":2,"ONO_TANG":1},"qty":250},"on3":{"name":"온올림 #7","price":99800,"pack":6510,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_GALBI":1},"qty":300}};
+var PROP = {"ch1":{"name":"차례상 1~2인","price":79000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3044":1,"ZIP_P_3158":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_5187":1,"ZIP_P_7069":1},"qty":250},"ch2":{"name":"차례상 3~4인","price":169000,"pack":2300,"items":{"ZIP_P_2062":2,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3044":2,"ZIP_P_3158":2,"ZIP_P_3002":2,"ZIP_P_0012":1,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":2,"ZIP_P_3071":1},"qty":80},"ms1":{"name":"실속 한상 1~2인","price":52000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_6232":1,"ZIP_P_6208":1},"qty":120},"ms2":{"name":"기본 한상 3~4인","price":88000,"pack":2300,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_3071":1},"qty":150},"ms3":{"name":"프리미엄 한상 5인+ (갈비탕)","price":199000,"pack":2300,"items":{"ZIP_P_2062":2,"ONO_TANG":1,"ZIP_P_0012":2,"ZIP_P_0203":1,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3002":2,"ZIP_P_3044":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":1},"qty":60},"on1":{"name":"온올림 #6 (LA+소불+갈비탕)","price":70200,"pack":6510,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_TANG":1},"qty":500},"on2":{"name":"온올림 #3 (LA×2+갈비탕)","price":83800,"pack":6510,"items":{"ONO_LA":2,"ONO_TANG":1},"qty":100},"on3":{"name":"온올림 #9 (LA+갈비탕+소갈비)","price":99300,"pack":6510,"items":{"ONO_LA":1,"ONO_TANG":1,"ONO_GALBI":1},"qty":300},"_single":{"ONO_TANG":40}}; delete PROP._single;
 document.getElementById('prop').addEventListener('click',function(){
   if(!confirm('제안안을 8개 슬롯에 모두 불러올까요? 현재 구성은 덮어씁니다.')) return;
   Object.keys(PROP).forEach(function(k){ var p=PROP[k];
     ST[k]={items:JSON.parse(JSON.stringify(p.items)), price:p.price, name:p.name, pack:p.pack, qty:p.qty}; });
-  SINGLE={ONO_LA:0,ONO_BUL:0,ONO_TANG:280,ONO_GALBI:0};
   renderAll(); alert('제안안을 불러왔습니다. 「라인업 · 원재료」 탭에서 확인하세요.'); });
 document.getElementById('rst').addEventListener('click',function(){if(confirm('전체 8개 세트를 초기화할까요?')){localStorage.removeItem('chuseok2026sim_v2');location.reload();}});
 document.getElementById('exp').addEventListener('click',function(){
@@ -363,8 +414,6 @@ document.getElementById('exp').addEventListener('click',function(){
       Object.keys(ST[s.id].items).map(function(c){return (BC[c]?BC[c].n:c)+'×'+ST[s.id].items[c]}).join(' / ')].join('\t')});
   var tsv=['세트명\t구분\t품목수\t총개수\t단품합산\t판매가\t할인율\t제품원가\t포장비\t총원가율\t이익율\t세트당이익\t계획수량\t중량\t구성'].concat(out).join('\n');
   navigator.clipboard.writeText(tsv).then(function(){alert('클립보드에 복사했습니다.')});});
-document.getElementById('mat').addEventListener('input',function(e){
-  var t=e.target.closest('[data-sg]'); if(!t)return; SINGLE[t.dataset.sg]=Number(t.value)||0; save(); renderLine(); });
 document.getElementById('nav').addEventListener('click',function(e){
   var b=e.target.closest('button'); if(!b)return; var i=b.dataset.i;
   [].forEach.call(document.querySelectorAll('#nav button'),function(x){x.classList.toggle('on',x.dataset.i===i)});
@@ -441,5 +490,171 @@ renderAll();
    +'</tbody></table></div></div>';
   document.getElementById('onoref').innerHTML=h;
 })();
+
+/* ---- 온올림 재고 최적화 ---- */
+(function(){
+  var O=[{"n":"현행 전략안 (#6·#3·#7)","sets":750,"rev":65080000,"prof":18785700,"left":[0,0,550,0],"sgRev":10340000,"dead":4801500,"total":21459250,"rows":[{"no":6,"nm":"LA갈비+소불고기+갈비탕","price":70200,"qty":200,"sat":79,"profit":20314},{"no":3,"nm":"LA갈비×2+갈비탕","price":83800,"qty":250,"sat":66,"profit":25042},{"no":7,"nm":"LA갈비+소불고기+소갈비","price":100300,"qty":300,"sat":74,"profit":28208}]},{"n":"권장 A안 (#9·#3·#6)","sets":900,"rev":73270000,"prof":20801100,"left":[0,0,100,0],"sgRev":1880000,"dead":873000,"total":21287200,"rows":[{"no":9,"nm":"LA갈비+갈비탕+소갈비","price":99300,"qty":300,"sat":84,"profit":27133},{"no":3,"nm":"LA갈비×2+갈비탕","price":83800,"qty":100,"sat":66,"profit":25042},{"no":6,"nm":"LA갈비+소불고기+갈비탕","price":70200,"qty":500,"sat":79,"profit":20314}]},{"n":"B안 (#15·#3·#6)","sets":900,"rev":73270000,"prof":20801100,"left":[0,0,100,0],"sgRev":1880000,"dead":873000,"total":21287200,"rows":[{"no":15,"nm":"소불고기+갈비탕+소갈비","price":85700,"qty":300,"sat":87,"profit":22405},{"no":3,"nm":"LA갈비×2+갈비탕","price":83800,"qty":400,"sat":66,"profit":25042},{"no":6,"nm":"LA갈비+소불고기+갈비탕","price":70200,"qty":200,"sat":79,"profit":20314}]},{"n":"C안 최다소진 (#4·#8·#12)","sets":925,"rev":74307500,"prof":21026000,"left":[25,0,0,0],"sgRev":845000,"dead":405000,"total":21301675,"rows":[{"no":4,"nm":"LA갈비×2+소갈비","price":113900,"qty":300,"sat":61,"profit":32935},{"no":8,"nm":"LA갈비+갈비탕×2","price":69300,"qty":375,"sat":61,"profit":19330},{"no":12,"nm":"소불고기×2+갈비탕","price":56600,"qty":250,"sat":62,"profit":15587}]},{"n":"D안 (#18·#3·#5)","sets":925,"rev":74665000,"prof":21164300,"left":[0,0,25,0],"sgRev":470000,"dead":218250,"total":21285825,"rows":[{"no":18,"nm":"갈비탕×2+소갈비","price":84800,"qty":300,"sat":69,"profit":21421},{"no":3,"nm":"LA갈비×2+갈비탕","price":83800,"qty":375,"sat":66,"profit":25042},{"no":5,"nm":"LA갈비+소불고기×2","price":71200,"qty":250,"sat":56,"profit":21389}]},{"n":"원안 4종 (#17·#6·#3·#7)","sets":933,"rev":75090100,"prof":21261141,"left":[0,0,1,0],"sgRev":18800,"dead":8730,"total":21266002,"rows":[{"no":17,"nm":"갈비탕×3","price":54700,"qty":183,"sat":37,"profit":13527},{"no":6,"nm":"LA갈비+소불고기+갈비탕","price":70200,"qty":200,"sat":79,"profit":20314},{"no":3,"nm":"LA갈비×2+갈비탕","price":83800,"qty":250,"sat":66,"profit":25042},{"no":7,"nm":"LA갈비+소불고기+소갈비","price":100300,"qty":300,"sat":74,"profit":28208}]}];
+  var h='<div class="card"><h2>온올림 재고 소진 최적화 <span>LA 1,000 · 소불고기 500 · 갈비탕 1,000 · 소갈비 300 (소갈비 추가 발주 불가)</span></h2>'
+   +'<div class="note" style="margin-bottom:10px">총 2,800개 = 3입 세트 최대 <b>933세트</b>. 20개 조합 전수 탐색으로 <b>소갈비 300개를 반드시 전량 소진</b>하는 3종 조합을 찾았습니다.</div>'
+   +'<div class="scroll"><table><thead><tr><th class="l">안</th><th>세트 수</th><th>세트 매출</th><th>세트 이익</th><th class="l">잔여 재고</th><th>단품 소진 필요</th><th>미판매 시 손실</th><th>평균 만족도</th></tr></thead><tbody>'
+   +O.map(function(p,i){
+     var sat=Math.round(p.rows.reduce(function(a,r){return a+r.sat},0)/p.rows.length);
+     var lf=['LA','소불','갈비탕','소갈비'].map(function(k,j){return p.left[j]?k+' '+nf(p.left[j]):''}).filter(Boolean).join(' · ')||'없음';
+     var hl=p.n.indexOf('권장')>=0?' style="background:#eef8f2"':'';
+     return '<tr'+hl+'><td class="nm">'+p.n+'</td><td class="num"><b>'+nf(p.sets)+'</b></td><td class="num">'+man(p.rev)+'만</td>'
+      +'<td class="num">'+man(p.prof)+'만</td><td>'+lf+'</td><td class="num">'+nf(p.left.reduce(function(a,v){return a+v},0))+'개</td>'
+      +'<td class="num '+(p.dead>2000000?'dn':'up')+'">'+man(p.dead)+'만</td><td class="num">'+sat+'</td></tr>'}).join('')
+   +'</tbody></table></div></div>';
+  h+=O.filter(function(p){return p.n.indexOf('권장')>=0||p.n.indexOf('현행')>=0}).map(function(p){
+    return '<div class="card"><h2>'+p.n+' 상세</h2><div class="scroll"><table><thead><tr><th>조합</th><th class="l">구성</th><th>판매가</th><th>계획 수량</th><th>세트당 이익</th><th>총 이익</th><th>만족도</th></tr></thead><tbody>'
+     +p.rows.map(function(r){return '<tr><td class="num">#'+r.no+'</td><td class="nm">'+r.nm+'</td><td class="num"><b>'+nf(r.price)+'</b></td><td class="num">'+nf(r.qty)+'</td><td class="num">'+nf(r.profit)+'</td><td class="num">'+man(r.profit*r.qty)+'만</td><td class="num">'+r.sat+'</td></tr>'}).join('')
+     +'<tr class="tot"><td colspan="3">합계</td><td class="num">'+nf(p.sets)+'세트</td><td></td><td class="num">'+man(p.prof)+'만</td><td></td></tr>'
+     +'</tbody></table></div></div>'}).join('');
+  h+='<div class="card"><h2>결론</h2>'
+   +'<div class="find g"><div class="h">#7(LA+소불+소갈비)을 #9(LA+갈비탕+소갈비)로 바꾸는 것이 핵심입니다</div><div class="b2">소갈비 세트의 소불고기 자리를 갈비탕으로 바꾸면 <b>갈비탕 300개가 즉시 소진</b>되고, 남은 소불고기 500개를 #6에 몰아 #6를 200 → 500세트로 늘릴 수 있습니다. 결과적으로 세트가 750 → <b>900개</b>로 늘고 갈비탕 잔여는 550 → <b>100개</b>로 줄어듭니다.</div></div>'
+   +'<div class="find g"><div class="h">가격 사다리는 거의 그대로입니다</div><div class="b2">현행 70,200 / 83,800 / 100,300 → 권장안 70,200 / 83,800 / <b>99,300</b>. 가격 전략을 다시 짤 필요가 없고 구성만 바꾸면 됩니다. #9는 소비자 만족도 <b>84점</b>으로 20개 조합 중 2위입니다(#7은 74점).</div></div>'
+   +'<div class="find o"><div class="h">4번째 세트는 필요 없습니다</div><div class="b2">원안 4종(#17 포함)은 933세트로 전량 소진이 되지만 #17(갈비탕×3)의 만족도가 <b>37점으로 최하위</b>입니다. 3종으로 900세트 + 갈비탕 100개 단품이면 실질적으로 같은 결과입니다.</div></div>'
+   +'<div class="find r"><div class="h">소갈비 300개가 라인업의 출발점입니다</div><div class="b2">소갈비는 추가 발주가 불가능하고 미판매 시 회수도 안 됩니다(매입원가 846만원). 소갈비 1개짜리 조합으로 짜야 <b>300세트</b>를 만들 수 있고, 2개짜리(#19·#10·#16)면 150세트, 3개짜리(#20)면 100세트로 줄어 판매 기회가 사라집니다.</div></div></div>';
+  document.getElementById('onoref').insertAdjacentHTML('afterbegin', h);
+})();
+
+/* ---------- 저장 · 비교 · 확정 ---------- */
+var SNAPS = JSON.parse(localStorage.getItem('ck_snaps')||'[]');
+var CMP = [];
+function saveSnaps(){ localStorage.setItem('ck_snaps', JSON.stringify(SNAPS)); }
+function nowStr(){ var d=new Date(); var p=function(n){return (n<10?'0':'')+n};
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+function doSave(){
+  var nm=prompt('이 안의 이름을 입력하세요','안 '+(SNAPS.length+1));
+  if(nm===null) return;
+  var memo=prompt('메모 (선택)','')||'';
+  SNAPS.unshift({id:'s'+Date.now(), name:nm||('안 '+(SNAPS.length+1)), memo:memo, ts:nowStr(),
+    state:JSON.parse(JSON.stringify(ST)), ship:SHIP, final:false});
+  saveSnaps(); refreshSnaps();
+  alert('저장했습니다. 「저장 · 비교」 탭에서 확인하세요.');
+}
+function renderSnaps(){
+  var el=document.getElementById('snaps'); if(!el) return;
+  if(!SNAPS.length){ el.innerHTML='<div class="empty">저장된 안이 없습니다. 시뮬레이터에서 구성을 잡고 상단 「현재안 저장」을 누르세요.</div>';
+    document.getElementById('cmpbox').innerHTML=''; return; }
+  var h='<div class="scroll"><table><thead><tr><th style="width:34px">비교</th><th class="l">안 이름</th><th>저장 시각</th><th>세트 수</th><th>계획 매출</th><th>계획 이익</th><th>평균 총원가율</th><th>온올림 잔여</th><th>잔여 손실</th><th>관리</th></tr></thead><tbody>';
+  SNAPS.forEach(function(s){
+    var p=planSum(s.state);
+    h+='<tr'+(s.final?' style="background:#eef8f2"':'')+'>'
+     +'<td class="num"><input type="checkbox" data-cmp="'+s.id+'"'+(CMP.indexOf(s.id)>=0?' checked':'')+'></td>'
+     +'<td class="nm">'+s.name+(s.final?' <span class="badge b-hot">최종 확정</span>':'')+(s.memo?'<div style="font-size:11px;color:#8b919b;font-weight:400">'+s.memo+'</div>':'')+'</td>'
+     +'<td class="num" style="color:#8b919b">'+s.ts+'</td>'
+     +'<td class="num"><b>'+nf(p.sets)+'</b></td><td class="num">'+man(p.rev)+'만</td><td class="num">'+man(p.prof)+'만</td>'
+     +'<td class="num">'+p.rate.toFixed(1)+'%</td>'
+     +'<td class="num '+(p.left>150?'dn':'up')+'">'+nf(p.left)+'개</td><td class="num">'+man(p.dead)+'만</td>'
+     +'<td class="num" style="white-space:nowrap">'
+      +'<button class="btn" style="padding:3px 7px;font-size:11px" data-ld="'+s.id+'">불러오기</button> '
+      +'<button class="btn" style="padding:3px 7px;font-size:11px" data-fn="'+s.id+'">'+(s.final?'확정 해제':'최종 확정')+'</button> '
+      +'<button class="btn" style="padding:3px 7px;font-size:11px;color:#c0392b" data-dl="'+s.id+'">삭제</button></td></tr>';
+  });
+  h+='</tbody></table></div>';
+  el.innerHTML=h; renderCompare();
+}
+function renderCompare(){
+  var box=document.getElementById('cmpbox'); if(!box) return;
+  var sel=SNAPS.filter(function(s){return CMP.indexOf(s.id)>=0});
+  if(sel.length<2){ box.innerHTML='<div class="card"><h2>안 비교</h2><div class="note">위 표에서 <b>비교할 안을 2개 이상 체크</b>하면 여기에 나란히 비교됩니다.</div></div>'; return; }
+  var rows=[['세트 수',function(p){return nf(p.sets)+'세트'}],['계획 매출',function(p){return man(p.rev)+'만원'}],
+    ['계획 이익',function(p){return man(p.prof)+'만원'}],['평균 총원가율',function(p){return p.rate.toFixed(1)+'%'}],
+    ['온올림 잔여',function(p){return nf(p.left)+'개'}],['잔여 손실',function(p){return man(p.dead)+'만원'}]];
+  var ps=sel.map(function(s){return planSum(s.state)});
+  var h='<div class="card"><h2>안 비교 <span>'+sel.length+'개</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">항목</th>'+sel.map(function(s){return '<th>'+s.name+'</th>'}).join('')+'</tr></thead><tbody>'
+   +rows.map(function(r){
+     var vals=ps.map(function(p){return r[1](p)});
+     return '<tr><td class="nm">'+r[0]+'</td>'+vals.map(function(v){return '<td class="num">'+v+'</td>'}).join('')+'</tr>'}).join('')
+   +'<tr class="grp"><td colspan="'+(sel.length+1)+'">세트별 판매가 / 계획수량</td></tr>'
+   +SLOTS.map(function(sl){
+     return '<tr><td class="nm">'+sl.n+'</td>'+sel.map(function(s){ var k=calcS(s.state,sl.id);
+       return '<td class="num">'+(k.price?nf(k.price)+'<br><span style="font-size:11px;color:#8b919b">'+nf(k.qty)+'세트 · '+k.kinds+'종</span>':'-')+'</td>'}).join('')+'</tr>'}).join('')
+   +'</tbody></table></div></div>';
+  box.innerHTML=h;
+}
+function renderFinal(){
+  var el=document.getElementById('final'); if(!el) return;
+  var f=SNAPS.filter(function(s){return s.final})[0];
+  if(!f){ el.innerHTML='<div class="card"><h2>최종 확정안</h2><div class="note">아직 확정된 안이 없습니다. 「저장 · 비교」 탭에서 안을 하나 골라 <b>최종 확정</b>을 누르세요.</div></div>'; return; }
+  var p=planSum(f.state);
+  var h='<div class="card"><h2>'+f.name+' <span>확정 · '+f.ts+(f.memo?' · '+f.memo:'')+'</span></h2>'
+   +'<div class="sum">'
+   +'<div class="sm"><div class="k">총 세트</div><div class="v">'+nf(p.sets)+'</div><div class="d">8개 SKU</div></div>'
+   +'<div class="sm"><div class="k">계획 매출</div><div class="v">'+man(p.rev)+'<span style="font-size:11px">만</span></div><div class="d">VAT 포함</div></div>'
+   +'<div class="sm good"><div class="k">계획 이익</div><div class="v">'+man(p.prof)+'<span style="font-size:11px">만</span></div><div class="d">택배·포장 반영</div></div>'
+   +'<div class="sm '+(p.left?'warn':'good')+'"><div class="k">온올림 단품 전환</div><div class="v">'+nf(p.left)+'<span style="font-size:11px">개</span></div><div class="d">잔여 손실 '+man(p.dead)+'만</div></div>'
+   +'</div></div>';
+  h+=SLOTS.map(function(sl){ var k=calcS(f.state,sl.id); if(!k.price&&!k.kinds) return '';
+    var st=f.state[sl.id];
+    return '<div class="card"><h2>'+(st.name||sl.n)+' <span>'+sl.g+' · '+nf(k.price)+'원 · '+nf(k.qty)+'세트 · 이익율 '+k.profitR.toFixed(1)+'%</span></h2>'
+     +'<div class="scroll"><table><thead><tr><th class="l">구성품</th><th>코드</th><th>용량</th><th>수량</th><th>단품가</th><th>원가</th><th>소계</th></tr></thead><tbody>'
+     +Object.keys(st.items).filter(function(c){return st.items[c]>0}).map(function(c){ var it=BC[c]||{n:c}; var q=st.items[c];
+       return '<tr><td class="nm">'+it.n+'</td><td class="num" style="color:#8b919b;font-size:11px">'+c+'</td><td class="num">'+(it.w||'-')+'g</td>'
+        +'<td class="num"><b>'+q+'</b></td><td class="num">'+nf(it.price)+'</td><td class="num">'+nf(it.cost)+'</td><td class="num">'+nf(it.price*q)+'</td></tr>'}).join('')
+     +'<tr class="tot"><td>합계</td><td></td><td class="num">'+nf(k.wt)+'g</td><td class="num">'+k.n+'</td><td class="num">'+nf(k.sum)+'</td><td class="num">'+nf(k.pcost)+'</td><td class="num">판매 '+nf(k.price)+'</td></tr>'
+     +'<tr class="st"><td colspan="7" style="font-size:11.5px">세트 포장비 '+nf(k.pack)+'원 · 택배비 '+nf(f.ship||3500)+'원 · 총원가 '+nf(k.total)+'원 · 세트당 이익 '+nf(k.margin)+'원 · 할인율 '+k.disc.toFixed(1)+'%</td></tr>'
+     +'</tbody></table></div></div>'}).join('');
+  h+='<div class="card"><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn p" id="fcopy">확정안 전체를 시트로 복사</button><button class="btn" id="fprint">인쇄 / PDF 저장</button></div></div>';
+  el.innerHTML=h;
+  var fc=document.getElementById('fcopy');
+  if(fc) fc.addEventListener('click',function(){
+    var out=[]; SLOTS.forEach(function(sl){ var k=calcS(f.state,sl.id); var st=f.state[sl.id]; if(!k.price&&!k.kinds) return;
+      Object.keys(st.items).forEach(function(c){ var it=BC[c]||{n:c};
+        out.push([st.name||sl.n, sl.g, nf(k.price), k.qty, it.n, c, it.w||'', st.items[c], it.price, it.cost].join('\t')); }); });
+    navigator.clipboard.writeText(['세트명\t구분\t판매가\t계획수량\t구성품\t품목코드\t용량\t수량\t단품가\t원가'].concat(out).join('\n'))
+      .then(function(){alert('확정안을 클립보드에 복사했습니다.')}); });
+  var fp=document.getElementById('fprint'); if(fp) fp.addEventListener('click',function(){window.print()});
+}
+document.getElementById('snapbtn').addEventListener('click', doSave);
+document.getElementById('snaps').addEventListener('click', function(e){ snapClick(e); });
+document.getElementById('snaps').addEventListener('change', function(e){ snapChange(e); });
+
+function renderSnapsInline(){
+  var el=document.getElementById('snapsInline'); if(!el) return;
+  if(!SNAPS.length){ el.innerHTML='<div class="empty" style="padding:16px">아직 저장된 안이 없습니다. 위에서 구성을 잡고 <b>「이 구성 저장」</b>을 누르면 여기에 기록이 쌓입니다.</div>'; return; }
+  var h='<div class="scroll"><table><thead><tr><th style="width:34px">비교</th><th class="l">안 이름</th><th>저장 시각</th><th>세트</th><th>계획 매출</th><th>계획 이익</th><th>온올림 잔여</th><th>잔여 손실</th><th>관리</th></tr></thead><tbody>';
+  SNAPS.slice(0,8).forEach(function(s){ var p=planSum(s.state);
+    h+='<tr'+(s.final?' style="background:#eef8f2"':'')+'>'
+     +'<td class="num"><input type="checkbox" data-cmp="'+s.id+'"'+(CMP.indexOf(s.id)>=0?' checked':'')+'></td>'
+     +'<td class="nm">'+s.name+(s.final?' <span class="badge b-hot">최종 확정</span>':'')+(s.memo?'<div style="font-size:11px;color:#8b919b;font-weight:400">'+s.memo+'</div>':'')+'</td>'
+     +'<td class="num" style="color:#8b919b">'+s.ts+'</td><td class="num"><b>'+nf(p.sets)+'</b></td>'
+     +'<td class="num">'+man(p.rev)+'만</td><td class="num">'+man(p.prof)+'만</td>'
+     +'<td class="num '+(p.left>150?'dn':'up')+'">'+nf(p.left)+'개</td><td class="num">'+man(p.dead)+'만</td>'
+     +'<td class="num" style="white-space:nowrap">'
+      +'<button class="btn" style="padding:3px 7px;font-size:11px" data-ld="'+s.id+'">불러오기</button> '
+      +'<button class="btn" style="padding:3px 7px;font-size:11px" data-fn="'+s.id+'">'+(s.final?'확정 해제':'최종 확정')+'</button> '
+      +'<button class="btn" style="padding:3px 7px;font-size:11px;color:#c0392b" data-dl="'+s.id+'">삭제</button></td></tr>'; });
+  h+='</tbody></table></div>';
+  if(SNAPS.length>8) h+='<div class="note" style="margin-top:7px;font-size:11.5px">최근 8건만 표시됩니다. 전체 목록과 상세 비교는 <b>「저장 · 비교」 탭</b>에서 볼 수 있습니다.</div>';
+  el.innerHTML=h;
+}
+function snapClick(e){
+  var ld=e.target.closest('[data-ld]'), dl=e.target.closest('[data-dl]'), fn=e.target.closest('[data-fn]');
+  if(ld){ var s=SNAPS.filter(function(x){return x.id===ld.dataset.ld})[0];
+    if(s && confirm('「'+s.name+'」을 시뮬레이터로 불러올까요? 현재 작업 중인 구성은 덮어씁니다.')){
+      ST=JSON.parse(JSON.stringify(s.state)); SHIP=s.ship||3500; document.getElementById('ship').value=SHIP;
+      renderAll(); document.querySelector('#nav button[data-i="0"]').click(); window.scrollTo(0,0); } return; }
+  if(dl){ var s2=SNAPS.filter(function(x){return x.id===dl.dataset.dl})[0];
+    if(s2 && confirm('「'+s2.name+'」을 삭제할까요?')){ SNAPS=SNAPS.filter(function(x){return x.id!==dl.dataset.dl});
+      CMP=CMP.filter(function(i){return i!==dl.dataset.dl}); saveSnaps(); refreshSnaps(); } return; }
+  if(fn){ var id=fn.dataset.fn; var c2=SNAPS.filter(function(x){return x.id===id})[0];
+    var was=c2.final; SNAPS.forEach(function(x){x.final=false}); c2.final=!was;
+    saveSnaps(); refreshSnaps(); if(!was){ document.querySelector('#nav button[data-i="3"]').click(); window.scrollTo(0,0);} return; }
+}
+function snapChange(e){ var c=e.target.closest('[data-cmp]'); if(!c) return; var id=c.dataset.cmp;
+  if(c.checked){ if(CMP.indexOf(id)<0) CMP.push(id); } else CMP=CMP.filter(function(i){return i!==id});
+  refreshSnaps(); }
+function refreshSnaps(){ renderSnaps(); renderSnapsInline(); renderFinal(); }
+document.getElementById('snapsInline').addEventListener('click', snapClick);
+document.getElementById('snapsInline').addEventListener('change', snapChange);
+document.getElementById('snapbtn2').addEventListener('click', doSave);
+document.getElementById('gocmp').addEventListener('click',function(){ document.querySelector('#nav button[data-i="2"]').click(); window.scrollTo(0,0); });
+document.getElementById('gofinal').addEventListener('click',function(){ document.querySelector('#nav button[data-i="3"]').click(); window.scrollTo(0,0); });
+renderSnapsInline();
+
+refreshSnaps();
 
 </script></body></html>
