@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026 추석 세트 구성 시뮬레이터</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f4f5f7;color:#17191f;font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1400px;margin:0 auto;padding:14px 14px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:2px solid #1f2430;padding-bottom:10px;margin-bottom:11px}
+h1{font-size:18px;letter-spacing:-.5px}
+.sub{font-size:11.5px;color:#6b7280;margin-top:3px}
+nav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+nav button{border:1px solid #dfe3e8;background:#fff;color:#4b5563;padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:700;font-family:inherit}
+nav button:hover{background:#eef1f5}
+nav button.on{background:#1f2430;color:#fff;border-color:#1f2430}
+.panel{display:none}.panel.on{display:block}
+.card{background:#fff;border:1px solid #e6e9ed;border-radius:11px;padding:14px 16px;margin-bottom:11px}
+.card h2{font-size:14px;margin-bottom:9px;letter-spacing:-.3px}
+.card h2 span{font-weight:400;color:#8b919b;font-size:11.5px;margin-left:6px}
+/* slots */
+.slots{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.slot{border:1px solid #dfe3e8;background:#fff;border-radius:9px;padding:7px 11px;cursor:pointer;min-width:112px;text-align:left;font-family:inherit}
+.slot:hover{background:#f3f5f8}
+.slot.on{background:#1f2430;color:#fff;border-color:#1f2430}
+.slot .t{font-size:11px;opacity:.7;font-weight:600}
+.slot .n{font-size:13px;font-weight:800;margin-top:1px}
+.slot .p{font-size:11px;opacity:.8;font-variant-numeric:tabular-nums;margin-top:1px}
+.slot.g1{border-left:3px solid #8a2f2f}.slot.g2{border-left:3px solid #2f5a8a}.slot.g3{border-left:3px solid #a67c2e}
+/* sim layout */
+.sim{display:grid;grid-template-columns:1fr 1.05fr;gap:11px;align-items:start}
+@media(max-width:980px){.sim{grid-template-columns:1fr}}
+.tools{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}
+input[type=text],input[type=number],select{border:1px solid #dfe3e8;border-radius:7px;padding:6px 9px;font-size:13px;font-family:inherit;background:#fff}
+input[type=text]{flex:1;min-width:120px}
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.chip{border:1px solid #dfe3e8;background:#fff;border-radius:20px;padding:4px 11px;font-size:11.5px;cursor:pointer;font-family:inherit;font-weight:600;color:#5a6478}
+.chip.on{background:#1f2430;color:#fff;border-color:#1f2430}
+.list{max-height:520px;overflow-y:auto;border:1px solid #eceef1;border-radius:8px}
+.it{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid #f2f4f6;cursor:pointer}
+.it:hover{background:#f6f8fb}
+.it .nm{font-weight:600;font-size:12.5px}
+.it .meta{font-size:11px;color:#8b919b;margin-top:1px}
+.it .pr{text-align:right;font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:700;white-space:nowrap}
+.it .pr small{display:block;font-weight:400;color:#8b919b;font-size:10.5px}
+.add{border:1px solid #1f2430;background:#1f2430;color:#fff;width:26px;height:26px;border-radius:7px;font-size:15px;cursor:pointer;font-family:inherit;line-height:1}
+.badge{display:inline-block;font-size:9.5px;padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;vertical-align:1px}
+.b-ono{background:#f5eaea;color:#8a2f2f}.b-hot{background:#e6f6ec;color:#0a7d3d}.b-stop{background:#fdf3e3;color:#b06a00}
+/* composed */
+.cmp{border:1px solid #eceef1;border-radius:8px;overflow:hidden}
+.cmp .row{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid #f2f4f6}
+.cmp .row:hover{background:#fafbfc}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{width:22px;height:22px;border:1px solid #dfe3e8;background:#fff;border-radius:6px;cursor:pointer;font-family:inherit;font-size:13px;line-height:1}
+.qty span{min-width:20px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+.del{border:none;background:none;color:#c0392b;cursor:pointer;font-size:15px;font-family:inherit;padding:0 3px}
+.empty{padding:26px;text-align:center;color:#9aa0a9;font-size:12.5px}
+/* summary */
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:7px;margin-top:10px}
+.sm{background:#f7f8fa;border:1px solid #eceef1;border-radius:9px;padding:9px 11px}
+.sm .k{font-size:10.5px;color:#8b919b;font-weight:600}
+.sm .v{font-size:17px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.sm .d{font-size:10.5px;color:#8b919b;margin-top:1px}
+.sm.warn{background:#fff6ec;border-color:#f0dcc2}.sm.warn .v{color:#b06a00}
+.sm.bad{background:#fdeeee;border-color:#f2cfcf}.sm.bad .v{color:#c0392b}
+.sm.good{background:#eef8f2;border-color:#cfe8da}.sm.good .v{color:#0a7d3d}
+.prc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e5ea}
+.prc label{font-size:11.5px;color:#5a6478;font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{background:#f1f3f6;color:#3b4252;font-weight:700;padding:7px 6px;font-size:11px;text-align:center;border-bottom:1px solid #dfe3e8;white-space:nowrap}
+th.l{text-align:left;padding-left:10px}
+td{padding:7px 6px;border-bottom:1px solid #f0f2f4}
+td.nm{padding-left:10px;font-weight:600}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.tot td{background:#1f2430;color:#fff;font-weight:800}
+tr.tot td:first-child{padding-left:10px}
+tr.grp td{background:#eef1f6;font-weight:700;font-size:11px;color:#5a6478;padding:5px 10px}
+.up{color:#0a7d3d;font-weight:700}.dn{color:#c0392b;font-weight:700}.fl{color:#8b919b}
+.ladder{display:flex;align-items:flex-end;gap:10px;height:170px;padding:22px 4px 0;overflow-x:auto}
+.lc{flex:1;min-width:76px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.lb2{width:100%;border-radius:5px 5px 0 0;display:flex;flex-direction:column;align-items:center;padding-top:5px;color:#fff;min-height:22px}
+.lb2 b{font-size:12px;font-weight:800}.lb2 span{font-size:9.5px;opacity:.85}
+.ll{margin-top:5px;font-size:10.5px;font-weight:700;text-align:center;word-break:keep-all}
+.ll small{display:block;font-weight:500;color:#8b919b;font-size:9.5px}
+.note{font-size:12.5px;color:#3f4653;line-height:1.8}
+.note li{margin-left:15px;margin-bottom:5px}
+.find{border-left:3px solid #1f2430;padding:9px 12px;background:#fafbfc;margin-bottom:8px;border-radius:0 7px 7px 0}
+.find .h{font-weight:800;font-size:12.5px;margin-bottom:2px}
+.find .b2{font-size:12px;color:#3f4653;line-height:1.7}
+.find.r{border-left-color:#c0392b}.find.g{border-left-color:#0a7d3d}.find.o{border-left-color:#b06a00}
+.scroll{overflow-x:auto}
+.rule{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.rl{font-size:11.5px;padding:4px 10px;border-radius:6px;font-weight:700}
+.rl.ok{background:#e6f6ec;color:#0a7d3d}.rl.no{background:#fdeeee;color:#c0392b}
+.btn{border:1px solid #dfe3e8;background:#fff;padding:6px 12px;border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:700;color:#4b5563}
+.btn:hover{background:#eef1f5}
+.btn.p{background:#1f2430;color:#fff;border-color:#1f2430}
+footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
+</style></head>
+<body>
+<div class="wrap">
+<header>
+ <div><h1>2026 추석 세트 구성 시뮬레이터</h1>
+ <div class="sub">자사 원가 = 2026 표준원가시트 · 온올림 = 2026 OEM 관련 가격 정리 · 구성 프리셋 = 노션 명절 공지</div></div>
+ <div style="display:flex;gap:6px;align-items:center">
+  <label style="font-size:11.5px;color:#5a6478;font-weight:700">택배비</label><input type="number" id="ship" style="width:74px">
+  <button class="btn p" id="prop">제안안 불러오기</button><button class="btn" id="exp">시트로 복사</button><button class="btn" id="rst">초기화</button></div>
+</header>
+<nav id="nav">
+ <button data-i="0" class="on">시뮬레이터</button>
+ <button data-i="1">라인업 · 원재료</button>
+ <button data-i="2">세트 판매 이력</button>
+ <button data-i="3">온올림 기준</button>
+ <button data-i="4">설계 기준</button>
+</nav>
+<div class="panel on" data-i="0">
+ <div class="card" style="padding:11px 14px">
+  <div style="font-size:11.5px;color:#6b7280;margin-bottom:7px">세트 슬롯을 고르고 왼쪽 카탈로그에서 품목을 클릭해 담으세요. 차례상 2 · 식사세트 3(최대 30만원) · 온올림 3 구조입니다. <b>계획수량</b>을 넣으면 「라인업 · 원재료」 탭에서 온올림 재고 소진과 손익이 계산됩니다.</div>
+  <div class="slots" id="slots"></div>
+ </div>
+ <div class="sim">
+  <div class="card">
+   <h2>품목 카탈로그 <span id="cnt"></span></h2>
+   <div class="tools"><input type="text" id="kw" placeholder="품목명 또는 코드 검색"><select id="preset"></select></div>
+   <div class="chips" id="chips"></div>
+   <div class="list" id="list"></div>
+  </div>
+  <div class="card">
+   <h2>세트 구성</h2>
+   <div class="tools">
+    <input type="text" id="pname" placeholder="세트명" style="flex:1;min-width:110px">
+    <input type="number" id="pprice" placeholder="판매가" style="width:96px">
+    <input type="number" id="ppack" placeholder="포장비" style="width:82px" title="세트 포장·부재료비(VAT-)">
+    <input type="number" id="pqty" placeholder="계획수량" style="width:82px">
+    <button class="btn" id="autop">할인율</button><button class="btn" id="clr">비우기</button>
+   </div>
+   <div class="cmp" id="cmp"></div>
+   <div class="sum" id="sum"></div>
+  </div>
+ </div>
+</div>
+<div class="panel" data-i="1">
+ <div class="card"><h2>가격 사다리</h2><div class="ladder" id="ladder"></div><div class="rule" id="rules"></div></div>
+ <div class="card"><h2>온올림 원재료 소진 현황 <span>세트 계획수량 + 단품 판매 계획</span></h2><div class="scroll" id="mat"></div>
+  <div class="note" style="margin-top:8px">원재료는 이미 발주가 확정된 물량입니다(LA 1,000 · 소불고기 500 · 갈비탕 1,000 · 소갈비 300). <b>남기면 그대로 손실</b>이므로 온올림 3세트만으로 못 쓰는 물량은 자사 식사세트에 넣어 소진해야 합니다.</div></div>
+ <div class="card"><h2>라인업 종합 <span>8개 슬롯</span></h2><div class="scroll" id="linetbl"></div></div>
+</div>
+<div class="panel" data-i="2"><div id="hist"></div></div>
+<div class="panel" data-i="3"><div id="onoref"></div></div>
+<div class="panel" data-i="4">
+ <div class="card"><h2>이번 추석 설계 제약</h2><div class="note"><ul>
+  <li><b>차례상 최대 2개</b> · <b>식사세트 최대 3개(최고가 30만원 이하)</b> · <b>온올림 3개</b></li>
+  <li>2025 추석 8종 → 2026 설 11종으로 늘렸는데 판매는 848 → 632개로 줄었습니다. 종수 축소가 맞습니다.</li>
+  <li>온올림 갈비탕 3종 세트(#17)는 최종 제외 → <b>갈비탕 550개 잔여 문제</b>가 생깁니다. 자사 식사세트로 흡수할지 결정 필요.</li>
+ </ul></div></div>
+ <div class="card"><h2>원가·이익 기준</h2><div class="note"><ul>
+  <li><b>총원가율 = (제품원가 + 세트 포장비 + 택배비) ÷ 판매가(VAT-)</b>. 자사 표준원가에는 개별 용기·필름·스티커가 이미 포함돼 있고, <b>세트 포장비(외박스·부직포·아이스팩 등)는 별도</b>로 입력해야 합니다.</li>
+  <li>2025 추석 자사 세트의 제품 원가율은 차례상 16.1~16.6%, 식사세트 16.9~18.5%였습니다.</li>
+  <li>온올림은 OEM 매입이라 제품 원가율이 <b>46~57%</b>입니다. 부재료 6,510 + 택배 3,500까지 넣으면 이익율이 28~34%로 떨어집니다.</li>
+  <li>시트의 <b>목표 이익율은 30%</b>입니다. 시뮬레이터는 이익율 20% 미만이면 경고합니다.</li>
+ </ul></div></div>
+ <div class="card"><h2>지난 두 명절에서 배운 것</h2>
+  <div class="find r"><div class="h">5만원대 진입 세트를 없앤 것이 가장 큰 손실</div><div class="b2">2025 추석 식사세트(특소) 53,800원 63개 = 소(62개)와 동급이었는데 2026 설에서 폐지되며 최저가가 106,100원으로 2배가 됐고, 식사세트 계열은 255 → 139개(-45%)로 반토막 났습니다.</div></div>
+  <div class="find r"><div class="h">세트를 무겁게 만들수록 안 팔렸다</div><div class="b2">음식세트(대)에 갈비찜을 넣어 +23% 인상하자 판매는 76 → 20개(-74%), 특대는 0개였습니다.</div></div>
+  <div class="find g"><div class="h">가격을 내린 나물세트만 성장</div><div class="b2">22,500 → 20,500원(-9%)으로 낮추자 58 → 143개(+147%). 2만원대가 지금 가장 잘 팔리는 가격대입니다.</div></div>
+  <div class="find o"><div class="h">구성품을 늘려도 판매는 늘지 않는다</div><div class="b2">차례상 구성을 14 → 18종으로 늘렸지만 소·중·대 전 등급 판매가 줄었습니다.</div></div>
+ </div>
+ <div class="card"><h2>데이터 출처</h2><div class="note"><ul>
+  <li><b>자사 원가·판매가</b> — 「2026 표준원가시트」 Sheet 1, 370개 품목</li>
+  <li><b>온올림 단가·조합</b> — 「2026 OEM 관련 가격 정리」 (2026-07-31)</li>
+  <li><b>세트 구성 프리셋</b> — 노션 「2025 추석 공지」 · 「2026 설 공지」 원문</li>
+  <li><b>판매 실적</b> — 이카운트 판매현황, 명절 당일 포함 직전 3주</li>
+ </ul></div></div>
+</div>
+<footer>집반찬연구소 온라인본부 · 브라우저에 자동 저장됩니다</footer>
+</div>
+<script>
+
+var CAT = [{"c":"BAN_P_0001","n":"감자옹심이_2KG_반가","w":2000,"cost":7517,"price":36800,"cat":"기타","stop":false},{"c":"BAN_P_0002","n":"묵밥육수_2KG_반가","w":2000,"cost":1872,"price":12800,"cat":"기타","stop":false},{"c":"BAN_P_0004","n":"칼국수양념소스","w":2000,"cost":3543,"price":18800,"cat":"기타","stop":false},{"c":"BAN_P_0007","n":"4종모둠장아찌","w":2000,"cost":4264,"price":9900,"cat":"김치·장아찌","stop":false},{"c":"BAN_P_0008","n":"고추를곁들인양파장아찌","w":2000,"cost":3670,"price":16800,"cat":"김치·장아찌","stop":false},{"c":"BAN_P_0009","n":"적채를곁들인양배추피클","w":2000,"cost":2270,"price":14800,"cat":"김치·장아찌","stop":false},{"c":"BAN_P_0010","n":"유자를곁들인오이무피클","w":2000,"cost":3487,"price":16800,"cat":"김치·장아찌","stop":false},{"c":"BAN_P_0015","n":"채썬양배추피클 2KG","w":2000,"cost":2376,"price":11000,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_0012","n":"잡채","w":450,"cost":1904,"price":12900,"cat":"고기·메인","stop":false,"h26":1536,"h25":1325},{"c":"ZIP_P_0038","n":"소고기육전과새콤파채","w":240,"cost":2750,"price":14800,"cat":"전류","stop":false,"h26":2705,"h25":2149},{"c":"ZIP_P_0114","n":"한돈미나리고추장불고기_반조리","w":500,"cost":3259,"price":16800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0115","n":"참나물새우냉채","w":300,"cost":2398,"price":13800,"cat":"나물류","stop":false},{"c":"ZIP_P_0116","n":"한돈풋마늘두루치기_반조리","w":500,"cost":3482,"price":15800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0173","n":"한끼한돈제육_완조리","w":200,"cost":1517,"price":7300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0175","n":"한끼한돈김치두루치기_완조리","w":200,"cost":1649,"price":7600,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0176","n":"한우야채카레_대용량","w":300,"cost":1379,"price":7300,"cat":"대용량","stop":false},{"c":"ZIP_P_0177","n":"한우야채짜장_대용량","w":300,"cost":1338,"price":7300,"cat":"대용량","stop":false},{"c":"ZIP_P_0180","n":"한우야채카레","w":150,"cost":709,"price":4500,"cat":"기타","stop":false,"h26":2017,"h25":904},{"c":"ZIP_P_0181","n":"한우야채짜장","w":150,"cost":688,"price":4500,"cat":"기타","stop":false,"h26":2073,"h25":715},{"c":"ZIP_P_0186","n":"한우토마토소스","w":150,"cost":916,"price":5500,"cat":"기타","stop":false,"h26":501,"h25":182},{"c":"ZIP_P_0187","n":"버섯돼지갈비찜","w":800,"cost":5103,"price":25800,"cat":"고기·메인","stop":true,"h26":198,"h25":144},{"c":"ZIP_P_0188","n":"아이들두부덮밥","w":240,"cost":769,"price":4900,"cat":"기타","stop":true},{"c":"ZIP_P_0194","n":"저당양배추짜장덮밥소스","w":150,"cost":557,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_0195","n":"닭가슴살새우냉채","w":260,"cost":2156,"price":12300,"cat":"기타","stop":false},{"c":"ZIP_P_0197","n":"한돈매콤제육볶음_반조리","w":350,"cost":2093,"price":10300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0198","n":"한돈대파제육볶음_반조리","w":350,"cost":2278,"price":11300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0199","n":"한돈된장불고기_반조리","w":320,"cost":1799,"price":10300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0200","n":"한돈김치두루치기_반조리","w":380,"cost":2266,"price":12300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0201","n":"한돈간장불고기_반조리","w":330,"cost":1769,"price":9300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0202","n":"궁중떡볶이_반조리","w":340,"cost":1831,"price":10300,"cat":"기타","stop":false},{"c":"ZIP_P_0203","n":"소불고기_반조리","w":330,"cost":4268,"price":16800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0205","n":"불고기버섯전골_반조리","w":320,"cost":3563,"price":15800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0207","n":"오징어야채볶음_반조리","w":360,"cost":2692,"price":14300,"cat":"기타","stop":false},{"c":"ZIP_P_0208","n":"오삼불고기_반조리","w":370,"cost":2614,"price":14300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0209","n":"간장오징어볶음_반조리","w":350,"cost":2487,"price":14300,"cat":"기타","stop":false},{"c":"ZIP_P_0210","n":"간장오삼불고기_반조리","w":360,"cost":2129,"price":13300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0211","n":"저당두부면까르보나라","w":250,"cost":1598,"price":8800,"cat":"기타","stop":false},{"c":"ZIP_P_0212","n":"저당두부면팟타이","w":200,"cost":1468,"price":8300,"cat":"기타","stop":false},{"c":"ZIP_P_0213","n":"쭈꾸미미나리파스타","w":280,"cost":2974,"price":13800,"cat":"기타","stop":true},{"c":"ZIP_P_0214","n":"쭈꾸미풋마늘파스타","w":320,"cost":2980,"price":13800,"cat":"기타","stop":true},{"c":"ZIP_P_0215","n":"순살매콤닭갈비_완조리","w":350,"cost":3192,"price":15800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0216","n":"순살간장닭갈비_완조리","w":350,"cost":2916,"price":14800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_0217","n":"매콤한돈사태찜","w":400,"cost":2634,"price":11800,"cat":"기타","stop":false},{"c":"ZIP_P_0218","n":"한돈사태김치찜","w":400,"cost":2297,"price":10800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_1038","n":"동태찌개","w":650,"cost":3107,"price":14800,"cat":"국·탕","stop":false},{"c":"ZIP_P_1041","n":"된장찌개","w":650,"cost":1475,"price":9900,"cat":"국·탕","stop":false},{"c":"ZIP_P_1043","n":"한돈돼지김치찌개","w":650,"cost":2076,"price":12300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1045","n":"달래된장찌개","w":650,"cost":1955,"price":12300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1049","n":"순한오징어무국","w":650,"cost":2089,"price":11300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1055","n":"미역오이냉국","w":700,"cost":673,"price":7300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1057","n":"새우탕","w":650,"cost":2623,"price":14300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1058","n":"소고기무국_냉장","w":650,"cost":1840,"price":9900,"cat":"국·탕","stop":false},{"c":"ZIP_P_1060","n":"김치오이냉국","w":700,"cost":1039,"price":7800,"cat":"국·탕","stop":false},{"c":"ZIP_P_1061","n":"한돈버섯고추장찌개","w":650,"cost":2379,"price":14300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1062","n":"대구지리","w":650,"cost":2603,"price":13300,"cat":"기타","stop":false},{"c":"ZIP_P_1064","n":"냉이된장국","w":650,"cost":1676,"price":10300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1067","n":"한우사골곰탕_냉장","w":600,"cost":906,"price":7300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1069","n":"한돈돼지고기짜글이_반조리","w":340,"cost":1712,"price":9300,"cat":"기타","stop":false},{"c":"ZIP_P_1076","n":"콩나물냉국","w":700,"cost":587,"price":7300,"cat":"나물류","stop":false},{"c":"ZIP_P_1077","n":"해물순두부찌개","w":650,"cost":1380,"price":9300,"cat":"국·탕","stop":false},{"c":"ZIP_P_1078","n":"우리콩강된장","w":240,"cost":1480,"price":7800,"cat":"기타","stop":false},{"c":"ZIP_P_1079","n":"저당두부강된장","w":150,"cost":921,"price":5500,"cat":"기타","stop":false},{"c":"ZIP_P_1081","n":"국내산닭을사용한초계탕","w":700,"cost":1671,"price":10300,"cat":"국·탕","stop":false},{"c":"ZIP_P_2041","n":"오징어무국_냉동","w":650,"cost":1732,"price":9300,"cat":"국·탕","stop":false},{"c":"ZIP_P_2048","n":"배추된장국_냉동","w":650,"cost":830,"price":8300,"cat":"국·탕","stop":false},{"c":"ZIP_P_2050","n":"보리새우아욱국_냉동","w":650,"cost":1614,"price":8900,"cat":"국·탕","stop":false},{"c":"ZIP_P_2051","n":"시래기된장국_냉동","w":650,"cost":979,"price":8900,"cat":"국·탕","stop":false},{"c":"ZIP_P_2056","n":"한우사골곰탕_냉동","w":600,"cost":906,"price":7300,"cat":"국·탕","stop":false},{"c":"ZIP_P_2061","n":"한우사골미역국_냉동","w":650,"cost":2664,"price":12900,"cat":"국·탕","stop":false},{"c":"ZIP_P_2062","n":"소고기무국_냉동","w":650,"cost":1840,"price":9900,"cat":"국·탕","stop":false,"h26":542,"h25":656},{"c":"ZIP_P_2073","n":"닭곰탕_냉동","w":650,"cost":1479,"price":9900,"cat":"국·탕","stop":false},{"c":"ZIP_P_2074","n":"김치콩나물국_냉동","w":650,"cost":901,"price":8300,"cat":"나물류","stop":false},{"c":"ZIP_P_2075","n":"콩나물황태국_냉동","w":650,"cost":1330,"price":9900,"cat":"나물류","stop":false},{"c":"ZIP_P_2076","n":"한끼소고기무국_냉동(소고기무국_냉동)","w":300,"cost":858,"price":4300,"cat":"국·탕","stop":false,"h26":194,"h25":157},{"c":"ZIP_P_2077","n":"황태미역국","w":650,"cost":1439,"price":9900,"cat":"국·탕","stop":false},{"c":"ZIP_P_2078","n":"맑은한우배추국","w":650,"cost":1512,"price":9900,"cat":"국·탕","stop":false},{"c":"ZIP_P_2079","n":"경상도식소고기무국","w":650,"cost":2189,"price":11300,"cat":"국·탕","stop":false,"h26":108,"h25":0},{"c":"ZIP_P_3002","n":"깻잎전","w":250,"cost":1292,"price":9900,"cat":"전류","stop":false,"h26":1239,"h25":1053},{"c":"ZIP_P_3012","n":"동태전","w":250,"cost":2799,"price":15800,"cat":"전류","stop":false,"h26":0,"h25":0},{"c":"ZIP_P_3022","n":"야채계란말이","w":230,"cost":1282,"price":7500,"cat":"기타","stop":false},{"c":"ZIP_P_3026","n":"양배추와맛쌈장","w":300,"cost":975,"price":7300,"cat":"기타","stop":false},{"c":"ZIP_P_3043","n":"애호박전","w":300,"cost":2347,"price":15800,"cat":"전류","stop":false,"h26":124,"h25":108},{"c":"ZIP_P_3044","n":"녹두전","w":280,"cost":1358,"price":11800,"cat":"전류","stop":true,"h26":820,"h25":875},{"c":"ZIP_P_3055","n":"야채계란찜","w":240,"cost":807,"price":4900,"cat":"기타","stop":false},{"c":"ZIP_P_3071","n":"양파고추장아찌","w":150,"cost":588,"price":3900,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_3074","n":"모둠전3종_달콤옥수수전,새우전,동그랑땡","w":330,"cost":2503,"price":14800,"cat":"전류","stop":false,"h26":523,"h25":575},{"c":"ZIP_P_3075","n":"모둠전3종_동태전,동그랑땡,깻잎전","w":350,"cost":2686,"price":16500,"cat":"전류","stop":false,"h26":2236,"h25":2518},{"c":"ZIP_P_3077","n":"모둠전3종_해물야채전,매콤김치전,감자전","w":400,"cost":1882,"price":13800,"cat":"전류","stop":false,"h26":298,"h25":269},{"c":"ZIP_P_3080","n":"달콤옥수수전","w":140,"cost":592,"price":5800,"cat":"전류","stop":false},{"c":"ZIP_P_3091","n":"유자향오이무피클","w":240,"cost":567,"price":3900,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_3098","n":"아삭이된장무침","w":110,"cost":585,"price":5500,"cat":"기타","stop":false},{"c":"ZIP_P_3099","n":"동그랑땡","w":160,"cost":1033,"price":6800,"cat":"전류","stop":false,"h26":2712,"h25":2694},{"c":"ZIP_P_3100","n":"감자전","w":150,"cost":815,"price":7800,"cat":"전류","stop":false},{"c":"ZIP_P_3101","n":"매콤김치전","w":150,"cost":542,"price":5300,"cat":"전류","stop":false,"h26":88,"h25":126},{"c":"ZIP_P_3102","n":"버섯두부전","w":160,"cost":656,"price":4800,"cat":"전류","stop":false},{"c":"ZIP_P_3104","n":"애호박전","w":160,"cost":1254,"price":5800,"cat":"전류","stop":false,"h26":0,"h25":0},{"c":"ZIP_P_3105","n":"해물야채전","w":160,"cost":848,"price":5600,"cat":"전류","stop":false,"h26":96,"h25":233},{"c":"ZIP_P_3108","n":"양파고추장아찌","w":350,"cost":1278,"price":8300,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_3110","n":"유자향오이무피클","w":370,"cost":845,"price":5800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_3124","n":"동태전+깻잎전430g[430g]","w":430,"cost":3268,"price":21200,"cat":"기타","stop":false},{"c":"ZIP_P_3125","n":"깻잎전","w":420,"cost":2072,"price":16800,"cat":"전류","stop":false},{"c":"ZIP_P_3126","n":"동그랑땡+동태전410g[410g]","w":410,"cost":3517,"price":22800,"cat":"전류","stop":false},{"c":"ZIP_P_3148","n":"모둠전3종_애호박전,녹두전,두부전","w":360,"cost":1794,"price":17800,"cat":"전류","stop":false},{"c":"ZIP_P_3153","n":"소고기육전과새콤파채","w":480,"cost":5234,"price":27500,"cat":"전류","stop":false,"h26":0,"h25":165},{"c":"ZIP_P_3154","n":"깻잎전","w":500,"cost":2641,"price":19800,"cat":"전류","stop":false,"h26":146,"h25":177},{"c":"ZIP_P_3156","n":"녹두전","w":600,"cost":3311,"price":24800,"cat":"전류","stop":false,"h26":59,"h25":0},{"c":"ZIP_P_3158","n":"새우전","w":120,"cost":2092,"price":11800,"cat":"전류","stop":false,"h26":234,"h25":0},{"c":"ZIP_P_3159","n":"동그랑땡_대용량","w":450,"cost":2579,"price":16800,"cat":"대용량","stop":false,"h26":286,"h25":323},{"c":"ZIP_P_3160","n":"계란두부부침","w":170,"cost":635,"price":5500,"cat":"전류","stop":false,"h26":1067,"h25":1078},{"c":"ZIP_P_3162","n":"순두부계란찜","w":240,"cost":717,"price":4900,"cat":"기타","stop":false},{"c":"ZIP_P_3163","n":"모둠전3종_맛살버섯전,아이들김치전,한입수제떡갈비)","w":400,"cost":2463,"price":14800,"cat":"전류","stop":false},{"c":"ZIP_P_3164","n":"맛살버섯전","w":160,"cost":679,"price":4800,"cat":"전류","stop":false},{"c":"ZIP_P_3165","n":"참치깻잎전","w":160,"cost":1057,"price":6800,"cat":"전류","stop":false},{"c":"ZIP_P_3166","n":"한끼모둠전3종","w":150,"cost":745,"price":4800,"cat":"전류","stop":false,"h26":731,"h25":259},{"c":"ZIP_P_3167","n":"저당양파고추장아찌","w":150,"cost":614,"price":4800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_3168","n":"수제함박스테이크","w":300,"cost":2596,"price":12300,"cat":"기타","stop":false},{"c":"ZIP_P_3170","n":"동태전","w":150,"cost":1681,"price":9800,"cat":"전류","stop":false,"h26":1164,"h25":918},{"c":"ZIP_P_3171","n":"동태전","w":500,"cost":5519,"price":29800,"cat":"전류","stop":false,"h26":108,"h25":0},{"c":"ZIP_P_3172","n":"자색양배추피클","w":240,"cost":397,"price":3900,"cat":"김치·장아찌","stop":true},{"c":"ZIP_P_3173","n":"모둠장아찌","w":150,"cost":700,"price":4900,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_4003","n":"메추리알간장조림","w":230,"cost":1400,"price":6900,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4011","n":"검은콩조림","w":150,"cost":1026,"price":5900,"cat":"기타","stop":false},{"c":"ZIP_P_4012","n":"검은콩조림","w":400,"cost":2711,"price":14800,"cat":"기타","stop":false},{"c":"ZIP_P_4014","n":"간장감자조림","w":200,"cost":680,"price":4300,"cat":"기타","stop":true},{"c":"ZIP_P_4020","n":"알감자조림","w":300,"cost":1064,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_4033","n":"한우장조림","w":150,"cost":1941,"price":9900,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4037","n":"메추리알간장조림","w":110,"cost":710,"price":4300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4038","n":"검은콩조림","w":90,"cost":619,"price":3800,"cat":"기타","stop":false},{"c":"ZIP_P_4040","n":"우엉조림","w":100,"cost":554,"price":3900,"cat":"기타","stop":false},{"c":"ZIP_P_4041","n":"유자견과류조림","w":90,"cost":819,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_4059","n":"마늘쫑간장조림","w":100,"cost":547,"price":3800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4064","n":"표고버섯조림","w":140,"cost":1066,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_4069","n":"병아리콩조림","w":120,"cost":883,"price":5500,"cat":"기타","stop":false},{"c":"ZIP_P_4075","n":"보리새우무조림","w":600,"cost":1677,"price":9300,"cat":"기타","stop":false},{"c":"ZIP_P_4076","n":"단호박조림","w":150,"cost":932,"price":5300,"cat":"기타","stop":false},{"c":"ZIP_P_4085","n":"소고기장조림","w":150,"cost":2555,"price":11800,"cat":"고기·메인","stop":true},{"c":"ZIP_P_4094","n":"가자미엿장조림","w":350,"cost":2374,"price":13300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4100","n":"한입두부간장조림","w":250,"cost":754,"price":5500,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4101","n":"한입두부간장조림","w":110,"cost":368,"price":2900,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4102","n":"두부조림","w":380,"cost":1311,"price":7800,"cat":"기타","stop":false},{"c":"ZIP_P_4104","n":"케찹두부조림","w":120,"cost":490,"price":4600,"cat":"기타","stop":false},{"c":"ZIP_P_4105","n":"마파두부","w":350,"cost":1196,"price":7300,"cat":"기타","stop":false},{"c":"ZIP_P_4106","n":"간장감자조림","w":140,"cost":501,"price":3900,"cat":"기타","stop":true},{"c":"ZIP_P_4107","n":"참치짜글이","w":140,"cost":701,"price":4900,"cat":"기타","stop":false},{"c":"ZIP_P_4108","n":"한돈안심장조림","w":120,"cost":1091,"price":5900,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4109","n":"메추리알간장조림","w":100,"cost":680,"price":5800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_4110","n":"저당우엉조림","w":80,"cost":660,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_4111","n":"저당메추리알장조림","w":150,"cost":917,"price":5800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_5004","n":"무생채","w":180,"cost":510,"price":3800,"cat":"나물류","stop":false},{"c":"ZIP_P_5005","n":"무나물","w":200,"cost":453,"price":3500,"cat":"나물류","stop":false,"h26":1472,"h25":1172},{"c":"ZIP_P_5010","n":"새콤달콤도라지무침","w":150,"cost":777,"price":5800,"cat":"나물류","stop":false},{"c":"ZIP_P_5024","n":"꽈리고추찜","w":150,"cost":1003,"price":6800,"cat":"기타","stop":false},{"c":"ZIP_P_5032","n":"오이부추무침","w":180,"cost":885,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_5049","n":"봄나물샐러드","w":175,"cost":1353,"price":8800,"cat":"나물류","stop":false},{"c":"ZIP_P_5057","n":"달래장","w":130,"cost":1280,"price":6800,"cat":"기타","stop":false},{"c":"ZIP_P_5061","n":"오이부추무침","w":300,"cost":1467,"price":9300,"cat":"기타","stop":false},{"c":"ZIP_P_5068","n":"옥수수버무리","w":160,"cost":575,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_5075","n":"시래기된장지짐","w":90,"cost":615,"price":3900,"cat":"기타","stop":false},{"c":"ZIP_P_5078","n":"꽈리고추찜","w":90,"cost":634,"price":4900,"cat":"기타","stop":false},{"c":"ZIP_P_5079","n":"새콤달콤도라지무침","w":100,"cost":547,"price":4300,"cat":"나물류","stop":false},{"c":"ZIP_P_5080","n":"시금치나물","w":90,"cost":601,"price":5800,"cat":"나물류","stop":false,"h26":5143,"h25":1843},{"c":"ZIP_P_5082","n":"오이부추무침","w":100,"cost":528,"price":3800,"cat":"기타","stop":false},{"c":"ZIP_P_5084","n":"참나물무침","w":80,"cost":1064,"price":4500,"cat":"나물류","stop":false},{"c":"ZIP_P_5087","n":"무생채","w":100,"cost":323,"price":2900,"cat":"나물류","stop":false},{"c":"ZIP_P_5088","n":"파래김무침","w":40,"cost":916,"price":4900,"cat":"기타","stop":false},{"c":"ZIP_P_5091","n":"섬초시금치무침","w":90,"cost":928,"price":5800,"cat":"나물류","stop":false},{"c":"ZIP_P_5092","n":"무나물","w":100,"cost":276,"price":2800,"cat":"나물류","stop":false,"h26":332,"h25":237},{"c":"ZIP_P_5098","n":"봄동무침","w":100,"cost":488,"price":4300,"cat":"기타","stop":false},{"c":"ZIP_P_5100","n":"무말랭이무침","w":100,"cost":882,"price":4800,"cat":"기타","stop":true},{"c":"ZIP_P_5106","n":"새콤달콤오이미나리무침","w":120,"cost":632,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_5110","n":"미나리무침","w":100,"cost":640,"price":4900,"cat":"기타","stop":false},{"c":"ZIP_P_5116","n":"생취나물무침","w":80,"cost":1031,"price":4900,"cat":"나물류","stop":false},{"c":"ZIP_P_5121","n":"새콤달콤풋마늘무침","w":120,"cost":1009,"price":4900,"cat":"기타","stop":false},{"c":"ZIP_P_5129","n":"참외오이무침","w":130,"cost":492,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_5136","n":"마늘쫑고추장무침","w":110,"cost":597,"price":3900,"cat":"기타","stop":false},{"c":"ZIP_P_5144","n":"새콤달콤오이달래무침","w":120,"cost":938,"price":5500,"cat":"기타","stop":false},{"c":"ZIP_P_5146","n":"새콤달콤돌나물무침","w":190,"cost":746,"price":5600,"cat":"나물류","stop":false},{"c":"ZIP_P_5147","n":"향긋한봄나물무침","w":135,"cost":882,"price":6800,"cat":"나물류","stop":false},{"c":"ZIP_P_5150","n":"새콤오이무생채","w":200,"cost":577,"price":3800,"cat":"나물류","stop":false},{"c":"ZIP_P_5156","n":"꽈리고추찜","w":300,"cost":2013,"price":13800,"cat":"기타","stop":false},{"c":"ZIP_P_5158","n":"무생채","w":350,"cost":964,"price":6800,"cat":"나물류","stop":false},{"c":"ZIP_P_5161","n":"파래김무침","w":100,"cost":2212,"price":10800,"cat":"기타","stop":false},{"c":"ZIP_P_5162","n":"마카로니범벅","w":120,"cost":482,"price":4300,"cat":"기타","stop":false},{"c":"ZIP_P_5164","n":"새콤달콤못난이오이무침","w":160,"cost":643,"price":4600,"cat":"기타","stop":false},{"c":"ZIP_P_5169","n":"새콤오이무생채","w":300,"cost":868,"price":5800,"cat":"나물류","stop":false},{"c":"ZIP_P_5173","n":"천사채샐러드","w":120,"cost":437,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_5174","n":"달래김무침","w":40,"cost":918,"price":5300,"cat":"기타","stop":false},{"c":"ZIP_P_5184","n":"열무무침","w":90,"cost":504,"price":3800,"cat":"기타","stop":false},{"c":"ZIP_P_5187","n":"콩나물무침","w":90,"cost":365,"price":2800,"cat":"나물류","stop":false},{"c":"ZIP_P_5188","n":"숙주나물무침","w":90,"cost":342,"price":2900,"cat":"나물류","stop":false},{"c":"ZIP_P_5189","n":"매콤콩나물무침","w":90,"cost":419,"price":3300,"cat":"나물류","stop":false},{"c":"ZIP_P_5190","n":"닭가슴살두부무침","w":100,"cost":616,"price":5300,"cat":"기타","stop":false},{"c":"ZIP_P_5191","n":"가지나물","w":100,"cost":515,"price":3800,"cat":"나물류","stop":false},{"c":"ZIP_P_5192","n":"브로콜리두부무침","w":100,"cost":709,"price":3900,"cat":"기타","stop":false},{"c":"ZIP_P_5193","n":"새콤달콤오이맛살무침","w":110,"cost":475,"price":3900,"cat":"기타","stop":false},{"c":"ZIP_P_5194","n":"참나물두부무침","w":100,"cost":865,"price":4500,"cat":"나물류","stop":false},{"c":"ZIP_P_5196","n":"매콤콩나물무침","w":130,"cost":565,"price":3900,"cat":"나물류","stop":false},{"c":"ZIP_P_5198","n":"옥수수버무리","w":100,"cost":390,"price":2900,"cat":"기타","stop":false},{"c":"ZIP_P_5199","n":"새콤오이무생채","w":100,"cost":327,"price":2900,"cat":"나물류","stop":false},{"c":"ZIP_P_5200","n":"단구마사라다","w":130,"cost":709,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_5206","n":"저당메추리알콩샐러드","w":140,"cost":727,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_5207","n":"저당양파마요닭가슴살샐러드","w":120,"cost":872,"price":5300,"cat":"기타","stop":false},{"c":"ZIP_P_5208","n":"영양과채사라다","w":130,"cost":582,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_5209","n":"느타리들깨무침","w":90,"cost":757,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_5210","n":"저당황태무침","w":60,"cost":1056,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_5211","n":"깻잎순된장무침","w":90,"cost":751,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_5214","n":"깻잎무생채","w":120,"cost":258,"price":2800,"cat":"나물류","stop":false},{"c":"ZIP_P_6001","n":"감자채볶음","w":120,"cost":429,"price":3900,"cat":"기타","stop":false},{"c":"ZIP_P_6008","n":"미역줄기볶음","w":110,"cost":384,"price":3800,"cat":"기타","stop":false},{"c":"ZIP_P_6009","n":"느타리버섯볶음","w":120,"cost":832,"price":4600,"cat":"기타","stop":false},{"c":"ZIP_P_6014","n":"호두멸치볶음","w":80,"cost":1226,"price":5900,"cat":"기타","stop":false},{"c":"ZIP_P_6015","n":"호두멸치볶음","w":200,"cost":3039,"price":14300,"cat":"기타","stop":false},{"c":"ZIP_P_6034","n":"들깨시래기볶음","w":130,"cost":718,"price":5300,"cat":"기타","stop":false},{"c":"ZIP_P_6069","n":"감자볶음밥재료","w":150,"cost":680,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_6070","n":"한돈주먹밥","w":120,"cost":1238,"price":6800,"cat":"기타","stop":false},{"c":"ZIP_P_6071","n":"참치마요주먹밥","w":120,"cost":1201,"price":7500,"cat":"기타","stop":false},{"c":"ZIP_P_6102","n":"미역줄기볶음","w":300,"cost":1096,"price":9500,"cat":"기타","stop":false},{"c":"ZIP_P_6111","n":"한우주먹밥","w":110,"cost":2280,"price":9800,"cat":"기타","stop":false},{"c":"ZIP_P_6113","n":"멸치주먹밥","w":60,"cost":1089,"price":6300,"cat":"기타","stop":false},{"c":"ZIP_P_6120","n":"미역줄기볶음","w":60,"cost":264,"price":2900,"cat":"기타","stop":false},{"c":"ZIP_P_6122","n":"느타리버섯볶음","w":90,"cost":647,"price":3800,"cat":"기타","stop":false},{"c":"ZIP_P_6123","n":"감자채볶음","w":80,"cost":313,"price":2800,"cat":"기타","stop":false},{"c":"ZIP_P_6124","n":"감자햄볶음","w":80,"cost":388,"price":3600,"cat":"기타","stop":false},{"c":"ZIP_P_6125","n":"건가지볶음","w":60,"cost":349,"price":3800,"cat":"나물류","stop":false,"h26":357,"h25":221},{"c":"ZIP_P_6126","n":"건취나물볶음","w":60,"cost":559,"price":4300,"cat":"나물류","stop":false,"h26":488,"h25":220},{"c":"ZIP_P_6127","n":"건피마자볶음","w":60,"cost":586,"price":4500,"cat":"나물류","stop":false},{"c":"ZIP_P_6128","n":"건호박볶음","w":80,"cost":617,"price":4300,"cat":"나물류","stop":false},{"c":"ZIP_P_6133","n":"들깨고구마줄기볶음","w":80,"cost":959,"price":5500,"cat":"기타","stop":false},{"c":"ZIP_P_6138","n":"애호박볶음","w":100,"cost":572,"price":3600,"cat":"나물류","stop":false},{"c":"ZIP_P_6140","n":"애호박나물","w":110,"cost":613,"price":3600,"cat":"나물류","stop":false},{"c":"ZIP_P_6154","n":"풋마늘어묵볶음","w":100,"cost":919,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_6171","n":"감자햄볶음","w":180,"cost":774,"price":6300,"cat":"기타","stop":false},{"c":"ZIP_P_6175","n":"보리새우마늘쫑볶음","w":80,"cost":668,"price":4300,"cat":"기타","stop":false},{"c":"ZIP_P_6183","n":"꽈리멸치볶음_대용량","w":200,"cost":2234,"price":16800,"cat":"대용량","stop":false},{"c":"ZIP_P_6192","n":"한우반달오이볶음","w":140,"cost":1076,"price":6800,"cat":"기타","stop":false},{"c":"ZIP_P_6200","n":"한우오이볶음","w":300,"cost":2404,"price":13800,"cat":"기타","stop":true},{"c":"ZIP_P_6208","n":"건고사리볶음","w":80,"cost":498,"price":4500,"cat":"나물류","stop":false,"h26":1678,"h25":1693},{"c":"ZIP_P_6209","n":"건곤드레볶음","w":80,"cost":825,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_6219","n":"꽈리멸치볶음","w":60,"cost":702,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_6220","n":"들깨시래기볶음","w":90,"cost":523,"price":4300,"cat":"기타","stop":false},{"c":"ZIP_P_6222","n":"볶음김치","w":120,"cost":739,"price":4800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_6231","n":"호두멸치볶음","w":60,"cost":942,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_6232","n":"도라지볶음","w":80,"cost":530,"price":4800,"cat":"나물류","stop":false,"h26":1377,"h25":1366},{"c":"ZIP_P_6233","n":"케찹소세지야채볶음","w":150,"cost":662,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_6238","n":"깻잎순볶음","w":80,"cost":731,"price":5300,"cat":"기타","stop":false},{"c":"ZIP_P_6239","n":"한돈가지볶음","w":120,"cost":773,"price":5800,"cat":"나물류","stop":false},{"c":"ZIP_P_6240","n":"보리새우간장볶음대용량","w":100,"cost":1872,"price":10800,"cat":"대용량","stop":false},{"c":"ZIP_P_6244","n":"한돈참치김치주먹밥","w":220,"cost":2030,"price":10800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_6246","n":"한돈시금치소보로덮밥","w":160,"cost":1088,"price":6800,"cat":"나물류","stop":false},{"c":"ZIP_P_6253","n":"감자채볶음","w":260,"cost":878,"price":7800,"cat":"기타","stop":false},{"c":"ZIP_P_6256","n":"불고기잡채","w":450,"cost":3936,"price":17800,"cat":"고기·메인","stop":false,"h26":295,"h25":307},{"c":"ZIP_P_6259","n":"애호박볶음","w":230,"cost":1224,"price":6800,"cat":"나물류","stop":false},{"c":"ZIP_P_6264","n":"멸치두배주먹밥재료","w":100,"cost":1638,"price":9800,"cat":"기타","stop":false},{"c":"ZIP_P_6280","n":"연근조림","w":100,"cost":607,"price":3900,"cat":"나물류","stop":false},{"c":"ZIP_P_6294","n":"천사채잡채","w":330,"cost":1572,"price":9800,"cat":"고기·메인","stop":false,"h26":302,"h25":231},{"c":"ZIP_P_6336","n":"소세지야채볶음","w":130,"cost":632,"price":4300,"cat":"기타","stop":false},{"c":"ZIP_P_6338","n":"양배추햄볶음","w":100,"cost":447,"price":3300,"cat":"기타","stop":false},{"c":"ZIP_P_6339","n":"깻잎순멸치조림","w":130,"cost":788,"price":5500,"cat":"기타","stop":false},{"c":"ZIP_P_6341","n":"아이들한돈탕수조림","w":380,"cost":2905,"price":13800,"cat":"기타","stop":false},{"c":"ZIP_P_6342","n":"한돈찹스테이크","w":300,"cost":2669,"price":12800,"cat":"기타","stop":false},{"c":"ZIP_P_6395","n":"한우애호박볶음","w":130,"cost":1213,"price":5800,"cat":"나물류","stop":false},{"c":"ZIP_P_6396","n":"새우애호박볶음","w":115,"cost":862,"price":4800,"cat":"나물류","stop":false},{"c":"ZIP_P_6398","n":"닭가슴살장조림","w":150,"cost":1171,"price":5800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_6410","n":"크림함박스테이크","w":140,"cost":1404,"price":6300,"cat":"기타","stop":false},{"c":"ZIP_P_6411","n":"토마토소스와두부스테이크","w":150,"cost":794,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_6412","n":"저당아몬드표고버섯탕수","w":100,"cost":970,"price":5600,"cat":"기타","stop":false},{"c":"ZIP_P_6414","n":"고추장꽈리멸치볶음","w":60,"cost":669,"price":5500,"cat":"기타","stop":false},{"c":"ZIP_P_6429","n":"모둠어묵볶음","w":90,"cost":709,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_6430","n":"매콤어묵볶음","w":90,"cost":808,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_6431","n":"간장어묵볶음","w":90,"cost":786,"price":4600,"cat":"기타","stop":false},{"c":"ZIP_P_6432","n":"참치두부소보로","w":130,"cost":668,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_6433","n":"맛살야채볶음","w":110,"cost":873,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_6436","n":"한우두부볶음","w":130,"cost":1087,"price":5800,"cat":"기타","stop":false},{"c":"ZIP_P_6437","n":"한우가지볶음","w":100,"cost":989,"price":5800,"cat":"나물류","stop":false},{"c":"ZIP_P_6438","n":"한우표고버섯볶음","w":100,"cost":1364,"price":6500,"cat":"기타","stop":false},{"c":"ZIP_P_6443","n":"맛살계란볶음밥재료","w":110,"cost":697,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_6445","n":"보리새우간장볶음","w":20,"cost":421,"price":3500,"cat":"기타","stop":false},{"c":"ZIP_P_6446","n":"햄김치덮밥","w":120,"cost":728,"price":4800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_6456","n":"해물볶음밥재료","w":110,"cost":1167,"price":7300,"cat":"기타","stop":false},{"c":"ZIP_P_6457","n":"간장어묵채볶음","w":90,"cost":715,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_6458","n":"저당호두멸치볶음","w":60,"cost":821,"price":5300,"cat":"기타","stop":false},{"c":"ZIP_P_6459","n":"한우무볶음","w":90,"cost":526,"price":3600,"cat":"기타","stop":false},{"c":"ZIP_P_6460","n":"달콤우엉강정","w":60,"cost":383,"price":3500,"cat":"기타","stop":false},{"c":"ZIP_P_6461","n":"매콤콩나물잡채","w":300,"cost":1313,"price":8800,"cat":"나물류","stop":false},{"c":"ZIP_P_6462","n":"한돈고추잡채","w":200,"cost":1461,"price":8800,"cat":"고기·메인","stop":false},{"c":"ZIP_P_6463","n":"한돈간장탕수조림","w":300,"cost":2543,"price":12800,"cat":"기타","stop":false},{"c":"ZIP_P_7065","n":"아삭이고추소박이","w":250,"cost":1409,"price":8800,"cat":"기타","stop":false},{"c":"ZIP_P_7066","n":"깍두기","w":230,"cost":1154,"price":3900,"cat":"기타","stop":false},{"c":"ZIP_P_7068","n":"총각김치","w":200,"cost":958,"price":4300,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_7069","n":"백나박김치","w":350,"cost":1130,"price":4800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_7071","n":"여수돌산갓김치","w":250,"cost":2343,"price":7800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_7073","n":"배추맛김치","w":200,"cost":834,"price":3800,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_7074","n":"양념깻잎장아찌","w":100,"cost":899,"price":4900,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_7075","n":"간장깻잎장아찌","w":100,"cost":768,"price":4500,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_7078","n":"열무김치","w":200,"cost":995,"price":4500,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_7080","n":"마늘쫑채장아찌","w":120,"cost":520,"price":3300,"cat":"김치·장아찌","stop":false},{"c":"ZIP_P_8066","n":"아이들 한우스테이크소스덮밥","w":130,"cost":665,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_8067","n":"아이들 맛살계란덮밥","w":130,"cost":465,"price":4300,"cat":"기타","stop":false},{"c":"ZIP_P_8068","n":"아이들 한돈불고기소스덮밥","w":130,"cost":678,"price":4500,"cat":"고기·메인","stop":false},{"c":"ZIP_P_8069","n":"아이들 달걀새우덮밥","w":130,"cost":819,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_8070","n":"아이들 맑은감자국","w":300,"cost":349,"price":3300,"cat":"국·탕","stop":false},{"c":"ZIP_P_8071","n":"아이들 맑은콩나물국","w":300,"cost":278,"price":3300,"cat":"나물류","stop":false},{"c":"ZIP_P_8072","n":"아이들 배추된장국","w":300,"cost":470,"price":3500,"cat":"국·탕","stop":false},{"c":"ZIP_P_8073","n":"아이들 된장국","w":300,"cost":432,"price":3300,"cat":"국·탕","stop":false},{"c":"ZIP_P_8074","n":"아이들 된장찌개","w":300,"cost":591,"price":4500,"cat":"국·탕","stop":false},{"c":"ZIP_P_8075","n":"아이들 맑은순두부찌개","w":300,"cost":616,"price":4300,"cat":"국·탕","stop":false},{"c":"ZIP_P_8076","n":"아이들 한우소고기무국","w":300,"cost":842,"price":4800,"cat":"국·탕","stop":false,"h26":538,"h25":0},{"c":"ZIP_P_8077","n":"아이들 한우사골곰탕","w":300,"cost":907,"price":4800,"cat":"국·탕","stop":false},{"c":"ZIP_P_8078","n":"아이들 한우소고기미역국","w":300,"cost":948,"price":5300,"cat":"국·탕","stop":false},{"c":"ZIP_P_8079","n":"아이들 한우하이라이스덮밥","w":130,"cost":632,"price":4300,"cat":"기타","stop":false},{"c":"ZIP_P_8080","n":"아이들 한우계란소보로덮밥","w":100,"cost":931,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_8081","n":"아이들 한돈시금치소보로덮밥","w":100,"cost":711,"price":4800,"cat":"나물류","stop":false},{"c":"ZIP_P_8082","n":"아이들 한돈순두부덮밥","w":130,"cost":468,"price":3800,"cat":"기타","stop":false},{"c":"ZIP_P_8083","n":"아이들 한우감자소보로덮밥","w":100,"cost":719,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_8084","n":"아이들 한우삼색소보로덮밥","w":100,"cost":890,"price":4800,"cat":"기타","stop":false},{"c":"ZIP_P_8085","n":"아이들 한우배추소보로덮밥","w":100,"cost":892,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_8086","n":"아이들 두부덮밥","w":130,"cost":452,"price":3500,"cat":"기타","stop":false},{"c":"ZIP_P_8088","n":"아이들 순한닭고기볶음","w":80,"cost":512,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_8089","n":"아이들 한우애호박볶음","w":80,"cost":761,"price":4300,"cat":"나물류","stop":false},{"c":"ZIP_P_8090","n":"아이들 한돈간장불고기","w":80,"cost":541,"price":4300,"cat":"고기·메인","stop":false},{"c":"ZIP_P_8091","n":"아이들 메추리알감자버무리","w":100,"cost":593,"price":4300,"cat":"기타","stop":false},{"c":"ZIP_P_8092","n":"아이들 뿌리채소한우찜","w":80,"cost":582,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_8093","n":"아이들 한우버섯볶음","w":80,"cost":758,"price":4500,"cat":"기타","stop":false},{"c":"ZIP_P_8094","n":"아이들 순살맑은삼계탕","w":300,"cost":468,"price":5500,"cat":"국·탕","stop":false},{"c":"ZIP_P_8095","n":"아이들 순살누룽지삼계탕","w":300,"cost":539,"price":5800,"cat":"국·탕","stop":false},{"c":"ZIP_P_8096","n":"아이들 맑은한우곰탕","w":300,"cost":777,"price":5300,"cat":"국·탕","stop":false},{"c":"ZIP_P_9027","n":"떡국세트","w":1085,"cost":3107,"price":15800,"cat":"세트","stop":false},{"c":"ZIP_P_9045","n":"건나물비빔밥","w":350,"cost":2268,"price":14800,"cat":"나물류","stop":false},{"c":"ZIP_P_9056","n":"아이들한우비빔밥","w":315,"cost":2093,"price":10800,"cat":"기타","stop":false},{"c":"ZIP_P_9079","n":"한우비빔밥","w":370,"cost":2544,"price":12800,"cat":"기타","stop":false},{"c":"ZIP_P_9207","n":"들깨시래기볶음210g+들깨고구마줄기볶음170g","w":380,"cost":3330,"price":17800,"cat":"기타","stop":false},{"c":"ZIP_P_9208","n":"감자햄볶음180g+콩나물무침170g","w":350,"cost":1398,"price":10800,"cat":"나물류","stop":false},{"c":"ZIP_P_9393","n":"나물비빔밥","w":370,"cost":1942,"price":10800,"cat":"나물류","stop":false},{"c":"ZIP_P_9471","n":"집반찬베스트9종찬합","w":335,"cost":2201,"price":11800,"cat":"기타","stop":false},{"c":"ZIP_P_9474","n":"양념꼬막비빔밥","w":280,"cost":2856,"price":14800,"cat":"기타","stop":false},{"c":"ZIP_P_9518","n":"구수한나물비빔밥","w":370,"cost":2073,"price":10800,"cat":"나물류","stop":false},{"c":"ZIP_P_9535","n":"안매운어묵탕_반조리","w":940,"cost":2158,"price":12800,"cat":"국·탕","stop":false},{"c":"ZIP_P_9549","n":"집반찬연구소건나물국내산4종","w":200,"cost":1677,"price":11900,"cat":"나물류","stop":false},{"c":"ZIP_P_9554","n":"포두부야채쌈키트","w":360,"cost":2321,"price":16800,"cat":"기타","stop":false},{"c":"ZIP_P_9555","n":"저당고추장나물비빔밥","w":375,"cost":2187,"price":11800,"cat":"나물류","stop":false},{"c":"ZIP_P_9556","n":"새콤열무비빔밥","w":400,"cost":2046,"price":12800,"cat":"기타","stop":false},{"c":"ZIP_P_9557","n":"모둠쌈과저당두부강된장","w":260,"cost":1497,"price":7800,"cat":"기타","stop":false},{"c":"BAN_P_0005","n":"오렌지향삼색피클","w":2000,"cost":3812,"price":18800,"cat":"김치·장아찌","stop":true},{"c":"BAN_P_0006","n":"6종모둠장아찌","w":2000,"cost":4552,"price":21800,"cat":"김치·장아찌","stop":true},{"c":"BAN_P_0011","n":"청포도향와사비피클","w":2000,"cost":3289,"price":16800,"cat":"김치·장아찌","stop":true},{"c":"ZIP_P_0204","n":"뚝배기불고기_반조리","w":340,"cost":4072,"price":15800,"cat":"고기·메인","stop":true},{"c":"ZIP_P_0206","n":"소불고기_완조리","w":300,"cost":4909,"price":16800,"cat":"고기·메인","stop":true},{"c":"ZIP_P_1075","n":"맑은순두부찌개","w":650,"cost":1354,"price":8800,"cat":"국·탕","stop":true},{"c":"ZIP_P_3161","n":"한입수제떡갈비","w":200,"cost":2148,"price":8800,"cat":"전류","stop":true},{"c":"ZIP_P_4039","n":"소고기장조림_호주산","w":100,"cost":1727,"price":8300,"cat":"고기·메인","stop":true},{"c":"ZIP_P_4086","n":"소고기장조림_대용량","w":300,"cost":5069,"price":22800,"cat":"대용량","stop":true},{"c":"ZIP_P_5117","n":"새콤달콤유채나물무침","w":130,"cost":729,"price":4800,"cat":"나물류","stop":true},{"c":"ZIP_P_5119","n":"쑥갓두부무침","w":120,"cost":669,"price":4500,"cat":"기타","stop":true},{"c":"ZIP_P_5213","n":"새콤달콤오징어무침","w":130,"cost":1053,"price":5500,"cat":"기타","stop":true},{"c":"ZIP_P_6213","n":"건취나물볶음","w":80,"cost":714,"price":5300,"cat":"나물류","stop":true,"h26":0,"h25":0},{"c":"ZIP_P_6214","n":"건피마자볶음","w":80,"cost":750,"price":5300,"cat":"나물류","stop":true},{"c":"ZIP_P_6247","n":"한우계란소보로","w":100,"cost":875,"price":4800,"cat":"기타","stop":true},{"c":"ZIP_P_6248","n":"냉이새우볶음밥재료","w":130,"cost":1013,"price":6600,"cat":"기타","stop":true},{"c":"ZIP_P_6249","n":"한돈냉이버섯볶음밥재료","w":130,"cost":769,"price":6500,"cat":"기타","stop":true},{"c":"ZIP_P_6413","n":"소고기야채볶음_반조리","w":300,"cost":3637,"price":14800,"cat":"기타","stop":true},{"c":"ZIP_P_6439","n":"한우볶음밥재료","w":160,"cost":1911,"price":7800,"cat":"기타","stop":true},{"c":"ZIP_P_6440","n":"한우감자볶음","w":100,"cost":827,"price":4800,"cat":"기타","stop":true},{"c":"ZIP_P_6442","n":"한우배추볶음","w":110,"cost":899,"price":5300,"cat":"기타","stop":true},{"c":"ZIP_P_7030","n":"밤과대추","w":120,"cost":355,"price":8800,"cat":"기타","stop":true},{"c":"ZIP_P_9519","n":"소불고기두배세트","w":660,"cost":8104,"price":29600,"cat":"고기·메인","stop":true},{"c":"ZIP_P_0044","n":"잡채_대용량","w":900,"cost":3808,"price":24900,"cat":"대용량","stop":false,"h26":0,"h25":120},{"c":"ONO_LA","n":"온올림 LA 양념갈비 (미국산)","w":850,"price":33800,"cost":16200,"cat":"온올림","mkt":26900,"moq":500,"stock":1000,"stop":false},{"c":"ONO_BUL","n":"온올림 옛날 소불고기 (호주산)","w":950,"price":19800,"cost":8564,"cat":"온올림","mkt":15990,"moq":1000,"stock":500,"stop":false},{"c":"ONO_TANG","n":"온올림 갈비탕 (호주산)","w":1000,"price":18800,"cost":8730,"cat":"온올림","mkt":15990,"moq":1000,"stock":1000,"stop":false},{"c":"ONO_GALBI","n":"온올림 소갈비 (미국산)","w":1000,"price":49800,"cost":28200,"cat":"온올림","mkt":34000,"moq":300,"stock":300,"stop":false}];
+var PRE = [{"id":"ch25s","g":"2025 추석","n":"차례상(소)","price":102600,"sold":239,"items":{"ZIP_P_2062":1,"ZIP_P_3159":1,"ZIP_P_3170":1,"ZIP_P_3044":1,"ZIP_P_3158":1,"ZIP_P_3043":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_5187":1,"ZIP_P_7069":1},"calc":{"sum":101400,"cost":15297,"wt":2740,"n":12,"rate":16.4}},{"id":"ch25m","g":"2025 추석","n":"차례상(중)","price":219000,"sold":83,"items":{"ZIP_P_2062":2,"ZIP_P_0012":1,"ZIP_P_3159":2,"ZIP_P_3170":2,"ZIP_P_3044":2,"ZIP_P_3158":2,"ZIP_P_3043":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":2},"calc":{"sum":215700,"cost":32498,"wt":5930,"n":25,"rate":16.3}},{"id":"ch25l","g":"2025 추석","n":"차례상(대)","price":346400,"sold":19,"items":{"ZIP_P_2062":3,"ZIP_P_0187":1,"ZIP_P_0012":1,"ZIP_P_3159":3,"ZIP_P_3170":3,"ZIP_P_3044":3,"ZIP_P_3158":3,"ZIP_P_3043":3,"ZIP_P_6232":3,"ZIP_P_5080":3,"ZIP_P_6208":3,"ZIP_P_5092":3,"ZIP_P_5187":3,"ZIP_P_7069":3},"calc":{"sum":342900,"cost":52898,"wt":9470,"n":38,"rate":16.8}},{"id":"ss25xs","g":"2025 추석","n":"식사세트(특소)","price":53800,"sold":63,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_6232":1,"ZIP_P_6208":1},"calc":{"sum":55700,"cost":10073,"wt":1750,"n":6,"rate":20.6}},{"id":"ss25s","g":"2025 추석","n":"식사세트(소)","price":121200,"sold":62,"items":{"ZIP_P_2062":2,"ZIP_P_0012":2,"ZIP_P_0203":2,"ZIP_P_3099":2,"ZIP_P_3170":1,"ZIP_P_6232":2,"ZIP_P_6208":2,"ZIP_P_3071":1},"calc":{"sum":125100,"cost":22415,"wt":3800,"n":14,"rate":20.3}},{"id":"ss25m","g":"2025 추석","n":"식사세트(중)","price":208100,"sold":49,"items":{"ZIP_P_2062":3,"ZIP_P_0012":2,"ZIP_P_0203":2,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3044":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_3071":2,"ZIP_P_7069":2},"calc":{"sum":204700,"cost":33984,"wt":6570,"n":27,"rate":18}},{"id":"ss25l","g":"2025 추석","n":"식사세트(대)","price":306900,"sold":76,"items":{"ZIP_P_2062":3,"ZIP_P_0187":2,"ZIP_P_0012":2,"ZIP_P_0203":2,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3044":2,"ZIP_P_0038":2,"ZIP_P_3002":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_3071":2,"ZIP_P_7069":2},"calc":{"sum":305700,"cost":52274,"wt":9150,"n":33,"rate":18.7}},{"id":"ss25xl","g":"2025 추석","n":"식사세트(특대)","price":529000,"sold":5,"items":{"ZIP_P_2062":5,"ZIP_P_0187":3,"ZIP_P_0012":3,"ZIP_P_0203":3,"ZIP_P_3099":3,"ZIP_P_3171":2,"ZIP_P_3044":3,"ZIP_P_0038":3,"ZIP_P_3002":3,"ZIP_P_6232":3,"ZIP_P_5080":3,"ZIP_P_6208":3,"ZIP_P_6125":2,"ZIP_P_6128":2,"ZIP_P_6126":2,"ZIP_P_6127":2,"ZIP_P_5092":3,"ZIP_P_5187":3,"ZIP_P_3071":3,"ZIP_P_7069":3},"calc":{"sum":527500,"cost":89548,"wt":15120,"n":57,"rate":18.6}},{"id":"ch26s","g":"2026 설","n":"차례상(소)","price":105000,"sold":196,"items":{"ZIP_P_2062":2,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3044":1,"ZIP_P_3158":1,"ZIP_P_3002":1,"ZIP_P_3104":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_5187":1,"ZIP_P_3071":1,"ZIP_P_7069":1},"calc":{"sum":105100,"cost":16378,"wt":3360,"n":15,"rate":17.2}},{"id":"ch26m","g":"2026 설","n":"차례상(중)","price":244200,"sold":32,"items":{"ZIP_P_2062":4,"ZIP_P_3099":3,"ZIP_P_3170":3,"ZIP_P_3044":2,"ZIP_P_3158":2,"ZIP_P_3002":3,"ZIP_P_3104":3,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_3071":2,"ZIP_P_7069":2},"calc":{"sum":242500,"cost":38016,"wt":7440,"n":34,"rate":17.1}},{"id":"ch26l","g":"2026 설","n":"차례상(대)","price":376800,"sold":5,"items":{"ZIP_P_2062":6,"ZIP_P_3159":2,"ZIP_P_3171":2,"ZIP_P_3044":3,"ZIP_P_3158":3,"ZIP_P_3154":2,"ZIP_P_3043":2,"ZIP_P_6232":3,"ZIP_P_5080":3,"ZIP_P_6208":3,"ZIP_P_5092":3,"ZIP_P_5187":3,"ZIP_P_3071":3,"ZIP_P_7069":3},"calc":{"sum":382800,"cost":59526,"wt":11420,"n":41,"rate":17.4}},{"id":"ss26s","g":"2026 설","n":"음식세트(소)","price":106100,"sold":63,"items":{"ZIP_P_2062":2,"ZIP_P_0187":1,"ZIP_P_0012":1,"ZIP_P_3099":1,"ZIP_P_3044":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_3071":2},"calc":{"sum":109900,"cost":17175,"wt":3790,"n":12,"rate":17.8}},{"id":"ss26m","g":"2026 설","n":"음식세트(중)","price":214000,"sold":56,"items":{"ZIP_P_2062":3,"ZIP_P_0187":1,"ZIP_P_0012":1,"ZIP_P_0203":2,"ZIP_P_3099":2,"ZIP_P_3044":2,"ZIP_P_0038":1,"ZIP_P_3002":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":1,"ZIP_P_5187":1,"ZIP_P_3071":2,"ZIP_P_7069":1},"calc":{"sum":222200,"cost":37384,"wt":6820,"n":25,"rate":19.2}},{"id":"ss26l","g":"2026 설","n":"음식세트(대)","price":378300,"sold":20,"items":{"ZIP_P_2062":4,"ZIP_P_0187":2,"ZIP_P_0012":2,"ZIP_P_0203":2,"ZIP_P_3159":1,"ZIP_P_3171":1,"ZIP_P_3156":1,"ZIP_P_3158":2,"ZIP_P_0038":2,"ZIP_P_3154":1,"ZIP_P_3043":1,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_6125":1,"ZIP_P_6128":1,"ZIP_P_6126":1,"ZIP_P_6127":1,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_3071":2,"ZIP_P_7069":2},"calc":{"sum":386500,"cost":66078,"wt":10970,"n":37,"rate":19.2}},{"id":"ss26xl","g":"2026 설","n":"음식세트(특대)","price":620100,"sold":0,"items":{"ZIP_P_2062":5,"ZIP_P_0187":3,"ZIP_P_0012":3,"ZIP_P_0203":3,"ZIP_P_3159":2,"ZIP_P_3171":2,"ZIP_P_3156":2,"ZIP_P_3158":3,"ZIP_P_0038":3,"ZIP_P_3154":2,"ZIP_P_3043":2,"ZIP_P_6232":3,"ZIP_P_5080":3,"ZIP_P_6208":3,"ZIP_P_6125":2,"ZIP_P_6128":2,"ZIP_P_6126":2,"ZIP_P_6127":2,"ZIP_P_5092":3,"ZIP_P_5187":3,"ZIP_P_3071":3,"ZIP_P_7069":3},"calc":{"sum":631800,"cost":106531,"wt":17110,"n":59,"rate":18.9}},{"id":"nm","g":"공통","n":"나물세트 5종","price":20500,"sold":143,"items":{"ZIP_P_6208":1,"ZIP_P_5080":1,"ZIP_P_6232":1,"ZIP_P_5092":1,"ZIP_P_5187":1},"calc":{"sum":20700,"cost":2270,"wt":440,"n":5,"rate":12.2}},{"id":"gnm","g":"공통","n":"건나물세트 5종","price":21200,"sold":48,"items":{"ZIP_P_6208":1,"ZIP_P_6125":1,"ZIP_P_6128":1,"ZIP_P_6126":1,"ZIP_P_6127":1},"calc":{"sum":21400,"cost":2609,"wt":340,"n":5,"rate":13.5}},{"id":"ono7","g":"온올림","n":"#7 LA+소불+소갈비","price":99800,"sold":0,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_GALBI":1},"calc":{"sum":109400,"cost":49645,"wt":2800,"n":3,"rate":54.7}},{"id":"ono3","g":"온올림","n":"#3 LA×2+갈비탕","price":84800,"sold":0,"items":{"ONO_LA":2,"ONO_TANG":1},"calc":{"sum":92400,"cost":41931,"wt":2700,"n":3,"rate":54.4}},{"id":"ono6","g":"온올림","n":"#6 LA+소불+갈비탕","price":69800,"sold":0,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_TANG":1},"calc":{"sum":78400,"cost":35578,"wt":2800,"n":3,"rate":56.1}}];
+var ONO = {"master":[{"n":"온올림 LA 양념갈비 (미국산)","w":850,"mkt":26900,"rec":33800,"cost":16200,"moq":500,"stock":1000},{"n":"온올림 옛날 소불고기 (호주산)","w":950,"mkt":15990,"rec":19800,"cost":8564,"moq":1000,"stock":500},{"n":"온올림 갈비탕 (호주산)","w":1000,"mkt":15990,"rec":18800,"cost":8730,"moq":1000,"stock":1000},{"n":"온올림 소갈비 (미국산)","w":1000,"mkt":34000,"rec":49800,"cost":28200,"moq":300,"stock":300}],"sub":[["3구 스티로폼",1,2100,""],["슬리브 (3개 합)",1,1000,"단가 미확정"],["가방(쇼핑백)",1,2000,"단가 미확정"],["아이스팩",2,275,"단가 미확정"],["간지",1,860,"단가 미확정"]],"subTotal":6510,"ship":3500,"fee":0,"targetProfit":0.3,"combos":[{"no":1,"a":"LA 양념갈비","b":"LA 양념갈비","c":"LA 양념갈비","type":"동일 3개","wt":2550,"mkt":80700,"rec":101400,"pcost":48600,"sub":6510,"tcost":58610,"sat":43,"score":50,"verdict":"△ 비추천","finalP":101400,"finalR":36.4,"showP":107400,"discP":0,"discR":100,"profitR":0},{"no":2,"a":"LA 양념갈비","b":"LA 양념갈비","c":"옛날 소불고기","type":"2종(1중복)","wt":2650,"mkt":69790,"rec":87400,"pcost":40964,"sub":6510,"tcost":50974,"sat":53,"score":55,"verdict":"○ 검토","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":3,"a":"LA 양념갈비","b":"LA 양념갈비","c":"갈비탕","type":"2종(1중복)","wt":2700,"mkt":69790,"rec":86400,"pcost":41130,"sub":6510,"tcost":51140,"sat":66,"score":61,"verdict":"○ 검토","finalP":86400,"finalR":34.9,"showP":92400,"discP":84800,"discR":8.23,"profitR":33.7},{"no":4,"a":"LA 양념갈비","b":"LA 양념갈비","c":"소갈비","type":"2종(1중복)","wt":2700,"mkt":87800,"rec":117400,"pcost":60600,"sub":6510,"tcost":70610,"sat":61,"score":47,"verdict":"△ 비추천","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":5,"a":"LA 양념갈비","b":"옛날 소불고기","c":"옛날 소불고기","type":"2종(1중복)","wt":2750,"mkt":58880,"rec":73400,"pcost":33328,"sub":6510,"tcost":43338,"sat":56,"score":55,"verdict":"○ 검토","finalP":73400,"finalR":35.1,"showP":79400,"discP":0,"discR":100,"profitR":0},{"no":6,"a":"LA 양념갈비","b":"옛날 소불고기","c":"갈비탕","type":"3종 구성","wt":2800,"mkt":58880,"rec":72400,"pcost":33494,"sub":6510,"tcost":43504,"sat":79,"score":66,"verdict":"◎ 유력","finalP":72400,"finalR":33.9,"showP":78400,"discP":69800,"discR":10.97,"profitR":31.4},{"no":7,"a":"LA 양념갈비","b":"옛날 소불고기","c":"소갈비","type":"3종 구성","wt":2800,"mkt":76890,"rec":103400,"pcost":52964,"sub":6510,"tcost":62974,"sat":74,"score":51,"verdict":"△ 비추천","finalP":103400,"finalR":33,"showP":109400,"discP":99800,"discR":8.78,"profitR":30.6},{"no":8,"a":"LA 양념갈비","b":"갈비탕","c":"갈비탕","type":"2종(1중복)","wt":2850,"mkt":58880,"rec":71400,"pcost":33660,"sub":6510,"tcost":43670,"sat":61,"score":57,"verdict":"○ 검토","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":9,"a":"LA 양념갈비","b":"갈비탕","c":"소갈비","type":"3종 구성","wt":2850,"mkt":76890,"rec":102400,"pcost":53130,"sub":6510,"tcost":63140,"sat":84,"score":56,"verdict":"○ 검토","finalP":102400,"finalR":32.2,"showP":108400,"discP":0,"discR":100,"profitR":0},{"no":10,"a":"LA 양념갈비","b":"소갈비","c":"소갈비","type":"2종(1중복)","wt":2850,"mkt":94900,"rec":133400,"pcost":72600,"sub":6510,"tcost":82610,"sat":64,"score":38,"verdict":"△ 비추천","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":11,"a":"옛날 소불고기","b":"옛날 소불고기","c":"옛날 소불고기","type":"동일 3개","wt":2850,"mkt":47970,"rec":59400,"pcost":25692,"sub":6510,"tcost":35702,"sat":39,"score":45,"verdict":"△ 비추천","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":12,"a":"옛날 소불고기","b":"옛날 소불고기","c":"갈비탕","type":"2종(1중복)","wt":2900,"mkt":47970,"rec":58400,"pcost":25858,"sub":6510,"tcost":35868,"sat":62,"score":56,"verdict":"○ 검토","finalP":58400,"finalR":32.4,"showP":64400,"discP":0,"discR":0,"profitR":0},{"no":13,"a":"옛날 소불고기","b":"옛날 소불고기","c":"소갈비","type":"2종(1중복)","wt":2900,"mkt":65980,"rec":89400,"pcost":45328,"sub":6510,"tcost":55338,"sat":67,"score":45,"verdict":"△ 비추천","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":14,"a":"옛날 소불고기","b":"갈비탕","c":"갈비탕","type":"2종(1중복)","wt":2950,"mkt":47970,"rec":57400,"pcost":26024,"sub":6510,"tcost":36034,"sat":54,"score":52,"verdict":"△ 비추천","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":15,"a":"옛날 소불고기","b":"갈비탕","c":"소갈비","type":"3종 구성","wt":2950,"mkt":65980,"rec":88400,"pcost":45494,"sub":6510,"tcost":55504,"sat":87,"score":54,"verdict":"○ 검토","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":16,"a":"옛날 소불고기","b":"소갈비","c":"소갈비","type":"2종(1중복)","wt":2950,"mkt":83990,"rec":119400,"pcost":64964,"sub":6510,"tcost":74974,"sat":67,"score":36,"verdict":"△ 비추천","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":17,"a":"갈비탕","b":"갈비탕","c":"갈비탕","type":"동일 3개","wt":3000,"mkt":47970,"rec":56400,"pcost":26190,"sub":6510,"tcost":36200,"sat":37,"score":43,"verdict":"△ 비추천","finalP":56400,"finalR":29.4,"showP":62400,"discP":55800,"discR":10.58,"profitR":28.6},{"no":18,"a":"갈비탕","b":"갈비탕","c":"소갈비","type":"2종(1중복)","wt":3000,"mkt":65980,"rec":87400,"pcost":45660,"sub":6510,"tcost":55670,"sat":69,"score":45,"verdict":"△ 비추천","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":19,"a":"갈비탕","b":"소갈비","c":"소갈비","type":"2종(1중복)","wt":3000,"mkt":83990,"rec":118400,"pcost":65130,"sub":6510,"tcost":75140,"sat":77,"score":41,"verdict":"△ 비추천","finalP":0,"finalR":0,"showP":0,"discP":0,"discR":0,"profitR":0},{"no":20,"a":"소갈비","b":"소갈비","c":"소갈비","type":"동일 3개","wt":3000,"mkt":102000,"rec":149400,"pcost":84600,"sub":6510,"tcost":94610,"sat":57,"score":29,"verdict":"△ 비추천","finalP":149400,"finalR":30.3,"showP":155910,"discP":149800,"discR":3.92,"profitR":30.5}],"rec":[{"no":"#12","nm":"소불고기 ×2 + 갈비탕","wt":2900,"cost":35868,"price":49900,"profit":20.9,"mkt":47970,"vs":4,"sat":62},{"no":"#6","nm":"LA갈비 + 소불고기 + 갈비탕","wt":2800,"cost":43504,"price":62900,"profit":23.9,"mkt":58880,"vs":6.8,"sat":79},{"no":"#9","nm":"LA갈비 + 갈비탕 + 소갈비","wt":2850,"cost":63140,"price":89900,"profit":22.7,"mkt":76890,"vs":16.9,"sat":84},{"no":"#19","nm":"갈비탕 + 소갈비 ×2","wt":3000,"cost":75140,"price":112900,"profit":26.8,"mkt":83990,"vs":34.4,"sat":77}],"deck":[{"no":"#17","nm":"갈비탕×3","show":62400,"disc":55800,"qty":183,"excluded":true},{"no":"#6","nm":"LA갈비+소불고기+갈비탕","show":78400,"disc":69800,"qty":200},{"no":"#3","nm":"LA갈비×2+갈비탕","show":92400,"disc":84800,"qty":250},{"no":"#7","nm":"LA갈비+소불고기+소갈비","show":109400,"disc":99800,"qty":300}],"issues":[["슬리브 단가","견적서에 단가 미기재(0원 처리) → OEM사 확인 후 입력 필요"],["매입가 기준","견적매입가(VAT-) 기준 계산 중. 협상목표가(LA 14,545 등)로 바꾸면 이익율 상승"],["배송비 정책","무료배송 시 건당 택배비 3,500원을 원가에 가산해야 실이익 정확"],["판매 채널 수수료","자사몰 직판 가정(0%). 외부몰 판매 시 수수료율 차감 필요"],["생산 캐파","\"150팩 이상 생산 불가\" 메모 vs MOQ 300~1,000 상충 → 실제 생산가능 수량 재확인"],["소갈비 매입가","28,200원(VAT-) / 시중가 34,000원 대비 마진 8.8% → 재협상 권장"],["세트 판매가 확정","권장가 제시 상태 → 라인업 확정 후 최종가 입력 필요"]]};
+var BC = {}; CAT.forEach(function(x){BC[x.c]=x});
+var nf=function(n){return Math.round(n||0).toLocaleString()};
+var man=function(n){return Math.round((n||0)/10000).toLocaleString()};
+var SLOTS=[
+ {id:'ch1',g:'차례상',n:'차례상 A',grp:'g1'},{id:'ch2',g:'차례상',n:'차례상 B',grp:'g1'},
+ {id:'ms1',g:'식사세트',n:'식사세트 1',grp:'g2'},{id:'ms2',g:'식사세트',n:'식사세트 2',grp:'g2'},{id:'ms3',g:'식사세트',n:'식사세트 3',grp:'g2'},
+ {id:'on1',g:'온올림',n:'온올림 #6',grp:'g3'},{id:'on2',g:'온올림',n:'온올림 #3',grp:'g3'},{id:'on3',g:'온올림',n:'온올림 #7',grp:'g3'}
+];
+var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},ms1:{n:'식사세트 1',p:0,pk:0,q:0},ms2:{n:'식사세트 2',p:0,pk:0,q:0},ms3:{n:'식사세트 3',p:0,pk:0,q:0},
+ on1:{n:'온올림 #6',p:69800,pk:6510,q:200,it:{ONO_LA:1,ONO_BUL:1,ONO_TANG:1}},
+ on2:{n:'온올림 #3',p:84800,pk:6510,q:250,it:{ONO_LA:2,ONO_TANG:1}},
+ on3:{n:'온올림 #7',p:99800,pk:6510,q:300,it:{ONO_LA:1,ONO_BUL:1,ONO_GALBI:1}}};
+var ST = JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null') || (function(){
+  var o={}; SLOTS.forEach(function(s){var d=DEF[s.id]; o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p,name:d.n,pack:d.pk,qty:d.q}}); return o;})();
+SLOTS.forEach(function(s){ if(ST[s.id].pack===undefined) ST[s.id].pack=0; if(ST[s.id].qty===undefined) ST[s.id].qty=0; });
+var SHIP = Number(localStorage.getItem('ck_ship')||3500);
+var SINGLE = JSON.parse(localStorage.getItem('ck_single')||'null') || {ONO_LA:0,ONO_BUL:0,ONO_TANG:300,ONO_GALBI:0};
+var cur='ch1', filt='전체', kw='';
+function save(){ localStorage.setItem('chuseok2026sim_v2', JSON.stringify(ST)); localStorage.setItem('ck_ship',SHIP); localStorage.setItem('ck_single',JSON.stringify(SINGLE)); }
+
+function calc(slot){
+  var s=ST[slot], sum=0,pcost=0,wt=0,n=0,kinds=0,ono=0,mkt=0;
+  Object.keys(s.items).forEach(function(c){ var it=BC[c]; var q=s.items[c]; if(!it||!q) return;
+    sum+=it.price*q; pcost+=it.cost*q; wt+=(it.w||0)*q; n+=q; kinds++;
+    mkt+=(it.mkt||it.price)*q; if(it.cat==='온올림') ono+=it.cost*q; });
+  var pack=Number(s.pack)||0, price=Number(s.price)||0, vx=price/1.1;
+  var cost=pcost+pack, total=cost+SHIP;
+  return {sum:sum,mkt:mkt,pcost:pcost,pack:pack,cost:cost,total:total,wt:wt,n:n,kinds:kinds,price:price,vx:vx,
+    rate: vx? cost/vx*100 : 0, rateS: vx? total/vx*100 : 0,
+    disc: sum? (sum-price)/sum*100 : 0, perMenu: kinds? price/kinds : 0,
+    onoShare: pcost? ono/pcost*100:0, margin: vx-total, profitR: vx? (vx-total)/vx*100 : 0,
+    qty: Number(s.qty)||0 };
+}
+function rateClass(r){ return r===0?'':(r<=22?'good':(r<=30?'warn':'bad')); }
+function renderSlots(){
+  document.getElementById('slots').innerHTML = SLOTS.map(function(s){ var k=calc(s.id);
+    return '<button class="slot '+s.grp+(cur===s.id?' on':'')+'" data-s="'+s.id+'">'
+     +'<div class="t">'+s.g+'</div><div class="n">'+(ST[s.id].name||s.n)+'</div>'
+     +'<div class="p">'+(k.price?nf(k.price)+'원 · '+k.kinds+'종'+(k.qty?' · '+nf(k.qty)+'세트':''):'미구성')+'</div></button>'}).join('');
+}
+function renderCatalog(){
+  var cats=['전체','온올림','전류','나물류','고기·메인','국·탕','김치·장아찌','대용량','기타'];
+  document.getElementById('chips').innerHTML=cats.map(function(c){
+    return '<button class="chip'+(filt===c?' on':'')+'" data-f="'+c+'">'+c+'</button>'}).join('');
+  var list=CAT.filter(function(x){
+    if(filt!=='전체' && x.cat!==filt) return false;
+    if(kw && x.n.toLowerCase().indexOf(kw.toLowerCase())<0 && x.c.toLowerCase().indexOf(kw.toLowerCase())<0) return false;
+    return true; }).sort(function(a,b){ if((a.cat==='온올림')!==(b.cat==='온올림')) return a.cat==='온올림'?-1:1;
+      return (b.h26||0)-(a.h26||0) || a.n.localeCompare(b.n); });
+  document.getElementById('cnt').textContent=list.length+'개';
+  document.getElementById('list').innerHTML = list.length? list.map(function(x){
+    var b=''; if(x.cat==='온올림') b+='<span class="badge b-ono">온올림 재고 '+nf(x.stock)+'</span>';
+    if(x.h26>=500) b+='<span class="badge b-hot">26설 '+nf(x.h26)+'</span>';
+    else if(x.h26) b+='<span class="badge" style="background:#eef1f6;color:#5a6478">26설 '+nf(x.h26)+'</span>';
+    if(x.stop) b+='<span class="badge b-stop">중단</span>';
+    var rr=x.price? (x.cost/(x.price/1.1)*100):0;
+    return '<div class="it" data-add="'+x.c+'"><div><div class="nm">'+x.n+b+'</div>'
+     +'<div class="meta">'+(x.w?x.w+'g · ':'')+(x.mkt?'시중 '+nf(x.mkt)+' · ':'')+'원가율 '+rr.toFixed(0)+'%</div></div>'
+     +'<div class="pr">'+nf(x.price)+'<small>원가 '+nf(x.cost)+'</small></div>'
+     +'<button class="add" data-add="'+x.c+'">+</button></div>'}).join('') : '<div class="empty">검색 결과가 없습니다</div>';
+}
+function renderComp(){
+  var s=ST[cur], k=calc(cur);
+  var codes=Object.keys(s.items).filter(function(c){return s.items[c]>0});
+  codes.sort(function(a,b){ var A=BC[a]||{},B=BC[b]||{}; return (B.price*s.items[b])-(A.price*s.items[a]); });
+  document.getElementById('cmp').innerHTML = codes.length? codes.map(function(c){
+    var it=BC[c]||{n:c,price:0,cost:0}; var q=s.items[c];
+    return '<div class="row"><div><div class="nm" style="font-weight:600;font-size:12.5px">'+it.n
+     +(it.cat==='온올림'?'<span class="badge b-ono">온올림</span>':'')+'</div>'
+     +'<div style="font-size:11px;color:#8b919b">'+(it.w?it.w+'g · ':'')+nf(it.price)+'원 · 원가 '+nf(it.cost)+'</div></div>'
+     +'<div class="qty"><button data-m="'+c+'">−</button><span>'+q+'</span><button data-p="'+c+'">+</button></div>'
+     +'<div class="num" style="font-weight:700;min-width:64px">'+nf(it.price*q)+'</div>'
+     +'<button class="del" data-d="'+c+'">×</button></div>'}).join('') : '<div class="empty">왼쪽 카탈로그에서 품목을 클릭해 담아보세요</div>';
+  var rc=rateClass(k.rateS);
+  document.getElementById('sum').innerHTML=
+    '<div class="sm"><div class="k">단품 합산가</div><div class="v">'+nf(k.sum)+'</div><div class="d">'+k.kinds+'종 / '+k.n+'개</div></div>'
+   +'<div class="sm"><div class="k">할인율</div><div class="v">'+(k.sum?k.disc.toFixed(1):'0')+'%</div><div class="d">합산 대비</div></div>'
+   +'<div class="sm"><div class="k">제품 원가</div><div class="v">'+nf(k.pcost)+'</div><div class="d">+포장 '+nf(k.pack)+' +택배 '+nf(SHIP)+'</div></div>'
+   +'<div class="sm '+rc+'"><div class="k">총원가율</div><div class="v">'+k.rateS.toFixed(1)+'%</div><div class="d">제품만 '+k.rate.toFixed(1)+'%</div></div>'
+   +'<div class="sm '+(k.profitR>=30?'good':(k.profitR>=20?'warn':'bad'))+'"><div class="k">이익율</div><div class="v">'+k.profitR.toFixed(1)+'%</div><div class="d">세트당 '+nf(k.margin)+'원</div></div>'
+   +'<div class="sm"><div class="k">총 중량</div><div class="v">'+nf(k.wt)+'<span style="font-size:11px">g</span></div><div class="d">100g당 '+(k.wt?nf(k.price/k.wt*100):0)+'원</div></div>'
+   +'<div class="sm"><div class="k">메뉴당 가격</div><div class="v">'+nf(k.perMenu)+'</div><div class="d">'+k.kinds+'종 기준</div></div>'
+   +(k.onoShare>0?'<div class="sm warn"><div class="k">온올림 원가 비중</div><div class="v">'+k.onoShare.toFixed(0)+'%</div><div class="d">제품원가 중</div></div>':'')
+   +(k.qty?'<div class="sm"><div class="k">계획 매출</div><div class="v">'+man(k.price*k.qty)+'<span style="font-size:11px">만</span></div><div class="d">'+nf(k.qty)+'세트 × '+nf(k.price)+'</div></div>':'');
+  document.getElementById('pname').value=s.name||'';
+  document.getElementById('pprice').value=s.price||'';
+  document.getElementById('ppack').value=s.pack||0;
+  document.getElementById('pqty').value=s.qty||0;
+}
+function renderAll(){ renderSlots(); renderCatalog(); renderComp(); renderLine(); save(); }
+
+function renderLine(){
+  var rows=SLOTS.map(function(s){ return {s:s,k:calc(s.id)}; });
+  var mx=Math.max.apply(null,rows.map(function(r){return r.k.price})) || 1;
+  document.getElementById('ladder').innerHTML=rows.map(function(r){
+    var col=r.s.grp==='g1'?'#8a2f2f':(r.s.grp==='g2'?'#2f5a8a':'#a67c2e');
+    var h=r.k.price? Math.max(r.k.price/mx*100,10):0;
+    return '<div class="lc"><div class="lb2" style="height:'+h+'%;background:'+col+'"><b>'+(r.k.price?nf(r.k.price/10000)+'만':'-')+'</b><span>'+r.k.kinds+'종</span></div>'
+     +'<div class="ll">'+(ST[r.s.id].name||r.s.n)+'<small>이익 '+r.k.profitR.toFixed(0)+'%</small></div></div>'}).join('');
+  var g={}; rows.forEach(function(r){ g[r.s.g]=g[r.s.g]||[]; g[r.s.g].push(r); });
+  var tb='<table><thead><tr><th class="l">세트</th><th>구성</th><th>단품합산</th><th>판매가</th><th>할인율</th><th>제품원가</th><th>포장</th><th>총원가율</th><th>이익율</th><th>계획수량</th><th>계획매출</th><th>계획이익</th></tr></thead><tbody>';
+  Object.keys(g).forEach(function(gn){
+    tb+='<tr class="grp"><td colspan="12">'+gn+'</td></tr>';
+    g[gn].forEach(function(r){ var rc=rateClass(r.k.rateS);
+      tb+='<tr><td class="nm">'+(ST[r.s.id].name||r.s.n)+'</td><td class="num">'+r.k.kinds+'종 '+r.k.n+'개</td>'
+       +'<td class="num">'+nf(r.k.sum)+'</td><td class="num"><b>'+nf(r.k.price)+'</b></td>'
+       +'<td class="num">'+(r.k.sum?r.k.disc.toFixed(1)+'%':'-')+'</td><td class="num">'+nf(r.k.pcost)+'</td>'
+       +'<td class="num">'+nf(r.k.pack)+'</td>'
+       +'<td class="num '+(rc==='bad'?'dn':(rc==='good'?'up':'fl'))+'">'+r.k.rateS.toFixed(1)+'%</td>'
+       +'<td class="num '+(r.k.profitR>=30?'up':(r.k.profitR>=20?'fl':'dn'))+'">'+r.k.profitR.toFixed(1)+'%</td>'
+       +'<td class="num">'+(r.k.qty?nf(r.k.qty):'-')+'</td>'
+       +'<td class="num">'+(r.k.qty?man(r.k.price*r.k.qty)+'만':'-')+'</td>'
+       +'<td class="num">'+(r.k.qty?man(r.k.margin*r.k.qty)+'만':'-')+'</td></tr>'; });
+  });
+  var tp=rows.reduce(function(a,r){return a+r.k.price*r.k.qty},0), tm=rows.reduce(function(a,r){return a+r.k.margin*r.k.qty},0);
+  var tq=rows.reduce(function(a,r){return a+r.k.qty},0);
+  tb+='<tr class="tot"><td>합계</td><td class="num">'+nf(tq)+'세트</td><td colspan="8"></td><td class="num">'+man(tp)+'만</td><td class="num">'+man(tm)+'만</td></tr></tbody></table>';
+  document.getElementById('linetbl').innerHTML=tb;
+  var ch=rows.filter(function(r){return r.s.g==='차례상'&&r.k.price>0}).length;
+  var ms=rows.filter(function(r){return r.s.g==='식사세트'&&r.k.price>0});
+  var maxms=Math.max.apply(null,ms.map(function(r){return r.k.price}).concat([0]));
+  var low=rows.filter(function(r){return r.k.price>0&&r.k.profitR<20});
+  document.getElementById('rules').innerHTML=
+    '<span class="rl '+(ch<=2?'ok':'no')+'">차례상 '+ch+'개 / 최대 2</span>'
+   +'<span class="rl '+(ms.length<=3?'ok':'no')+'">식사세트 '+ms.length+'개 / 최대 3</span>'
+   +'<span class="rl '+(maxms<=300000?'ok':'no')+'">식사세트 최고가 '+nf(maxms)+' / 30만 이하</span>'
+   +'<span class="rl '+(low.length===0?'ok':'no')+'">이익율 20% 미만 '+low.length+'개</span>';
+  /* 온올림 원재료 소진 */
+  var stock={ONO_LA:1000,ONO_BUL:500,ONO_TANG:1000,ONO_GALBI:300};
+  var used={ONO_LA:0,ONO_BUL:0,ONO_TANG:0,ONO_GALBI:0};
+  rows.forEach(function(r){ var it=ST[r.s.id].items, q=r.k.qty;
+    Object.keys(it).forEach(function(c){ if(used[c]!==undefined) used[c]+=it[c]*q; }); });
+  var mh='<table><thead><tr><th class="l">원재료</th><th>재고</th><th>세트 소진</th><th>단품 판매</th><th>합계 소진</th><th>잔여</th><th class="l">소진율</th><th>잔여 매입금액</th></tr></thead><tbody>';
+  Object.keys(stock).forEach(function(c){ var it=BC[c]||{}; var sg=Number(SINGLE[c])||0; var u=used[c]+sg, left=stock[c]-u, pr=u/stock[c]*100;
+    mh+='<tr><td class="nm">'+(it.n||c)+'</td><td class="num">'+nf(stock[c])+'</td><td class="num">'+nf(used[c])+'</td>'
+     +'<td class="num"><input type="number" data-sg="'+c+'" value="'+sg+'" style="width:70px;text-align:right"></td>'
+     +'<td class="num">'+nf(u)+'</td>'
+     +'<td class="num '+(left>100?'dn':(left<0?'dn':'up'))+'"><b>'+nf(left)+'</b></td>'
+     +'<td style="width:26%"><div style="background:#eef1f6;border-radius:4px;height:16px"><div style="width:'+Math.min(pr,100)+'%;height:100%;background:'+(pr>=95?'#0a7d3d':(pr>=70?'#b06a00':'#c0392b'))+';border-radius:4px"></div></div></td>'
+     +'<td class="num">'+man(Math.max(left,0)*(it.cost||0))+'만</td></tr>'; });
+  var tl=Object.keys(stock).reduce(function(a,c){return a+Math.max(stock[c]-used[c]-(Number(SINGLE[c])||0),0)*((BC[c]||{}).cost||0)},0);
+  var sgRev=Object.keys(stock).reduce(function(a,c){return a+(Number(SINGLE[c])||0)*((BC[c]||{}).price||0)},0);
+  mh+='<tr class="tot"><td>잔여 재고 부담</td><td colspan="5"></td><td class="num">단품매출 '+man(sgRev)+'만</td><td class="num">'+man(tl)+'만</td></tr></tbody></table>';
+  document.getElementById('mat').innerHTML=mh;
+}
+
+/* ---- 이벤트 ---- */
+document.getElementById('slots').addEventListener('click',function(e){var b=e.target.closest('[data-s]');if(!b)return;cur=b.dataset.s;renderAll();});
+document.getElementById('chips').addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(!b)return;filt=b.dataset.f;renderCatalog();});
+document.getElementById('kw').addEventListener('input',function(e){kw=e.target.value.trim();renderCatalog();});
+document.getElementById('list').addEventListener('click',function(e){var b=e.target.closest('[data-add]');if(!b)return;
+  var c=b.dataset.add; ST[cur].items[c]=(ST[cur].items[c]||0)+1; renderAll();});
+document.getElementById('cmp').addEventListener('click',function(e){
+  var p=e.target.closest('[data-p]'),m=e.target.closest('[data-m]'),d=e.target.closest('[data-d]');
+  if(p){ST[cur].items[p.dataset.p]++;}
+  else if(m){var c=m.dataset.m;ST[cur].items[c]--;if(ST[cur].items[c]<=0)delete ST[cur].items[c];}
+  else if(d){delete ST[cur].items[d.dataset.d];} else return; renderAll();});
+['pprice','ppack','pqty'].forEach(function(id){ document.getElementById(id).addEventListener('input',function(e){
+  var v=Number(e.target.value)||0; if(id==='pprice')ST[cur].price=v; else if(id==='ppack')ST[cur].pack=v; else ST[cur].qty=v;
+  renderComp(); renderSlots(); renderLine(); save(); }); });
+document.getElementById('pname').addEventListener('input',function(e){ST[cur].name=e.target.value;renderSlots();renderLine();save();});
+document.getElementById('ship').addEventListener('input',function(e){SHIP=Number(e.target.value)||0;renderComp();renderLine();save();});
+document.getElementById('preset').addEventListener('change',function(e){
+  var p=PRE.filter(function(x){return x.id===e.target.value})[0]; if(!p)return;
+  ST[cur].items=JSON.parse(JSON.stringify(p.items)); ST[cur].price=p.price; ST[cur].name=p.n;
+  e.target.value=''; renderAll();});
+document.getElementById('clr').addEventListener('click',function(){if(confirm('현재 세트 구성을 비울까요?')){ST[cur].items={};renderAll();}});
+document.getElementById('autop').addEventListener('click',function(){
+  var k=calc(cur); if(!k.sum)return; var d=Number(prompt('할인율을 입력하세요 (%)','10')); if(isNaN(d))return;
+  ST[cur].price=Math.round(k.sum*(1-d/100)/100)*100; renderAll();});
+var PROP = {"ch1":{"name":"차례상 1~2인","price":79000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3044":1,"ZIP_P_3158":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_5187":1,"ZIP_P_7069":1},"qty":250},"ch2":{"name":"차례상 3~4인","price":169000,"pack":2300,"items":{"ZIP_P_2062":2,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3044":2,"ZIP_P_3158":2,"ZIP_P_3002":2,"ZIP_P_0012":1,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":2,"ZIP_P_3071":1},"qty":80},"ms1":{"name":"실속 한상 1~2인","price":52000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_6232":1,"ZIP_P_6208":1},"qty":120},"ms2":{"name":"기본 한상 3~4인 (갈비탕)","price":99000,"pack":2300,"items":{"ZIP_P_2062":1,"ONO_TANG":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_3071":1},"qty":150},"ms3":{"name":"프리미엄 한상 5인+ (갈비탕2)","price":209000,"pack":2300,"items":{"ZIP_P_2062":2,"ONO_TANG":2,"ZIP_P_0012":2,"ZIP_P_0203":1,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3002":2,"ZIP_P_3044":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":1},"qty":60},"on1":{"name":"온올림 #6","price":69800,"pack":6510,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_TANG":1},"qty":200},"on2":{"name":"온올림 #3","price":84800,"pack":6510,"items":{"ONO_LA":2,"ONO_TANG":1},"qty":250},"on3":{"name":"온올림 #7","price":99800,"pack":6510,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_GALBI":1},"qty":300}};
+document.getElementById('prop').addEventListener('click',function(){
+  if(!confirm('제안안을 8개 슬롯에 모두 불러올까요? 현재 구성은 덮어씁니다.')) return;
+  Object.keys(PROP).forEach(function(k){ var p=PROP[k];
+    ST[k]={items:JSON.parse(JSON.stringify(p.items)), price:p.price, name:p.name, pack:p.pack, qty:p.qty}; });
+  SINGLE={ONO_LA:0,ONO_BUL:0,ONO_TANG:280,ONO_GALBI:0};
+  renderAll(); alert('제안안을 불러왔습니다. 「라인업 · 원재료」 탭에서 확인하세요.'); });
+document.getElementById('rst').addEventListener('click',function(){if(confirm('전체 8개 세트를 초기화할까요?')){localStorage.removeItem('chuseok2026sim_v2');location.reload();}});
+document.getElementById('exp').addEventListener('click',function(){
+  var out=SLOTS.map(function(s){var k=calc(s.id);
+    return [ST[s.id].name||s.n,s.g,k.kinds,k.n,k.sum,k.price,k.disc.toFixed(1)+'%',Math.round(k.pcost),k.pack,k.rateS.toFixed(1)+'%',k.profitR.toFixed(1)+'%',Math.round(k.margin),k.qty,k.wt,
+      Object.keys(ST[s.id].items).map(function(c){return (BC[c]?BC[c].n:c)+'×'+ST[s.id].items[c]}).join(' / ')].join('\t')});
+  var tsv=['세트명\t구분\t품목수\t총개수\t단품합산\t판매가\t할인율\t제품원가\t포장비\t총원가율\t이익율\t세트당이익\t계획수량\t중량\t구성'].concat(out).join('\n');
+  navigator.clipboard.writeText(tsv).then(function(){alert('클립보드에 복사했습니다.')});});
+document.getElementById('mat').addEventListener('input',function(e){
+  var t=e.target.closest('[data-sg]'); if(!t)return; SINGLE[t.dataset.sg]=Number(t.value)||0; save(); renderLine(); });
+document.getElementById('nav').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return; var i=b.dataset.i;
+  [].forEach.call(document.querySelectorAll('#nav button'),function(x){x.classList.toggle('on',x.dataset.i===i)});
+  [].forEach.call(document.querySelectorAll('.panel'),function(x){x.classList.toggle('on',x.dataset.i===i)});
+  window.scrollTo(0,0); if(i==='1') renderLine();});
+
+/* ---- 판매 이력 ---- */
+(function(){
+  var g={}; PRE.forEach(function(p){ if(p.g==='온올림')return; g[p.g]=g[p.g]||[]; g[p.g].push(p); });
+  var h='';
+  ['2025 추석','2026 설','공통'].forEach(function(gn){ if(!g[gn])return;
+    var arr=g[gn].slice().sort(function(a,b){return b.sold-a.sold});
+    h+='<div class="card"><h2>'+gn+' 세트 실적 <span>노션 공지 구성 + 이카운트 실판매</span></h2><div class="scroll"><table>'
+     +'<thead><tr><th class="l">세트</th><th>표기가</th><th>구성 합산</th><th>제품원가</th><th>원가율</th><th>품목수</th><th>중량</th><th>판매량</th><th>추정 매출</th></tr></thead><tbody>'
+     +arr.map(function(p){var rc=p.calc.rate<=22?'up':(p.calc.rate<=30?'fl':'dn');
+       return '<tr><td class="nm">'+p.n+'</td><td class="num">'+nf(p.price)+'</td><td class="num">'+nf(p.calc.sum)+'</td>'
+        +'<td class="num">'+nf(p.calc.cost)+'</td><td class="num '+rc+'">'+p.calc.rate+'%</td>'
+        +'<td class="num">'+Object.keys(p.items).length+'종</td><td class="num">'+nf(p.calc.wt)+'g</td>'
+        +'<td class="num"><b>'+nf(p.sold)+'</b></td><td class="num">'+man(p.sold*p.price)+'만</td></tr>'}).join('')
+     +'</tbody></table></div></div>'; });
+  var all=PRE.filter(function(p){return p.g!=='온올림'&&p.sold>0});
+  var bands=[[0,50000,'5만원 미만'],[50000,80000,'5~8만원'],[80000,120000,'8~12만원'],[120000,250000,'12~25만원'],[250000,400000,'25~40만원'],[400000,9e9,'40만원 이상']];
+  var bd=bands.map(function(b){var s=all.filter(function(p){return p.price>=b[0]&&p.price<b[1]});
+    return {l:b[2],q:s.reduce(function(a,p){return a+p.sold},0),r:s.reduce(function(a,p){return a+p.sold*p.price},0),n:s.length};});
+  var mq=Math.max.apply(null,bd.map(function(x){return x.q}))||1, tot=bd.reduce(function(a,y){return a+y.q},0);
+  h+='<div class="card"><h2>가격대별 판매 분포 <span>2025 추석 + 2026 설 합산</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">가격대</th><th>세트 수</th><th>판매량</th><th>비중</th><th class="l">분포</th><th>추정 매출</th></tr></thead><tbody>'
+   +bd.map(function(x){return '<tr><td class="nm">'+x.l+'</td><td class="num">'+x.n+'</td><td class="num">'+nf(x.q)+'</td>'
+      +'<td class="num">'+(tot?(x.q/tot*100).toFixed(1):'0')+'%</td>'
+      +'<td style="width:34%"><div style="background:#eef1f6;border-radius:4px;height:16px"><div style="width:'+(x.q/mq*100)+'%;height:100%;background:#2f5a8a;border-radius:4px"></div></div></td>'
+      +'<td class="num">'+man(x.r)+'만</td></tr>'}).join('')
+   +'</tbody></table></div><div class="note" style="margin-top:9px"><b>5~12만원 구간이 판매량의 대부분</b>입니다. 25만원 이상은 3개 명절 내내 한 자릿수~20개대였습니다.</div></div>';
+  document.getElementById('hist').innerHTML=h;
+})();
+document.getElementById('preset').innerHTML='<option value="">프리셋 불러오기…</option>'
+ + ['2025 추석','2026 설','공통','온올림'].map(function(gn){
+    return '<optgroup label="'+gn+'">'+PRE.filter(function(p){return p.g===gn}).map(function(p){
+      return '<option value="'+p.id+'">'+p.n+' ('+nf(p.price)+'원)</option>'}).join('')+'</optgroup>'}).join('');
+document.getElementById('ship').value=SHIP;
+renderAll();
+
+/* ---- 온올림 기준 탭 ---- */
+(function(){
+  var h='<div class="card"><h2>온올림 제품 단가 마스터 <span>「2026 OEM 관련 가격 정리」 시트 ①</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">제품</th><th>중량</th><th>시중판매가<br>(VAT+)</th><th>자사권장가<br>(VAT+)</th><th>견적매입가<br>(VAT-)</th><th>협상목표가<br>(VAT-)</th><th>MOQ</th><th>확보 재고</th></tr></thead><tbody>'
+   +ONO.master.map(function(m){return '<tr><td class="nm">'+m.n+'</td><td class="num">'+m.w+'g</td><td class="num">'+nf(m.mkt)+'</td><td class="num"><b>'+nf(m.rec)+'</b></td><td class="num">'+nf(m.cost)+'</td><td class="num" style="color:#8b919b">'+nf(m.n.indexOf('LA')>=0?14545:(m.n.indexOf('소불')>=0?7604:(m.n.indexOf('갈비탕')>=0?7755:25455)))+'</td><td class="num">'+nf(m.moq)+'</td><td class="num">'+nf(m.stock)+'</td></tr>'}).join('')
+   +'</tbody></table></div><div class="note" style="margin-top:8px">시뮬레이터의 온올림 <b>판매가는 자사권장가</b>, <b>원가는 견적매입가(VAT-)</b>를 씁니다. 협상목표가로 확정되면 원가가 10~14% 내려갑니다.</div></div>';
+  h+='<div class="card"><h2>세트 부재료 · 부대비용 <span>선물세트 1개당</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">항목</th><th>수량</th><th>단가(VAT-)</th><th>금액</th><th class="l">비고</th></tr></thead><tbody>'
+   +ONO.sub.map(function(s){return '<tr><td class="nm">'+s[0]+'</td><td class="num">'+s[1]+'</td><td class="num">'+nf(s[2])+'</td><td class="num">'+nf(s[1]*s[2])+'</td><td style="color:#b06a00;font-size:11.5px">'+s[3]+'</td></tr>'}).join('')
+   +'<tr class="tot"><td>부재료 소계</td><td colspan="2"></td><td class="num">'+nf(ONO.subTotal)+'</td><td>택배비 별도 '+nf(ONO.ship)+'원</td></tr></tbody></table></div>'
+   +'<div class="note" style="margin-top:8px">★ 4개 항목(슬리브·가방·아이스팩·간지)이 <b>단가 미확정</b>입니다. 확정되면 세트당 원가와 이익율이 바뀝니다.</div></div>';
+  var dk=ONO.deck;
+  h+='<div class="card"><h2>세트 라인업 두 가지 안 <span>시트 ⑤ 추천 vs 전략안 확정</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">구분</th><th class="l">구성</th><th>총원가<br>(VAT-)</th><th>판매가</th><th>이익율</th><th>만족도</th><th class="l">비고</th></tr></thead><tbody>'
+   +'<tr class="grp"><td colspan="7">시트 ⑤ 추천 라인업 (2026-07-31)</td></tr>'
+   +ONO.rec.map(function(r){return '<tr><td class="nm">'+r.no+'</td><td>'+r.nm+'</td><td class="num">'+nf(r.cost)+'</td><td class="num"><b>'+nf(r.price)+'</b></td><td class="num">'+r.profit+'%</td><td class="num">'+r.sat+'</td><td style="font-size:11.5px;color:#8b919b">시중가합 '+nf(r.mkt)+'</td></tr>'}).join('')
+   +'<tr class="grp"><td colspan="7">전략안 확정 라인업 (2026-08-04) — 원재료 소진 기준</td></tr>'
+   +dk.map(function(d){return '<tr'+(d.excluded?' style="opacity:.5"':'')+'><td class="nm">'+d.no+(d.excluded?' <span class="badge b-stop">최종 제외</span>':'')+'</td><td>'+d.nm+'</td><td class="num">-</td><td class="num"><b>'+nf(d.disc)+'</b></td><td class="num">-</td><td class="num">-</td><td style="font-size:11.5px;color:#8b919b">표시 '+nf(d.show)+' · 계획 '+nf(d.qty)+'세트</td></tr>'}).join('')
+   +'</tbody></table></div>'
+   +'<div class="find r" style="margin-top:10px"><div class="h">두 안이 다릅니다</div><div class="b2">시트 ⑤는 <b>이익율·만족도 기준</b>으로 #12·#6·#9·#19를 추천했고, 전략안은 <b>원재료를 정확히 소진하는 조합</b>으로 #17·#6·#3·#7을 택했습니다. 전략안 4종은 LA 1,000 / 소불 500 / 갈비탕 999 / 소갈비 300을 딱 맞게 씁니다.</div></div>'
+   +'<div class="find r"><div class="h">#17(갈비탕×3)을 빼면 갈비탕 550개가 남습니다</div><div class="b2">#6(200) + #3(250)만으로는 갈비탕이 450개만 소진됩니다. 남는 550개는 매입원가 기준 <b>480만원</b>어치입니다. 자사 식사세트에 갈비탕을 넣어 소진하는 설계가 필요합니다.</div></div></div>';
+  h+='<div class="card"><h2>시트에 남아 있는 미해결 항목</h2><div class="scroll"><table><thead><tr><th class="l">항목</th><th class="l">현재 상태 / 필요 조치</th></tr></thead><tbody>'
+   +ONO.issues.map(function(i){return '<tr><td class="nm">'+i[0]+'</td><td style="font-size:12px">'+i[1]+'</td></tr>'}).join('')
+   +'</tbody></table></div></div>';
+  h+='<div class="card"><h2>3입 조합 전수 시뮬레이션 <span>4종 중복 허용 20조합 · 시트 ④</span></h2><div class="scroll"><table>'
+   +'<thead><tr><th>No</th><th class="l">구성</th><th>중량</th><th>시중가합</th><th>권장가합</th><th>총원가</th><th>이익율</th><th>만족도</th><th>종합</th><th>판정</th></tr></thead><tbody>'
+   +ONO.combos.slice().sort(function(a,b){return b.score-a.score}).map(function(c){
+     var vc=c.verdict.indexOf('◎')>=0?'up':(c.verdict.indexOf('○')>=0?'fl':'dn');
+     return '<tr><td class="num">'+c.no+'</td><td class="nm">'+c.a+' + '+c.b+' + '+c.c+'</td><td class="num">'+nf(c.wt)+'g</td>'
+      +'<td class="num">'+nf(c.mkt)+'</td><td class="num">'+nf(c.rec)+'</td><td class="num">'+nf(c.tcost)+'</td>'
+      +'<td class="num">'+c.finalR+'%</td><td class="num">'+c.sat+'</td><td class="num"><b>'+c.score+'</b></td>'
+      +'<td class="num '+vc+'">'+c.verdict+'</td></tr>'}).join('')
+   +'</tbody></table></div></div>';
+  document.getElementById('onoref').innerHTML=h;
+})();
+
+</script></body></html>
