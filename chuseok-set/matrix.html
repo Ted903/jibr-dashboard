@@ -65,7 +65,7 @@ footer{padding:14px 16px 30px;font-size:11px;color:#9aa1ad}
  <div class="sub">세트는 <b>열</b>, 제품은 <b>행</b>. 셀을 눌러 넣고 빼고, 옆으로 갈수록 무엇이 달라지는지 색으로 표시됩니다. <span id="kpi"></span></div>
  <div class="bar">
   <div class="srchbox"><input id="kw" type="text" placeholder="제품명 또는 코드로 검색해 행 추가" style="width:300px"><div class="sugg" id="sug"></div></div>
-  <button class="btn" id="diffbtn">변화 표시</button>
+  <select id="addcat" style="max-width:200px"><option value="">카테고리 행 일괄 추가...</option><option value="나물류">나물류 전체</option><option value="전류">전류 전체</option><option value="국·탕">국·탕 전체</option><option value="고기·메인">고기·메인 전체</option><option value="김치·장아찌">김치·장아찌 전체</option><option value="대용량">대용량 전체</option><option value="온올림">온올림 전체</option></select><button class="btn" id="diffbtn">변화 표시</button>
   <label style="font-size:11.5px;color:#5a6478;font-weight:700">택배비</label><input id="ship" type="number" style="width:78px">
   <select id="loadsel" style="max-width:260px"></select>
   <button class="btn p" id="savebtn">현재안 저장</button>
@@ -90,12 +90,16 @@ var CAT = [{"c":"BAN_P_0001","n":"감자옹심이_2KG_반가","w":2000,"cost":75
 var BC={}; CAT.forEach(function(x){BC[x.c]=x});
 var SLOTS=[{id:'ch1',g:'차례상',n:'차례상 A'},{id:'ch2',g:'차례상',n:'차례상 B'},
  {id:'ms1',g:'식사세트',n:'식사세트 1'},{id:'ms2',g:'식사세트',n:'식사세트 2'},{id:'ms3',g:'식사세트',n:'식사세트 3'},
- {id:'on1',g:'온올림',n:'온올림 #6'},{id:'on2',g:'온올림',n:'온올림 #3'},{id:'on3',g:'온올림',n:'온올림 #7'}];
+ {id:'on1',g:'온올림',n:'온올림 #6'},{id:'on2',g:'온올림',n:'온올림 #3'},{id:'on3',g:'온올림',n:'온올림 #7'},
+ {id:'nm1',g:'나물세트',n:'나물세트 A'},{id:'nm2',g:'나물세트',n:'나물세트 B'},
+ {id:'jn1',g:'전세트',n:'전세트 A'},{id:'jn2',g:'전세트',n:'전세트 B'}];
 var SM={}; SLOTS.forEach(function(s){SM[s.id]=s});
 var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},ms1:{n:'식사세트 1',p:0,pk:0,q:0},ms2:{n:'식사세트 2',p:0,pk:0,q:0},ms3:{n:'식사세트 3',p:0,pk:0,q:0},
  on1:{n:'온올림 #6',p:69800,pk:6510,q:200,it:{ONO_LA:1,ONO_BUL:1,ONO_TANG:1}},
  on2:{n:'온올림 #3',p:84800,pk:6510,q:250,it:{ONO_LA:2,ONO_TANG:1}},
- on3:{n:'온올림 #7',p:99800,pk:6510,q:300,it:{ONO_LA:1,ONO_BUL:1,ONO_GALBI:1}}};
+ on3:{n:'온올림 #7',p:99800,pk:6510,q:300,it:{ONO_LA:1,ONO_BUL:1,ONO_GALBI:1}},
+ nm1:{n:'나물세트 A',p:0,pk:0,q:0},nm2:{n:'나물세트 B',p:0,pk:0,q:0},
+ jn1:{n:'전세트 A',p:0,pk:0,q:0},jn2:{n:'전세트 B',p:0,pk:0,q:0}};
 var ST=JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null')||(function(){var o={};SLOTS.forEach(function(s){var d=DEF[s.id];o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p,name:d.n,pack:d.pk,qty:d.q}});return o})();
 SLOTS.forEach(function(s){ if(!ST[s.id]) ST[s.id]={items:{},price:0,name:SM[s.id].n,pack:0,qty:0}; if(ST[s.id].pack===undefined)ST[s.id].pack=0; if(ST[s.id].qty===undefined)ST[s.id].qty=0; if(ST[s.id].list===undefined)ST[s.id].list=Number(ST[s.id].price)||0; if(!ST[s.id].items)ST[s.id].items={}; });
 var SHIP=Number(localStorage.getItem('ck_ship')||3500);
@@ -220,6 +224,12 @@ sug.addEventListener('click',function(e){var d=e.target.closest('[data-add]');if
  sug.style.display='none';kw.value='';render();
  setTimeout(function(){var tr=mx.querySelector('tr[data-row="'+c+'"]');if(tr)tr.scrollIntoView({block:'center'})},60)});
 document.addEventListener('click',function(e){if(!e.target.closest('.srchbox'))sug.style.display='none'});
+document.getElementById('addcat').addEventListener('change',function(){var c=this.value;if(!c){return}
+ var add=CAT.filter(function(x){return x.cat===c&&!x.stop}).map(function(x){return x.c});
+ var cur=rowList();var seen={};cur.forEach(function(x){seen[x]=1});
+ var n=0;add.forEach(function(x){if(!seen[x]){cur.push(x);n++}});
+ VIEW.rows=cur;saveView();this.value='';render();
+ if(n===0)alert(c+' 품목이 이미 모두 표에 있습니다.');});
 document.getElementById('diffbtn').addEventListener('click',function(){VIEW.diff=!VIEW.diff;saveView();this.classList.toggle('on',VIEW.diff);render()});
 document.getElementById('diffbtn').classList.toggle('on',VIEW.diff);
 document.getElementById('ship').value=SHIP;
