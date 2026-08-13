@@ -114,10 +114,11 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
  <div class="sub">자사 원가 = 2026 표준원가시트 · 온올림 = 2026 OEM 관련 가격 정리 · 구성 프리셋 = 노션 명절 공지</div></div>
  <div style="display:flex;gap:6px;align-items:center">
   <label style="font-size:11.5px;color:#5a6478;font-weight:700">택배비</label><input type="number" id="ship" style="width:74px">
-  <a class="btn" href="./matrix.html" style="text-decoration:none;display:inline-block">세트 구성 매트릭스 →</a><button class="btn p" id="snapbtn">현재안 저장</button><button class="btn" id="prop">제안안 불러오기</button><button class="btn" id="exp">시트로 복사</button><button class="btn" id="rst">초기화</button></div>
+  <a class="btn" href="./matrix.html" target="_blank" style="text-decoration:none;display:inline-block" title="새 창에서 크게 보기">표 크게 보기 ↗</a><button class="btn p" id="snapbtn">현재안 저장</button><button class="btn" id="prop">제안안 불러오기</button><button class="btn" id="exp">시트로 복사</button><button class="btn" id="rst">초기화</button></div>
 </header>
 <nav id="nav">
- <button data-i="0" class="on">시뮬레이터</button>
+ <button data-i="7" class="on">세트 구성 (표)</button>
+ <button data-i="0">품목별 시뮬레이터</button>
  <button data-i="1">라인업 · 원재료</button>
  <button data-i="2">저장 · 비교</button>
  <button data-i="3">최종 확정안</button>
@@ -125,7 +126,13 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
  <button data-i="5">온올림 기준</button>
  <button data-i="6">설계 기준</button>
 </nav>
-<div class="panel on" data-i="0">
+<div class="panel on" data-i="7">
+ <div class="card" style="padding:9px 13px">
+  <div style="font-size:11.5px;color:#6b7280">세트는 <b>열</b>, 제품은 <b>행</b>입니다. 셀을 눌러 품목을 넣고 빼고, 가격·수량은 칸에 바로 입력하세요. 표 위 <b>「＋ 세트 추가」</b>로 세트를 몇 개든 늘릴 수 있고, 표 아래에서 <b>저장 · 비교 · 최종 확정</b>까지 이 화면에서 끝납니다.</div>
+ </div>
+ <iframe id="mxframe" src="./matrix.html?embed=1" style="width:100%;border:0;height:1400px;display:block;background:#fff"></iframe>
+</div>
+<div class="panel" data-i="0">
  <div class="card" style="padding:11px 14px">
   <div style="font-size:11.5px;color:#6b7280;margin-bottom:7px">세트 슬롯을 고르고 왼쪽 카탈로그에서 품목을 클릭해 담으세요. 차례상 2 · 식사세트 3(최대 30만원) · 온올림 3 · 나물세트 3(3·4·5종) · 전세트 2(3·4종) 구조입니다. <b>계획수량</b>을 넣으면 「라인업 · 원재료」 탭에서 온올림 재고 소진과 손익이 계산됩니다.</div>
   <div class="slots" id="slots"></div>
@@ -233,8 +240,24 @@ var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},m
  nm1:{n:'나물 3종',p:0,pk:0,q:0},nm2:{n:'나물 4종',p:0,pk:0,q:0},nm3:{n:'나물 5종',p:0,pk:0,q:0},
  jn1:{n:'전 3종',p:0,pk:0,q:0},jn2:{n:'전 4종',p:0,pk:0,q:0}};
 var ST = JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null') || (function(){
-  var o={}; SLOTS.forEach(function(s){var d=DEF[s.id]||{}; o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p||0,list:d.l||d.p||0,name:d.n||s.n,pack:d.pk||0,qty:d.q||0}}); return o;})();
+  var o={}; SLOTS.forEach(function(s){var d=DEF[s.id]; o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p||0,list:d.l||d.p||0,name:d.n||s.n,pack:d.pk||0,qty:d.q||0}}); return o;})();
 SLOTS.forEach(function(s){ if(!ST[s.id]){var d=DEF[s.id]||{n:s.n,p:0,pk:0,q:0}; ST[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p||0,name:d.n||s.n,pack:d.pk||0,qty:d.q||0};} if(ST[s.id].pack===undefined) ST[s.id].pack=0; if(ST[s.id].qty===undefined) ST[s.id].qty=0; if(ST[s.id].list===undefined) ST[s.id].list=Number(ST[s.id].price)||0; });
+function normSTx(o){
+  if(!o||typeof o!=='object') o={};
+  SLOTS.forEach(function(s){
+    var d=DEF[s.id]||{};
+    if(!o[s.id]||typeof o[s.id]!=='object') o[s.id]={};
+    var t=o[s.id];
+    if(!t.items||typeof t.items!=='object') t.items={};
+    if(t.name===undefined) t.name=d.n||s.n||'';
+    if(t.price===undefined) t.price=0;
+    if(t.pack===undefined) t.pack=0;
+    if(t.qty===undefined) t.qty=0;
+    if(t.list===undefined) t.list=Number(t.price)||0;
+  });
+  return o;
+}
+ST = normSTx(ST);
 (function(){ if(localStorage.getItem('ck_ono_fix_v1'))return;
   var FX={on1:{n:'온올림 #6 · LA+소불고기+갈비탕',p:69800,l:78400,it:{ONO_LA:1,ONO_BUL:1,ONO_TANG:1}},
           on2:{n:'온올림 #3 · LA갈비×2+갈비탕',p:84800,l:92400,it:{ONO_LA:2,ONO_TANG:1}},
@@ -248,7 +271,8 @@ var cur='ch1', filt='전체', kw='';
 function save(){ localStorage.setItem('chuseok2026sim_v2', JSON.stringify(ST)); localStorage.setItem('ck_ship',SHIP); }
 
 function calcS(STx,slot){
-  var s=STx[slot], sum=0,pcost=0,wt=0,n=0,kinds=0,ono=0,mkt=0;
+  var s=STx[slot]||{}; if(!s.items||typeof s.items!=='object') s.items={};
+  var sum=0,pcost=0,wt=0,n=0,kinds=0,ono=0,mkt=0;
   Object.keys(s.items).forEach(function(c){ var it=BC[c]; var q=s.items[c]; if(!it||!q) return;
     sum+=it.price*q; pcost+=it.cost*q; wt+=(it.w||0)*q; n+=q; kinds++;
     mkt+=(it.mkt||it.price)*q; if(it.cat==='온올림') ono+=it.cost*q; });
@@ -268,7 +292,7 @@ function planSum(STx){
   var sets=0,rev=0,prof=0,cost=0;
   var used={ONO_LA:0,ONO_BUL:0,ONO_TANG:0,ONO_GALBI:0};
   SLOTS.forEach(function(s){ var k=calcS(STx,s.id); sets+=k.qty; rev+=k.price*k.qty; prof+=k.margin*k.qty; cost+=k.total*k.qty;
-    var it=STx[s.id].items; Object.keys(it).forEach(function(c){ if(used[c]!==undefined) used[c]+=it[c]*k.qty; }); });
+    var it=(STx[s.id]||{}).items||{}; Object.keys(it).forEach(function(c){ if(used[c]!==undefined) used[c]+=it[c]*k.qty; }); });
   var stock={ONO_LA:1000,ONO_BUL:500,ONO_TANG:1000,ONO_GALBI:300};
   var left=0,dead=0;
   Object.keys(stock).forEach(function(c){ var l=Math.max(stock[c]-used[c],0); left+=l; dead+=l*((BC[c]||{}).cost||0); });
@@ -463,7 +487,23 @@ document.getElementById('nav').addEventListener('click',function(e){
   var b=e.target.closest('button'); if(!b)return; var i=b.dataset.i;
   [].forEach.call(document.querySelectorAll('#nav button'),function(x){x.classList.toggle('on',x.dataset.i===i)});
   [].forEach.call(document.querySelectorAll('.panel'),function(x){x.classList.toggle('on',x.dataset.i===i)});
-  window.scrollTo(0,0); if(i==='1') renderLine();});
+  window.scrollTo(0,0); if(i==='1') renderLine();
+  if(i==='7'){ var f=document.getElementById('mxframe'); f.src='./matrix.html?embed=1&t='+Date.now(); }
+  else { pullFromStorage(); }
+});
+function pullFromStorage(){
+  try{
+    var sl=JSON.parse(localStorage.getItem('ck_slots_v1')||'null'); if(sl&&sl.length){ SLOTS=sl; SLOTS.forEach(function(s){ if(!s.grp) s.grp=GRPMAP[s.g]||'g6'; }); }
+    var st=JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null'); if(st){ ST=normSTx(st); }
+    SHIP=Number(localStorage.getItem('ck_ship')||SHIP); document.getElementById('ship').value=SHIP;
+    if(!ST[cur]) cur=SLOTS[0].id;
+    renderAll(); renderLine();
+  }catch(e){ console.error('pullFromStorage',e); }
+}
+window.addEventListener('message',function(ev){
+  if(!ev.data||ev.data.t!=='mxh')return;
+  var f=document.getElementById('mxframe'); if(f) f.style.height=Math.max(600,ev.data.h+30)+'px';
+});
 
 /* ---- 판매 이력 ---- */
 (function(){
@@ -565,6 +605,7 @@ renderAll();
 
 /* ---------- 저장 · 비교 · 확정 ---------- */
 var SNAPS = JSON.parse(localStorage.getItem('ck_snaps')||'[]');
+SNAPS.forEach(function(s){ s.state=normSTx(s.state); });
 var CMP = [];
 function saveSnaps(){ localStorage.setItem('ck_snaps', JSON.stringify(SNAPS)); }
 function nowStr(){ var d=new Date(); var p=function(n){return (n<10?'0':'')+n};
@@ -680,7 +721,7 @@ function snapClick(e){
   var ld=e.target.closest('[data-ld]'), dl=e.target.closest('[data-dl]'), fn=e.target.closest('[data-fn]');
   if(ld){ var s=SNAPS.filter(function(x){return x.id===ld.dataset.ld})[0];
     if(s && confirm('「'+s.name+'」을 시뮬레이터로 불러올까요? 현재 작업 중인 구성은 덮어씁니다.')){
-      ST=JSON.parse(JSON.stringify(s.state)); SHIP=s.ship||3500; document.getElementById('ship').value=SHIP;
+      ST=normSTx(JSON.parse(JSON.stringify(s.state))); SHIP=s.ship||3500; document.getElementById('ship').value=SHIP;
       renderAll(); document.querySelector('#nav button[data-i="0"]').click(); window.scrollTo(0,0); } return; }
   if(dl){ var s2=SNAPS.filter(function(x){return x.id===dl.dataset.dl})[0];
     if(s2 && confirm('「'+s2.name+'」을 삭제할까요?')){ SNAPS=SNAPS.filter(function(x){return x.id!==dl.dataset.dl});
@@ -698,9 +739,8 @@ document.getElementById('snapsInline').addEventListener('change', snapChange);
 document.getElementById('snapbtn2').addEventListener('click', doSave);
 document.getElementById('gocmp').addEventListener('click',function(){ document.querySelector('#nav button[data-i="2"]').click(); window.scrollTo(0,0); });
 document.getElementById('gofinal').addEventListener('click',function(){ document.querySelector('#nav button[data-i="3"]').click(); window.scrollTo(0,0); });
-renderSnapsInline();
-
-refreshSnaps();
+try{ renderSnapsInline(); }catch(e){ console.error('renderSnapsInline',e); }
+try{ refreshSnaps(); }catch(e){ console.error('refreshSnaps',e); }
 
 
 // ===== 팀 공유 저장소 (Firebase Realtime DB) =====
@@ -716,7 +756,7 @@ refreshSnaps();
   function st(t,c){ bar.textContent=t; bar.style.color=c||'#5a6478'; }
   function okmsg(){ st('팀 공유 저장소 · 저장된 안 '+SNAPS.length+'개','#1f7a4d'); }
   function apply(rs){
-    SNAPS.length=0; rs.forEach(function(s){SNAPS.push(s)});
+    SNAPS.length=0; rs.forEach(function(s){ s.state=normSTx(s.state); SNAPS.push(s)});
     localStorage.setItem('ck_snaps', JSON.stringify(SNAPS));
     refreshSnaps();
   }
