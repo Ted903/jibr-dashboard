@@ -148,13 +148,13 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
    <h2>세트 구성</h2>
    <div class="fields">
     <div class="f"><label>세트명</label><input type="text" id="pname" placeholder="예: 온올림 실속"></div>
-    <div class="f"><label>표시가 (상세페이지 정가)</label><input type="number" id="pdisp" placeholder="72400"></div>
-    <div class="f"><label>표시 할인율 (합산 대비)</label><input type="number" id="pdiscL" placeholder="0" step="0.1"></div>
+    <div class="f"><label>표시가 (권장판매가)</label><input type="number" id="pdisp" placeholder="72400"></div>
+    <div class="f"><label>쿠폰 할인 (금액)</label><input type="number" id="pcoup" placeholder="0"></div>
+    <div class="f"><label>쿠폰 할인율</label><input type="number" id="pdiscA" placeholder="0" step="0.1"></div>
     <div class="f"><label><b>실판매가</b> (실제 결제가)</label><input type="number" id="pprice" placeholder="69800"></div>
-    <div class="f"><label>추가 할인율 (표시가 대비)</label><input type="number" id="pdiscA" placeholder="0" step="0.1"></div>
     <div class="f"><label>세트 포장비 (VAT 별도)</label><input type="number" id="ppack" placeholder="6510"></div>
     <div class="f"><label>계획 수량 (세트)</label><input type="number" id="pqty" placeholder="200"></div>
-    <div class="f"><label>&nbsp;</label><button class="btn" id="autop">합산가 → 표시가 자동</button></div>
+    <div class="f"><label>&nbsp;</label><button class="btn" id="autop">표시가 = 합산가</button></div>
     <div class="f"><label>&nbsp;</label><button class="btn" id="clr">구성 비우기</button></div>
    </div>
    <div class="cmp" id="cmp"></div>
@@ -349,14 +349,13 @@ function renderComp(){
    +'<div class="sm '+rc+'"><div class="k">총원가율 <span style="font-size:9.5px;color:#8b919b">실판매가 기준</span></div><div class="v">'+k.rateS.toFixed(1)+'%</div><div class="d">표시가 기준 '+k.rateL.toFixed(1)+'% · 제품만 '+k.rate.toFixed(1)+'%</div></div>'
    +'<div class="sm '+(k.profitR>=30?'good':(k.profitR>=20?'warn':'bad'))+'"><div class="k">이익율</div><div class="v">'+k.profitR.toFixed(1)+'%</div><div class="d">세트당 '+nf(k.margin)+'원</div></div>'
    +'<div class="sm"><div class="k">총 중량</div><div class="v">'+nf(k.wt)+'<span style="font-size:11px">g</span></div><div class="d">100g당 '+(k.wt?nf(k.price/k.wt*100):0)+'원</div></div>'
-   +'<div class="sm"><div class="k">메뉴당 가격</div><div class="v">'+nf(k.perMenu)+'</div><div class="d">'+k.kinds+'종 기준</div></div>'
-   +(k.onoShare>0?'<div class="sm warn"><div class="k">온올림 원가 비중</div><div class="v">'+k.onoShare.toFixed(0)+'%</div><div class="d">제품원가 중</div></div>':'')
+      +(k.onoShare>0?'<div class="sm warn"><div class="k">온올림 원가 비중</div><div class="v">'+k.onoShare.toFixed(0)+'%</div><div class="d">제품원가 중</div></div>':'')
    +(k.qty?'<div class="sm"><div class="k">계획 매출</div><div class="v">'+man(k.price*k.qty)+'<span style="font-size:11px">만</span></div><div class="d">'+nf(k.qty)+'세트 × '+nf(k.price)+'</div></div>':'');
   var setv=function(id,v){var el=document.getElementById(id); if(document.activeElement===el) return; el.value=v;};
   setv('pname', s.name||'');
   setv('pprice', s.price||'');
   setv('pdisp', s.list||'');
-  setv('pdiscL', (k.sum&&k.list)?Number(k.discL.toFixed(1)):'');
+  setv('pcoup', (k.list&&k.list>k.price)?(k.list-k.price):'');
   setv('pdiscA', k.list?Number(k.discA.toFixed(1)):'');
   document.getElementById('ppack').value=s.pack||0;
   document.getElementById('pqty').value=s.qty||0;
@@ -446,8 +445,8 @@ document.getElementById('cmp').addEventListener('click',function(e){
 function priceSync(src){
   var s=ST[cur], k=calc(cur), sum=k.sum;
   var list=Number(s.list)||0, price=Number(s.price)||0;
-  if(src==='pdiscL'){ var d=Number(document.getElementById('pdiscL').value)||0;
-    if(sum){ list=Math.round(sum*(1-d/100)); s.list=list; if(price>list) { s.price=list; } } }
+  if(src==='pcoup'){ var cv=Number(document.getElementById('pcoup').value)||0;
+    if(list){ s.price=Math.max(0,list-cv); } }
   else if(src==='pdisp'){ list=Number(document.getElementById('pdisp').value)||0; s.list=list;
     if(!price||price>list) s.price=list; }
   else if(src==='pdiscA'){ var a=Number(document.getElementById('pdiscA').value)||0;
@@ -455,7 +454,7 @@ function priceSync(src){
   else if(src==='pprice'){ s.price=Number(document.getElementById('pprice').value)||0;
     if(!s.list) s.list=s.price; }
 }
-['pdisp','pdiscL','pprice','pdiscA','ppack','pqty'].forEach(function(id){ document.getElementById(id).addEventListener('input',function(e){
+['pdisp','pcoup','pprice','pdiscA','ppack','pqty'].forEach(function(id){ document.getElementById(id).addEventListener('input',function(e){
   if(id==='ppack') ST[cur].pack=Number(e.target.value)||0;
   else if(id==='pqty') ST[cur].qty=Number(e.target.value)||0;
   else priceSync(id);
@@ -468,8 +467,7 @@ document.getElementById('preset').addEventListener('change',function(e){
   e.target.value=''; renderAll();});
 document.getElementById('clr').addEventListener('click',function(){if(confirm('현재 세트 구성을 비울까요?')){ST[cur].items={};renderAll();}});
 document.getElementById('autop').addEventListener('click',function(){
-  var k=calc(cur); if(!k.sum)return; var d=Number(prompt('단품 합산가 대비 표시 할인율을 입력하세요 (%)','10')); if(isNaN(d))return;
-  var L=Math.round(k.sum*(1-d/100)/100)*100; ST[cur].list=L; if(!ST[cur].price||ST[cur].price>L) ST[cur].price=L; renderAll();});
+  var k=calc(cur); if(!k.sum)return; ST[cur].list=k.sum; if(!ST[cur].price||ST[cur].price>k.sum) ST[cur].price=k.sum; renderAll();});
 var PROP = {"ch1":{"name":"차례상 1~2인","price":79000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3044":1,"ZIP_P_3158":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_5187":1,"ZIP_P_7069":1},"qty":250},"ch2":{"name":"차례상 3~4인","price":169000,"pack":2300,"items":{"ZIP_P_2062":2,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3044":2,"ZIP_P_3158":2,"ZIP_P_3002":2,"ZIP_P_0012":1,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":2,"ZIP_P_3071":1},"qty":80},"ms1":{"name":"실속 한상 1~2인","price":52000,"pack":1900,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_6232":1,"ZIP_P_6208":1},"qty":120},"ms2":{"name":"기본 한상 3~4인","price":88000,"pack":2300,"items":{"ZIP_P_2062":1,"ZIP_P_0012":1,"ZIP_P_0203":1,"ZIP_P_3099":1,"ZIP_P_3170":1,"ZIP_P_3002":1,"ZIP_P_6232":1,"ZIP_P_5080":1,"ZIP_P_6208":1,"ZIP_P_5092":1,"ZIP_P_3071":1},"qty":150},"ms3":{"name":"프리미엄 한상 5인+ (갈비탕)","price":199000,"pack":2300,"items":{"ZIP_P_2062":2,"ONO_TANG":1,"ZIP_P_0012":2,"ZIP_P_0203":1,"ZIP_P_3099":2,"ZIP_P_3170":2,"ZIP_P_3002":2,"ZIP_P_3044":2,"ZIP_P_6232":2,"ZIP_P_5080":2,"ZIP_P_6208":2,"ZIP_P_5092":2,"ZIP_P_5187":2,"ZIP_P_7069":1},"qty":60},"on1":{"name":"온올림 #6 (LA+소불+갈비탕)","price":70200,"pack":6510,"items":{"ONO_LA":1,"ONO_BUL":1,"ONO_TANG":1},"qty":500},"on2":{"name":"온올림 #3 (LA×2+갈비탕)","price":83800,"pack":6510,"items":{"ONO_LA":2,"ONO_TANG":1},"qty":100},"on3":{"name":"온올림 #9 (LA+갈비탕+소갈비)","price":99300,"pack":6510,"items":{"ONO_LA":1,"ONO_TANG":1,"ONO_GALBI":1},"qty":300},"_single":{"ONO_TANG":40}}; delete PROP._single;
 document.getElementById('prop').addEventListener('click',function(){
   if(!confirm('제안안을 불러올까요? 차례상·식사세트·온올림 슬롯의 현재 구성은 덮어씁니다.')) return;
