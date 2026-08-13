@@ -235,12 +235,29 @@ var DEF={ch1:{n:'차례상 A',p:0,pk:0,q:0},ch2:{n:'차례상 B',p:0,pk:0,q:0},m
 var ST = JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null') || (function(){
   var o={}; SLOTS.forEach(function(s){var d=DEF[s.id]; o[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p,name:d.n,pack:d.pk,qty:d.q}}); return o;})();
 SLOTS.forEach(function(s){ if(!ST[s.id]){var d=DEF[s.id]||{n:s.n,p:0,pk:0,q:0}; ST[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p||0,name:d.n||s.n,pack:d.pk||0,qty:d.q||0};} if(ST[s.id].pack===undefined) ST[s.id].pack=0; if(ST[s.id].qty===undefined) ST[s.id].qty=0; if(ST[s.id].list===undefined) ST[s.id].list=Number(ST[s.id].price)||0; });
+function normSTx(o){
+  if(!o||typeof o!=='object') o={};
+  SLOTS.forEach(function(s){
+    var d=DEF[s.id]||{};
+    if(!o[s.id]||typeof o[s.id]!=='object') o[s.id]={};
+    var t=o[s.id];
+    if(!t.items||typeof t.items!=='object') t.items={};
+    if(t.name===undefined) t.name=d.n||s.n||'';
+    if(t.price===undefined) t.price=0;
+    if(t.pack===undefined) t.pack=0;
+    if(t.qty===undefined) t.qty=0;
+    if(t.list===undefined) t.list=Number(t.price)||0;
+  });
+  return o;
+}
+ST = normSTx(ST);
 var SHIP = Number(localStorage.getItem('ck_ship')||3500);
 var cur='ch1', filt='전체', kw='';
 function save(){ localStorage.setItem('chuseok2026sim_v2', JSON.stringify(ST)); localStorage.setItem('ck_ship',SHIP); }
 
 function calcS(STx,slot){
-  var s=STx[slot], sum=0,pcost=0,wt=0,n=0,kinds=0,ono=0,mkt=0;
+  var s=STx[slot]||{}; if(!s.items||typeof s.items!=='object') s.items={};
+  var sum=0,pcost=0,wt=0,n=0,kinds=0,ono=0,mkt=0;
   Object.keys(s.items).forEach(function(c){ var it=BC[c]; var q=s.items[c]; if(!it||!q) return;
     sum+=it.price*q; pcost+=it.cost*q; wt+=(it.w||0)*q; n+=q; kinds++;
     mkt+=(it.mkt||it.price)*q; if(it.cat==='온올림') ono+=it.cost*q; });
@@ -260,7 +277,7 @@ function planSum(STx){
   var sets=0,rev=0,prof=0,cost=0;
   var used={ONO_LA:0,ONO_BUL:0,ONO_TANG:0,ONO_GALBI:0};
   SLOTS.forEach(function(s){ var k=calcS(STx,s.id); sets+=k.qty; rev+=k.price*k.qty; prof+=k.margin*k.qty; cost+=k.total*k.qty;
-    var it=STx[s.id].items; Object.keys(it).forEach(function(c){ if(used[c]!==undefined) used[c]+=it[c]*k.qty; }); });
+    var it=(STx[s.id]||{}).items||{}; Object.keys(it).forEach(function(c){ if(used[c]!==undefined) used[c]+=it[c]*k.qty; }); });
   var stock={ONO_LA:1000,ONO_BUL:500,ONO_TANG:1000,ONO_GALBI:300};
   var left=0,dead=0;
   Object.keys(stock).forEach(function(c){ var l=Math.max(stock[c]-used[c],0); left+=l; dead+=l*((BC[c]||{}).cost||0); });
@@ -557,6 +574,7 @@ renderAll();
 
 /* ---------- 저장 · 비교 · 확정 ---------- */
 var SNAPS = JSON.parse(localStorage.getItem('ck_snaps')||'[]');
+SNAPS.forEach(function(s){ s.state=normSTx(s.state); });
 var CMP = [];
 function saveSnaps(){ localStorage.setItem('ck_snaps', JSON.stringify(SNAPS)); }
 function nowStr(){ var d=new Date(); var p=function(n){return (n<10?'0':'')+n};
@@ -672,7 +690,7 @@ function snapClick(e){
   var ld=e.target.closest('[data-ld]'), dl=e.target.closest('[data-dl]'), fn=e.target.closest('[data-fn]');
   if(ld){ var s=SNAPS.filter(function(x){return x.id===ld.dataset.ld})[0];
     if(s && confirm('「'+s.name+'」을 시뮬레이터로 불러올까요? 현재 작업 중인 구성은 덮어씁니다.')){
-      ST=JSON.parse(JSON.stringify(s.state)); SHIP=s.ship||3500; document.getElementById('ship').value=SHIP;
+      ST=normSTx(JSON.parse(JSON.stringify(s.state))); SHIP=s.ship||3500; document.getElementById('ship').value=SHIP;
       renderAll(); document.querySelector('#nav button[data-i="0"]').click(); window.scrollTo(0,0); } return; }
   if(dl){ var s2=SNAPS.filter(function(x){return x.id===dl.dataset.dl})[0];
     if(s2 && confirm('「'+s2.name+'」을 삭제할까요?')){ SNAPS=SNAPS.filter(function(x){return x.id!==dl.dataset.dl});
@@ -690,9 +708,8 @@ document.getElementById('snapsInline').addEventListener('change', snapChange);
 document.getElementById('snapbtn2').addEventListener('click', doSave);
 document.getElementById('gocmp').addEventListener('click',function(){ document.querySelector('#nav button[data-i="2"]').click(); window.scrollTo(0,0); });
 document.getElementById('gofinal').addEventListener('click',function(){ document.querySelector('#nav button[data-i="3"]').click(); window.scrollTo(0,0); });
-renderSnapsInline();
-
-refreshSnaps();
+try{ renderSnapsInline(); }catch(e){ console.error('renderSnapsInline',e); }
+try{ refreshSnaps(); }catch(e){ console.error('refreshSnaps',e); }
 
 
 // ===== 팀 공유 저장소 (Firebase Realtime DB) =====
@@ -708,7 +725,7 @@ refreshSnaps();
   function st(t,c){ bar.textContent=t; bar.style.color=c||'#5a6478'; }
   function okmsg(){ st('팀 공유 저장소 · 저장된 안 '+SNAPS.length+'개','#1f7a4d'); }
   function apply(rs){
-    SNAPS.length=0; rs.forEach(function(s){SNAPS.push(s)});
+    SNAPS.length=0; rs.forEach(function(s){ s.state=normSTx(s.state); SNAPS.push(s)});
     localStorage.setItem('ck_snaps', JSON.stringify(SNAPS));
     refreshSnaps();
   }
