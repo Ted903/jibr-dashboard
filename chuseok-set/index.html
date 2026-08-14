@@ -118,13 +118,13 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
 </header>
 <nav id="nav">
  <button data-i="7" class="on">세트 구성 (표)</button>
- <button data-i="0">품목별 시뮬레이터</button>
- <button data-i="1">라인업 · 원재료</button>
+  <button data-i="1">라인업 · 원재료</button>
  <button data-i="2">저장 · 비교</button>
  <button data-i="3">최종 확정안</button>
  <button data-i="4">세트 판매 이력</button>
  <button data-i="5">온올림 기준</button>
  <button data-i="6">설계 기준</button>
+<button data-i="0">품목 DB</button>
 </nav>
 <div class="panel on" data-i="7">
  <div class="card" style="padding:9px 13px">
@@ -134,7 +134,7 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
 </div>
 <div class="panel" data-i="0">
  <div class="card" style="padding:11px 14px">
-  <div style="font-size:11.5px;color:#6b7280;margin-bottom:7px">세트 슬롯을 고르고 왼쪽 카탈로그에서 품목을 클릭해 담으세요. 차례상 2 · 식사세트 3(최대 30만원) · 온올림 3 · 나물세트 3(3·4·5종) · 전세트 2(3·4종) 구조입니다. <b>계획수량</b>을 넣으면 「라인업 · 원재료」 탭에서 온올림 재고 소진과 손익이 계산됩니다.</div>
+  <div style="font-size:11.5px;color:#6b7280;margin-bottom:7px">370개 품목의 원가·단품가를 확인하고, 필요하면 여기서도 세트에 담을 수 있습니다. 실제 구성 작업은 <b>「세트 구성 (표)」</b> 탭에서 품목 DB를 드래그해 진행하세요. <b>계획수량</b>을 넣으면 「라인업 · 원재료」 탭에서 온올림 재고 소진과 손익이 계산됩니다.</div>
   <div class="slots" id="slots"></div>
  </div>
  <div class="sim">
@@ -189,29 +189,46 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
 <div class="panel" data-i="4"><div id="hist"></div></div>
 <div class="panel" data-i="5"><div id="onoref"></div></div>
 <div class="panel" data-i="6">
- <div class="card"><h2>이번 추석 설계 제약</h2><div class="note"><ul>
-  <li><b>차례상 최대 2개</b> · <b>식사세트 최대 3개(최고가 30만원 이하)</b> · <b>온올림 3개</b> · <b>나물세트 3개(3·4·5종)</b> · <b>전세트 2개(3·4종)</b></li>
-  <li>2025 추석 8종 → 2026 설 11종으로 늘렸는데 판매는 848 → 632개로 줄었습니다. 종수 축소가 맞습니다.</li>
-  <li>온올림 갈비탕 3종 세트(#17)는 최종 제외 → <b>갈비탕 550개 잔여 문제</b>가 생깁니다. 자사 식사세트로 흡수할지 결정 필요.</li>
- </ul></div></div>
- <div class="card"><h2>원가·이익 기준</h2><div class="note"><ul>
-  <li><b>총원가율 = (제품원가 + 세트 포장비 + 택배비) ÷ 판매가(VAT-)</b>. 자사 표준원가에는 개별 용기·필름·스티커가 이미 포함돼 있고, <b>세트 포장비(외박스·부직포·아이스팩 등)는 별도</b>로 입력해야 합니다.</li>
-  <li>2025 추석 자사 세트의 제품 원가율은 차례상 16.1~16.6%, 식사세트 16.9~18.5%였습니다.</li>
-  <li>온올림은 OEM 매입이라 제품 원가율이 <b>46~57%</b>입니다. 부재료 6,510 + 택배 3,500까지 넣으면 이익율이 28~34%로 떨어집니다.</li>
-  <li>시트의 <b>목표 이익율은 30%</b>입니다. 시뮬레이터는 이익율 20% 미만이면 경고합니다.</li>
- </ul></div></div>
- <div class="card"><h2>지난 두 명절에서 배운 것</h2>
-  <div class="find r"><div class="h">5만원대 진입 세트를 없앤 것이 가장 큰 손실</div><div class="b2">2025 추석 식사세트(특소) 53,800원 63개 = 소(62개)와 동급이었는데 2026 설에서 폐지되며 최저가가 106,100원으로 2배가 됐고, 식사세트 계열은 255 → 139개(-45%)로 반토막 났습니다.</div></div>
-  <div class="find r"><div class="h">세트를 무겁게 만들수록 안 팔렸다</div><div class="b2">음식세트(대)에 갈비찜을 넣어 +23% 인상하자 판매는 76 → 20개(-74%), 특대는 0개였습니다.</div></div>
-  <div class="find g"><div class="h">가격을 내린 나물세트만 성장</div><div class="b2">22,500 → 20,500원(-9%)으로 낮추자 58 → 143개(+147%). 2만원대가 지금 가장 잘 팔리는 가격대입니다.</div></div>
-  <div class="find o"><div class="h">구성품을 늘려도 판매는 늘지 않는다</div><div class="b2">차례상 구성을 14 → 18종으로 늘렸지만 소·중·대 전 등급 판매가 줄었습니다.</div></div>
+<div class="card" style="background:linear-gradient(135deg,#111827,#1f2937);border:0">
+ <div style="color:#fff">
+  <div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#93c5fd">2026 추석 최종 전략</div>
+  <div style="font-size:22px;font-weight:800;margin:6px 0 4px">매출 증대</div>
+  <div style="font-size:12px;color:#cbd5e1;line-height:1.7">종수를 줄여 관리 부담을 낮추는 방어적 운영이 아니라, <b style="color:#fff">팔리는 가격대에 물량을 집중해 매출 총액을 끌어올리는</b> 공격적 운영으로 방향을 바꿉니다.</div>
  </div>
- <div class="card"><h2>데이터 출처</h2><div class="note"><ul>
-  <li><b>자사 원가·판매가</b> — 「2026 표준원가시트」 Sheet 1, 370개 품목</li>
-  <li><b>온올림 단가·조합</b> — 「2026 OEM 관련 가격 정리」 (2026-07-31)</li>
-  <li><b>세트 구성 프리셋</b> — 노션 「2025 추석 공지」 · 「2026 설 공지」 원문</li>
-  <li><b>판매 실적</b> — 이카운트 판매현황, 명절 당일 포함 직전 3주</li>
- </ul></div></div>
+</div>
+<div class="card"><h2>4대 실행 방침</h2>
+ <div class="find g"><div class="h">① 10만원대 전후에 화력을 몰아준다</div><div class="b2">주력 가격대를 <b>10만원 전후</b>로 잡고 여기에 물량·노출·프로모션을 집중합니다. 고가 세트는 <b>소비자 만족도가 떨어져</b> 재구매로 이어지지 않습니다. 30만원대 세트는 라인업 구색으로만 두고 드라이브 대상에서 제외합니다.</div></div>
+ <div class="find g"><div class="h">② 온올림도 같이 드라이브한다</div><div class="b2">온올림은 <b>#3 · #6 · #7 구성 확정</b>이고 원재료가 이미 발주된 상태입니다. 자사 세트와 경쟁시키지 말고 <b>양쪽 모두 밀어</b> 총매출을 키웁니다. 남는 원물은 음식세트에 녹여 소진합니다.</div></div>
+ <div class="find o"><div class="h">③ 전(煎) 세트를 새로 만든다</div><div class="b2">명절에만 팔리는 <b>단품성 식품</b>에 집중합니다. 기존 <b>전 묶음 2개 수준</b>의 구성으로 신규 세트를 추가해, 세트를 살 만큼은 아닌 수요를 흡수합니다. 나물세트가 가격을 내려 +147% 성장한 것과 같은 자리입니다.</div></div>
+ <div class="find r"><div class="h">④ 비싼 세트를 늘리는 방식은 반복하지 않는다</div><div class="b2">2026 설에 음식세트(대)를 +23% 인상하자 판매가 <b>76 → 20개(-74%)</b>, 특대는 <b>0개</b>였습니다. 무게와 가격을 올려 객단가를 만드는 방식은 이미 실패했습니다.</div></div>
+</div>
+<div class="card"><h2>가격대별 역할 <span>드라이브 강도</span></h2>
+ <div class="scroll"><table><thead><tr><th class="l">가격대</th><th>해당 세트</th><th>역할</th><th>드라이브</th></tr></thead><tbody>
+  <tr><td class="nm">2만원대</td><td class="num">나물세트 · 건나물세트</td><td class="num">진입 · 장바구니 추가</td><td class="num"><span class="badge b-warn">중</span></td></tr>
+  <tr><td class="nm">2~5만원대</td><td class="num">전 세트 (신규)</td><td class="num">명절 단품 수요 흡수</td><td class="num"><span class="badge b-hot">강</span></td></tr>
+  <tr><td class="nm" style="background:#fff7e6"><b>7~12만원대</b></td><td class="num" style="background:#fff7e6">차례상(소) · 음식세트(소) · 온올림 #6 · #3</td><td class="num" style="background:#fff7e6"><b>주력 · 매출의 중심</b></td><td class="num" style="background:#fff7e6"><span class="badge b-hot">최대</span></td></tr>
+  <tr><td class="nm">20만원대</td><td class="num">차례상(중) · 음식세트(중)</td><td class="num">대가족 대응</td><td class="num"><span class="badge b-warn">중</span></td></tr>
+  <tr><td class="nm">30만원대 이상</td><td class="num">음식세트(대)</td><td class="num">구색 · 문의 대응</td><td class="num"><span class="badge">약</span></td></tr>
+ </tbody></table></div>
+ <div class="note" style="margin-top:8px">주력 가격대에 <b>차례상 · 자사 음식세트 · 온올림이 모두 들어옵니다.</b> 서로 잡아먹지 않도록 <b>구성 차별화</b>가 필요합니다 — 차례상은 제수 중심, 음식세트는 먹는 즐거움 중심, 온올림은 육류 프리미엄으로 성격을 나눕니다.</div>
+</div>
+<div class="card"><h2>원가·이익 기준</h2><div class="note"><ul>
+ <li><b>총원가율 = (제품원가 + 세트 포장비 + 택배비) ÷ 실판매가(VAT-)</b>. 세트는 <b>전부 단독판매</b> 전제이므로 택배비 3,500원이 모든 세트에 붙습니다.</li>
+ <li>자사 표준원가에는 개별 용기·필름·스티커가 포함돼 있고, <b>세트 포장비(외박스·부직포·아이스팩 등)는 별도</b> 입력입니다.</li>
+ <li>온올림은 OEM 매입이라 제품 원가율이 <b>46~57%</b>로 자사 제조와 구조가 다릅니다. 같은 잣대로 비교하지 마세요.</li>
+ <li><b>2만원대 세트는 구조적으로 원가율 40%를 넘습니다.</b> 제품원가 2,300원에 부대비 5,500원이 붙기 때문입니다. 단독배송으로는 남기 어려우니 <b>가격 인상 · 구성 확대 · 최소주문금액</b> 중 하나가 필요합니다.</li>
+</ul></div></div>
+<div class="card"><h2>지난 두 명절에서 배운 것</h2>
+ <div class="find r"><div class="h">5만원대 진입 세트를 없앤 것이 가장 큰 손실</div><div class="b2">2025 추석 식사세트(특소) 53,800원이 63개로 소(62개)와 동급이었는데 2026 설에서 폐지되며 최저가가 106,100원으로 2배가 됐고, 식사세트 계열은 255 → 139개(-45%)로 반토막 났습니다. <b>③ 전 세트 신설이 이 자리를 메웁니다.</b></div></div>
+ <div class="find g"><div class="h">가격을 내린 나물세트만 성장</div><div class="b2">22,500 → 20,500원(-9%)으로 낮추자 58 → 143개(+147%). 낮은 가격대에 수요가 살아 있다는 증거입니다.</div></div>
+ <div class="find o"><div class="h">구성품을 늘려도 판매는 늘지 않는다</div><div class="b2">차례상 구성을 14 → 18종으로 늘렸지만 소·중·대 전 등급 판매가 줄었습니다. <b>구성 확대보다 가격대 배치가 먼저입니다.</b></div></div>
+</div>
+<div class="card"><h2>데이터 출처</h2><div class="note"><ul>
+ <li><b>자사 원가·판매가</b> — 「2026 표준원가시트」 Sheet 1, 370개 품목</li>
+ <li><b>온올림 단가·조합</b> — 「2026 OEM 관련 가격 정리」 (2026-07-31)</li>
+ <li><b>세트 구성</b> — 「2026년 추석」 시트 · 세트 구성_온올림ver (2026-08-13 원가 정정 반영)</li>
+ <li><b>판매 실적</b> — 이카운트 판매현황, 명절 당일 포함 직전 3주</li>
+</ul></div></div>
 </div>
 <footer>집반찬연구소 온라인본부 · 작업 중인 구성은 이 브라우저에, <b>「현재안 저장」으로 저장한 안은 팀 공유 저장소에</b> 기록되어 팀원 전체가 같은 목록을 봅니다</footer>
 </div>
@@ -505,31 +522,112 @@ window.addEventListener('message',function(ev){
 
 /* ---- 판매 이력 ---- */
 (function(){
-  var g={}; PRE.forEach(function(p){ if(p.g==='온올림')return; g[p.g]=g[p.g]||[]; g[p.g].push(p); });
-  var h='';
-  ['2025 추석','2026 설','공통'].forEach(function(gn){ if(!g[gn])return;
-    var arr=g[gn].slice().sort(function(a,b){return b.sold-a.sold});
-    h+='<div class="card"><h2>'+gn+' 세트 실적 <span>노션 공지 구성 + 이카운트 실판매</span></h2><div class="scroll"><table>'
-     +'<thead><tr><th class="l">세트</th><th>표기가</th><th>구성 합산</th><th>제품원가</th><th>원가율</th><th>품목수</th><th>중량</th><th>판매량</th><th>추정 매출</th></tr></thead><tbody>'
-     +arr.map(function(p){var rc=p.calc.rate<=22?'up':(p.calc.rate<=30?'fl':'dn');
-       return '<tr><td class="nm">'+p.n+'</td><td class="num">'+nf(p.price)+'</td><td class="num">'+nf(p.calc.sum)+'</td>'
-        +'<td class="num">'+nf(p.calc.cost)+'</td><td class="num '+rc+'">'+p.calc.rate+'%</td>'
-        +'<td class="num">'+Object.keys(p.items).length+'종</td><td class="num">'+nf(p.calc.wt)+'g</td>'
-        +'<td class="num"><b>'+nf(p.sold)+'</b></td><td class="num">'+man(p.sold*p.price)+'만</td></tr>'}).join('')
-     +'</tbody></table></div></div>'; });
-  var all=PRE.filter(function(p){return p.g!=='온올림'&&p.sold>0});
-  var bands=[[0,50000,'5만원 미만'],[50000,80000,'5~8만원'],[80000,120000,'8~12만원'],[120000,250000,'12~25만원'],[250000,400000,'25~40만원'],[400000,9e9,'40만원 이상']];
-  var bd=bands.map(function(b){var s=all.filter(function(p){return p.price>=b[0]&&p.price<b[1]});
-    return {l:b[2],q:s.reduce(function(a,p){return a+p.sold},0),r:s.reduce(function(a,p){return a+p.sold*p.price},0),n:s.length};});
-  var mq=Math.max.apply(null,bd.map(function(x){return x.q}))||1, tot=bd.reduce(function(a,y){return a+y.q},0);
-  h+='<div class="card"><h2>가격대별 판매 분포 <span>2025 추석 + 2026 설 합산</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">가격대</th><th>세트 수</th><th>판매량</th><th>비중</th><th class="l">분포</th><th>추정 매출</th></tr></thead><tbody>'
-   +bd.map(function(x){return '<tr><td class="nm">'+x.l+'</td><td class="num">'+x.n+'</td><td class="num">'+nf(x.q)+'</td>'
-      +'<td class="num">'+(tot?(x.q/tot*100).toFixed(1):'0')+'%</td>'
-      +'<td style="width:34%"><div style="background:#eef1f6;border-radius:4px;height:16px"><div style="width:'+(x.q/mq*100)+'%;height:100%;background:#2f5a8a;border-radius:4px"></div></div></td>'
-      +'<td class="num">'+man(x.r)+'만</td></tr>'}).join('')
-   +'</tbody></table></div><div class="note" style="margin-top:9px"><b>5~12만원 구간이 판매량의 대부분</b>입니다. 25만원 이상은 3개 명절 내내 한 자릿수~20개대였습니다.</div></div>';
-  document.getElementById('hist').innerHTML=h;
+var CATC={'차례상':'#8a2f2f','음식세트':'#2f5a8a','나물세트':'#2e7d5b','기타':'#a67c2e'};
+function catOf(n){ if(/차례상/.test(n))return '차례상'; if(/음식|식사/.test(n))return '음식세트'; if(/나물/.test(n))return '나물세트'; return '기타'; }
+var all=PRE.filter(function(p){return p.g!=='온올림'&&p.sold>0});
+var seasons=['2025 추석','2026 설'];
+var h='';
+h+='<div class="card"><h2>명절별 판매 구성 <span>막대에 커서를 올리면 수치가 표시됩니다</span></h2><div id="chartA"></div></div>';
+h+='<div class="card"><h2>가격대별 판매량 <span>2025 추석 · 2026 설 누적</span></h2><div id="chartB"></div></div>';
+var g={}; PRE.forEach(function(p){ if(p.g==='온올림')return; g[p.g]=g[p.g]||[]; g[p.g].push(p); });
+seasons.concat(['공통']).forEach(function(gn){ if(!g[gn])return;
+ var arr=g[gn].slice().sort(function(a,b){return b.sold-a.sold});
+ h+='<div class="card"><h2>'+gn+' 세트 실적 <span>노션 공지 구성 + 이카운트 실판매</span></h2><div class="scroll"><table>'
+  +'<thead><tr><th class="l">세트</th><th>표기가</th><th>구성 합산</th><th>제품원가</th><th>원가율</th><th>품목수</th><th>중량</th><th>판매량</th><th>추정 매출</th></tr></thead><tbody>'
+  +arr.map(function(p){var rc=p.calc.rate<=22?'up':(p.calc.rate<=30?'fl':'dn');
+   return '<tr><td class="nm">'+p.n+'</td><td class="num">'+nf(p.price)+'</td><td class="num">'+nf(p.calc.sum)+'</td>'
+   +'<td class="num">'+nf(p.calc.cost)+'</td><td class="num '+rc+'">'+p.calc.rate+'%</td>'
+   +'<td class="num">'+Object.keys(p.items).length+'종</td><td class="num">'+nf(p.calc.wt)+'g</td>'
+   +'<td class="num"><b>'+nf(p.sold)+'</b></td><td class="num">'+man(p.sold*p.price)+'만</td></tr>'}).join('')
+  +'</tbody></table></div></div>'; });
+document.getElementById('hist').innerHTML=h;
+
+/* --- 툴팁 --- */
+var tip=document.createElement('div');
+tip.style.cssText='position:fixed;z-index:999;background:#111827;color:#fff;padding:7px 10px;border-radius:8px;font-size:11.5px;line-height:1.55;pointer-events:none;display:none;box-shadow:0 6px 18px rgba(0,0,0,.22);white-space:nowrap';
+document.body.appendChild(tip);
+function bindTip(root){
+ root.addEventListener('mousemove',function(e){ var s=e.target.closest('[data-tip]'); if(!s){tip.style.display='none';return;}
+  tip.innerHTML=s.dataset.tip; tip.style.display='block';
+  var x=e.clientX+14, y=e.clientY-10;
+  if(x+tip.offsetWidth>window.innerWidth-10) x=e.clientX-tip.offsetWidth-14;
+  tip.style.left=x+'px'; tip.style.top=y+'px'; });
+ root.addEventListener('mouseleave',function(){tip.style.display='none'});
+}
+
+/* --- A: 명절별 카테고리 누적 --- */
+(function(){
+ var data=seasons.map(function(s){
+  var arr=all.filter(function(p){return p.g===s});
+  var byc={}; arr.forEach(function(p){var c=catOf(p.n); byc[c]=byc[c]||{q:0,r:0,sets:[]}; byc[c].q+=p.sold; byc[c].r+=p.sold*p.price; byc[c].sets.push(p);});
+  var tot=arr.reduce(function(a,p){return a+p.sold},0);
+  var rev=arr.reduce(function(a,p){return a+p.sold*p.price},0);
+  return {s:s,byc:byc,tot:tot,rev:rev};
+ });
+ var mx=Math.max.apply(null,data.map(function(d){return d.tot}))||1;
+ var H=210;
+ var out='<div style="display:flex;gap:26px;align-items:flex-end;padding:10px 4px 4px">';
+ data.forEach(function(d){
+  out+='<div style="flex:1;max-width:190px;text-align:center">';
+  out+='<div style="height:'+H+'px;display:flex;flex-direction:column;justify-content:flex-end">';
+  Object.keys(CATC).forEach(function(c){ var v=d.byc[c]; if(!v||!v.q)return;
+   var hh=v.q/mx*H;
+   var names=v.sets.sort(function(a,b){return b.sold-a.sold}).map(function(p){return p.n+' '+nf(p.sold)+'개'}).join('<br>');
+   out+='<div data-tip="<b>'+d.s+' · '+c+'</b><br>판매 '+nf(v.q)+'개 ('+(d.tot?(v.q/d.tot*100).toFixed(0):0)+'%)<br>매출 '+man(v.r)+'만원<hr style=\'border:0;border-top:1px solid #374151;margin:5px 0\'>'+names+'" style="height:'+hh+'px;background:'+CATC[c]+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:10.5px;font-weight:800;cursor:default">'+(hh>17?nf(v.q):'')+'</div>';
+  });
+  out+='</div>';
+  out+='<div style="margin-top:7px;font-size:12px;font-weight:800">'+d.s+'</div>';
+  out+='<div style="font-size:11px;color:#8b919b">총 '+nf(d.tot)+'개 · '+man(d.rev)+'만원</div>';
+  out+='</div>';
+ });
+ out+='<div style="flex:0 0 auto;padding-bottom:34px">'+Object.keys(CATC).map(function(c){
+   return '<div style="font-size:11px;color:#5a6478;margin:3px 0;font-weight:700"><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:'+CATC[c]+';margin-right:6px;vertical-align:-1px"></i>'+c+'</div>'}).join('')+'</div>';
+ out+='</div>';
+ var d0=data[0],d1=data[1];
+ var diff=d1&&d0? d1.tot-d0.tot : 0;
+ out+='<div class="note" style="margin-top:6px">2025 추석 '+nf(d0?d0.tot:0)+'개 → 2026 설 '+nf(d1?d1.tot:0)+'개 <b style="color:'+(diff<0?'#c0392b':'#1f7a4d')+'">'+(diff<0?'':'+')+nf(diff)+'개</b>. 종수는 늘렸지만 판매는 줄었습니다.</div>';
+ document.getElementById('chartA').innerHTML=out;
+ bindTip(document.getElementById('chartA'));
+})();
+
+/* --- B: 가격대별 (명절 누적) --- */
+(function(){
+ var bands=[[0,50000,'5만 미만'],[50000,80000,'5~8만'],[80000,120000,'8~12만'],[120000,250000,'12~25만'],[250000,400000,'25~40만'],[400000,9e9,'40만+']];
+ var rows=bands.map(function(b){
+  var o={l:b[2],tot:0,rev:0,seg:{}};
+  seasons.forEach(function(s){
+   var sel=all.filter(function(p){return p.g===s&&p.price>=b[0]&&p.price<b[1]});
+   var q=sel.reduce(function(a,p){return a+p.sold},0);
+   o.seg[s]={q:q,sets:sel};
+   o.tot+=q; o.rev+=sel.reduce(function(a,p){return a+p.sold*p.price},0);
+  });
+  return o;
+ });
+ var mx=Math.max.apply(null,rows.map(function(r){return r.tot}))||1;
+ var SC={'2025 추석':'#2f5a8a','2026 설':'#7aa4d6'};
+ var grand=rows.reduce(function(a,r){return a+r.tot},0);
+ var out='<div style="padding:6px 2px">';
+ rows.forEach(function(r){
+  out+='<div style="display:flex;align-items:center;gap:9px;margin:6px 0">';
+  out+='<div style="flex:0 0 74px;font-size:11.5px;font-weight:700;text-align:right;color:'+(r.l==='8~12만'||r.l==='5~8만'?'#111827':'#5a6478')+'">'+r.l+'</div>';
+  out+='<div style="flex:1;background:#f1f4f9;border-radius:5px;height:22px;display:flex;overflow:hidden">';
+  seasons.forEach(function(s){ var v=r.seg[s]; if(!v||!v.q)return;
+   var names=v.sets.sort(function(a,b){return b.sold-a.sold}).map(function(p){return p.n+' '+nf(p.sold)+'개'}).join('<br>');
+   out+='<div data-tip="<b>'+r.l+' · '+s+'</b><br>판매 '+nf(v.q)+'개<hr style=\'border:0;border-top:1px solid #374151;margin:5px 0\'>'+names+'" style="width:'+(v.q/mx*100)+'%;background:'+SC[s]+';height:100%"></div>';
+  });
+  out+='</div>';
+  out+='<div style="flex:0 0 108px;font-size:11.5px;color:#3b4252;font-variant-numeric:tabular-nums"><b>'+nf(r.tot)+'</b>개 · '+(grand?(r.tot/grand*100).toFixed(0):0)+'%</div>';
+  out+='<div style="flex:0 0 74px;font-size:11px;color:#8b919b;text-align:right">'+man(r.rev)+'만</div>';
+  out+='</div>';
+ });
+ out+='</div>';
+ out+='<div style="display:flex;gap:14px;padding:4px 0 0 84px">'+seasons.map(function(s){
+   return '<span style="font-size:11px;color:#5a6478;font-weight:700"><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:'+SC[s]+';margin-right:5px;vertical-align:-1px"></i>'+s+'</span>'}).join('')+'</div>';
+ var band812=rows.filter(function(r){return r.l==='5~8만'||r.l==='8~12만'}).reduce(function(a,r){return a+r.tot},0);
+ out+='<div class="note" style="margin-top:9px"><b>5~12만원 구간이 전체 판매의 '+(grand?(band812/grand*100).toFixed(0):0)+'%</b>입니다. 25만원 이상은 3개 명절 내내 한 자릿수~20개대였습니다. <b>주력 가격대를 10만원 전후로 잡는 근거</b>입니다.</div>';
+ document.getElementById('chartB').innerHTML=out;
+ bindTip(document.getElementById('chartB'));
+})();
 })();
 document.getElementById('preset').innerHTML='<option value="">프리셋 불러오기…</option>'
  + ['2025 추석','2026 설','공통','온올림'].map(function(gn){
@@ -540,38 +638,100 @@ renderAll();
 
 /* ---- 온올림 기준 탭 ---- */
 (function(){
-  var h='<div class="card"><h2>온올림 제품 단가 마스터 <span>「2026 OEM 관련 가격 정리」 시트 ①</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">제품</th><th>중량</th><th>시중판매가<br>(VAT+)</th><th>자사권장가<br>(VAT+)</th><th>견적매입가<br>(VAT-)</th><th>협상목표가<br>(VAT-)</th><th>MOQ</th><th>확보 재고</th></tr></thead><tbody>'
-   +ONO.master.map(function(m){return '<tr><td class="nm">'+m.n+'</td><td class="num">'+m.w+'g</td><td class="num">'+nf(m.mkt)+'</td><td class="num"><b>'+nf(m.rec)+'</b></td><td class="num">'+nf(m.cost)+'</td><td class="num" style="color:#8b919b">'+nf(m.n.indexOf('LA')>=0?14545:(m.n.indexOf('소불')>=0?7604:(m.n.indexOf('갈비탕')>=0?7755:25455)))+'</td><td class="num">'+nf(m.moq)+'</td><td class="num">'+nf(m.stock)+'</td></tr>'}).join('')
-   +'</tbody></table></div><div class="note" style="margin-top:8px">시뮬레이터의 온올림 <b>판매가는 자사권장가</b>, <b>원가는 견적매입가(VAT-)</b>를 씁니다. 협상목표가로 확정되면 원가가 10~14% 내려갑니다.</div></div>';
-  h+='<div class="card"><h2>세트 부재료 · 부대비용 <span>선물세트 1개당</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">항목</th><th>수량</th><th>단가(VAT-)</th><th>금액</th><th class="l">비고</th></tr></thead><tbody>'
-   +ONO.sub.map(function(s){return '<tr><td class="nm">'+s[0]+'</td><td class="num">'+s[1]+'</td><td class="num">'+nf(s[2])+'</td><td class="num">'+nf(s[1]*s[2])+'</td><td style="color:#b06a00;font-size:11.5px">'+s[3]+'</td></tr>'}).join('')
-   +'<tr class="tot"><td>부재료 소계</td><td colspan="2"></td><td class="num">'+nf(ONO.subTotal)+'</td><td>택배비 별도 '+nf(ONO.ship)+'원</td></tr></tbody></table></div>'
-   +'<div class="note" style="margin-top:8px">★ 4개 항목(슬리브·가방·아이스팩·간지)이 <b>단가 미확정</b>입니다. 확정되면 세트당 원가와 이익율이 바뀝니다.</div></div>';
-  var dk=ONO.deck;
-  h+='<div class="card"><h2>세트 라인업 두 가지 안 <span>시트 ⑤ 추천 vs 전략안 확정</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">구분</th><th class="l">구성</th><th>총원가<br>(VAT-)</th><th>판매가</th><th>이익율</th><th>만족도</th><th class="l">비고</th></tr></thead><tbody>'
-   +'<tr class="grp"><td colspan="7">시트 ⑤ 추천 라인업 (2026-07-31)</td></tr>'
-   +ONO.rec.map(function(r){return '<tr><td class="nm">'+r.no+'</td><td>'+r.nm+'</td><td class="num">'+nf(r.cost)+'</td><td class="num"><b>'+nf(r.price)+'</b></td><td class="num">'+r.profit+'%</td><td class="num">'+r.sat+'</td><td style="font-size:11.5px;color:#8b919b">시중가합 '+nf(r.mkt)+'</td></tr>'}).join('')
-   +'<tr class="grp"><td colspan="7">전략안 확정 라인업 (2026-08-04) — 원재료 소진 기준</td></tr>'
-   +dk.map(function(d){return '<tr'+(d.excluded?' style="opacity:.5"':'')+'><td class="nm">'+d.no+(d.excluded?' <span class="badge b-stop">최종 제외</span>':'')+'</td><td>'+d.nm+'</td><td class="num">-</td><td class="num"><b>'+nf(d.disc)+'</b></td><td class="num">-</td><td class="num">-</td><td style="font-size:11.5px;color:#8b919b">표시 '+nf(d.show)+' · 계획 '+nf(d.qty)+'세트</td></tr>'}).join('')
-   +'</tbody></table></div>'
-   +'<div class="find r" style="margin-top:10px"><div class="h">두 안이 다릅니다</div><div class="b2">시트 ⑤는 <b>이익율·만족도 기준</b>으로 #12·#6·#9·#19를 추천했고, 전략안은 <b>원재료를 정확히 소진하는 조합</b>으로 #17·#6·#3·#7을 택했습니다. 전략안 4종은 LA 1,000 / 소불 500 / 갈비탕 999 / 소갈비 300을 딱 맞게 씁니다.</div></div>'
-   +'<div class="find r"><div class="h">#17(갈비탕×3)을 빼면 갈비탕 550개가 남습니다</div><div class="b2">#6(200) + #3(250)만으로는 갈비탕이 450개만 소진됩니다. 남는 550개는 매입원가 기준 <b>480만원</b>어치입니다. 자사 식사세트에 갈비탕을 넣어 소진하는 설계가 필요합니다.</div></div></div>';
-  h+='<div class="card"><h2>시트에 남아 있는 미해결 항목</h2><div class="scroll"><table><thead><tr><th class="l">항목</th><th class="l">현재 상태 / 필요 조치</th></tr></thead><tbody>'
-   +ONO.issues.map(function(i){return '<tr><td class="nm">'+i[0]+'</td><td style="font-size:12px">'+i[1]+'</td></tr>'}).join('')
-   +'</tbody></table></div></div>';
-  h+='<div class="card"><h2>3입 조합 전수 시뮬레이션 <span>4종 중복 허용 20조합 · 시트 ④</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th>No</th><th class="l">구성</th><th>중량</th><th>시중가합</th><th>권장가합</th><th>총원가</th><th>이익율</th><th>만족도</th><th>종합</th><th>판정</th></tr></thead><tbody>'
-   +ONO.combos.slice().sort(function(a,b){return b.score-a.score}).map(function(c){
-     var vc=c.verdict.indexOf('◎')>=0?'up':(c.verdict.indexOf('○')>=0?'fl':'dn');
-     return '<tr><td class="num">'+c.no+'</td><td class="nm">'+c.a+' + '+c.b+' + '+c.c+'</td><td class="num">'+nf(c.wt)+'g</td>'
-      +'<td class="num">'+nf(c.mkt)+'</td><td class="num">'+nf(c.rec)+'</td><td class="num">'+nf(c.tcost)+'</td>'
-      +'<td class="num">'+c.finalR+'%</td><td class="num">'+c.sat+'</td><td class="num"><b>'+c.score+'</b></td>'
-      +'<td class="num '+vc+'">'+c.verdict+'</td></tr>'}).join('')
-   +'</tbody></table></div></div>';
-  document.getElementById('onoref').innerHTML=h;
+var ONOCODE={'온올림 LA 양념갈비 (미국산)':'ONO_LA','온올림 옛날 소불고기 (호주산)':'ONO_BUL','온올림 갈비탕 (호주산)':'ONO_TANG','온올림 소갈비 (미국산)':'ONO_GALBI'};
+function usage(){ var u={ONO_LA:0,ONO_BUL:0,ONO_TANG:0,ONO_GALBI:0};
+ SLOTS.forEach(function(s){ var st=ST[s.id]; if(!st)return; var q=Number(st.qty)||0; if(!q)return;
+  Object.keys(st.items||{}).forEach(function(c){ if(u[c]!==undefined) u[c]+=st.items[c]*q; }); });
+ return u; }
+function renderOno(){
+ var u=usage();
+ var h='';
+ /* 1. 원물 소진 현황 */
+ var totBuy=0, totLeft=0, totDead=0;
+ var rows=ONO.master.map(function(m){ var code=ONOCODE[m.n];
+  var used=u[code]||0, left=Math.max(0,m.stock-used), over=Math.max(0,used-m.stock), pct=m.stock? Math.min(100,used/m.stock*100):0;
+  totBuy+=m.stock*m.cost; totLeft+=left; totDead+=left*m.cost;
+  return {m:m,code:code,used:used,left:left,over:over,pct:pct}; });
+ h+='<div class="card"><h2>① 원물 소진 현황 <span>현재 세트 계획수량 기준 · 발주 확정 물량</span></h2>';
+ h+='<div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:11px">'
+  +'<div class="sm" style="flex:1;min-width:150px"><div class="k">총 매입액</div><div class="v">'+man(totBuy)+'<span style="font-size:11px">만</span></div><div class="d">발주 확정 · 회수 불가</div></div>'
+  +'<div class="sm '+(totLeft>300?'bad':(totLeft>0?'warn':'good'))+'" style="flex:1;min-width:150px"><div class="k">잔여 원물</div><div class="v">'+nf(totLeft)+'<span style="font-size:11px">개</span></div><div class="d">단품 전환 필요</div></div>'
+  +'<div class="sm '+(totDead>1000000?'bad':'warn')+'" style="flex:1;min-width:150px"><div class="k">미판매 시 손실</div><div class="v">'+man(totDead)+'<span style="font-size:11px">만</span></div><div class="d">잔여 × 매입원가</div></div>'
+  +'</div>';
+ h+='<div style="padding:2px">';
+ rows.forEach(function(r){
+  var col=r.over>0?'#c0392b':(r.pct>=95?'#1f7a4d':(r.pct>=60?'#2f6bf3':(r.pct>=30?'#b45309':'#c0392b')));
+  h+='<div style="margin:9px 0">'
+   +'<div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px">'
+   +'<b>'+r.m.n.replace('온올림 ','')+'</b>'
+   +'<span style="color:#5a6478">세트 소요 <b>'+nf(r.used)+'</b> / 확정 '+nf(r.m.stock)+' · '+(r.over>0?'<b style="color:#c0392b">'+nf(r.over)+'개 부족</b>':'잔여 <b style="color:'+(r.left>0?'#c0392b':'#1f7a4d')+'">'+nf(r.left)+'</b>개')+'</span></div>'
+   +'<div style="background:#eef1f6;border-radius:5px;height:16px;overflow:hidden"><div style="width:'+r.pct+'%;height:100%;background:'+col+';transition:width .3s"></div></div>'
+   +'<div style="font-size:10.5px;color:'+(r.over>0?'#c0392b':'#9aa1ad')+';margin-top:2px">'+(r.over>0?'<b>재고 초과 — '+nf(r.over)+'개 부족. 계획수량을 줄이거나 추가 발주(MOQ '+nf(r.m.moq)+'개) 필요</b>':'소진율 '+r.pct.toFixed(0)+'%')+' · 최소발주 '+nf(r.m.moq)+'개 · 매입원가 '+nf(r.m.cost)+'원 · 잔여 손실 '+man(r.left*r.m.cost)+'만원</div>'
+   +'</div>';
+ });
+ h+='</div><div class="note" style="margin-top:6px">원물은 <b>이미 발주가 확정</b>돼 회수가 안 됩니다. 세트에서 못 쓰면 단품으로 팔아야 하고, 단품도 못 팔면 매입원가 그대로 손실입니다.</div></div>';
+
+ /* 2. 재고 소진 최적화 */
+ h+='<div class="card"><h2>② 재고 소진 최적화 <span>최소 발주량(MOQ) 기준 역산</span></h2>';
+ h+='<div class="scroll"><table><thead><tr><th class="l">원물</th><th>확정 재고</th><th>MOQ</th><th>세트 소요</th><th>잔여</th><th class="l">소진 경로</th></tr></thead><tbody>';
+ rows.forEach(function(r){
+  var path='';
+  if(r.over>0) path='<span class="badge b-bad">재고 '+nf(r.over)+'개 초과</span> 계획수량 축소 또는 MOQ '+nf(r.m.moq)+'개 추가 발주';
+  else if(r.left<=0) path='<span class="badge b-ok">완전 소진</span>';
+  else {
+   var setsNeeded=Math.ceil(r.left);
+   path='단품 <b>'+nf(r.left)+'개</b> 판매 필요 · 세트에 <b>1개씩</b> 더 넣으면 '+nf(r.left)+'세트분 흡수';
+  }
+  h+='<tr><td class="nm">'+r.m.n.replace('온올림 ','')+'</td><td class="num">'+nf(r.m.stock)+'</td><td class="num">'+nf(r.m.moq)+'</td>'
+   +'<td class="num">'+nf(r.used)+'</td><td class="num '+((r.left>0||r.over>0)?'dn':'up')+'"><b>'+(r.over>0?'-'+nf(r.over):nf(r.left))+'</b></td>'
+   +'<td style="font-size:11.5px">'+path+'</td></tr>';
+ });
+ h+='</tbody></table></div>';
+ h+='<div class="note" style="margin-top:8px"><b>MOQ가 소진 하한선입니다.</b> 재주문은 최소 LA 500 · 소불고기 1,000 · 갈비탕 1,000 · 소갈비 300개 단위라, 부족하다고 조금 더 사는 선택지가 없습니다. <b>지금 있는 물량 안에서 끝내는 설계</b>가 전제입니다.</div></div>';
+
+ /* 3. 추가 매출 증대 — 음식세트 녹여넣기 */
+ var foodSlots=SLOTS.filter(function(s){return /음식|식사/.test(ST[s.id]?(ST[s.id].name||s.n):s.n)});
+ var foodQty=foodSlots.reduce(function(a,s){return a+(Number(ST[s.id]&&ST[s.id].qty)||0)},0);
+ h+='<div class="card" style="border:1px solid #cfd6e0"><h2>③ 추가 매출 증대 — 추석 음식세트에 녹여넣기 <span>잔여 원물을 자사 세트로 흡수</span></h2>';
+ h+='<div class="note" style="margin-bottom:9px">온올림 세트만으로는 원물이 남습니다. 남는 원물을 <b>자사 추석 음식세트 구성에 1개씩 얹으면</b> 세트 가치가 올라가 <b>가격 인상 여지</b>가 생기고, 원물도 같이 소진됩니다. 온올림 단품을 따로 파는 것보다 마진 방어에 유리합니다.</div>';
+ h+='<div class="scroll"><table><thead><tr><th class="l">잔여 원물</th><th>잔여 수량</th><th>매입원가</th><th>자사권장가</th><th class="l">음식세트 흡수 시</th><th>흡수 후 잔여</th></tr></thead><tbody>';
+ rows.forEach(function(r){ if(r.left<=0) return;
+  var absorb=Math.min(r.left, foodQty||0);
+  h+='<tr><td class="nm">'+r.m.n.replace('온올림 ','')+'</td><td class="num">'+nf(r.left)+'</td><td class="num">'+nf(r.m.cost)+'</td><td class="num">'+nf(r.m.rec)+'</td>'
+   +'<td style="font-size:11.5px">음식세트 '+nf(foodQty)+'세트에 1개씩 → <b>'+nf(absorb)+'개</b> 흡수<br><span style="color:#8b919b">세트 원가 +'+nf(r.m.cost)+'원 / 체감가치 +'+nf(r.m.rec)+'원</span></td>'
+   +'<td class="num '+((r.left-absorb)>0?'dn':'up')+'"><b>'+nf(Math.max(0,r.left-absorb))+'</b></td></tr>';
+ });
+ if(rows.every(function(r){return r.left<=0})) h+='<tr><td colspan="6" style="text-align:center;color:#1f7a4d;font-weight:700;padding:14px">잔여 원물이 없습니다. 현재 계획수량으로 전량 소진됩니다.</td></tr>';
+ h+='</tbody></table></div>';
+ h+='<div class="find g" style="margin-top:10px"><div class="h">권장 — 갈비탕을 음식세트에 넣는다</div><div class="b2">갈비탕은 매입원가 8,730원인데 자사권장가는 18,800원입니다. 음식세트에 1개 얹으면 <b>세트 원가는 8,730원만 오르는데 체감 가치는 18,800원</b> 오릅니다. 판매가를 1만원 올려도 고객 체감은 이득이고, 원가율 상승분은 흡수됩니다.</div></div>';
+ h+='<div class="find o"><div class="h">주의 — 소갈비는 넣지 않는다</div><div class="b2">소갈비는 매입원가가 <b>28,200원</b>으로 음식세트 전체 원가를 흔듭니다. 온올림 #7에서만 쓰고, 남으면 단품 또는 B2B로 처리하는 편이 낫습니다.</div></div>';
+ h+='</div>';
+
+ /* 4. 조합 시뮬레이션 */
+ h+='<div class="card"><h2>④ 3입 조합 전수 시뮬레이션 <span>4종 중복 허용 · 20개 경우의 수</span></h2><div class="scroll"><table>'
+  +'<thead><tr><th>No</th><th class="l">구성</th><th>중량</th><th>자사권장가 합</th><th>제품원가</th><th>총원가</th><th>만족도</th><th>종합</th><th>판정</th></tr></thead><tbody>'
+  +ONO.combos.map(function(c){ var vc=/◎/.test(c.verdict)?'up':(/△/.test(c.verdict)?'dn':'fl');
+   var fin=[3,6,7].indexOf(c.no)>=0;
+   return '<tr'+(fin?' style="background:#eef8f2"':'')+'><td class="num">'+c.no+(fin?' <span class="badge b-ok">확정</span>':'')+'</td>'
+   +'<td class="nm">'+[c.a,c.b,c.c].filter(Boolean).join(' + ')+'</td>'
+   +'<td class="num">'+nf(c.wt)+'g</td><td class="num">'+nf(c.rec)+'</td><td class="num">'+nf(c.pcost)+'</td><td class="num">'+nf(c.tcost)+'</td>'
+   +'<td class="num">'+c.sat+'</td><td class="num">'+c.score+'</td><td class="num '+vc+'">'+c.verdict+'</td></tr>'}).join('')
+  +'</tbody></table></div><div class="note" style="margin-top:8px">초록 행이 <b>최종 확정된 #3 · #6 · #7</b>입니다.</div></div>';
+
+ /* 5. 단가 · 부재료 마스터 */
+ h+='<div class="card"><h2>⑤ 제품 단가 마스터 <span>「2026 OEM 관련 가격 정리」 시트 ①</span></h2><div class="scroll"><table>'
+  +'<thead><tr><th class="l">제품</th><th>중량</th><th>시중판매가<br>(VAT+)</th><th>자사권장가<br>(VAT+)</th><th>견적매입가<br>(VAT-)</th><th>MOQ</th><th>확정 재고</th></tr></thead><tbody>'
+  +ONO.master.map(function(m){return '<tr><td class="nm">'+m.n+'</td><td class="num">'+m.w+'g</td><td class="num">'+nf(m.mkt)+'</td><td class="num"><b>'+nf(m.rec)+'</b></td><td class="num">'+nf(m.cost)+'</td><td class="num">'+nf(m.moq)+'</td><td class="num">'+nf(m.stock)+'</td></tr>'}).join('')
+  +'</tbody></table></div><div class="note" style="margin-top:8px">시뮬레이터는 온올림 <b>판매가 = 자사권장가</b>, <b>원가 = 견적매입가(VAT-)</b>를 씁니다.</div></div>';
+ h+='<div class="card"><h2>⑥ 세트 부재료 · 부대비용 <span>선물세트 1개당</span></h2><div class="scroll"><table>'
+  +'<thead><tr><th class="l">항목</th><th>수량</th><th>단가(VAT-)</th><th>금액</th><th class="l">비고</th></tr></thead><tbody>'
+  +ONO.sub.map(function(s){return '<tr><td class="nm">'+s[0]+'</td><td class="num">'+s[1]+'</td><td class="num">'+nf(s[2])+'</td><td class="num">'+nf(s[1]*s[2])+'</td><td style="font-size:11px;color:#c0392b">'+(s[3]||'')+'</td></tr>'}).join('')
+  +'<tr class="tot"><td>부재료 소계</td><td></td><td></td><td class="num">'+nf(ONO.subTotal)+'</td><td>택배비 별도 '+nf(ONO.ship)+'원</td></tr>'
+  +'</tbody></table></div></div>';
+ document.getElementById('onoref').innerHTML=h;
+}
+renderOno();
+window.__renderOno=renderOno;
 })();
 
 /* ---- 온올림 재고 최적화 ---- */
@@ -598,7 +758,7 @@ renderAll();
    +'<div class="find g"><div class="h">가격 사다리는 거의 그대로입니다</div><div class="b2">현행 70,200 / 83,800 / 100,300 → 권장안 70,200 / 83,800 / <b>99,300</b>. 가격 전략을 다시 짤 필요가 없고 구성만 바꾸면 됩니다. #9는 소비자 만족도 <b>84점</b>으로 20개 조합 중 2위입니다(#7은 74점).</div></div>'
    +'<div class="find o"><div class="h">4번째 세트는 필요 없습니다</div><div class="b2">원안 4종(#17 포함)은 933세트로 전량 소진이 되지만 #17(갈비탕×3)의 만족도가 <b>37점으로 최하위</b>입니다. 3종으로 900세트 + 갈비탕 100개 단품이면 실질적으로 같은 결과입니다.</div></div>'
    +'<div class="find r"><div class="h">소갈비 300개가 라인업의 출발점입니다</div><div class="b2">소갈비는 추가 발주가 불가능하고 미판매 시 회수도 안 됩니다(매입원가 846만원). 소갈비 1개짜리 조합으로 짜야 <b>300세트</b>를 만들 수 있고, 2개짜리(#19·#10·#16)면 150세트, 3개짜리(#20)면 100세트로 줄어 판매 기회가 사라집니다.</div></div></div>';
-  document.getElementById('onoref').insertAdjacentHTML('afterbegin', h);
+  document.getElementById('onoref').insertAdjacentHTML('beforeend', h);
 })();
 
 /* ---------- 저장 · 비교 · 확정 ---------- */
@@ -640,24 +800,67 @@ function renderSnaps(){
   el.innerHTML=h; renderCompare();
 }
 function renderCompare(){
-  var box=document.getElementById('cmpbox'); if(!box) return;
-  var sel=SNAPS.filter(function(s){return CMP.indexOf(s.id)>=0});
-  if(sel.length<2){ box.innerHTML='<div class="card"><h2>안 비교</h2><div class="note">위 표에서 <b>비교할 안을 2개 이상 체크</b>하면 여기에 나란히 비교됩니다.</div></div>'; return; }
-  var rows=[['세트 수',function(p){return nf(p.sets)+'세트'}],['계획 매출',function(p){return man(p.rev)+'만원'}],
-    ['계획 이익',function(p){return man(p.prof)+'만원'}],['평균 총원가율',function(p){return p.rate.toFixed(1)+'%'}],
-    ['온올림 잔여',function(p){return nf(p.left)+'개'}],['잔여 손실',function(p){return man(p.dead)+'만원'}]];
-  var ps=sel.map(function(s){return planSum(s.state)});
-  var h='<div class="card"><h2>안 비교 <span>'+sel.length+'개</span></h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">항목</th>'+sel.map(function(s){return '<th>'+s.name+'</th>'}).join('')+'</tr></thead><tbody>'
-   +rows.map(function(r){
-     var vals=ps.map(function(p){return r[1](p)});
-     return '<tr><td class="nm">'+r[0]+'</td>'+vals.map(function(v){return '<td class="num">'+v+'</td>'}).join('')+'</tr>'}).join('')
-   +'<tr class="grp"><td colspan="'+(sel.length+1)+'">세트별 판매가 / 계획수량</td></tr>'
-   +SLOTS.map(function(sl){
-     return '<tr><td class="nm">'+sl.n+'</td>'+sel.map(function(s){ var k=calcS(s.state,sl.id);
-       return '<td class="num">'+(k.price?nf(k.price)+'<br><span style="font-size:11px;color:#8b919b">'+nf(k.qty)+'세트 · '+k.kinds+'종</span>':'-')+'</td>'}).join('')+'</tr>'}).join('')
-   +'</tbody></table></div></div>';
-  box.innerHTML=h;
+ var box=document.getElementById('cmpbox'); if(!box) return;
+ var sel=SNAPS.filter(function(s){return CMP.indexOf(s.id)>=0});
+ if(sel.length<2){ box.innerHTML='<div class="card"><h2>안 비교</h2><div class="note">위 표에서 <b>비교할 안을 2개 이상 체크</b>하면 카테고리별로 나란히 비교됩니다.</div></div>'; return; }
+ var ps=sel.map(function(s){return planSum(s.state)});
+ var GC={'차례상':'#8a2f2f','음식세트':'#2f5a8a','식사세트':'#2f5a8a','나물세트':'#2e7d5b','전세트':'#a67c2e','온올림':'#6b4ea3'};
+ function slotsOf(s){ return (s.slots&&s.slots.length)?s.slots:SLOTS; }
+ function grpOf(sl){ return sl.g||'기타'; }
+ /* 카테고리별 집계 */
+ function catAgg(s){
+  var out={}; slotsOf(s).forEach(function(sl){ var k=calcS(s.state,sl.id); if(!k.price) return;
+   var g=grpOf(sl); out[g]=out[g]||{n:0,qty:0,rev:0,prof:0,names:[]};
+   out[g].n++; out[g].qty+=k.qty; out[g].rev+=k.price*k.qty; out[g].prof+=k.margin*k.qty;
+   out[g].names.push({n:(s.state[sl.id]&&s.state[sl.id].name)||sl.n,price:k.price,qty:k.qty,kinds:k.kinds,rate:k.rateS}); });
+  return out; }
+ var aggs=sel.map(catAgg);
+ var allG=[]; aggs.forEach(function(a){Object.keys(a).forEach(function(g){if(allG.indexOf(g)<0)allG.push(g)})});
+ var h='';
+ /* 요약 카드 */
+ h+='<div class="card"><h2>안 비교 <span>'+sel.length+'개 · 카테고리별</span></h2>';
+ h+='<div style="display:flex;gap:10px;flex-wrap:wrap">';
+ sel.forEach(function(s,i){ var p=ps[i];
+  h+='<div style="flex:1;min-width:210px;border:1px solid #e2e6ee;border-radius:11px;padding:11px 12px;background:#fff">'
+   +'<div style="font-size:12.5px;font-weight:800;margin-bottom:2px">'+s.name+(s.final?' <span class="badge b-ok">확정</span>':'')+'</div>'
+   +'<div style="font-size:10.5px;color:#9aa1ad;margin-bottom:8px">'+s.ts+'</div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px">'
+   +'<div><div style="color:#8b919b">총 세트</div><b style="font-size:14px">'+nf(p.sets)+'</b></div>'
+   +'<div><div style="color:#8b919b">계획 매출</div><b style="font-size:14px">'+man(p.rev)+'만</b></div>'
+   +'<div><div style="color:#8b919b">계획 이익</div><b style="font-size:14px">'+man(p.prof)+'만</b></div>'
+   +'<div><div style="color:#8b919b">평균 원가율</div><b style="font-size:14px">'+p.rate.toFixed(1)+'%</b></div>'
+   +'</div>';
+  /* 카테고리 매출 구성 막대 */
+  var a=aggs[i], tot=Object.keys(a).reduce(function(x,g){return x+a[g].rev},0)||1;
+  h+='<div style="margin-top:9px;background:#f1f4f9;border-radius:5px;height:16px;display:flex;overflow:hidden">';
+  allG.forEach(function(g){ var v=a[g]; if(!v||!v.rev)return;
+   h+='<div title="'+g+' '+man(v.rev)+'만원" style="width:'+(v.rev/tot*100)+'%;background:'+(GC[g]||'#9aa1ad')+'"></div>'; });
+  h+='</div>';
+  h+='<div style="margin-top:5px;font-size:10px;color:#8b919b;line-height:1.6">'+allG.filter(function(g){return a[g]&&a[g].rev}).map(function(g){
+    return '<span style="margin-right:8px"><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:'+(GC[g]||'#9aa1ad')+';margin-right:3px"></i>'+g+' '+(a[g].rev/tot*100).toFixed(0)+'%</span>'}).join('')+'</div>';
+  h+='</div>';
+ });
+ h+='</div></div>';
+ /* 카테고리 섹션별 상세 */
+ allG.forEach(function(g){
+  h+='<div class="card"><h2><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:'+(GC[g]||'#9aa1ad')+';margin-right:5px"></i>'+g+'</h2><div class="scroll"><table>'
+   +'<thead><tr><th class="l">지표</th>'+sel.map(function(s){return '<th>'+s.name+'</th>'}).join('')+'</tr></thead><tbody>';
+  [['세트 수',function(a){return a?a.n+'개':'-'}],['계획 수량',function(a){return a?nf(a.qty)+'세트':'-'}],
+   ['계획 매출',function(a){return a?man(a.rev)+'만원':'-'}],['계획 이익',function(a){return a?man(a.prof)+'만원':'-'}]].forEach(function(r){
+   h+='<tr><td class="nm">'+r[0]+'</td>'+aggs.map(function(a){return '<td class="num">'+r[1](a[g])+'</td>'}).join('')+'</tr>';
+  });
+  h+='<tr class="grp"><td colspan="'+(sel.length+1)+'">세트별 실판매가 · 계획수량 · 원가율</td></tr>';
+  var maxN=Math.max.apply(null,aggs.map(function(a){return a[g]?a[g].names.length:0}));
+  for(var r0=0;r0<maxN;r0++){
+   h+='<tr><td class="nm" style="color:#9aa1ad">'+(r0+1)+'</td>'+aggs.map(function(a){ var it=a[g]&&a[g].names[r0];
+    if(!it) return '<td class="num" style="color:#d3d8e0">-</td>';
+    var rc=it.rate<=22?'up':(it.rate<=30?'fl':'dn');
+    return '<td class="num"><b>'+it.n+'</b><br><span style="font-size:11px;color:#8b919b">'+nf(it.price)+'원 · '+nf(it.qty)+'세트 · '+it.kinds+'종 · <span class="'+rc+'">'+it.rate.toFixed(0)+'%</span></span></td>'}).join('')+'</tr>';
+  }
+  h+='</tbody></table></div></div>';
+ });
+ box.innerHTML=h;
+}
 }
 function renderFinal(){
   var el=document.getElementById('final'); if(!el) return;
