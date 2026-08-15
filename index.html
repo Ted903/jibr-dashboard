@@ -1536,7 +1536,11 @@ function backfillSince(){
     const first={};
     dates.forEach(d=>{ (q.standups[d].todos||[]).forEach(t=>{ const k=t.mid+'||'+t.text; if(!first[k])first[k]=d; }); });
     let n=0;
-    dates.forEach(d=>{ (q.standups[d].todos||[]).forEach(t=>{ if(!t._since){ t._since=first[t.mid+'||'+t.text]||d; n++; } if(t.st===undefined)t.st=''; }); });
+    dates.forEach(d=>{ (q.standups[d].todos||[]).forEach(t=>{
+      const f=first[t.mid+'||'+t.text]||d;
+      if(!t._since || t._since>f){ t._since=f; n++; }   // 항상 최초 등장일로 자가 교정
+      if(t.st===undefined)t.st='';
+    }); });
     if(n)saveStore();
   }catch(e){console.warn('backfillSince',e);}
 }
@@ -1642,7 +1646,7 @@ function buildTodoHtml(m,sd,date){
   PORDER.forEach(p=>{
     const pt=vis.filter(t=>t.prio===p);
     const pn={high:'🔴 높음',mid:'🟡 중간',low:'🟢 낮음'};
-    h+=`<div class="zone-h">${pn[p]}<span style="font-family:var(--mono);color:var(--ink3);">${pt.length||''}</span></div>`;
+    h+=`<div class="zone-h" style="${pt.length?'':'opacity:.4;'}">${pn[p]}<span style="font-family:var(--mono);color:var(--ink3);">${pt.length||''}</span></div>`;
     h+=`<div class="prio-zone" data-zone="prio" data-prio="${p}" data-mid="${m.id}">`;
     h+= pt.length? pt.map(t=>todoRow(t,date)).join('') : '<div style="height:10px;"></div>';
     h+='</div>';
