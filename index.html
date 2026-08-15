@@ -257,6 +257,35 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .todo-del{background:none;border:none;cursor:pointer;color:var(--ink3);font-size:13px;opacity:0;transition:opacity .15s;padding:0 3px;flex-shrink:0;}
 .todo-item:hover .todo-del{opacity:1;}.todo-del[title='수정']{color:var(--ink2);font-size:12px;}.todo-edit-input{width:100%;border:none;border-bottom:1.5px solid var(--accent);background:transparent;font-size:13px;font-family:var(--sans);color:var(--ink);padding:2px 0;outline:none;line-height:1.55;}.todo-edit-actions{display:flex;gap:6px;margin-top:6px;}
 
+
+/* ── v3: 우선순위 조작 · 이월 정리 ── */
+.prio-zone{min-height:8px;border-radius:8px;transition:background .12s,box-shadow .12s;}
+.prio-zone.dragover{background:rgba(31,58,95,.08);box-shadow:inset 0 0 0 1.5px var(--accent);}
+.todo-item.dragging{opacity:.35;}
+.drag-h{cursor:grab;color:var(--ink3);font-size:11px;opacity:0;transition:opacity .15s;flex-shrink:0;margin-top:3px;line-height:1;}
+.todo-item:hover .drag-h{opacity:.5;}
+.pchip{display:inline-flex;align-items:center;font-family:var(--mono);font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:999px;border:1px solid transparent;cursor:pointer;user-select:none;flex-shrink:0;margin-top:2px;line-height:1.5;}
+.pchip:hover{filter:brightness(.93);}
+.pchip.p-high{background:rgba(155,42,32,.10);color:#9b2a20;border-color:rgba(155,42,32,.25);}
+.pchip.p-mid{background:rgba(47,111,181,.10);color:#2f6fb5;border-color:rgba(47,111,181,.25);}
+.pchip.p-low{background:rgba(19,115,51,.10);color:#137333;border-color:rgba(19,115,51,.25);}
+.dchip{display:inline-block;font-size:9.5px;font-family:var(--mono);padding:1px 6px;border-radius:999px;margin-left:5px;background:var(--paper2);color:var(--ink3);vertical-align:1px;}
+.dchip.warn{background:rgba(212,146,20,.16);color:#8a5b00;}
+.dchip.bad{background:rgba(155,42,32,.12);color:#9b2a20;font-weight:700;}
+.pin-b{background:none;border:none;cursor:pointer;font-size:12px;padding:0 2px;opacity:0;transition:opacity .15s;flex-shrink:0;margin-top:1px;color:var(--ink3);}
+.todo-item:hover .pin-b{opacity:.45;}
+.pin-b.on{opacity:1;color:var(--gold);}
+.focus-zone{background:rgba(47,111,181,.05);border:1px dashed rgba(47,111,181,.35);border-radius:8px;padding:2px 10px 6px;margin-bottom:12px;}
+.focus-zone.empty{padding:8px 10px;}
+.zone-h{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.04em;margin:10px 0 4px;display:flex;align-items:center;gap:6px;}
+.zone-h.focus-h{color:#2f6fb5;margin:8px 0 2px;}
+.morebtn{background:none;border:1px dashed var(--border);border-radius:999px;font-size:11px;color:var(--ink3);cursor:pointer;padding:3px 11px;margin-top:9px;font-family:var(--mono);}
+.morebtn:hover{border-color:var(--accent);color:var(--accent);}
+.warnbar{font-size:11px;background:rgba(155,42,32,.07);color:#9b2a20;border-radius:6px;padding:5px 9px;margin-bottom:9px;font-weight:600;}
+.hold-item .todo-text{color:var(--ink3);}
+.hold-wrap{margin-top:10px;border-top:1px dashed var(--border-soft);padding-top:8px;}
+.empty-hint{font-size:12px;color:var(--ink3);padding:8px 0;}
+
 /* 메모 박스 */
 .memo-box{background:var(--paper);border:1px solid var(--border-soft);border-radius:999px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--ink2);white-space:pre-wrap;cursor:text;min-height:44px;outline:none;transition:border-color .15s;}
 .memo-box:empty::before{content:'메모 클릭 후 입력...';color:var(--ink3);pointer-events:none;}
@@ -504,17 +533,14 @@ select.fi{cursor:pointer;}
 
   <div class="sb-nav">
     <div class="sb-label">메뉴</div>
-    <div class="nav-item active" onclick="nav('dashboard')"><span class="nav-dot"></span> 대시보드</div>
-    <div class="nav-item briefing-nav" onclick="nav('briefing')"><span class="nav-dot"></span> 데일리 브리핑</div>
-    <div class="nav-item standup-nav" onclick="nav('standup')"><span class="nav-dot"></span> 아침 회의</div>
-    <div class="nav-item" onclick="nav('standup-log')"><span class="nav-dot"></span> 회의 로그</div>
-    <div class="nav-item" onclick="nav('members')"><span class="nav-dot"></span> 팀원 OKR 관리</div>
-    <div class="nav-item" onclick="nav('checkin')"><span class="nav-dot"></span> 체크인 기록</div>
-    <div class="sb-label">업무 관리</div>
-    <div class="nav-item" onclick="nav('tasks')"><span class="nav-dot"></span> 업무 트래커</div>
+    <div class="nav-item" data-v="standup" onclick="nav('standup')"><span class="nav-dot"></span> 아침 회의</div>
+    <div class="nav-item briefing-nav" data-v="briefing" onclick="nav('briefing')"><span class="nav-dot"></span> 데일리 브리핑</div>
+    <div class="nav-item" data-v="standup-log" onclick="nav('standup-log')"><span class="nav-dot"></span> 회의 로그</div>
     <div class="sb-label">분석</div>
-    <div class="nav-item" onclick="nav('history')"><span class="nav-dot"></span> 분기 히스토리</div>
-    <div class="nav-item" onclick="nav('report')"><span class="nav-dot"></span> 리포트 생성</div>
+    <div class="nav-item" data-v="dashboard" onclick="nav('dashboard')"><span class="nav-dot"></span> 대시보드</div>
+    <div class="nav-item" data-v="members" onclick="nav('members')"><span class="nav-dot"></span> 팀원 OKR 관리</div>
+    <div class="nav-item" data-v="history" onclick="nav('history')"><span class="nav-dot"></span> 분기 히스토리</div>
+    <div class="nav-item" data-v="report" onclick="nav('report')"><span class="nav-dot"></span> 리포트 생성</div>
     <div class="sb-today">
       <div class="sb-today-label">Today</div>
       <div class="sb-today-date" id="sb-today-date">—</div>
@@ -550,7 +576,7 @@ select.fi{cursor:pointer;}
   </div>
 
   <!-- ════════════════════ DASHBOARD ════════════════════ -->
-  <div id="view-dashboard" class="view active">
+  <div id="view-dashboard" class="view">
     <div class="ph">
       <div><div class="ph-title">온라인팀 OKR 현황</div><div class="ph-sub">2파트 통합형 · MD 파트 + 콘텐츠 파트</div></div>
       <div style="display:flex;gap:8px;align-items:center;">
@@ -607,7 +633,7 @@ select.fi{cursor:pointer;}
   </div>
 
   <!-- ════════════════════ STANDUP ════════════════════ -->
-  <div id="view-standup" class="view">
+  <div id="view-standup" class="view active">
     <div class="ph">
       <div><div class="ph-title">아침 회의</div><div class="ph-sub" id="standup-ph-sub">오늘의 To-do · 우선순위 · 이슈 공유</div></div>
       <div style="display:flex;gap:8px;">
@@ -660,22 +686,6 @@ select.fi{cursor:pointer;}
     </div>
   </div>
 
-  <!-- ════════════════════ CHECKIN ════════════════════ -->
-  <div id="view-checkin" class="view">
-    <div class="ph">
-      <div><div class="ph-title">체크인 기록</div><div class="ph-sub">연간 평가 대신 수시 피드백 — Netflix 방식</div></div>
-    </div>
-    <div class="ca">
-      <div class="cl">
-        <div class="msb">
-          <div class="msh">팀원 선택</div>
-          <div id="ci-member-list"></div>
-        </div>
-        <div class="card" id="ci-detail"><div class="es"><div class="ei">←</div><div>팀원을 선택하세요</div></div></div>
-      </div>
-    </div>
-  </div>
-
   <!-- ════════════════════ HISTORY ════════════════════ -->
   <div id="view-history" class="view">
     <div class="ph">
@@ -711,33 +721,6 @@ select.fi{cursor:pointer;}
         <div id="history-tab-okr"></div>
         <div id="history-tab-compare" style="display:none;"></div>
         <div id="history-tab-standup" style="display:none;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════════════════════ TASK TRACKER ════════════════════ -->
-  <div id="view-tasks" class="view">
-    <div class="ph">
-      <div><div class="ph-title">업무 트래커</div><div class="ph-sub" id="task-ph-sub">팀원별 주간 · 일일 업무 기입 및 진척도 관리</div></div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <div class="tt-tabs" style="margin-bottom:0;width:160px;">
-          <button class="tt-tab active" id="tt-tab-weekly" onclick="switchTaskTab('weekly')">주간</button>
-          <button class="tt-tab" id="tt-tab-daily" onclick="switchTaskTab('daily')">일일</button>
-        </div>
-        <button class="btn bp bs" onclick="openAddTaskModal()">+ 업무 추가</button>
-      </div>
-    </div>
-    <div class="ca">
-      <div class="tt-layout">
-        <!-- 팀원 사이드바 -->
-        <div class="tt-sidebar">
-          <div style="padding:12px 14px;font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border);">팀원 선택</div>
-          <div id="tt-member-list"></div>
-        </div>
-        <!-- 메인 콘텐츠 -->
-        <div class="tt-content" id="tt-main-content">
-          <div class="es" style="padding:60px 0;"><div class="ei">←</div><div>팀원을 선택하세요</div></div>
-        </div>
       </div>
     </div>
   </div>
@@ -1043,12 +1026,12 @@ function runCarryOver(){
   if(prev){
     // 할 일 이월
     if(prev.todos){
-      const unfinished=prev.todos.filter(t=>!t.done);
+      const unfinished=prev.todos.filter(t=>!t.done&&t.st!=='drop');
       const existTexts=(CQ().standups[today].todos||[]).map(t=>t.text);
       unfinished.forEach(t=>{
         if(!existTexts.includes(t.text)){
           if(!CQ().standups[today].todos)CQ().standups[today].todos=[];
-          CQ().standups[today].todos.push({id:Date.now()+Math.random(),mid:t.mid,text:t.text,prio:t.prio,okr:t.okr||'',done:false,_carried:true});
+          CQ().standups[today].todos.push({id:Date.now()+Math.random(),mid:t.mid,text:t.text,prio:t.prio,okr:t.okr||'',done:false,_carried:true,_since:t._since||yd,st:t.st||'',focus:!!t.focus});
         }
       });
     }
@@ -1267,9 +1250,9 @@ function archiveBannerUpdate(){
 function nav(v){
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
-  const mi={dashboard:0,briefing:1,standup:2,'standup-log':3,members:4,checkin:5,tasks:6,history:7,report:8};
-  document.querySelectorAll('.nav-item')[mi[v]??0].classList.add('active');
+  const _vw=document.getElementById('view-'+v);if(!_vw)return;
+  _vw.classList.add('active');
+  const _ni=document.querySelector('.nav-item[data-v="'+v+'"]');if(_ni)_ni.classList.add('active');
   curView=v;renderV(v);
 }
 // ══════════════════════════════════════
@@ -1298,8 +1281,6 @@ function renderV(v){
   if(v==='standup')renderStandup();
   if(v==='standup-log')renderLog();
   if(v==='members')renderMembers();
-  if(v==='checkin')renderCi();
-  if(v==='tasks')renderTasks();
   if(v==='history')renderHistory();
   if(v==='report')genReport();
 }
@@ -1469,29 +1450,15 @@ function renderStandup(){
   let grid='';
   CQ().members.forEach(m=>{
     const pc2=PC[m.part]||PC.tl;
-    const todos=(sd.todos||[]).filter(t=>t.mid===m.id);
+    const _tb=buildTodoHtml(m,sd,curStandupDate);
+    const todos=_tb.live;
     const keyTasks=(sd.keyTasks&&sd.keyTasks[m.id])||[];
     const blockers=(sd.blockers&&sd.blockers[m.id])||[];
     const memo=(sd.memo&&sd.memo[m.id])||'';
     const done=todos.filter(t=>t.done).length;const total=todos.length;
     const stCol=total&&done===total?'var(--olive)':total?'var(--gold)':'var(--ink3)';
 
-    let todoHtml='';
-    ['high','mid','low'].forEach(p=>{
-      const pt=todos.filter(t=>t.prio===p);if(!pt.length)return;
-      const pn={high:'🔴 높음',mid:'🟡 중간',low:'🟢 낮음'};
-      todoHtml+=`<div style="font-family:var(--sans);font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.04em;text-transform:uppercase;margin:10px 0 5px;">${pn[p]}</div>`;
-      pt.forEach(t=>{
-        const carriedTag=t._carried?`<span style="font-size:10px;background:var(--paper2);color:var(--ink3);padding:1px 5px;border-radius:999px;margin-left:5px;font-family:var(--mono);">이월</span>`:'';
-        todoHtml+=`<div class="todo-item" id="todo-item-${t.id}">
-          <div class="todo-cb ${t.done?'done':''}" onclick="toggleTodo('${curStandupDate}',${t.id})"></div>
-          <div class="todo-text ${t.done?'done-text':''}" id="todo-text-${t.id}">${t.text}${carriedTag}${t.okr?`<div style="font-size:11px;color:var(--ink3);margin-top:2px;">↳ ${t.okr}</div>`:''}</div>
-          <button class="todo-del" onclick="startEditTodo('${curStandupDate}',${t.id})" title="수정">✎</button>
-          <button class="todo-del" onclick="delTodo('${curStandupDate}',${t.id})">✕</button>
-        </div>`;
-      });
-    });
-    if(!todoHtml)todoHtml=`<div style="font-size:13px;color:var(--ink3);padding:10px 0;">할 일을 추가해주세요</div>`;
+    const todoHtml=_tb.html;
 
     let keyTaskHtml='';
     keyTasks.forEach(k=>{
@@ -1525,7 +1492,7 @@ function renderStandup(){
       </div>
       <div class="sc-body">
         <div class="todo-section">
-          <div class="todo-section-title">오늘 할 일
+          <div class="todo-section-title">할 일 <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);font-size:11px;">· 칩 클릭=긴급도 변경 · 드래그=이동</span>
             <button class="btn bxs" onclick="openAddTodoForMember(${m.id})">+ 추가</button>
           </div>${todoHtml}
         </div>
@@ -1546,6 +1513,151 @@ function renderStandup(){
 }
 
 function switchStandupDate(d){curStandupDate=d;renderStandup();}
+
+
+// ══════════════════════════════════════
+// v3: 우선순위 조작 · 이월 관리
+// ══════════════════════════════════════
+var OLD_D=7;                 // 며칠 이상 이월이면 "오래된 이월"
+var OLDOPEN={};              // 팀원별 오래된 이월 펼침 상태
+var HOLDOPEN={};             // 팀원별 보류함 펼침 상태
+var PLAB={high:'높음',mid:'중간',low:'낮음'};
+var PORDER=['high','mid','low'];
+
+function dayDiff(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000);}
+function todoAge(t){ if(!t||!t._since)return 0; const d=dayDiff(t._since,curStandupDate); return d>0?d:0; }
+function findTodo(date,tid){const sd=getStandup(date);return (sd.todos||[]).find(x=>String(x.id)===String(tid));}
+
+// 기존 데이터에 _since 채워넣기 (같은 담당자+같은 문구가 처음 등장한 날짜를 찾음)
+function backfillSince(){
+  try{
+    const q=CQ(); if(!q||!q.standups)return;
+    const dates=Object.keys(q.standups).sort();
+    const first={};
+    dates.forEach(d=>{ (q.standups[d].todos||[]).forEach(t=>{ const k=t.mid+'||'+t.text; if(!first[k])first[k]=d; }); });
+    let n=0;
+    dates.forEach(d=>{ (q.standups[d].todos||[]).forEach(t=>{ if(!t._since){ t._since=first[t.mid+'||'+t.text]||d; n++; } if(t.st===undefined)t.st=''; }); });
+    if(n)saveStore();
+  }catch(e){console.warn('backfillSince',e);}
+}
+
+function cyclePrio(date,tid){
+  const t=findTodo(date,tid); if(!t)return;
+  t.prio=PORDER[(PORDER.indexOf(t.prio)+1)%3];
+  saveStore();renderStandup();
+}
+function toggleFocus(date,tid){
+  const t=findTodo(date,tid); if(!t)return;
+  t.focus=!t.focus; if(t.focus)t.st='';
+  saveStore();renderStandup();
+}
+function toggleHold(date,tid){
+  const t=findTodo(date,tid); if(!t)return;
+  t.st=(t.st==='hold')?'':'hold'; if(t.st==='hold')t.focus=false;
+  saveStore();renderStandup();
+}
+function toggleOld(mid){OLDOPEN[mid]=!OLDOPEN[mid];renderStandup();}
+function toggleHoldBox(mid){HOLDOPEN[mid]=!HOLDOPEN[mid];renderStandup();}
+
+// ── 드래그 앤 드롭 ──
+var DRAGID=null;
+function dropTodo(tid,zone,prio,mid){
+  const t=findTodo(curStandupDate,tid); if(!t)return;
+  const nm=parseInt(mid);
+  if(!isNaN(nm)&&nm!==t.mid)t.mid=nm;
+  if(zone==='focus'){t.focus=true;t.st='';}
+  else if(zone==='hold'){t.st='hold';t.focus=false;}
+  else {t.st='';t.focus=false;if(prio)t.prio=prio;}
+  saveStore();renderStandup();
+}
+(function initDnD(){
+  document.addEventListener('dragstart',function(e){
+    const it=e.target.closest&&e.target.closest('.todo-item[data-tid]'); if(!it)return;
+    DRAGID=it.getAttribute('data-tid'); it.classList.add('dragging');
+    try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',DRAGID);}catch(_){}
+  });
+  document.addEventListener('dragend',function(){
+    document.querySelectorAll('.todo-item.dragging').forEach(x=>x.classList.remove('dragging'));
+    document.querySelectorAll('.prio-zone.dragover').forEach(z=>z.classList.remove('dragover'));
+    DRAGID=null;
+  });
+  document.addEventListener('dragover',function(e){
+    const z=e.target.closest&&e.target.closest('.prio-zone'); if(!z)return;
+    e.preventDefault(); try{e.dataTransfer.dropEffect='move';}catch(_){}
+    document.querySelectorAll('.prio-zone.dragover').forEach(x=>{if(x!==z)x.classList.remove('dragover');});
+    z.classList.add('dragover');
+  });
+  document.addEventListener('dragleave',function(e){
+    const z=e.target.closest&&e.target.closest('.prio-zone'); if(z&&!z.contains(e.relatedTarget))z.classList.remove('dragover');
+  });
+  document.addEventListener('drop',function(e){
+    const z=e.target.closest&&e.target.closest('.prio-zone'); if(!z)return;
+    e.preventDefault(); z.classList.remove('dragover');
+    let tid=DRAGID; if(!tid){try{tid=e.dataTransfer.getData('text/plain');}catch(_){}}
+    if(!tid)return;
+    dropTodo(tid,z.getAttribute('data-zone'),z.getAttribute('data-prio'),z.getAttribute('data-mid'));
+  });
+})();
+
+// ── 할 일 한 줄 렌더 ──
+function todoRow(t,date){
+  const age=todoAge(t);
+  const ageChip=age>0?`<span class="dchip ${age>=14?'bad':(age>=OLD_D?'warn':'')}">D+${age}</span>`:'';
+  const holdCls=t.st==='hold'?' hold-item':'';
+  return `<div class="todo-item${holdCls}" id="todo-item-${t.id}" data-tid="${t.id}" draggable="true">
+    <span class="drag-h" title="드래그해서 긴급도·담당자 이동">⠿</span>
+    <div class="todo-cb ${t.done?'done':''}" onclick="toggleTodo('${date}',${t.id})"></div>
+    <span class="pchip p-${t.prio}" onclick="cyclePrio('${date}',${t.id})" title="클릭하면 높음→중간→낮음">${PLAB[t.prio]||'중간'}</span>
+    <div class="todo-text ${t.done?'done-text':''}" id="todo-text-${t.id}">${t.text}${ageChip}${t.okr?`<div style="font-size:11px;color:var(--ink3);margin-top:2px;">↳ ${t.okr}</div>`:''}</div>
+    <button class="pin-b ${t.focus?'on':''}" onclick="toggleFocus('${date}',${t.id})" title="오늘 집중">★</button>
+    <button class="todo-del" onclick="startEditTodo('${date}',${t.id})" title="수정">✎</button>
+    <button class="todo-del" onclick="toggleHold('${date}',${t.id})" title="${t.st==='hold'?'보류 해제':'보류함으로'}">${t.st==='hold'?'↩':'⏸'}</button>
+    <button class="todo-del" onclick="delTodo('${date}',${t.id})" title="삭제">✕</button>
+  </div>`;
+}
+
+// ── 팀원 카드 할 일 영역 전체 ──
+function buildTodoHtml(m,sd,date){
+  const all=(sd.todos||[]).filter(t=>t.mid===m.id&&t.st!=='drop');
+  const holds=all.filter(t=>t.st==='hold');
+  const live=all.filter(t=>t.st!=='hold');
+  const focus=live.filter(t=>t.focus);
+  const rest=live.filter(t=>!t.focus);
+  const old=rest.filter(t=>todoAge(t)>=OLD_D);
+  const fresh=rest.filter(t=>todoAge(t)<OLD_D);
+  const openOld=OLDOPEN[m.id]||fresh.length===0;
+  const vis=openOld?rest:fresh;
+
+  let h='';
+  const highN=live.filter(t=>t.prio==='high'&&!t.done).length;
+  if(highN>5)h+=`<div class="warnbar">⚠ '높음' ${highN}건 — 오늘 집중(★)은 5개 이내로 골라주세요</div>`;
+
+  // 오늘 집중 존
+  h+=`<div class="zone-h focus-h">★ 오늘 집중 ${focus.length?`<span style="font-family:var(--mono);">${focus.length}</span>`:''}</div>`;
+  h+=`<div class="prio-zone focus-zone ${focus.length?'':'empty'}" data-zone="focus" data-mid="${m.id}">`;
+  h+= focus.length? focus.map(t=>todoRow(t,date)).join('') : '<div class="empty-hint">★ 를 누르거나 여기로 끌어다 놓으면 오늘 집중할 일이 됩니다</div>';
+  h+='</div>';
+
+  // 긴급도 존
+  PORDER.forEach(p=>{
+    const pt=vis.filter(t=>t.prio===p);
+    const pn={high:'🔴 높음',mid:'🟡 중간',low:'🟢 낮음'};
+    h+=`<div class="zone-h">${pn[p]}<span style="font-family:var(--mono);color:var(--ink3);">${pt.length||''}</span></div>`;
+    h+=`<div class="prio-zone" data-zone="prio" data-prio="${p}" data-mid="${m.id}">`;
+    h+= pt.length? pt.map(t=>todoRow(t,date)).join('') : '<div style="height:10px;"></div>';
+    h+='</div>';
+  });
+
+  if(old.length&&!openOld)h+=`<button class="morebtn" onclick="toggleOld(${m.id})">+ ${OLD_D}일 이상 이월된 ${old.length}건 보기</button>`;
+  else if(old.length&&OLDOPEN[m.id])h+=`<button class="morebtn" onclick="toggleOld(${m.id})">− 오래된 이월 ${old.length}건 접기</button>`;
+
+  // 보류함
+  h+=`<div class="hold-wrap"><button class="morebtn" style="margin-top:0;" onclick="toggleHoldBox(${m.id})">${HOLDOPEN[m.id]?'−':'+'} 보류함 ${holds.length}건</button>`;
+  h+=`<div class="prio-zone" data-zone="hold" data-mid="${m.id}" style="${HOLDOPEN[m.id]?'':'min-height:14px;'}">`;
+  if(HOLDOPEN[m.id])h+= holds.length? holds.map(t=>todoRow(t,date)).join('') : '<div class="empty-hint">보류한 일이 없습니다. 여기로 끌어다 놓으면 보류됩니다</div>';
+  h+='</div></div>';
+  return {html:h,live:live,focus:focus};
+}
 
 function startEditTodo(date, tid){
   const sd=getStandup(date);
@@ -1724,7 +1836,7 @@ function saveTodos(){
   const okr=document.getElementById('td-okr').value.trim();
   if(!lines.length)return alert('할 일을 입력해주세요');
   const sd=getStandup(curStandupDate);
-  lines.forEach(text=>{sd.todos.push({id:Date.now()+Math.random(),mid,text,prio,okr,done:false});});
+  lines.forEach(text=>{sd.todos.push({id:Date.now()+Math.random(),mid,text,prio,okr,done:false,_since:curStandupDate,st:'',focus:false});});
   saveStore();cm('mo-todo');renderStandup();
 }
 
@@ -2693,7 +2805,10 @@ document.getElementById('standup-ph-sub').textContent=`${formatDate(todayStr())}
 function initRender(){
   buildQSelect();
   archiveBannerUpdate();
-  renderDash();
+  curView='standup';
+  const _n=document.querySelector('.nav-item[data-v="standup"]');
+  if(_n){document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));_n.classList.add('active');}
+  renderStandup();
   const fb=document.getElementById('fb-status');
   if(fb) fb.textContent='☁ Firebase 연결됨';
 }
@@ -2701,13 +2816,14 @@ function initRender(){
 // Firebase 데이터 준비 완료 이벤트 대기
 window.addEventListener('firebase-ready', ()=>{
   STORE = window.STORE;
+  backfillSince(); // 이월 경과일(D+n) 산출용 최초 등록일 채우기 (이월보다 먼저!)
   runCarryOver(); // Firebase 로드 후 미완료 항목 이월
   initRender();
 });
 
 // 3초 안에 Firebase 안 오면 기본값으로라도 렌더
 setTimeout(()=>{
-  try{const dv=document.getElementById('dash-view');if(!dv||!dv.innerHTML){initRender();}}catch(e){initRender();}
+  try{const dv=document.getElementById('standup-grid');if(!dv||!dv.innerHTML){initRender();}}catch(e){initRender();}
 }, 3000);
 </script>
 </body>
