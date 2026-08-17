@@ -613,12 +613,6 @@ select.fi{cursor:pointer;}
             </div>
             <div id="dash-standup-widget"></div>
           </div>
-          <div class="card" style="margin-bottom:16px;border-top:3px solid var(--md-col);">
-            <div class="ct" style="color:var(--md-col);">이번 주 업무 현황
-              <button class="btn bs bxs" onclick="nav('tasks')">→ 열기</button>
-            </div>
-            <div id="dash-task-widget"></div>
-          </div>
           <div class="card" style="margin-bottom:16px;">
             <div class="ct" style="color:var(--accent);">주목 필요 항목</div>
             <div id="delayed-list"></div>
@@ -1369,25 +1363,51 @@ function progListHtml(members){
 function renderDashStandupWidget(){
   const td=todayStr();const sd=CQ().standups[td];const el=document.getElementById('dash-standup-widget');
   if(!sd||!sd.todos||!sd.todos.length){el.innerHTML=`<div style="padding:16px 0;text-align:center;"><div style="font-size:13px;color:var(--ink3);margin-bottom:10px;">오늘 아침 회의 기록이 없습니다</div><button class="btn bp bs" onclick="nav('standup')">아침 회의 시작하기</button></div>`;return;}
+  const SHOW=5;                       // 팀원당 노출 개수
+  const RANK={high:0,mid:1,low:2};
   let h='';
   CQ().members.forEach(m=>{
-    const todos=sd.todos.filter(t=>t.mid===m.id);if(!todos.length)return;
-    const done=todos.filter(t=>t.done).length;
-    const highT=todos.filter(t=>t.prio==='high');
+    const all=(sd.todos||[]).filter(t=>t.mid===m.id&&t.st!=='drop');
+    const live=all.filter(t=>t.st!=='hold');
+    const hold=all.length-live.length;
+    if(!live.length&&!hold)return;
+    const done=live.filter(t=>t.done).length;
+    const nH=live.filter(t=>t.prio==='high').length;
+    const nM=live.filter(t=>t.prio==='mid').length;
+    const nL=live.filter(t=>t.prio==='low').length;
+    const nF=live.filter(t=>t.focus).length;
+    // 오늘 집중 → 미완료 → 긴급도 → 오래 이월된 순
+    const sorted=live.slice().sort((a,b)=>
+      (b.focus?1:0)-(a.focus?1:0) || (a.done?1:0)-(b.done?1:0) ||
+      RANK[a.prio]-RANK[b.prio] || todoAge(b)-todoAge(a));
+    const shown=sorted.slice(0,SHOW);
+    const rest=sorted.length-shown.length;
+
+    const mix=[];
+    if(nF)mix.push('<span style="color:var(--gold);font-weight:700;">★'+nF+'</span>');
+    if(nH)mix.push('<span style="color:#9b2a20;">높음 '+nH+'</span>');
+    if(nM)mix.push('<span style="color:#2f6fb5;">중간 '+nM+'</span>');
+    if(nL)mix.push('<span style="color:#137333;">낮음 '+nL+'</span>');
+    if(hold)mix.push('<span style="color:var(--ink3);">보류 '+hold+'</span>');
+
     h+=`<div class="sw-member">
       <div class="sw-av" style="${avStyle(m.part)}">${ini(m.name)}</div>
       <div class="sw-member-body">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
           <div class="sw-name">${m.name}</div>
-          <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:${done===todos.length?'var(--olive)':'var(--ink3)'};">${done}/${todos.length}</div>
+          <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:${live.length&&done===live.length?'var(--olive)':'var(--ink3)'};">${done}/${live.length}</div>
         </div>
+        <div style="font-size:10.5px;font-family:var(--mono);color:var(--ink3);margin-bottom:5px;display:flex;gap:7px;flex-wrap:wrap;">${mix.join('')||'항목 없음'}</div>
         <div class="sw-todos">`;
-    (highT.length?highT:todos.slice(0,3)).forEach(t=>{
-      const dotColor=t.prio==='high'?'var(--accent)':t.prio==='mid'?'var(--gold)':'var(--ink3)';
-      h+=`<div class="sw-todo ${t.done?'done':''}"><i style="display:inline-block;width:5px;height:5px;min-width:5px;min-height:5px;max-width:5px;max-height:5px;border-radius:50%;background:${dotColor};flex-shrink:0;flex-grow:0;align-self:flex-start;margin-top:5px;"></i>${t.text}</div>`;
+    shown.forEach(t=>{
+      const dotColor=t.prio==='high'?'#9b2a20':t.prio==='mid'?'#2f6fb5':'#137333';
+      const age=todoAge(t);
+      const ageChip=age>=7?`<span style="font-size:9.5px;font-family:var(--mono);color:${age>=14?'#9b2a20':'#8a5b00'};background:${age>=14?'rgba(155,42,32,.1)':'rgba(212,146,20,.15)'};padding:0 5px;border-radius:999px;margin-left:5px;">D+${age}</span>`:'';
+      const star=t.focus?'<span style="color:var(--gold);margin-right:3px;">★</span>':'';
+      h+=`<div class="sw-todo ${t.done?'done':''}"><i style="display:inline-block;width:5px;height:5px;min-width:5px;min-height:5px;max-width:5px;max-height:5px;border-radius:50%;background:${dotColor};flex-shrink:0;flex-grow:0;align-self:flex-start;margin-top:5px;"></i><span>${star}${t.text}${ageChip}</span></div>`;
     });
-    if(highT.length&&highT.length>3)h+=`<div style="font-size:11px;color:var(--ink3);margin-top:2px;">+${highT.length-3}개 더</div>`;
-    else if(!highT.length&&todos.length>3)h+=`<div style="font-size:11px;color:var(--ink3);margin-top:2px;">+${todos.length-3}개 더</div>`;
+    if(rest>0)h+=`<div style="font-size:11px;color:var(--ink3);margin-top:3px;">+${rest}개 더</div>`;
+    if(!shown.length)h+=`<div style="font-size:11px;color:var(--ink3);">보류 ${hold}건만 있습니다</div>`;
     h+=`</div></div></div>`;
   });
   const blMs=CQ().members.filter(m=>{const b=sd.blockers&&sd.blockers[m.id];return b&&b.length>0;});
@@ -1449,44 +1469,13 @@ function renderDash(){
         y:{min:0,max:100,grid:{color:'rgba(23,27,33,.06)'},ticks:{color:'#39414b',font:{size:11,family:'JetBrains Mono'},callback:v=>v+'%'}}}}});
 
   renderDashStandupWidget();
-  renderDashTaskWidget();
 }
+
+// 업무 트래커 제거 후 남은 호출부를 위한 빈 함수 (사용 안 함)
+function renderDashTaskWidget(){}
 
 // ══════════════════════════════════════
 // DASHBOARD TASK WIDGET
-// ══════════════════════════════════════
-function renderDashTaskWidget(){
-  const el=document.getElementById('dash-task-widget');
-  if(!el)return;
-  const week=getCurrentWeekKey();
-  const ms=CQ().members;
-  if(!ms.length){el.innerHTML='<div style="padding:12px 0;font-size:13px;color:var(--ink3);">팀원 없음</div>';return;}
-  let h='';
-  let anyTask=false;
-  ms.forEach(m=>{
-    const tasks=getWeekTasks(m.id,week);
-    if(!tasks.length)return;
-    anyTask=true;
-    const total=tasks.length;
-    const done=tasks.filter(t=>t.rate===100).length;
-    const avgRate=total?Math.round(tasks.reduce((s,t)=>s+t.rate,0)/total):0;
-    const pc=PC[m.part]||PC.tl;
-    h+=`<div class="tw-member">
-      <div class="tw-member-header">
-        <span class="av av-sm style="${avStyle(m.part)}">${ini(m.name)}</span>
-        <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;">${m.name}</div></div>
-        <div style="font-family:var(--mono);font-size:11px;font-weight:700;color:${progColor(avgRate)};">${avgRate}%</div>
-      </div>
-      <div class="tw-progress-bar"><div class="tw-progress-fill" style="width:${avgRate}%;background:${progColor(avgRate)};"></div></div>
-      <div style="font-size:11px;color:var(--ink3);margin-top:5px;font-family:var(--mono);">완료 ${done}/${total}건</div>
-    </div>`;
-  });
-  if(!anyTask)h='<div style="padding:12px 0;text-align:center;font-size:13px;color:var(--ink3);">이번 주 업무 없음<br><button class="btn bp bxs" onclick="nav(\'tasks\')" style="margin-top:8px;">업무 추가하기</button></div>';
-  el.innerHTML=h;
-}
-
-// ══════════════════════════════════════
-// STANDUP
 // ══════════════════════════════════════
 function renderStandup(){
   const sd=getStandup(curStandupDate);
