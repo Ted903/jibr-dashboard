@@ -617,10 +617,6 @@ select.fi{cursor:pointer;}
             <div class="ct" style="color:var(--accent);">주목 필요 항목</div>
             <div id="delayed-list"></div>
           </div>
-          <div class="card">
-            <div class="ct">최근 체크인</div>
-            <div id="recent-ci"></div>
-          </div>
         </div>
       </div>
     </div>
@@ -1435,7 +1431,12 @@ function renderDash(){
   document.getElementById('tl-progress-list').innerHTML=progListHtml(byPart(ms,'tl'));
 
   let dh='';
-  if(!del.length)dh='<div style="padding:16px 0;text-align:center;color:var(--olive);font-size:13px;font-weight:600;">✓ 주목 필요 항목 없음</div>';
+  if(!del.length){
+    const okrN=ms.reduce((s,m)=>s+((m.okrs||[]).length),0);
+    dh = okrN
+      ? '<div style="padding:16px 0;text-align:center;color:var(--olive);font-size:13px;font-weight:600;">✓ 주목 필요 항목 없음</div>'
+      : '<div style="padding:14px 2px;font-size:12.5px;color:var(--ink3);line-height:1.6;">등록된 OKR이 없습니다.<br>OKR을 등록하고 상태를 <b>지연</b> 또는 <b>주의</b>로 표시하면 여기에 모입니다.<button class="btn bs bxs" style="margin-top:8px;" onclick="nav(\'members\')">팀원 OKR 관리 열기</button></div>';
+  }
   else del.slice(0,5).forEach(d=>{const pc2=PC[d.part]||PC.tl;
     dh+=`<div class="di"><div class="dd" style="background:${d.status==='delayed'?'var(--accent)':'var(--gold)'}"></div>
       <div class="dc"><div class="dt">${d.title}</div>
@@ -1444,19 +1445,6 @@ function renderDash(){
   });
   document.getElementById('delayed-list').innerHTML=dh;
 
-  let allCi=[];CQ().members.forEach(m=>(m.checkins||[]).forEach(c=>allCi.push({...c,mn:m.name,part:m.part})));
-  allCi.sort((a,b)=>b.date.localeCompare(a.date));
-  const tl2={feedback:'피드백',concern:'우려',praise:'칭찬',action:'액션',note:'메모'};
-  const tc2={feedback:'var(--md-col)',concern:'var(--accent)',praise:'var(--olive)',action:'var(--gold)',note:'var(--ink3)'};
-  let ch='';
-  if(!allCi.length)ch='<div style="padding:16px 0;text-align:center;font-size:13px;color:var(--ink3);">체크인 기록 없음</div>';
-  else allCi.slice(0,4).forEach(c=>{
-    ch+=`<div class="di"><div class="dc">
-      <div class="dm">${c.mn} · ${c.date} · <span style="font-weight:700;color:${tc2[c.type]||'var(--ink3)'};">${tl2[c.type]||c.type}</span></div>
-      <div class="dt" style="font-weight:400;font-size:13px;margin-top:3px;line-height:1.5;">${c.note.slice(0,85)}${c.note.length>85?'…':''}</div>
-    </div></div>`;
-  });
-  document.getElementById('recent-ci').innerHTML=ch;
 
   if(okrChart)okrChart.destroy();
   const ctx=document.getElementById('okr-chart').getContext('2d');
