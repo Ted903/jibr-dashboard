@@ -642,6 +642,7 @@ select.fi{cursor:pointer;}
       </div>
     </div>
     <div class="ca">
+      <div id="standup-roll-banner"></div>
       <div id="standup-date-tabs" class="date-tabs"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
         <div>
@@ -1014,15 +1015,11 @@ function runCarryOver(){
   if(!CQ().standups[today])CQ().standups[today]={saved:false,todos:[],blockers:{},memo:{}};
   // _carryDone이 오늘 날짜로 저장된 경우에만 스킵 (날짜 기반 체크)
   if(CQ().standups[today]._carryDone===today)return;
-  // 최근 30일 내 데이터 있는 가장 최근 날짜 찾기
-  let yd=null;
-  for(let i=1;i<=30;i++){
-    const d=new Date();d.setDate(d.getDate()-i);
-    const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    const s=CQ().standups[ds];
-    if(s&&((s.todos&&s.todos.length>0)||(s.keyTasks&&Object.keys(s.keyTasks).length>0))){yd=ds;break;}
-  }
-  const prev=yd?CQ().standups[yd]:null;
+  // 최근 30일 내 데이터 있는 가장 최근 날짜 찾기 (분기가 바뀌어도 이전 분기에서 찾아온다)
+  const found=findLastStandup(today);
+  const yd=found?found.date:null;
+  const prev=found?found.sd:null;
+  if(found&&found.q!==STORE.activeQ) console.log('[이월] 이전 분기('+found.q+' '+found.date+')에서 넘겨받음');
   if(prev){
     // 할 일 이월
     if(prev.todos){
@@ -1174,6 +1171,54 @@ function getCurrentQuarterLabel(){
 // ══════════════════════════════════════
 // 분기 관리
 // ══════════════════════════════════════
+
+// 달이 바뀌어 새 분기가 시작되면 자동으로 분기를 만들고 전환한다.
+// STORE._autoQ 에 "이미 자동 전환을 끝낸 분기"를 기록해서, 그 뒤에 사용자가
+// 과거 분기를 열어보는 것은 방해하지 않는다(분기당 딱 1회만 동작).
+function autoQuarterRoll(){
+  try{
+    const cur=getCurrentQuarterLabel();
+    if(STORE._autoQ===cur) return null;
+    const created=!STORE.quarters[cur];
+    if(created){
+      const base=STORE.quarters[STORE.activeQ]||Object.values(STORE.quarters)[0]||{members:[]};
+      const mem=(base.members||[]).map(m=>({id:m.id,name:m.name,role:m.role,part:m.part,isMe:m.isMe,okrs:[],checkins:[]}));
+      STORE.quarters[cur]={
+        teamName:base.teamName||'온라인팀',
+        members:JSON.parse(JSON.stringify(mem)),
+        standups:{},
+        createdFrom:STORE.activeQ,
+        createdAt:todayStr(),
+        autoCreated:true
+      };
+    }
+    const prev=STORE.activeQ;
+    STORE.activeQ=cur;
+    STORE._autoQ=cur;
+    saveStore();
+    return (prev===cur)?null:{from:prev,to:cur,created:created};
+  }catch(e){console.warn('autoQuarterRoll',e);return null;}
+}
+
+// 분기를 가리지 않고 30일 이내 가장 최근의 "데이터 있는" 스탠드업을 찾는다.
+// 분기 경계(예: 9/30 → 10/1)에서 이월이 끊기는 것을 막기 위함.
+function findLastStandup(beforeDate){
+  let best=null;
+  Object.keys(STORE.quarters||{}).forEach(qk=>{
+    const sd=(STORE.quarters[qk]||{}).standups||{};
+    Object.keys(sd).forEach(d=>{
+      if(d>=beforeDate) return;
+      const s=sd[d];
+      const has=(s.todos&&s.todos.length>0)||(s.keyTasks&&Object.keys(s.keyTasks).length>0)||(s.blockers&&Object.keys(s.blockers).length>0);
+      if(!has) return;
+      const diff=Math.round((new Date(beforeDate+'T00:00:00')-new Date(d+'T00:00:00'))/86400000);
+      if(diff>30) return;
+      if(!best||d>best.date) best={q:qk,date:d,sd:s};
+    });
+  });
+  return best;
+}
+
 function buildQSelect(){
   const sel=document.getElementById('qs-main');
   sel.innerHTML='';
@@ -1237,11 +1282,23 @@ document.getElementById('qs-new-input').addEventListener('keydown',e=>{
   if(e.key==='Escape')toggleNewQ();
 });
 
+function qRollBannerHtml(){
+  const r=window._qRoll;
+  if(!r) return '';
+  const sd=CQ().standups[todayStr()]||{};
+  const n=(sd.todos||[]).filter(t=>t._carried).length;
+  return '<div class="archive-banner" style="background:rgba(19,115,51,.08);border-color:rgba(19,115,51,.3);">'+
+    '<span class="ab-icon">🎉</span><span><strong>'+r.to+'</strong> 시작 — '+r.from+'에서 자동 전환했습니다.'+
+    (r.created?' 새 분기를 생성했고,':'') + ' 미완료 업무 <strong>'+n+'건</strong>을 이월했습니다.'+
+    ' <button class="btn bxs" onclick="switchQuarter(\''+r.from+'\')" style="margin-left:8px;">'+r.from+' 보기</button></span></div>';
+}
 function archiveBannerUpdate(){
   const today=getCurrentQuarterLabel();
   const isArchive=STORE.activeQ!==today;
   const html=isArchive?`<div class="archive-banner"><span class="ab-icon">🗂</span><span><strong>${STORE.activeQ}</strong> 아카이브 보기 중 — 수정은 가능하지만 현재 진행 분기가 아닙니다. <button class="btn bxs" onclick="switchQuarter('${today}')" style="margin-left:8px;">현재 분기로 돌아가기</button></span></div>`:'';
-  ['archive-banner-dash','archive-banner-members'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
+  const finalHtml = html || qRollBannerHtml();
+  ['archive-banner-dash','archive-banner-members'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=finalHtml;});
+  const sb=document.getElementById('standup-roll-banner'); if(sb) sb.innerHTML = finalHtml;
 }
 
 // ══════════════════════════════════════
@@ -2821,7 +2878,8 @@ function initRender(){
 window.addEventListener('firebase-ready', ()=>{
   STORE = window.STORE;
   backfillSince(); // 이월 경과일(D+n) 산출용 최초 등록일 채우기 (이월보다 먼저!)
-  runCarryOver(); // Firebase 로드 후 미완료 항목 이월
+  window._qRoll = autoQuarterRoll(); // 새 분기 시작 시 자동 생성 + 전환
+  runCarryOver(); // Firebase 로드 후 미완료 항목 이월 (분기 경계도 넘어감)
   initRender();
 });
 
