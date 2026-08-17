@@ -406,19 +406,23 @@ function renderLine(){
   var tq=rows.reduce(function(a,r){return a+r.k.qty},0);
   tb+='<tr class="tot"><td>합계</td><td class="num">'+nf(tq)+'세트</td><td colspan="9"></td><td class="num">'+man(tp)+'만</td><td class="num">'+man(tm)+'만</td></tr></tbody></table>';
   document.getElementById('linetbl').innerHTML=tb;
-  var ch=rows.filter(function(r){return r.s.g==='차례상'&&r.k.price>0}).length;
-  var ms=rows.filter(function(r){return r.s.g==='식사세트'&&r.k.price>0});
-  var maxms=Math.max.apply(null,ms.map(function(r){return r.k.price}).concat([0]));
-  var nmc=rows.filter(function(r){return r.s.g==='나물세트'&&r.k.price>0}).length;
-  var jnc=rows.filter(function(r){return r.s.g==='전세트'&&r.k.price>0}).length;
-  var low=rows.filter(function(r){return r.k.price>0&&r.k.profitR<20});
+  var live=rows.filter(function(r){return r.k.price>0});
+  var core=live.filter(function(r){return r.k.price>=70000&&r.k.price<=130000});
+  var coreQty=core.reduce(function(a,r){return a+r.k.qty},0);
+  var totQty=live.reduce(function(a,r){return a+r.k.qty},0);
+  var coreShare=totQty? coreQty/totQty*100 : 0;
+  var jeon=live.filter(function(r){return /전세트|전 /.test((ST[r.s.id]&&ST[r.s.id].name)||r.s.n)||r.s.g==='전세트'});
+  var ono=live.filter(function(r){return r.s.g==='온올림'});
+  var over30=live.filter(function(r){return r.k.price>300000});
+  var low=live.filter(function(r){return r.k.profitR<20});
   document.getElementById('rules').innerHTML=
-    '<span class="rl '+(ch<=2?'ok':'no')+'">차례상 '+ch+'개 / 최대 2</span>'
-   +'<span class="rl '+(ms.length<=3?'ok':'no')+'">식사세트 '+ms.length+'개 / 최대 3</span>'
-   +'<span class="rl '+(maxms<=300000?'ok':'no')+'">식사세트 최고가 '+nf(maxms)+' / 30만 이하</span>'
-   +'<span class="rl '+(nmc<=3?'ok':'no')+'">나물세트 '+nmc+'개 / 최대 3</span>'
-   +'<span class="rl '+(jnc<=2?'ok':'no')+'">전세트 '+jnc+'개 / 최대 2</span>'
-   +'<span class="rl '+(low.length===0?'ok':'no')+'">이익율 20% 미만 '+low.length+'개</span>';
+    '<span class="rl '+(core.length>0?'ok':'no')+'" title="전략 ① 10만원대 전후에 화력 집중">주력 7~13만원대 '+core.length+'개 세트</span>'
+   +'<span class="rl '+(coreShare>=50?'ok':'no')+'" title="주력 가격대가 계획 물량에서 차지하는 비중">주력 물량 비중 '+coreShare.toFixed(0)+'% / 50% 이상</span>'
+   +'<span class="rl '+(jeon.length>0?'ok':'no')+'" title="전략 ③ 전 세트 신설">전 세트 '+jeon.length+'개 / 1개 이상</span>'
+   +'<span class="rl '+(ono.length===3?'ok':'no')+'" title="온올림 #3·#6·#7 확정">온올림 '+ono.length+'개 / 확정 3개</span>'
+   +'<span class="rl '+(over30.length===0?'ok':'no')+'" title="고가 세트는 만족도가 낮아 드라이브 대상 제외">30만원 초과 '+over30.length+'개</span>'
+   +'<span class="rl '+(low.length===0?'ok':'no')+'" title="이익율 20% 미만은 판매할수록 부담">이익율 20% 미만 '+low.length+'개</span>'
+   +'<span class="rl" style="background:#f4f7fc;border-color:#dde4ee;color:#5a6478">총 '+live.length+'개 세트 · 계획 '+nf(totQty)+'세트</span>';
   /* 온올림 원재료 소진 */
   var stock={ONO_LA:1000,ONO_BUL:500,ONO_TANG:1000,ONO_GALBI:300};
   var used={ONO_LA:0,ONO_BUL:0,ONO_TANG:0,ONO_GALBI:0};
@@ -498,11 +502,31 @@ document.getElementById('exp').addEventListener('click',function(){
       Object.keys(ST[s.id].items).map(function(c){return (BC[c]?BC[c].n:c)+'×'+ST[s.id].items[c]}).join(' / ')].join('\t')});
   var tsv=['세트명\t구분\t품목수\t총개수\t단품합산\t판매가\t할인율\t제품원가\t포장비\t총원가율\t이익율\t세트당이익\t계획수량\t중량\t구성'].concat(out).join('\n');
   navigator.clipboard.writeText(tsv).then(function(){alert('클립보드에 복사했습니다.')});});
+function reloadState(){
+  try{
+    var s=JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null'); if(s) ST=s;
+    var sl=JSON.parse(localStorage.getItem('ck_slots_v1')||'null');
+    if(sl&&sl.length){ var GM={'차례상':'g1','식사세트':'g2','음식세트':'g2','온올림':'g3','나물세트':'g4','전세트':'g5'};
+      sl.forEach(function(x){ if(!x.grp) x.grp=GM[x.g]||'g6'; }); SLOTS=sl; }
+    SHIP=Number(localStorage.getItem('ck_ship')||3500);
+    var sn=JSON.parse(localStorage.getItem('ck_snaps')||'null'); if(sn) SNAPS=sn;
+    SLOTS.forEach(function(x){ if(!ST[x.id]) ST[x.id]={items:{},price:0,list:0,name:x.n,pack:0,qty:0};
+      if(!ST[x.id].items) ST[x.id].items={}; if(ST[x.id].list===undefined) ST[x.id].list=Number(ST[x.id].price)||0; });
+    if(typeof cur==='undefined'||!ST[cur]) cur=SLOTS[0].id;
+    try{ renderSlots(); }catch(e){}
+    try{ renderComp(); }catch(e){}
+    try{ renderLine(); }catch(e){}
+    try{ refreshSnaps(); }catch(e){}
+    try{ if(window.__renderOno) window.__renderOno(); }catch(e){}
+  }catch(e){ console.warn('reloadState',e); }
+}
 document.getElementById('nav').addEventListener('click',function(e){
   var b=e.target.closest('button'); if(!b)return; var i=b.dataset.i;
   [].forEach.call(document.querySelectorAll('#nav button'),function(x){x.classList.toggle('on',x.dataset.i===i)});
   [].forEach.call(document.querySelectorAll('.panel'),function(x){x.classList.toggle('on',x.dataset.i===i)});
-  window.scrollTo(0,0); if(i==='1') renderLine();
+  window.scrollTo(0,0);
+  if(i!=='7'){ reloadState(); }
+  if(i==='1') renderLine();
   if(i==='7'){ var f=document.getElementById('mxframe'); f.src='./matrix.html?embed=1&t='+Date.now(); }
   else { pullFromStorage(); }
 });
@@ -532,6 +556,24 @@ h+='<div class="card"><h2>가격대별 판매량 <span>2025 추석 · 2026 설 �
 var g={}; PRE.forEach(function(p){ if(p.g==='온올림')return; g[p.g]=g[p.g]||[]; g[p.g].push(p); });
 seasons.concat(['공통']).forEach(function(gn){ if(!g[gn])return;
  var arr=g[gn].slice().sort(function(a,b){return b.sold-a.sold});
+ var mxq=Math.max.apply(null,arr.map(function(p){return p.sold}).concat([1]));
+ var totq=arr.reduce(function(a,p){return a+p.sold},0), totr=arr.reduce(function(a,p){return a+p.sold*p.price},0);
+ h+='<div class="card"><h2>'+gn+' 세트별 판매량 <span>총 '+nf(totq)+'개 · '+man(totr)+'만원 · 막대에 커서를 올리면 상세</span></h2><div class="chartS" style="padding:6px 2px">';
+ arr.forEach(function(p){
+  var c=catOf(p.n), rc=p.calc.rate<=22?'#1f7a4d':(p.calc.rate<=30?'#b45309':'#c0392b');
+  h+='<div style="display:flex;align-items:center;gap:9px;margin:5px 0">'
+   +'<div style="flex:0 0 148px;font-size:11.5px;font-weight:700;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.n+'</div>'
+   +'<div style="flex:1;background:#f1f4f9;border-radius:5px;height:20px;position:relative">'
+   +'<div data-tip="<b>'+p.n+'</b><br>판매 '+nf(p.sold)+'개 · 매출 '+man(p.sold*p.price)+'만원<br>표기가 '+nf(p.price)+'원 · 구성 '+Object.keys(p.items).length+'종 · '+nf(p.calc.wt)+'g<br>제품원가 '+nf(p.calc.cost)+'원 · 원가율 '+p.calc.rate+'%" style="width:'+(p.sold/mxq*100)+'%;height:100%;background:'+CATC[c]+';border-radius:5px;min-width:2px"></div>'
+   +'</div>'
+   +'<div style="flex:0 0 62px;font-size:11.5px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums">'+nf(p.sold)+'개</div>'
+   +'<div style="flex:0 0 68px;font-size:11px;color:#8b919b;text-align:right">'+nf(p.price)+'원</div>'
+   +'<div style="flex:0 0 46px;font-size:11px;text-align:right;font-weight:700;color:'+rc+'">'+p.calc.rate+'%</div>'
+   +'</div>';
+ });
+ h+='</div><div style="display:flex;gap:12px;padding:4px 0 2px 158px;flex-wrap:wrap">'+Object.keys(CATC).map(function(c){
+   return '<span style="font-size:10.5px;color:#5a6478;font-weight:700"><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:'+CATC[c]+';margin-right:4px"></i>'+c+'</span>'}).join('')
+   +'<span style="font-size:10.5px;color:#9aa1ad;margin-left:auto">막대 오른쪽 = 판매량 · 표기가 · 원가율</span></div></div>';
  h+='<div class="card"><h2>'+gn+' 세트 실적 <span>노션 공지 구성 + 이카운트 실판매</span></h2><div class="scroll"><table>'
   +'<thead><tr><th class="l">세트</th><th>표기가</th><th>구성 합산</th><th>제품원가</th><th>원가율</th><th>품목수</th><th>중량</th><th>판매량</th><th>추정 매출</th></tr></thead><tbody>'
   +arr.map(function(p){var rc=p.calc.rate<=22?'up':(p.calc.rate<=30?'fl':'dn');
@@ -541,6 +583,7 @@ seasons.concat(['공통']).forEach(function(gn){ if(!g[gn])return;
    +'<td class="num"><b>'+nf(p.sold)+'</b></td><td class="num">'+man(p.sold*p.price)+'만</td></tr>'}).join('')
   +'</tbody></table></div></div>'; });
 document.getElementById('hist').innerHTML=h;
+Array.prototype.forEach.call(document.querySelectorAll('.chartS'),function(el){bindTip(el)});
 
 /* --- 툴팁 --- */
 var tip=document.createElement('div');
@@ -802,64 +845,88 @@ function renderSnaps(){
 function renderCompare(){
  var box=document.getElementById('cmpbox'); if(!box) return;
  var sel=SNAPS.filter(function(s){return CMP.indexOf(s.id)>=0});
- if(sel.length<2){ box.innerHTML='<div class="card"><h2>안 비교</h2><div class="note">위 표에서 <b>비교할 안을 2개 이상 체크</b>하면 카테고리별로 나란히 비교됩니다.</div></div>'; return; }
- var ps=sel.map(function(s){return planSum(s.state)});
+ if(sel.length<2){ box.innerHTML='<div class="card"><h2>안 비교</h2><div class="note">위 표에서 <b>비교할 안을 2개 이상 체크</b>하면, 세트마다 <b>어떤 품목이 몇 개 다른지</b> 구성 표 형태로 나란히 비교됩니다.</div></div>'; return; }
  var GC={'차례상':'#8a2f2f','음식세트':'#2f5a8a','식사세트':'#2f5a8a','나물세트':'#2e7d5b','전세트':'#a67c2e','온올림':'#6b4ea3'};
  function slotsOf(s){ return (s.slots&&s.slots.length)?s.slots:SLOTS; }
- function grpOf(sl){ return sl.g||'기타'; }
- /* 카테고리별 집계 */
- function catAgg(s){
-  var out={}; slotsOf(s).forEach(function(sl){ var k=calcS(s.state,sl.id); if(!k.price) return;
-   var g=grpOf(sl); out[g]=out[g]||{n:0,qty:0,rev:0,prof:0,names:[]};
-   out[g].n++; out[g].qty+=k.qty; out[g].rev+=k.price*k.qty; out[g].prof+=k.margin*k.qty;
-   out[g].names.push({n:(s.state[sl.id]&&s.state[sl.id].name)||sl.n,price:k.price,qty:k.qty,kinds:k.kinds,rate:k.rateS}); });
-  return out; }
- var aggs=sel.map(catAgg);
- var allG=[]; aggs.forEach(function(a){Object.keys(a).forEach(function(g){if(allG.indexOf(g)<0)allG.push(g)})});
+ /* 슬롯 합집합 */
+ var slotMap={}, slotOrder=[];
+ sel.forEach(function(s){ slotsOf(s).forEach(function(sl){ if(!slotMap[sl.id]){slotMap[sl.id]=sl;slotOrder.push(sl.id);} }); });
+ var ps=sel.map(function(s){return planSum(s.state)});
+ var onlyDiff = window.__cmpOnlyDiff!==false;
  var h='';
- /* 요약 카드 */
- h+='<div class="card"><h2>안 비교 <span>'+sel.length+'개 · 카테고리별</span></h2>';
- h+='<div style="display:flex;gap:10px;flex-wrap:wrap">';
- sel.forEach(function(s,i){ var p=ps[i];
-  h+='<div style="flex:1;min-width:210px;border:1px solid #e2e6ee;border-radius:11px;padding:11px 12px;background:#fff">'
-   +'<div style="font-size:12.5px;font-weight:800;margin-bottom:2px">'+s.name+(s.final?' <span class="badge b-ok">확정</span>':'')+'</div>'
-   +'<div style="font-size:10.5px;color:#9aa1ad;margin-bottom:8px">'+s.ts+'</div>'
-   +'<div style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px">'
-   +'<div><div style="color:#8b919b">총 세트</div><b style="font-size:14px">'+nf(p.sets)+'</b></div>'
-   +'<div><div style="color:#8b919b">계획 매출</div><b style="font-size:14px">'+man(p.rev)+'만</b></div>'
-   +'<div><div style="color:#8b919b">계획 이익</div><b style="font-size:14px">'+man(p.prof)+'만</b></div>'
-   +'<div><div style="color:#8b919b">평균 원가율</div><b style="font-size:14px">'+p.rate.toFixed(1)+'%</b></div>'
-   +'</div>';
-  /* 카테고리 매출 구성 막대 */
-  var a=aggs[i], tot=Object.keys(a).reduce(function(x,g){return x+a[g].rev},0)||1;
-  h+='<div style="margin-top:9px;background:#f1f4f9;border-radius:5px;height:16px;display:flex;overflow:hidden">';
-  allG.forEach(function(g){ var v=a[g]; if(!v||!v.rev)return;
-   h+='<div title="'+g+' '+man(v.rev)+'만원" style="width:'+(v.rev/tot*100)+'%;background:'+(GC[g]||'#9aa1ad')+'"></div>'; });
-  h+='</div>';
-  h+='<div style="margin-top:5px;font-size:10px;color:#8b919b;line-height:1.6">'+allG.filter(function(g){return a[g]&&a[g].rev}).map(function(g){
-    return '<span style="margin-right:8px"><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:'+(GC[g]||'#9aa1ad')+';margin-right:3px"></i>'+g+' '+(a[g].rev/tot*100).toFixed(0)+'%</span>'}).join('')+'</div>';
-  h+='</div>';
+ /* 요약 */
+ h+='<div class="card"><h2>안 비교 <span>'+sel.length+'개 · 품목 단위 차이</span>'
+  +'<label style="margin-left:auto;font-size:11.5px;font-weight:600;color:#5a6478;cursor:pointer"><input type="checkbox" id="onlydiff"'+(onlyDiff?' checked':'')+' style="vertical-align:-2px;margin-right:4px">차이 나는 품목만</label></h2>';
+ h+='<div class="scroll"><table><thead><tr><th class="l">지표</th>'+sel.map(function(s){return '<th>'+s.name+(s.final?' <span class="badge b-ok">확정</span>':'')+'</th>'}).join('')+'<th>차이</th></tr></thead><tbody>';
+ [['총 세트 수',function(p){return nf(p.sets)},function(a,b){return nf(b-a)+'세트'}],
+  ['계획 매출',function(p){return man(p.rev)+'만'},function(a,b){return (b-a>=0?'+':'')+man(b-a)+'만'}],
+  ['계획 이익',function(p){return man(p.prof)+'만'},function(a,b){return (b-a>=0?'+':'')+man(b-a)+'만'}],
+  ['평균 총원가율',function(p){return p.rate.toFixed(1)+'%'},function(a,b){return (b-a>=0?'+':'')+(b-a).toFixed(1)+'%p'}]
+ ].forEach(function(r){
+  var vals=ps.map(r[1]);
+  var raw=ps.map(function(p){ return r[0]==='총 세트 수'?p.sets:(r[0]==='계획 매출'?p.rev:(r[0]==='계획 이익'?p.prof:p.rate)); });
+  var d=sel.length===2? r[2](raw[0],raw[1]) : '-';
+  h+='<tr><td class="nm">'+r[0]+'</td>'+vals.map(function(v){return '<td class="num">'+v+'</td>'}).join('')+'<td class="num" style="font-weight:800">'+d+'</td></tr>';
  });
- h+='</div></div>';
- /* 카테고리 섹션별 상세 */
- allG.forEach(function(g){
-  h+='<div class="card"><h2><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:'+(GC[g]||'#9aa1ad')+';margin-right:5px"></i>'+g+'</h2><div class="scroll"><table>'
-   +'<thead><tr><th class="l">지표</th>'+sel.map(function(s){return '<th>'+s.name+'</th>'}).join('')+'</tr></thead><tbody>';
-  [['세트 수',function(a){return a?a.n+'개':'-'}],['계획 수량',function(a){return a?nf(a.qty)+'세트':'-'}],
-   ['계획 매출',function(a){return a?man(a.rev)+'만원':'-'}],['계획 이익',function(a){return a?man(a.prof)+'만원':'-'}]].forEach(function(r){
-   h+='<tr><td class="nm">'+r[0]+'</td>'+aggs.map(function(a){return '<td class="num">'+r[1](a[g])+'</td>'}).join('')+'</tr>';
+ h+='</tbody></table></div></div>';
+ /* 세트별 품목 구성 차이 */
+ slotOrder.forEach(function(sid){
+  var sl=slotMap[sid];
+  var ks=sel.map(function(s){return calcS(s.state,sid)});
+  var names=sel.map(function(s){ return (s.state[sid]&&s.state[sid].name)||sl.n; });
+  if(ks.every(function(k){return !k.price && !k.kinds})) return;
+  /* 품목 합집합 */
+  var codes=[], seen={};
+  sel.forEach(function(s){ var it=(s.state[sid]&&s.state[sid].items)||{};
+   Object.keys(it).forEach(function(c){ if(it[c]>0 && !seen[c]){seen[c]=1;codes.push(c);} }); });
+  codes.sort(function(a,b){ var ca=(BC[a]||{}).cat||'', cb=(BC[b]||{}).cat||''; if(ca!==cb) return ca<cb?-1:1; return ((BC[a]||{}).n||'')<((BC[b]||{}).n||'')?-1:1; });
+  var qm=codes.map(function(c){ return sel.map(function(s){ return ((s.state[sid]&&s.state[sid].items)||{})[c]||0; }); });
+  var diffCodes=codes.filter(function(c,i){ var v=qm[i]; return v.some(function(x){return x!==v[0]}); });
+  var nAdd=0,nDel=0,nChg=0;
+  if(sel.length===2){ codes.forEach(function(c,i){ var a=qm[i][0],b=qm[i][1];
+    if(a===0&&b>0)nAdd++; else if(a>0&&b===0)nDel++; else if(a!==b)nChg++; }); }
+  var col=GC[sl.g]||'#9aa1ad';
+  h+='<div class="card"><h2><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:'+col+';margin-right:5px"></i>'+names[0]
+   +' <span>'+sl.g+(sel.length===2?' · 추가 '+nAdd+' · 제외 '+nDel+' · 수량변경 '+nChg:'')+'</span></h2>';
+  h+='<div class="scroll"><table><thead><tr><th class="l" style="min-width:190px">품목</th>'
+   +sel.map(function(s,i){return '<th>'+names[i]+'</th>'}).join('')+'<th>차이</th></tr></thead><tbody>';
+  /* 가격 행 */
+  [['실판매가',function(k){return k.price?nf(k.price):'-'},function(k){return k.price}],
+   ['표시가',function(k){return k.list?nf(k.list):'-'},function(k){return k.list}],
+   ['계획 수량',function(k){return k.qty?nf(k.qty):'-'},function(k){return k.qty}],
+   ['품목 수',function(k){return k.kinds?k.kinds+'종 / '+k.n+'개':'-'},function(k){return k.n}],
+   ['총원가율',function(k){return k.price?k.rateS.toFixed(1)+'%':'-'},function(k){return k.rateS}]
+  ].forEach(function(r){
+   var d='-';
+   if(sel.length===2){ var a=r[2](ks[0]),b=r[2](ks[1]); var dv=b-a;
+    d = Math.abs(dv)<0.05? '<span style="color:#c3c9d4">동일</span>' : '<b style="color:'+(dv>0?'#1d6fd6':'#c0392b')+'">'+(dv>0?'+':'')+(r[0]==='총원가율'?dv.toFixed(1)+'%p':nf(dv))+'</b>'; }
+   h+='<tr class="mrowc"><td class="nm" style="background:#fbfcfe">'+r[0]+'</td>'
+    +ks.map(function(k){return '<td class="num" style="background:#fbfcfe">'+r[1](k)+'</td>'}).join('')
+    +'<td class="num" style="background:#fbfcfe">'+d+'</td></tr>';
   });
-  h+='<tr class="grp"><td colspan="'+(sel.length+1)+'">세트별 실판매가 · 계획수량 · 원가율</td></tr>';
-  var maxN=Math.max.apply(null,aggs.map(function(a){return a[g]?a[g].names.length:0}));
-  for(var r0=0;r0<maxN;r0++){
-   h+='<tr><td class="nm" style="color:#9aa1ad">'+(r0+1)+'</td>'+aggs.map(function(a){ var it=a[g]&&a[g].names[r0];
-    if(!it) return '<td class="num" style="color:#d3d8e0">-</td>';
-    var rc=it.rate<=22?'up':(it.rate<=30?'fl':'dn');
-    return '<td class="num"><b>'+it.n+'</b><br><span style="font-size:11px;color:#8b919b">'+nf(it.price)+'원 · '+nf(it.qty)+'세트 · '+it.kinds+'종 · <span class="'+rc+'">'+it.rate.toFixed(0)+'%</span></span></td>'}).join('')+'</tr>';
-  }
+  h+='<tr class="grp"><td colspan="'+(sel.length+2)+'">구성 품목</td></tr>';
+  var shown=0;
+  codes.forEach(function(c,i){
+   var v=qm[i];
+   var isDiff=v.some(function(x){return x!==v[0]});
+   if(onlyDiff && !isDiff) return;
+   shown++;
+   var it=BC[c]||{n:c};
+   var d='<span style="color:#c3c9d4">동일</span>', rowbg='';
+   if(sel.length===2){ var a=v[0],b=v[1];
+    if(a===0&&b>0){ d='<b style="color:#1f7a4d">신규 +'+b+'</b>'; rowbg='background:#f2fbf5'; }
+    else if(a>0&&b===0){ d='<b style="color:#c0392b">제외 -'+a+'</b>'; rowbg='background:#fef4f4'; }
+    else if(a!==b){ d='<b style="color:'+(b>a?'#1d6fd6':'#d97706')+'">'+(b>a?'+':'')+(b-a)+'</b>'; rowbg=b>a?'background:#f3f8ff':'background:#fffaf0'; } }
+   h+='<tr style="'+rowbg+'"><td class="nm"><b>'+it.n+'</b><div style="font-size:10.5px;color:#9aa1ad;font-weight:400">'+(it.w||'-')+'g · 단품 '+nf(it.price)+'원 · 원가 '+nf(it.cost)+'원</div></td>'
+    +v.map(function(x){return '<td class="num" style="'+(x?'font-weight:700':'color:#d3d8e0')+'">'+(x||'-')+'</td>'}).join('')
+    +'<td class="num">'+d+'</td></tr>';
+  });
+  if(!shown) h+='<tr><td colspan="'+(sel.length+2)+'" style="text-align:center;color:#1f7a4d;font-weight:700;padding:12px">구성 품목이 완전히 동일합니다.</td></tr>';
   h+='</tbody></table></div></div>';
  });
  box.innerHTML=h;
+ var od=document.getElementById('onlydiff');
+ if(od) od.addEventListener('change',function(){ window.__cmpOnlyDiff=this.checked; renderCompare(); });
 }
 function renderFinal(){
   var el=document.getElementById('final'); if(!el) return;
