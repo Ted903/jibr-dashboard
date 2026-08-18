@@ -286,6 +286,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .hold-wrap{margin-top:10px;border-top:1px dashed var(--border-soft);padding-top:8px;}
 .empty-hint{font-size:12px;color:var(--ink3);padding:8px 0;}
 
+/* 팀원 순서 이동 버튼 */
+.ordb{display:flex;flex-direction:column;gap:1px;opacity:0;transition:opacity .15s;margin-right:2px;}
+.msi:hover .ordb{opacity:1;}
+.ob{width:17px;height:13px;line-height:1;border:1px solid var(--border);background:#fff;border-radius:3px;font-size:7px;color:var(--ink3);cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+.ob:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.ob:disabled{opacity:.25;cursor:default;}
+
 /* 메모 박스 */
 .memo-box{background:var(--paper);border:1px solid var(--border-soft);border-radius:999px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--ink2);white-space:pre-wrap;cursor:text;min-height:44px;outline:none;transition:border-color .15s;}
 .memo-box:empty::before{content:'메모 클릭 후 입력...';color:var(--ink3);pointer-events:none;}
@@ -670,6 +677,7 @@ select.fi{cursor:pointer;}
       <div class="mml">
         <div class="msb">
           <div class="msh"><span>팀원 목록</span><span id="m-count" style="font-weight:400;font-size:12px;color:var(--ink3);"></span></div>
+          <div id="m-order-hint" style="font-size:11px;color:var(--ink3);line-height:1.5;padding:8px 12px 6px;border-bottom:1px solid var(--border-soft);"></div>
           <div id="m-sidebar-list"></div>
         </div>
         <div class="mdp" id="m-detail"><div class="es"><div class="ei">←</div><div>팀원을 선택하세요</div></div></div>
@@ -2038,18 +2046,40 @@ function renderMembers(){
     const ms=CQ().members.filter(m=>m.part===s.part);if(!ms.length)return;
     h+=`<div class="part-section-label ${s.part}">${s.label}</div>`;
     ms.forEach(m=>{const p=avgP(m);
+      const iA=ms.indexOf(m);
       h+=`<div class="msi ${selMid===m.id?'active':''}" onclick="selMember(${m.id})">
         <span class="av av-sm style="${avStyle(m.part)}">${ini(m.name)}</span>
         <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.name}${m.isMe?'<span class="me-tag">나</span>':''}</div>
         <div style="font-size:12px;color:var(--ink3);margin-top:1px;">${m.role}</div></div>
+        <div class="ordb">
+          <button class="ob" title="위로" ${iA===0?'disabled':''} onclick="event.stopPropagation();moveMember(${m.id},-1)">▲</button>
+          <button class="ob" title="아래로" ${iA===ms.length-1?'disabled':''} onclick="event.stopPropagation();moveMember(${m.id},1)">▼</button>
+        </div>
         <div style="font-size:12px;font-family:var(--mono);font-weight:600;color:${progColor(p)};">${p}%</div></div>`;
     });
   });
   document.getElementById('m-sidebar-list').innerHTML=h;
   document.getElementById('m-count').textContent=`${CQ().members.length}명`;
+  const _hint=document.getElementById('m-order-hint');
+  if(_hint)_hint.textContent='이름 위에 마우스를 올리면 ▲▼ 로 순서를 바꿀 수 있습니다. 이 순서가 아침 회의와 구글챗 게시에도 그대로 적용됩니다.';
   if(selMid)renderMDetail(selMid);
 }
 function selMember(id){selMid=id;if(curView==='members')renderMembers();else nav('members');}
+
+// 같은 파트 안에서 순서를 바꾼다. 이 배열 순서가 아침 회의 카드 순서와
+// 구글챗 게시 순서에 그대로 반영된다.
+function moveMember(id, dir){
+  const arr=CQ().members;
+  const i=arr.findIndex(x=>x.id===id); if(i<0)return;
+  const part=arr[i].part;
+  const sameIdx=arr.map((x,k)=>x.part===part?k:-1).filter(k=>k>=0);
+  const pos=sameIdx.indexOf(i);
+  const target=sameIdx[pos+dir];
+  if(target===undefined)return;
+  const tmp=arr[i]; arr[i]=arr[target]; arr[target]=tmp;
+  saveStore();
+  renderMembers();
+}
 function renderMDetail(id){
   const m=CQ().members.find(x=>x.id===id);if(!m)return;
   const p=avgP(m);const ptC=PC[m.part]||PC.tl;let oh='';
