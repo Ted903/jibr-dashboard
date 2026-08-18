@@ -113,8 +113,7 @@ td.cell:hover .stp{display:flex}
  <div class="card" style="padding:10px 13px">
   <div class="legend">
    <span><i style="background:#e9f8ef;border-left:3px solid #27a35f"></i>왼쪽 세트에 없던 <b>새 품목</b></span>
-   <span><i style="background:#fdeeee"></i>왼쪽 세트에서 <b>빠진 품목</b></span>
-   <span><i style="background:#dbeafe"></i><b>수량 증가</b> ▲</span>
+      <span><i style="background:#dbeafe"></i><b>수량 증가</b> ▲</span>
    <span><i style="background:#fde9c8"></i><b>수량 감소</b> ▼</span>
    <span style="color:#9aa1ad">셀 클릭 = 넣기/빼기 · 가로 드래그 = 옆 세트에 복사 · 열 머리글 드래그 = 순서 변경 · 머리글 <b>×</b> = 세트 삭제 · 맨 오른쪽 <b>＋ 세트</b> = 세트 추가</span>
   </div>
@@ -195,7 +194,7 @@ function rowList(){ var used={};
 function qty(id,c){return ((ST[id]||{items:{}}).items[c]||0)}
 function setQty(id,c,v){v=Math.max(0,Math.round(v)||0); if(v===0)delete ST[id].items[c]; else ST[id].items[c]=v; saveST()}
 function diffOf(ci,c){ if(!VIEW.diff||ci===0) return null; var cur=qty(VIEW.cols[ci],c), prv=qty(VIEW.cols[ci-1],c);
- if(cur>0&&prv===0)return 'add'; if(cur===0&&prv>0)return 'del'; if(cur>prv&&prv>0)return 'up'; if(cur<prv&&cur>0)return 'dn'; return null}
+ if(cur===0) return null; if(prv===0) return 'add'; if(cur>prv)return 'up'; if(cur<prv)return 'dn'; return null}
 function render(){ reSM(); syncCols(); ensureST();
  var cols=VIEW.cols, rows=rowList();
  var h='<table class="mx"><thead>';
@@ -233,9 +232,9 @@ function render(){ reSM(); syncCols(); ensureST();
   h+='<tr data-row="'+c+'"><td class="stick0"><div class="rowh"><span class="grab" data-grab="'+c+'">⠿</span><div><div class="pname">'+it.n+'</div>'
    +'<div class="pmeta">'+(it.w||'-')+'g · 단품 '+nf(it.price)+'원 · 원가 '+nf(it.cost)+'원</div></div></div></td>';
   cols.forEach(function(id,ci){var q=qty(id,c);var d=diffOf(ci,c);
-   var cls='cell'+(q?'':' z')+(d==='add'?' d-add':'')+(d==='del'?' d-del':'')+(d==='up'?' d-up':'')+(d==='dn'?' d-dn':'');
+   var cls='cell'+(q?'':' z')+(d==='add'?' d-add':'')+(d==='up'?' d-up':'')+(d==='dn'?' d-dn':'');
    var tag=d==='add'?'<span class="dtag">NEW</span>':(d==='up'?'<span class="dtag">▲</span>':(d==='dn'?'<span class="dtag">▼</span>':''));
-   var show=q?String(q):(d==='del'?'('+qty(cols[ci-1],c)+')':'-');
+   var show=q?String(q):'-';
    h+='<td class="'+cls+'" data-c="'+c+'" data-id="'+id+'">'+show+tag+'<span class="stp"><b data-mi="1">−</b><b data-pl="1">+</b></span></td>'});
   h+=pad+'</tr>'});
  h+='<tr class="tot"><th class="stick0">세트당 이익 (택배 '+nf(SHIP)+'원 반영)</th>'+cols.map(function(id){var k=calcS(id);return '<td class="ctr">'+(k.price?nf(k.margin)+'원':'-')+'</td>'}).join('')+pad+'</tr>';
