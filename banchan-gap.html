@@ -79,7 +79,11 @@ tr.det td{background:#FBFAF8;border-bottom:1px solid #F0EEE9;padding:11px 14px 1
 .memoRead{font-size:12px;color:#5A5852;background:#fff;border:1px solid #EDEBE6;border-radius:7px;padding:6px 9px;margin-top:4px;white-space:pre-wrap;line-height:1.6}
 .hasmemo{display:inline-block;margin-left:5px;font-size:10.5px;color:#3F7F53;font-weight:600}
 .bar{background:#FFF8E8;border:1px solid #F0E0BC;border-radius:9px;padding:9px 13px;font-size:12px;color:#8A6D28;margin-top:12px;display:flex;align-items:center;gap:8px}
-.st{font-size:11.5px;color:#8C8A85;margin-left:6px}</style></head><body><div class="wrap">
+.st{font-size:11.5px;color:#8C8A85;margin-left:6px}
+td.nm{cursor:pointer;user-select:none}
+td.nm:hover .nmt{text-decoration:underline;text-decoration-color:#C9C6BE;text-underline-offset:3px}
+.cv{display:inline-block;margin-left:5px;font-size:9px;color:#B4B1AA;transition:transform .12s}
+.cv.open{transform:rotate(90deg);color:#3F7F53}</style></head><body><div class="wrap">
 
 <h1>범용 반찬 개발 참고자료</h1>
 <div class="sub">경쟁사 기본반찬류 갭 분석 · 7개 채널 652개 상품 조사 (2026.08.11 기준) · 출처: 대표이사 조사자료 「기본반찬류 보강」</div>
@@ -131,7 +135,7 @@ tr.det td{background:#FBFAF8;border-bottom:1px solid #F0EEE9;padding:11px 14px 1
     <th data-k="ch" class="num">채널</th><th data-k="rv" class="num">리뷰합계</th>
     <th data-k="pr">가격대(원)</th><th data-k="u" class="num">100g단가</th><th class="nosort">대표상품</th>
   </tr></thead><tbody id="tb"></tbody></table></div>
-  <div class="note"><b>사용법</b> — 생산 <b>가능</b> 칸을 체크하면 바로 아래에 의견란이 열립니다. 의견을 적고 <b>저장</b>을 누르면 구글시트에 기록되고, 다른 사람이 새로고침하면 그대로 보입니다. 체크 없이 의견만 남겨도 저장됩니다.</div>
+  <div class="note"><b>사용법</b> — 생산 <b>가능</b> 칸을 체크하면 바로 아래에 의견란이 열립니다. 의견을 적고 <b>저장</b>을 누르면 구글시트에 기록되고, 다른 사람이 새로고침하면 그대로 보입니다.<br>체크를 해제하면 의견란이 다시 닫힙니다 (저장된 의견이 있으면 유지). <b>품목명을 클릭</b>하면 언제든 의견란을 열고 닫을 수 있어, 체크 없이 의견만 남기는 것도 가능합니다.</div>
 </div>
 
 <div class="card">
@@ -227,10 +231,10 @@ function render(){
  let html='';
  L.forEach(function(x){
   const sv=SAVED[x.n]||{c:0,m:'',t:''};
-  const isOpen = open[x.n] || !!sv.c || !!sv.m;
+  const isOpen = (open[x.n]===true) || (open[x.n]===undefined && (!!sv.c || !!sv.m));
   html+='<tr class="main'+(sv.c?' done':'')+'" data-n="'+esc(x.n)+'">'+
    '<td><span class="badge p-'+x.p+'">'+x.p+'</span></td>'+
-   '<td class="nm">'+x.n+(sv.m?'<span class="hasmemo">💬</span>':'')+'</td>'+
+   '<td class="nm" data-tg="'+esc(x.n)+'"><span class="nmt">'+x.n+'</span>'+(sv.m?'<span class="hasmemo">💬</span>':'')+'<span class="cv'+(isOpen?' open':'')+'">▶</span></td>'+
    '<td class="cbc"><input type="checkbox" class="cb" data-n="'+esc(x.n)+'"'+(sv.c?' checked':'')+'></td>'+
    '<td><span class="tag">'+x.c+'</span></td>'+
    '<td>'+(x.h==='미보유'?'<span class="tag">미보유</span>':'<span class="tag sim">유사품만</span>')+'</td>'+
@@ -253,9 +257,17 @@ function bind(){
   el.onchange=function(){
    const n=el.dataset.n;
    const cur=SAVED[n]||{c:0,m:'',t:''};
-   cur.c=el.checked?1:0; SAVED[n]=cur; open[n]=true;
+   cur.c=el.checked?1:0; SAVED[n]=cur;
+   if(el.checked) open[n]=true; else if(!cur.m) open[n]=false; else open[n]=true;
    render();
    save(n, cur.c, cur.m);
+  };
+ });
+ document.querySelectorAll('td.nm[data-tg]').forEach(function(el){
+  el.onclick=function(){
+   const n=el.dataset.tg; const sv=SAVED[n]||{c:0,m:''};
+   const cur=(open[n]===true)||(open[n]===undefined&&(!!sv.c||!!sv.m));
+   open[n]=!cur; render();
   };
  });
  document.querySelectorAll('button[data-s]').forEach(function(b){
