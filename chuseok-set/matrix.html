@@ -385,9 +385,20 @@ var FB='https://zipbanchan-review-db-default-rtdb.firebaseio.com/chuseok2026';va
 var bar=document.createElement('div');bar.id='syncbar';bar.title='클릭하면 팀 공유 저장소를 즉시 새로고침합니다';bar.textContent='팀 공유 저장소 연결 중...';document.body.appendChild(bar);
 function stx(t,c){bar.textContent=t;bar.style.color=c||'#5a6478'}
 function okmsg(){stx('팀 공유 저장소 · 저장된 안 '+SNAPS.length+'개','#1f7a4d')}
-function push(){rev=Date.now();stx('공유 저장소에 올리는 중...');
- fetch(FB+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({snaps:SNAPS,rev:rev})})
-  .then(function(r){if(!r.ok)throw 0;okmsg()}).catch(function(){stx('올리기 실패 · 이 브라우저에만 저장됨','#c0392b')})}
+function push(){ stx('공유 저장소에 올리는 중...');
+ fetch(FB+'.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){
+  var remote=(d&&d.snaps)||[];
+  var have={}; SNAPS.forEach(function(s){have[s.id]=1});
+  var del=[]; try{ del=JSON.parse(localStorage.getItem('ck_snaps_deleted')||'[]'); }catch(e){}
+  var merged=SNAPS.slice(), recovered=0;
+  remote.forEach(function(r0){ if(!r0||!r0.id) return; if(have[r0.id]) return; if(del.indexOf(r0.id)>=0) return; merged.push(r0); recovered++; });
+  merged.sort(function(a,b){return a.id<b.id?1:-1});
+  SNAPS=merged; localStorage.setItem('ck_snaps',JSON.stringify(SNAPS));
+  rev=Date.now();
+  return fetch(FB+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({snaps:SNAPS,rev:rev})})
+   .then(function(r){ if(!r.ok) throw 0; if(recovered){ renderSnaps(); } okmsg(); });
+ }).catch(function(){ stx('올리기 실패 · 이 브라우저에만 저장됨','#c0392b'); });
+}
 function pull(first){fetch(FB+'.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){
  var rs=(d&&d.snaps)||[];var rrev=Number((d&&d.rev)||0);
  if(first){var map={},added=false;rs.forEach(function(s){map[s.id]=s});
@@ -415,6 +426,7 @@ function renderSnaps(){var el=document.getElementById('snapcard');if(!el)return;
    +'<td class="ctr" style="color:#8b919b">'+s.ts+'</td><td class="ctr">'+p.n+'</td><td class="ctr"><b>'+nf(p.sets)+'</b></td>'
    +'<td class="ctr">'+man(p.rev)+'만</td><td class="ctr">'+man(p.prof)+'만</td><td class="ctr">'+p.rate.toFixed(1)+'%</td>'
    +'<td class="ctr" style="white-space:nowrap"><button class="btn" style="padding:3px 7px;font-size:11px" data-ld="'+s.id+'">불러오기</button> '
+   +'<button class="btn" style="padding:3px 7px;font-size:11px;color:#1d6fd6" data-cp="'+s.id+'">복사</button> '
    +'<button class="btn'+(s.final?'':' p')+'" style="padding:3px 7px;font-size:11px" data-fn="'+s.id+'">'+(s.final?'확정 해제':'최종 확정')+'</button> '
    +'<button class="btn" style="padding:3px 7px;font-size:11px;color:#c0392b" data-dl="'+s.id+'">삭제</button></td></tr>'});
  h+='</tbody></table></div>';
@@ -436,12 +448,25 @@ document.addEventListener('click',function(e){
   if(!confirm('현재 작업 중인 구성을 덮어씁니다. 「'+s.name+'」을 불러올까요?'))return;
   if(s.slots&&s.slots.length){SLOTS=JSON.parse(JSON.stringify(s.slots));saveSlots();VIEW.cols=[];}
   ST=JSON.parse(JSON.stringify(s.state||{}));SHIP=s.ship||3500;saveST();saveView();document.getElementById('ship').value=SHIP;render();return}
+ var cp=e.target.closest('[data-cp]'); if(cp){ var src=SNAPS.filter(function(x){return x.id===cp.dataset.cp})[0]; if(!src) return;
+  var base=src.name.replace(/\s*\(사본( \d+)?\)\s*$/,'');
+  var n=1; SNAPS.forEach(function(x){ if(x.name.indexOf(base+' (사본')===0) n++; });
+  var nm=prompt('복사본 이름', base+' (사본'+(n>1?' '+n:'')+')');
+  if(nm===null) return;
+  SNAPS.unshift({id:'s'+Date.now(), name:nm||(base+' (사본)'), memo:src.memo||'', ts:nowStr(),
+    state:JSON.parse(JSON.stringify(src.state)), slots:src.slots?JSON.parse(JSON.stringify(src.slots)):null,
+    ship:src.ship||3500, final:false});
+  saveSnaps(); renderSnaps();
+  alert('복사했습니다. 「불러오기」로 열어서 변주를 주면 됩니다.');
+  return; }
  var fn=e.target.closest('[data-fn]'); if(fn){var id=fn.dataset.fn;var was=false;
   SNAPS.forEach(function(x){if(x.id===id)was=!!x.final});
   SNAPS.forEach(function(x){x.final=false}); if(!was)SNAPS.forEach(function(x){if(x.id===id)x.final=true});
   saveSnaps();renderSnaps();return}
  var dl=e.target.closest('[data-dl]'); if(dl){var id2=dl.dataset.dl;
   if(!confirm('이 안을 삭제할까요? 팀 공유 저장소에서도 함께 지워집니다.'))return;
+  var dlist=[]; try{ dlist=JSON.parse(localStorage.getItem('ck_snaps_deleted')||'[]'); }catch(e){}
+  if(dlist.indexOf(id2)<0) dlist.push(id2); localStorage.setItem('ck_snaps_deleted',JSON.stringify(dlist));
   SNAPS=SNAPS.filter(function(x){return x.id!==id2});CMP=CMP.filter(function(x){return x!==id2});saveSnaps();renderSnaps();return}
 });
 document.getElementById('savebtn').addEventListener('click',function(){
