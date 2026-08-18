@@ -3,8 +3,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>범용 반찬 개발 참고자료 — 경쟁사 기본반찬류 갭 분석</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
+<style>*{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#F7F7F5;color:#2B2A28;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto;padding:22px 18px 48px}
 h1{font-size:21px;font-weight:700;letter-spacing:-.3px}
@@ -12,73 +11,87 @@ h1{font-size:21px;font-weight:700;letter-spacing:-.3px}
 .card{background:#fff;border:1px solid #E6E4DF;border-radius:12px;padding:16px 18px;margin-top:14px}
 .sec-t{font-size:13px;font-weight:700;color:#5A5852;letter-spacing:-.2px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .sec-t:before{content:'';width:3px;height:13px;background:#D2694B;border-radius:2px}
-/* KPI */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px;margin-top:14px}
 .kpi{background:#fff;border:1px solid #E6E4DF;border-radius:11px;padding:13px 14px}
 .kpi .l{font-size:11.5px;color:#8C8A85;font-weight:500}
 .kpi .v{font-size:24px;font-weight:700;margin-top:3px;letter-spacing:-.6px}
 .kpi .v small{font-size:12px;font-weight:600;color:#8C8A85;margin-left:2px}
 .kpi.hi .v{color:#D2694B}
-/* bars */
+.kpi.ok .v{color:#3F7F53}
 .brow{display:flex;align-items:center;gap:10px;margin-bottom:7px}
 .brow .bl{width:86px;font-size:12px;color:#5A5852;text-align:right;flex-shrink:0}
 .brow .bt{flex:1;background:#F0EEE9;border-radius:4px;height:19px;overflow:hidden}
-.brow .bf{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;color:#fff;font-size:11px;font-weight:600}
+.brow .bf{height:100%;border-radius:4px}
 .brow .bn{width:34px;font-size:12px;color:#8C8A85;flex-shrink:0}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:760px){.two{grid-template-columns:1fr}}
-/* priority pills */
 .plegend{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:13px}
 .pl{display:flex;align-items:center;gap:6px;background:#FAF9F7;border:1px solid #E6E4DF;border-radius:8px;padding:7px 11px;font-size:12px}
 .pl b{font-size:15px}
 .badge{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:6px;font-size:11.5px;font-weight:700;color:#fff}
 .p-S{background:#C6432B}.p-A{background:#E08A3C}.p-B{background:#C9A227}.p-C{background:#7F9A6B}.p-F{background:#B4B1AA}
-/* route table */
 .rt{width:100%;border-collapse:collapse;font-size:12.5px}
 .rt th{background:#FAF9F7;color:#8C8A85;font-weight:600;font-size:11.5px;text-align:left;padding:8px 10px;border-bottom:1px solid #E6E4DF;white-space:nowrap}
 .rt td{padding:9px 10px;border-bottom:1px solid #F0EEE9;vertical-align:top}
 .rt tr:last-child td{border-bottom:none}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
-/* controls */
 .ctr{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:12px}
 .chip{border:1px solid #E0DED8;background:#fff;border-radius:20px;padding:5px 12px;font-size:12px;cursor:pointer;color:#5A5852;transition:.12s;font-weight:500}
 .chip:hover{border-color:#C9C6BE}
 .chip.on{background:#2B2A28;color:#fff;border-color:#2B2A28}
+.chip.mm.on{background:#3F7F53;border-color:#3F7F53}
 select,input[type=search]{border:1px solid #E0DED8;background:#fff;border-radius:8px;padding:6px 10px;font-size:12.5px;font-family:inherit;color:#2B2A28;outline:none}
 input[type=search]{min-width:150px}
-select:focus,input:focus{border-color:#B0ADA5}
 .spacer{flex:1}
 .cnt{font-size:12px;color:#8C8A85}
-/* main table */
 .tw{overflow-x:auto;border-radius:9px;border:1px solid #EDEBE6}
-table.m{width:100%;border-collapse:collapse;font-size:12.5px;min-width:900px}
-table.m th{background:#FAF9F7;color:#6E6C66;font-weight:600;font-size:11.5px;text-align:left;padding:9px 10px;border-bottom:1px solid #E6E4DF;white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0;z-index:1}
+table.m{width:100%;border-collapse:collapse;font-size:12.5px;min-width:960px}
+table.m th{background:#FAF9F7;color:#6E6C66;font-weight:600;font-size:11.5px;text-align:left;padding:9px 10px;border-bottom:1px solid #E6E4DF;white-space:nowrap;cursor:pointer;user-select:none}
+table.m th.nosort{cursor:default}
 table.m th:hover{color:#2B2A28}
 table.m th.num{text-align:right}
-table.m td{padding:9px 10px;border-bottom:1px solid #F4F2EE}
+table.m td{padding:9px 10px;border-bottom:1px solid #F4F2EE;vertical-align:middle}
 table.m td.num{text-align:right;font-variant-numeric:tabular-nums}
-table.m tbody tr:hover{background:#FAF9F7}
-table.m tbody tr:last-child td{border-bottom:none}
+table.m tbody tr.main:hover{background:#FAF9F7}
 .nm{font-weight:600}
 .tag{display:inline-block;font-size:10.5px;padding:2px 6px;border-radius:5px;background:#F0EEE9;color:#6E6C66;font-weight:500}
 .tag.sim{background:#FDF3E7;color:#B0742B}
-.mini{font-size:11px;color:#A8A5A0;margin-top:2px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini{font-size:11px;color:#A8A5A0;margin-top:2px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 a.lk{color:#C6432B;text-decoration:none;font-size:11.5px}
 a.lk:hover{text-decoration:underline}
 .note{font-size:11.5px;color:#A8A5A0;margin-top:10px;line-height:1.65}
 .foot{margin-top:20px;font-size:11.5px;color:#A8A5A0;text-align:center;line-height:1.7}
-</style></head><body><div class="wrap">
+/* checkbox */
+.cb{width:17px;height:17px;accent-color:#3F7F53;cursor:pointer;vertical-align:middle}
+td.cbc{text-align:center;width:52px}
+tr.main.done{background:#F3F8F3}
+tr.main.done:hover{background:#EBF3EB}
+/* memo row */
+tr.det td{background:#FBFAF8;border-bottom:1px solid #F0EEE9;padding:11px 14px 13px 60px}
+.memoBox{display:flex;gap:8px;align-items:flex-start}
+.memoBox textarea{flex:1;border:1px solid #DFDCD5;border-radius:8px;padding:8px 10px;font-family:inherit;font-size:12.5px;resize:vertical;min-height:40px;outline:none;background:#fff;line-height:1.55}
+.memoBox textarea:focus{border-color:#3F7F53}
+.btn{border:none;background:#2B2A28;color:#fff;border-radius:8px;padding:8px 16px;font-size:12.5px;font-family:inherit;cursor:pointer;font-weight:600;white-space:nowrap}
+.btn:hover{background:#444}
+.btn:disabled{background:#C9C6BE;cursor:default}
+.mlbl{font-size:11px;color:#8C8A85;margin-bottom:5px;display:flex;gap:8px;align-items:center}
+.ok{color:#3F7F53;font-weight:600}
+.memoRead{font-size:12px;color:#5A5852;background:#fff;border:1px solid #EDEBE6;border-radius:7px;padding:6px 9px;margin-top:4px;white-space:pre-wrap;line-height:1.6}
+.hasmemo{display:inline-block;margin-left:5px;font-size:10.5px;color:#3F7F53;font-weight:600}
+.bar{background:#FFF8E8;border:1px solid #F0E0BC;border-radius:9px;padding:9px 13px;font-size:12px;color:#8A6D28;margin-top:12px;display:flex;align-items:center;gap:8px}
+.st{font-size:11.5px;color:#8C8A85;margin-left:6px}</style></head><body><div class="wrap">
 
 <h1>범용 반찬 개발 참고자료</h1>
 <div class="sub">경쟁사 기본반찬류 갭 분석 · 7개 채널 652개 상품 조사 (2026.08.11 기준) · 출처: 대표이사 조사자료 「기본반찬류 보강」</div>
+<div class="bar" id="syncbar">불러오는 중...</div>
 
 <div class="kpis">
   <div class="kpi hi"><div class="l">미보유 갭 품목</div><div class="v" id="k1">0<small>종</small></div></div>
   <div class="kpi"><div class="l">완전 미보유</div><div class="v" id="k2">0<small>종</small></div></div>
   <div class="kpi"><div class="l">유사품만 보유</div><div class="v" id="k3">0<small>종</small></div></div>
   <div class="kpi hi"><div class="l">우선 검토 (S+A)</div><div class="v" id="k4">0<small>종</small></div></div>
-  <div class="kpi"><div class="l">조사 채널</div><div class="v">7<small>개</small></div></div>
-  <div class="kpi"><div class="l">자사 보유 SKU</div><div class="v">183<small>종</small></div></div>
+  <div class="kpi ok"><div class="l">가능 체크</div><div class="v" id="k5">0<small>종</small></div></div>
+  <div class="kpi ok"><div class="l">등록된 의견</div><div class="v" id="k6">0<small>건</small></div></div>
 </div>
 
 <div class="two">
@@ -106,17 +119,19 @@ a.lk:hover{text-decoration:underline}
     <span class="chip on" data-p="ALL">전체</span>
     <span class="chip" data-p="S">S</span><span class="chip" data-p="A">A</span>
     <span class="chip" data-p="B">B</span><span class="chip" data-p="C">C</span><span class="chip" data-p="F">F</span>
+    <span class="chip mm" id="mm">검토완료만</span>
     <select id="fc"><option value="">전체 카테고리</option></select>
     <select id="fh"><option value="">보유 전체</option><option>미보유</option><option>유사품만 보유</option></select>
     <input type="search" id="fq" placeholder="품목명 검색">
+    <span class="chip" id="reload">↻ 새로고침</span>
     <span class="spacer"></span><span class="cnt" id="cnt"></span>
   </div>
   <div class="tw"><table class="m"><thead><tr>
-    <th data-k="p">순위</th><th data-k="n">품목</th><th data-k="c">분류</th><th data-k="h">보유</th>
+    <th data-k="p">순위</th><th data-k="n">품목</th><th data-k="chk" class="cbc">가능</th><th data-k="c">분류</th><th data-k="h">보유</th>
     <th data-k="ch" class="num">채널</th><th data-k="rv" class="num">리뷰합계</th>
-    <th data-k="pr">가격대(원)</th><th data-k="u" class="num">100g단가</th><th>대표상품</th>
+    <th data-k="pr">가격대(원)</th><th data-k="u" class="num">100g단가</th><th class="nosort">대표상품</th>
   </tr></thead><tbody id="tb"></tbody></table></div>
-  <div class="note">열 제목을 클릭하면 정렬됩니다. 채널 = 7개 조사 채널 중 해당 품목을 취급하는 채널 수.</div>
+  <div class="note"><b>사용법</b> — 생산 <b>가능</b> 칸을 체크하면 바로 아래에 의견란이 열립니다. 의견을 적고 <b>저장</b>을 누르면 구글시트에 기록되고, 다른 사람이 새로고침하면 그대로 보입니다. 체크 없이 의견만 남겨도 저장됩니다.</div>
 </div>
 
 <div class="card">
@@ -125,76 +140,168 @@ a.lk:hover{text-decoration:underline}
   <div class="note">조사 채널: 컬리 · 쿠팡 · 진가네반찬 · 비움반찬 · 슈퍼키친 · 집밥반찬 · 정미경키친 (총 652개 상품 수집)</div>
 </div>
 
-<div class="foot">출처 : 「기본반찬류 보강_2026년 8월 11일」 구글시트 (대표이사 조사자료)<br>2026-08-13 주간회의 안건 3 — 연구개발파트 인력 확보 시 상품 수 확대</div>
+<div class="foot">출처 : 「기본반찬류 보강_2026년 8월 11일」 구글시트 (대표이사 조사자료)<br>검토 결과 저장 : 「범용반찬 개발 검토결과」 구글시트<br>2026-08-13 주간회의 안건 3 — 연구개발파트 인력 확보 시 상품 수 확대</div>
 </div>
-
 <script>
 const D = {"items":[{"n":"진미채볶음","c":"마른반찬","h":"미보유","sim":"없음","ch":7,"chl":"컬리, 쿠팡, 진가네반찬, 비움반찬, 슈퍼키친, 집밥반찬, 정미경키친","rep":"주문진어시장건어물 주문진어시장건어물 백진미 오징어채 (냉동), 1개, 400g","rt":"5","rv":203323,"pr":"4,770~57,100","u":4995,"p":"S","url":"https://www.coupang.com/vp/products/6631700802"},{"n":"열무김치","c":"김치","h":"미보유","sim":"없음","ch":4,"chl":"컬리, 쿠팡, 진가네반찬, 집밥반찬","rep":"청솔 [재구매율 90%] 청솔 전라도 열무 얼갈이 김치, 3kg, 1개","rt":"4.5","rv":45695,"pr":"3,800~29,800","u":1530,"p":"S","url":"https://www.coupang.com/vp/products/5276318416"},{"n":"낙지젓","c":"젓갈","h":"미보유","sim":"없음","ch":4,"chl":"컬리, 쿠팡, 진가네반찬, 집밥반찬","rep":"세모수 세모수 밥도둑 낙지젓, 1kg, 1개","rt":"4.5","rv":13289,"pr":"4,380~22,210","u":3851,"p":"S","url":"https://www.coupang.com/vp/products/182526855"},{"n":"포기김치","c":"김치","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"100% 국산 전라도 포기배추김치, 3kg, 1개","rt":"4","rv":199681,"pr":"5,800~42,120","u":983,"p":"S","url":"https://www.coupang.com/vp/products/9193884145"},{"n":"육개장","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"홍익궁중전통 육개장 (2인분)","rt":"","rv":102675,"pr":"6,030~23,300","u":1152,"p":"S","url":"https://www.kurly.com/goods/5128143"},{"n":"명란젓","c":"젓갈","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"동광젓갈 백명란젓 160g","rt":"","rv":62324,"pr":"6,900~25,500","u":4925,"p":"S","url":"https://www.kurly.com/goods/5156675"},{"n":"계란장조림","c":"조림","h":"유사품만 보유","sim":"야채 계란찜, [원더스푼] 맛살 계란 덮밥, [원더스푼] 한우 계란소보로 덮밥","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"Kurly's 동물복지 비빔 반숙 계란장 매운맛","rt":"","rv":35018,"pr":"6,500~44,000","u":12186,"p":"S","url":"https://www.kurly.com/goods/5052741"},{"n":"무장아찌","c":"장아찌","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"풀무원 백색 김밥 단무지","rt":"","rv":23099,"pr":"3,600~13,800","u":1450,"p":"S","url":"https://www.kurly.com/goods/5156501"},{"n":"파김치","c":"김치","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"비비고 파김치 300g","rt":"","rv":19998,"pr":"8,900~45,000","u":3117,"p":"S","url":"https://www.kurly.com/goods/5156495"},{"n":"궁채무침","c":"무침","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 진가네반찬, 비움반찬","rep":"비움반찬 궁채 들깨 볶음","rt":"","rv":19658,"pr":"3,900~4,800","u":3307,"p":"S","url":"https://www.kurly.com/goods/5068517"},{"n":"오이소박이","c":"김치","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"진가네반찬 오이소박이","rt":"","rv":17463,"pr":"10,600~29,250","u":1997,"p":"S","url":"https://www.kurly.com/goods/5026920"},{"n":"오징어젓","c":"젓갈","h":"유사품만 보유","sim":"오징어 무국(냉동), 오징어 야채볶음_반조리, 간장 오징어볶음_반조리","ch":3,"chl":"컬리, 쿠팡, 집밥반찬","rep":"해품상회 [한정수량특가판매] 해품상회 오징어젓갈 2kg 특가판매, 1개","rt":"4.5","rv":15558,"pr":"3,880~17,600","u":2269,"p":"S","url":"https://www.coupang.com/vp/products/6543864094"},{"n":"겉절이","c":"김치","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"종가 배추속 겉절이 500g","rt":"","rv":13645,"pr":"10,950~18,000","u":2113,"p":"S","url":"https://www.kurly.com/goods/5156482"},{"n":"총각김치","c":"김치","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 쿠팡, 진가네반찬","rep":"비비고 총각김치1.5kg","rt":"","rv":11297,"pr":"10,900~19,800","u":1384,"p":"S","url":"https://www.kurly.com/goods/5090283"},{"n":"새우젓","c":"젓갈","h":"유사품만 보유","sim":"[원더스푼] 달걀 새우 덮밥, 보리새우 간장볶음, 참나물 새우냉채","ch":3,"chl":"컬리, 쿠팡, 비움반찬","rep":"동광젓갈 새우젓","rt":"","rv":10859,"pr":"4,300~15,000","u":3065,"p":"S","url":"https://www.kurly.com/goods/5156673"},{"n":"도토리묵무침","c":"묵","h":"미보유","sim":"없음","ch":4,"chl":"컬리, 쿠팡, 슈퍼키친, 정미경키친","rep":"도리깨침 도토리묵 무침","rt":"","rv":4200,"pr":"4,800~15,350","u":1907,"p":"A","url":"https://www.kurly.com/goods/5072987"},{"n":"석박지","c":"김치","h":"미보유","sim":"없음","ch":3,"chl":"컬리, 진가네반찬, 집밥반찬","rep":"조선호텔 특제육수 석박지 1kg","rt":"","rv":2311,"pr":"5,680~16,020","u":1681,"p":"A","url":"https://www.kurly.com/goods/5156420"},{"n":"모둠나물세트","c":"무침","h":"미보유","sim":"없음","ch":3,"chl":"쿠팡, 진가네반찬, 슈퍼키친","rep":"하늘농가 하늘농가 고화순 명인이 만든 비빔밥용 나물모둠, 160g, 3개","rt":"4.5","rv":788,"pr":"7,900~12,540","u":4955,"p":"A","url":"https://www.coupang.com/vp/products/8592712963"},{"n":"쥐포채볶음","c":"마른반찬","h":"미보유","sim":"없음","ch":3,"chl":"쿠팡, 진가네반찬, 슈퍼키친","rep":"수미푸드몰 [수미푸드몰] 쫄깃한 마른반찬 쥐어채 4kg 1kg, 1개","rt":"4","rv":606,"pr":"4,180~19,900","u":5283,"p":"A","url":"https://www.coupang.com/vp/products/7630029410"},{"n":"갈비탕","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 쿠팡","rep":"사미헌 갈비탕","rt":"","rv":341695,"pr":"8,980~16,060","u":1516,"p":"A","url":"https://www.kurly.com/goods/5026468"},{"n":"무말랭이무침","c":"마른반찬","h":"미보유","sim":"없음","ch":2,"chl":"쿠팡, 집밥반찬","rep":"반찬단지 반찬단지 무말랭이 무침, 1kg, 1개","rt":"4.5","rv":133986,"pr":"3,380~16,080","u":2900,"p":"A","url":"https://www.coupang.com/vp/products/129242981"},{"n":"쌈무","c":"김치","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 쿠팡","rep":"하선정 쌈무(새콤) 350g","rt":"","rv":20804,"pr":"2,680~9,160","u":841,"p":"A","url":"https://www.kurly.com/goods/1000307669"},{"n":"궁채장아찌","c":"장아찌","h":"미보유","sim":"없음","ch":2,"chl":"쿠팡, 진가네반찬","rep":"반찬단지 반찬단지 궁채절임, 1kg, 1개","rt":"4.5","rv":18663,"pr":"4,050~12,600","u":1419,"p":"A","url":"https://www.coupang.com/vp/products/7284944333"},{"n":"간장게장","c":"젓갈","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 쿠팡","rep":"우리집 우리집 간장게장 국내산 연평도 암꽃게장, 2.5kg, 1개","rt":"4.5","rv":12887,"pr":"19,100~24,300","u":2283,"p":"A","url":"https://www.coupang.com/vp/products/9132049796"},{"n":"조미김","c":"마른반찬","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"곰곰 곰곰 광천 도시락김, 5g, 32개","rt":"5","rv":277414,"pr":"10,780~10,780","u":215600,"p":"A","url":"https://www.coupang.com/vp/products/266254917"},{"n":"참치캔","c":"메인요리","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"동원참치 동원참치 고추 참치, 85g, 8개","rt":"5","rv":177874,"pr":"9,550~14,040","u":13876,"p":"A","url":"https://www.coupang.com/vp/products/1145100301"},{"n":"순대국","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"강창구찹쌀진순대 찹쌀 진순대국","rt":"","rv":124923,"pr":"5,900~6,310","u":1029,"p":"A","url":"https://www.kurly.com/goods/5056783"},{"n":"설렁탕","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"신선설농탕 고기 설렁탕","rt":"","rv":84298,"pr":"5,920~13,940","u":1943,"p":"A","url":"https://www.kurly.com/goods/5068907"},{"n":"김자반","c":"마른반찬","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"곰곰 곰곰 김자반, 50g, 2개","rt":"5","rv":55725,"pr":"5,350~5,350","u":10700,"p":"A","url":"https://www.coupang.com/vp/products/328377858"},{"n":"감자탕","c":"국·탕·찌개","h":"유사품만 보유","sim":"감자햄볶음, [원더스푼] 맑은 감자국, [원더스푼] 한우 감자소보로 덮밥","ch":1,"chl":"컬리","rep":"안원당 우거지 감자탕","rt":"","rv":54955,"pr":"7,740~14,900","u":1046,"p":"A","url":"https://www.kurly.com/goods/5045208"},{"n":"청국장","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"엄마밥상 청국장","rt":"","rv":47478,"pr":"5,890~5,890","u":982,"p":"A","url":"https://www.kurly.com/goods/5048746"},{"n":"명엽채","c":"마른반찬","h":"미보유","sim":"없음","ch":1,"chl":"비움반찬","rep":"비움반찬 명엽채튀김","rt":"","rv":44594,"pr":"4,500~4,500","u":4500,"p":"A","url":"https://www.kurly.com/goods/5068510"},{"n":"도가니탕","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"경복궁 BLACK 사골 도가니탕","rt":"","rv":36347,"pr":"9,900~9,900","u":1414,"p":"A","url":"https://www.kurly.com/goods/5053979"},{"n":"갓김치","c":"김치","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"100% 국산 돌산갓김치, 3kg, 1개","rt":"4","rv":16267,"pr":"13,510~13,510","u":450,"p":"A","url":"https://www.coupang.com/vp/products/5461492564"},{"n":"양배추찜","c":"찜·계란","h":"유사품만 보유","sim":"양배추와 맛쌈장, 저당 양배추 짜장 덮밥 소스, 양배추 햄볶음","ch":1,"chl":"비움반찬","rep":"비움반찬 양배추찜&우렁강된장","rt":"","rv":14600,"pr":"5,900~5,900","u":2107,"p":"A","url":"https://www.kurly.com/goods/5125740"},{"n":"곱창전골","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"진실된손맛 소곱창전골","rt":"","rv":13460,"pr":"7,900~7,900","u":1317,"p":"A","url":"https://www.kurly.com/goods/5070615"},{"n":"묵은지","c":"김치","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"비비고 묵은지900G","rt":"","rv":11688,"pr":"12,900~12,900","u":1433,"p":"A","url":"https://www.kurly.com/goods/5090289"},{"n":"우엉채볶음","c":"볶음","h":"미보유","sim":"없음","ch":2,"chl":"진가네반찬, 비움반찬","rep":"비움반찬 아삭우엉채볶음","rt":"","rv":5910,"pr":"4,500~5,400","u":4575,"p":"B","url":"https://www.kurly.com/goods/5068516"},{"n":"꼬막장","c":"젓갈","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 쿠팡","rep":"모현상회 벌교 꼬막장 400g (냉장)","rt":"","rv":5908,"pr":"11,700~19,990","u":6460,"p":"B","url":"https://www.kurly.com/goods/1000125118"},{"n":"부대찌개","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 쿠팡","rep":"미정당 미정당 스팸 부대찌개, 5개, 350g","rt":"4.5","rv":4073,"pr":"8,720~12,510","u":2514,"p":"B","url":"https://www.coupang.com/vp/products/8339528832"},{"n":"백김치","c":"김치","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 진가네반찬","rep":"조선호텔김치 조선 어린이 백김치 400g","rt":"","rv":2849,"pr":"4,500~27,500","u":2333,"p":"B","url":"https://www.kurly.com/goods/5156439"},{"n":"해파리냉채","c":"무침","h":"미보유","sim":"없음","ch":2,"chl":"진가네반찬, 슈퍼키친","rep":"슈퍼키친 새우해파리냉채","rt":"","rv":2801,"pr":"6,750~7,200","u":2915,"p":"B","url":"https://www.kurly.com/goods/1000246945"},{"n":"창난젓","c":"젓갈","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 진가네반찬","rep":"속초해품 창난젓 160g","rt":"","rv":1357,"pr":"5,000~6,900","u":3823,"p":"B","url":"https://www.kurly.com/goods/5156664"},{"n":"산적","c":"전·부침","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 슈퍼키친","rep":"온하루 새송이버섯 섭산적","rt":"","rv":600,"pr":"12,510~13,200","u":4778,"p":"C","url":"https://www.kurly.com/goods/1001856512"},{"n":"오이지무침","c":"무침","h":"미보유","sim":"없음","ch":2,"chl":"진가네반찬, 정미경키친","rep":"정미경키친 정미경키친 오이지무침, 100g","rt":"","rv":555,"pr":"6,400~7,960","u":6113,"p":"C","url":"https://shop.coupang.com/A00864104"},{"n":"곤드레나물","c":"무침","h":"미보유","sim":"없음","ch":2,"chl":"슈퍼키친, 정미경키친","rep":"슈퍼키친 건곤드레나물볶음","rt":"","rv":378,"pr":"4,400~6,800","u":5600,"p":"C","url":"https://www.kurly.com/goods/1001695684"},{"n":"고등어조림","c":"조림","h":"미보유","sim":"없음","ch":2,"chl":"진가네반찬, 슈퍼키친","rep":"슈퍼키친 매콤 고등어무조림","rt":"","rv":192,"pr":"10,100~12,900","u":2186,"p":"C","url":"https://www.kurly.com/goods/1001325814"},{"n":"나박김치","c":"김치","h":"미보유","sim":"없음","ch":2,"chl":"컬리, 진가네반찬","rep":"조선호텔김치 프리미엄 나박김치 1kg","rt":"","rv":140,"pr":"4,500~17,000","u":1413,"p":"C","url":"https://www.kurly.com/goods/1002116552"},{"n":"비빔젓갈","c":"젓갈","h":"유사품만 보유","sim":"아이들 한우 비빔밥, 양념꼬막 비빔밥, 저당 고추장 나물 비빔밥","ch":2,"chl":"진가네반찬, 집밥반찬","rep":"진가네반찬 영양비빔젓갈 200g","rt":"4.5","rv":21,"pr":"3,980~5,500","u":2750,"p":"C","url":"https://jinganebanchan.com/product/detail.html?product_no=268&cate_no=80&display_group=1"},{"n":"깍두기","c":"김치","h":"미보유","sim":"없음","ch":2,"chl":"진가네반찬, 집밥반찬","rep":"진가네반찬 깍두기 500g","rt":"4","rv":12,"pr":"5,680~7,400","u":1480,"p":"C","url":"https://jinganebanchan.com/product/detail.html?product_no=189&cate_no=79&display_group=1"},{"n":"미역무침","c":"무침","h":"유사품만 보유","sim":"미역오이냉국, [원더스푼] 한우 소고기 미역국, 미역줄기볶음","ch":1,"chl":"비움반찬","rep":"비움반찬 미역초무침","rt":"","rv":8007,"pr":"3,500~5,500","u":2417,"p":"C","url":"https://www.kurly.com/goods/5099145"},{"n":"파스타","c":"메인요리","h":"미보유","sim":"없음","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 치즈오븐파스타","rt":"","rv":7532,"pr":"6,290~7,700","u":2095,"p":"C","url":"https://www.kurly.com/goods/1000260498"},{"n":"명태회무침","c":"무침","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"세모수 세모수 명태회무침, 1kg, 1개","rt":"4.5","rv":6279,"pr":"15,900~23,930","u":1992,"p":"C","url":"https://www.coupang.com/vp/products/335220502"},{"n":"홍어무침","c":"무침","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"국내산 홍어무침 홍어회무침 1kg, 1개","rt":"4.5","rv":5854,"pr":"20,000~24,000","u":2200,"p":"C","url":"https://www.coupang.com/vp/products/7645554137"},{"n":"톳볶음","c":"볶음","h":"미보유","sim":"없음","ch":1,"chl":"비움반찬","rep":"비움반찬 톳들기름볶음","rt":"","rv":5184,"pr":"3,900~3,900","u":3900,"p":"C","url":"https://www.kurly.com/goods/5099148"},{"n":"해장국","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"오발탄 얼큰 양해장국","rt":"","rv":4261,"pr":"8,990~8,990","u":1498,"p":"C","url":"https://www.kurly.com/goods/1000968897"},{"n":"감자샐러드","c":"샐러드","h":"유사품만 보유","sim":"감자햄볶음, [원더스푼] 맑은 감자국, [원더스푼] 한우 감자소보로 덮밥","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 베이컨 감자오이 샐러드","rt":"","rv":3274,"pr":"4,600~4,600","u":2706,"p":"C","url":"https://www.kurly.com/goods/1001695672"},{"n":"새우장","c":"젓갈","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"연안식당 간장 깐새우장 400g (냉동)","rt":"","rv":3248,"pr":"8,990~12,500","u":2999,"p":"C","url":"https://www.kurly.com/goods/1000638162"},{"n":"호박잎찜","c":"찜·계란","h":"미보유","sim":"없음","ch":1,"chl":"비움반찬","rep":"비움반찬 호박잎찜&견과두부쌈장","rt":"","rv":2756,"pr":"6,500~6,500","u":2826,"p":"C","url":"https://www.kurly.com/goods/1000196817"},{"n":"파장","c":"장아찌","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"전라도 수제 만능양념파장, 300g, 1개","rt":"4.5","rv":2595,"pr":"9,950~9,950","u":3317,"p":"C","url":"https://www.coupang.com/vp/products/7353494948"},{"n":"청어알젓","c":"젓갈","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"속초해품 청어알젓","rt":"","rv":2140,"pr":"7,600~7,600","u":4750,"p":"C","url":"https://www.kurly.com/goods/5156666"},{"n":"돼지국밥","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"경자국밥 돼지국밥","rt":"","rv":1728,"pr":"7,900~7,900","u":1129,"p":"C","url":"https://www.kurly.com/goods/1001623562"},{"n":"소갈비찜","c":"메인요리","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"사미헌 전통 소갈비찜","rt":"","rv":1718,"pr":"22,410~25,330","u":3145,"p":"C","url":"https://www.kurly.com/goods/1001552851"},{"n":"장터국","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"조선호텔 소고기 장터국 730g","rt":"","rv":1542,"pr":"7,420~7,420","u":1016,"p":"C","url":"https://www.kurly.com/goods/1000844085"},{"n":"연근무침","c":"무침","h":"유사품만 보유","sim":"연근조림","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 연근흑임자버무리","rt":"","rv":1398,"pr":"4,400~4,400","u":3667,"p":"C","url":"https://www.kurly.com/goods/1000977461"},{"n":"양념게장","c":"젓갈","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"연안식당 국내산 순살 양념게장","rt":"","rv":1246,"pr":"9,900~24,900","u":5375,"p":"C","url":"https://www.kurly.com/goods/1000347734"},{"n":"꼴뚜기젓","c":"젓갈","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"세모수 세모수 꼴뚜기젓 400g 1kg, 1개","rt":"4.5","rv":1241,"pr":"13,100~15,900","u":1450,"p":"C","url":"https://www.coupang.com/vp/products/4542740387"},{"n":"고구마순김치","c":"김치","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"셰프애찬 셰프애찬 제철 별미김치 국산 고구마줄기 고구마순 김치, 1개, 500g","rt":"4","rv":1237,"pr":"15,020~15,020","u":3004,"p":"C","url":"https://www.coupang.com/vp/products/7476236927"},{"n":"더덕무침","c":"무침","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"포천할매 HACCP 제주산 더덕!! 포천할매 생더덕무침, 1개, 1kg","rt":"4","rv":1156,"pr":"8,090~23,900","u":2004,"p":"C","url":"https://www.coupang.com/vp/products/9091209501"},{"n":"미트볼","c":"메인요리","h":"미보유","sim":"없음","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 토마토소스미트볼","rt":"","rv":819,"pr":"11,560~11,560","u":2460,"p":"C","url":"https://www.kurly.com/goods/1000260506"},{"n":"브로콜리샐러드","c":"샐러드","h":"유사품만 보유","sim":"브로콜리 두부무침","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 브로콜리꽃맛살샐러드","rt":"","rv":655,"pr":"4,500~4,500","u":2727,"p":"C","url":"https://www.kurly.com/goods/1001721251"},{"n":"찜닭","c":"메인요리","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"간편집밥 간편집밥 간장순살찜닭 500g 1+1, 2개","rt":"4.5","rv":486,"pr":"12,850~12,850","u":2570,"p":"F","url":"https://www.coupang.com/vp/products/8047097359"},{"n":"뱅어포조림","c":"조림","h":"미보유","sim":"없음","ch":1,"chl":"비움반찬","rep":"비움반찬 뱅어포 조림","rt":"","rv":462,"pr":"5,800~5,800","u":14500,"p":"F","url":"https://www.kurly.com/goods/1001544831"},{"n":"초석잠장아찌","c":"장아찌","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"반찬연구소 반찬연구소 직접만든 초석잠 맛있는 장아찌 오도독 아삭한 식감 건강식 반찬, 1개, 1kg","rt":"4.5","rv":392,"pr":"9,210~9,210","u":921,"p":"F","url":"https://www.coupang.com/vp/products/8192204947"},{"n":"전복장","c":"젓갈","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"보물섬 완도 순살 전복장 300g (냉장)","rt":"","rv":390,"pr":"11,900~11,900","u":3967,"p":"F","url":"https://www.kurly.com/goods/1001241970"},{"n":"조개젓","c":"젓갈","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"밥도둑 밥도둑 냉장 바지락 조개젓, 1개, 500g","rt":"4","rv":370,"pr":"8,090~8,090","u":1618,"p":"F","url":"https://www.coupang.com/vp/products/9399846517"},{"n":"낙지볶음","c":"볶음","h":"미보유","sim":"없음","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 무교동식 매운낙지볶음","rt":"","rv":363,"pr":"13,900~13,900","u":4964,"p":"F","url":"https://www.kurly.com/goods/1000260504"},{"n":"그라탕","c":"메인요리","h":"미보유","sim":"없음","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 김치베이컨그라탕","rt":"","rv":356,"pr":"6,545~6,545","u":2257,"p":"F","url":"https://www.kurly.com/goods/1001721259"},{"n":"꼴뚜기조림","c":"조림","h":"미보유","sim":"없음","ch":1,"chl":"비움반찬","rep":"비움반찬 꼴뚜기 조림","rt":"","rv":344,"pr":"4,800~4,800","u":8000,"p":"F","url":"https://www.kurly.com/goods/1001544827"},{"n":"아귀채무침","c":"무침","h":"미보유","sim":"없음","ch":1,"chl":"비움반찬","rep":"비움반찬 아귀채 무침","rt":"","rv":319,"pr":"5,800~5,800","u":7250,"p":"F","url":"https://www.kurly.com/goods/1001544833"},{"n":"양파장아찌","c":"장아찌","h":"유사품만 보유","sim":"양파고추 장아찌, 저당 양파 고추 장아찌, 저당 양파 마요 닭가슴살 샐러드","ch":1,"chl":"쿠팡","rep":"더좋은 [재구매율95%] 더좋은 양파장아찌 장아찌 국내산, 1개, 1kg","rt":"4.5","rv":249,"pr":"12,930~12,930","u":1293,"p":"F","url":"https://www.coupang.com/vp/products/9499476193"},{"n":"연어장","c":"젓갈","h":"미보유","sim":"없음","ch":1,"chl":"컬리","rep":"효탄 국산 간장 연어알 100g (냉동)","rt":"","rv":227,"pr":"27,200~27,200","u":27200,"p":"F","url":"https://www.kurly.com/goods/1000168290"},{"n":"마늘장아찌","c":"장아찌","h":"유사품만 보유","sim":"마늘쫑채 장아찌, 마늘쫑 간장조림, 마늘쫑 고추장무침","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 알마늘 절임","rt":"","rv":197,"pr":"3,600~3,600","u":2400,"p":"F","url":"https://www.kurly.com/goods/1001721264"},{"n":"깻잎김치","c":"김치","h":"유사품만 보유","sim":"깻잎순 된장무침, 깻잎무생채, 간장 깻잎 장아찌","ch":1,"chl":"진가네반찬","rep":"진가네반찬 생깻잎김치 100g","rt":"4.5","rv":96,"pr":"6,100~6,100","u":6100,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=228&cate_no=79&display_group=1"},{"n":"모둠장아찌","c":"장아찌","h":"유사품만 보유","sim":"모둠 어묵볶음","ch":1,"chl":"쿠팡","rep":"지원지구 [지원지구] HACCP인증 아삭하고 맛있는 모듬장아찌 골라먹는 재미 모듬야채 4KG 대용량 캠핑 야영 고기반","rt":"4.5","rv":70,"pr":"17,640~29,990","u":2139,"p":"F","url":"https://www.coupang.com/vp/products/7469239219"},{"n":"청포묵","c":"묵","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"청포묵김무침, 1개, 1g","rt":"4","rv":61,"pr":"3,800~3,800","u":0,"p":"F","url":"https://www.coupang.com/vp/products/4908557528"},{"n":"깨순조림","c":"조림","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 들깨깨순조림 200g","rt":"4.3","rv":49,"pr":"5,500~5,500","u":3208,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=337&cate_no=78&display_group=1"},{"n":"땅콩조림","c":"마른반찬","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 땅콩조림 100g","rt":"4.9","rv":47,"pr":"4,600~13,110","u":3823,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=60&cate_no=74&display_group=1"},{"n":"부추김치","c":"김치","h":"유사품만 보유","sim":"오이부추무침","ch":1,"chl":"진가네반찬","rep":"진가네반찬 부추김치 300g","rt":"4.5","rv":44,"pr":"10,900~10,900","u":3633,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=197&cate_no=79&display_group=1"},{"n":"무말랭이김치","c":"김치","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 무말랭이김치 300g","rt":"4.7","rv":38,"pr":"4,900~13,960","u":4777,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=336&cate_no=87&display_group=1"},{"n":"가리비무침","c":"무침","h":"미보유","sim":"없음","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 매콤가리비무침","rt":"","rv":33,"pr":"7,500~7,500","u":3750,"p":"F","url":"https://www.kurly.com/goods/1001778204"},{"n":"닭가슴살장조림","c":"조림","h":"유사품만 보유","sim":"저당 양파 마요 닭가슴살 샐러드, 닭가슴살 두부무침","ch":1,"chl":"진가네반찬","rep":"진가네반찬 닭가슴살장조림 200g","rt":"3.9","rv":31,"pr":"4,900~4,900","u":2450,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=357&cate_no=76&display_group=1"},{"n":"코다리조림","c":"조림","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 코다리양념조림 500g","rt":"4.4","rv":30,"pr":"12,000~12,000","u":2400,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=160&cate_no=76&display_group=1"},{"n":"고추김치","c":"김치","h":"유사품만 보유","sim":"양파고추 장아찌, 저당 양파 고추 장아찌, 저당 고추장 나물 비빔밥","ch":1,"chl":"진가네반찬","rep":"진가네반찬 고추김치 순한맛 100g","rt":"4.4","rv":26,"pr":"4,000~4,000","u":4000,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=198&cate_no=79&display_group=1"},{"n":"갓장아찌","c":"장아찌","h":"미보유","sim":"없음","ch":1,"chl":"쿠팡","rep":"[한국김치상수상] 최상급재료 100%국산 여수돌산갓 장아찌, 1개, 2kg","rt":"5","rv":23,"pr":"11,900~11,900","u":595,"p":"F","url":"https://www.coupang.com/vp/products/9663260001"},{"n":"다시마조림","c":"마른반찬","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 다시마쌈 240g","rt":"4.8","rv":22,"pr":"4,000~6,900","u":2771,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=341&cate_no=76&display_group=1"},{"n":"북엇국","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 북엇국(냉동) 400g","rt":"4.2","rv":20,"pr":"5,000~5,000","u":1250,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=249&cate_no=75&display_group=1"},{"n":"닭볶음탕","c":"국·탕·찌개","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 순살닭볶음탕 600g","rt":"4.1","rv":20,"pr":"11,900~11,900","u":1983,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=294&cate_no=76&display_group=1"},{"n":"머위대나물","c":"무침","h":"미보유","sim":"없음","ch":1,"chl":"정미경키친","rep":"정미경키친 정미경키친 머위대들깨나물, 130g (품절)","rt":"","rv":19,"pr":"6,800~6,800","u":5231,"p":"F","url":"https://shop.coupang.com/A00864104"},{"n":"오징어조림","c":"조림","h":"유사품만 보유","sim":"오징어 무국(냉동), 오징어 야채볶음_반조리, 간장 오징어볶음_반조리","ch":1,"chl":"진가네반찬","rep":"진가네반찬 대왕오징어간장조림 100g","rt":"4.8","rv":16,"pr":"5,900~5,900","u":5900,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=343&cate_no=74&display_group=1"},{"n":"젓갈쌈장","c":"젓갈","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 젓갈쌈장소스 150g","rt":"4.8","rv":16,"pr":"5,200~5,200","u":3467,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=353&cate_no=80&display_group=1"},{"n":"홍합무침","c":"무침","h":"미보유","sim":"없음","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 매콤 홍합무침","rt":"","rv":10,"pr":"7,800~7,800","u":3900,"p":"F","url":"https://www.kurly.com/goods/1001749981"},{"n":"꼬막무침","c":"무침","h":"유사품만 보유","sim":"양념꼬막 비빔밥","ch":1,"chl":"슈퍼키친","rep":"슈퍼키친 매콤 꼬막무침","rt":"","rv":7,"pr":"8,800~8,800","u":4400,"p":"F","url":"https://www.kurly.com/goods/1001749983"},{"n":"단호박조림","c":"조림","h":"미보유","sim":"없음","ch":1,"chl":"집밥반찬","rep":"집밥반찬 달콤한단호박고구마조림","rt":"","rv":6,"pr":"3,890~3,890","u":0,"p":"F","url":"https://www.zipbab.com/product/달콤한단호박고구마조림/514/category/113/display/1/"},{"n":"문어볶음","c":"볶음","h":"미보유","sim":"없음","ch":1,"chl":"집밥반찬","rep":"집밥반찬 문어꽈리고추볶음","rt":"","rv":5,"pr":"4,180~4,180","u":0,"p":"F","url":"https://www.zipbab.com/product/문어꽈리고추볶음/544/category/113/display/1/"},{"n":"숙주햄볶음","c":"볶음","h":"미보유","sim":"없음","ch":1,"chl":"진가네반찬","rep":"진가네반찬 숙주햄볶음 150g","rt":"4.6","rv":5,"pr":"5,000~5,000","u":3333,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=397&cate_no=76&display_group=1"},{"n":"떡갈비","c":"메인요리","h":"미보유","sim":"없음","ch":1,"chl":"집밥반찬","rep":"집밥반찬 떡갈비새송이볶음","rt":"","rv":3,"pr":"4,180~4,180","u":0,"p":"F","url":"https://www.zipbab.com/product/떡갈비새송이볶음/763/category/113/display/1/"},{"n":"배추볶음","c":"볶음","h":"유사품만 보유","sim":"양배추와 맛쌈장, 맑은 한우 배추국_냉동, [원더스푼] 배추 된장국","ch":1,"chl":"진가네반찬","rep":"진가네반찬 소고기배추볶음 150g","rt":"","rv":0,"pr":"4,500~4,500","u":3000,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=440&cate_no=76&display_group=1"},{"n":"옥수수전","c":"전·부침","h":"유사품만 보유","sim":"옥수수 버무리","ch":1,"chl":"진가네반찬","rep":"진가네반찬 옥수수전 400g","rt":"","rv":0,"pr":"5,670~5,670","u":1418,"p":"F","url":"https://jinganebanchan.com/product/detail.html?product_no=439&cate_no=77&display_group=1"}],"chCount":{"컬리":146,"비움반찬":56,"슈퍼키친":71,"진가네반찬":135,"쿠팡":171,"정미경키친":23,"집밥반찬":50},"ownCount":183,"compCount":652};
+const API = 'https://script.google.com/macros/s/AKfycbyAchHE8NDUsOQ12ui0wJmlEO0ESVNXkunH6yw-SbwVlrv9cEK4QjZbJH78iNSady8s2g/exec';
 const IT = D.items;
 const PC={S:'#C6432B',A:'#E08A3C',B:'#C9A227',C:'#7F9A6B',F:'#B4B1AA'};
 const PD={S:'즉시 검토',A:'적극 검토',B:'검토',C:'후순위',F:'보류'};
+let SAVED={};
+
+function jsonp(qs){
+  return new Promise((res,rej)=>{
+    const cb='cb'+Math.random().toString(36).slice(2);
+    const s=document.createElement('script');
+    const to=setTimeout(()=>{cleanup();rej(new Error('timeout'))},20000);
+    function cleanup(){clearTimeout(to);try{delete window[cb]}catch(e){};s.remove();}
+    window[cb]=d=>{cleanup();res(d)};
+    s.onerror=()=>{cleanup();rej(new Error('network'))};
+    s.src=API+'?callback='+cb+'&'+qs+'&_='+Date.now();
+    document.body.appendChild(s);
+  });
+}
+function fmtT(t){
+  if(!t) return '';
+  if(/^\d{4}-\d{2}-\d{2}/.test(t)) return t;
+  const d=new Date(t); if(isNaN(d)) return t;
+  const p=n=>String(n).padStart(2,'0');
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 document.getElementById('k1').innerHTML=IT.length+'<small>종</small>';
 document.getElementById('k2').innerHTML=IT.filter(x=>x.h==='미보유').length+'<small>종</small>';
 document.getElementById('k3').innerHTML=IT.filter(x=>x.h!=='미보유').length+'<small>종</small>';
 document.getElementById('k4').innerHTML=IT.filter(x=>x.p==='S'||x.p==='A').length+'<small>종</small>';
 
-// priority
 const pc={}; IT.forEach(x=>pc[x.p]=(pc[x.p]||0)+1);
-document.getElementById('pleg').innerHTML=['S','A','B','C','F'].map(p=>
- '<span class="pl"><span class="badge p-'+p+'">'+p+'</span>'+PD[p]+' <b>'+(pc[p]||0)+'</b></span>').join('');
-const pmax=Math.max(...Object.values(pc));
-document.getElementById('pbars').innerHTML=['S','A','B','C','F'].map(p=>
- '<div class="brow"><div class="bl">'+p+' · '+PD[p]+'</div><div class="bt"><div class="bf" style="width:'+((pc[p]||0)/pmax*100)+'%;background:'+PC[p]+'"></div></div><div class="bn">'+(pc[p]||0)+'</div></div>').join('');
+document.getElementById('pleg').innerHTML=['S','A','B','C','F'].map(p=>'<span class="pl"><span class="badge p-'+p+'">'+p+'</span>'+PD[p]+' <b>'+(pc[p]||0)+'</b></span>').join('');
+const pmax=Math.max.apply(null,Object.values(pc));
+document.getElementById('pbars').innerHTML=['S','A','B','C','F'].map(p=>'<div class="brow"><div class="bl">'+p+' · '+PD[p]+'</div><div class="bt"><div class="bf" style="width:'+((pc[p]||0)/pmax*100)+'%;background:'+PC[p]+'"></div></div><div class="bn">'+(pc[p]||0)+'</div></div>').join('');
 
-// category
 const cc={}; IT.forEach(x=>cc[x.c]=(cc[x.c]||0)+1);
 const ce=Object.entries(cc).sort((a,b)=>b[1]-a[1]); const cmax=ce[0][1];
-document.getElementById('cbars').innerHTML=ce.map(([k,v])=>
- '<div class="brow"><div class="bl">'+k+'</div><div class="bt"><div class="bf" style="width:'+(v/cmax*100)+'%;background:#8A8578"></div></div><div class="bn">'+v+'</div></div>').join('');
+document.getElementById('cbars').innerHTML=ce.map(function(e){return '<div class="brow"><div class="bl">'+e[0]+'</div><div class="bt"><div class="bf" style="width:'+(e[1]/cmax*100)+'%;background:#8A8578"></div></div><div class="bn">'+e[1]+'</div></div>';}).join('');
 
-// channel
 const che=Object.entries(D.chCount).sort((a,b)=>b[1]-a[1]); const chmax=che[0][1];
-document.getElementById('chbars').innerHTML=che.map(([k,v])=>
- '<div class="brow"><div class="bl">'+k+'</div><div class="bt"><div class="bf" style="width:'+(v/chmax*100)+'%;background:#B08968"></div></div><div class="bn">'+v+'</div></div>').join('');
+document.getElementById('chbars').innerHTML=che.map(function(e){return '<div class="brow"><div class="bl">'+e[0]+'</div><div class="bt"><div class="bf" style="width:'+(e[1]/chmax*100)+'%;background:#B08968"></div></div><div class="bn">'+e[1]+'</div></div>';}).join('');
 
-// routes
 const R=[
  {n:'기존 공정 활용',col:'#5B9E6F',cats:['마른반찬','무침','볶음','조림','장아찌','묵','샐러드','찜·계란','전·부침'],cond:'없음 (설비 검증만)',when:'즉시'},
  {n:'기존 라인 확장',col:'#D4A72C',cats:['국·탕·찌개','메인요리'],cond:'냉동 라인 캐파 확인',when:'단기'},
- {n:'HACCP 확대 필요',col:'#C6432B',cats:['김치'],cond:'HACCP 관리유형 확대 승인 (주간회의 안건 4)',when:'승인 후'},
+ {n:'HACCP 확대 필요',col:'#C6432B',cats:['김치'],cond:'HACCP 관리유형 확대 승인 (안건 4)',when:'승인 후'},
  {n:'신규 공정 / OEM',col:'#8B5E3C',cats:['젓갈'],cond:'자사 생산 vs OEM 소싱 결정',when:'결정 후'}
 ];
-document.getElementById('rtb').innerHTML=R.map(r=>{
- const li=IT.filter(x=>r.cats.includes(x.c));
+document.getElementById('rtb').innerHTML=R.map(function(r){
+ const li=IT.filter(x=>r.cats.indexOf(x.c)>=0);
  const top=li.filter(x=>x.p==='S'||x.p==='A').sort((a,b)=>b.rv-a.rv).slice(0,5).map(x=>x.n);
  return '<tr><td><span class="dot" style="background:'+r.col+'"></span><b>'+r.n+'</b></td><td><b>'+li.length+'</b>종</td><td>'+(top.length?top.join(' · '):'—')+'</td><td style="color:#6E6C66">'+r.cond+'</td><td><b>'+r.when+'</b></td></tr>';
 }).join('');
 
-// table
-const cats=[...new Set(IT.map(x=>x.c))];
+const cats=[].concat.apply([],[[...new Set(IT.map(x=>x.c))]]);
 document.getElementById('fc').innerHTML='<option value="">전체 카테고리</option>'+cats.map(c=>'<option>'+c+'</option>').join('');
-let fp='ALL',sk='p',sd=1;
+let fp='ALL',sk='p',sd=1,onlyMemo=false;
 const PO={S:0,A:1,B:2,C:3,F:4};
+const open={};
+
+function stats(){
+ const ks=Object.keys(SAVED);
+ const chk=ks.filter(k=>SAVED[k].c).length;
+ const mm=ks.filter(k=>SAVED[k].m).length;
+ document.getElementById('k5').innerHTML=chk+'<small>종</small>';
+ document.getElementById('k6').innerHTML=mm+'<small>건</small>';
+}
 function render(){
  const fc=document.getElementById('fc').value,fh=document.getElementById('fh').value,fq=document.getElementById('fq').value.trim();
- let L=IT.filter(x=>(fp==='ALL'||x.p===fp)&&(!fc||x.c===fc)&&(!fh||x.h===fh)&&(!fq||x.n.includes(fq)));
- L.sort((a,b)=>{
+ let L=IT.filter(x=>(fp==='ALL'||x.p===fp)&&(!fc||x.c===fc)&&(!fh||x.h===fh)&&(!fq||x.n.indexOf(fq)>=0));
+ if(onlyMemo) L=L.filter(x=>SAVED[x.n]&&(SAVED[x.n].m||SAVED[x.n].c));
+ L.sort(function(a,b){
   if(sk==='p'){const d=PO[a.p]-PO[b.p]; return d!==0?d*sd:(b.rv-a.rv);}
+  if(sk==='chk'){const av=(SAVED[a.n]&&SAVED[a.n].c)?1:0,bv=(SAVED[b.n]&&SAVED[b.n].c)?1:0; return (bv-av)*sd;}
   if(typeof a[sk]==='number')return (b[sk]-a[sk])*sd;
   return String(a[sk]).localeCompare(String(b[sk]),'ko')*sd;
  });
  document.getElementById('cnt').textContent=L.length+' / '+IT.length+'종';
- document.getElementById('tb').innerHTML=L.map(x=>
-  '<tr><td><span class="badge p-'+x.p+'">'+x.p+'</span></td>'+
-  '<td class="nm">'+x.n+'</td><td><span class="tag">'+x.c+'</span></td>'+
-  '<td>'+(x.h==='미보유'?'<span class="tag">미보유</span>':'<span class="tag sim">유사품만</span>')+'</td>'+
-  '<td class="num"><b>'+x.ch+'</b></td><td class="num">'+x.rv.toLocaleString()+'</td>'+
-  '<td>'+(x.pr||'—')+'</td><td class="num">'+(x.u?x.u.toLocaleString():'—')+'</td>'+
-  '<td><div class="mini" title="'+x.rep.replace(/"/g,'')+'">'+x.rep+'</div>'+(x.url?'<a class="lk" href="'+x.url+'" target="_blank">링크 ↗</a>':'')+'</td></tr>').join('');
+ let html='';
+ L.forEach(function(x){
+  const sv=SAVED[x.n]||{c:0,m:'',t:''};
+  const isOpen = open[x.n] || !!sv.c || !!sv.m;
+  html+='<tr class="main'+(sv.c?' done':'')+'" data-n="'+esc(x.n)+'">'+
+   '<td><span class="badge p-'+x.p+'">'+x.p+'</span></td>'+
+   '<td class="nm">'+x.n+(sv.m?'<span class="hasmemo">💬</span>':'')+'</td>'+
+   '<td class="cbc"><input type="checkbox" class="cb" data-n="'+esc(x.n)+'"'+(sv.c?' checked':'')+'></td>'+
+   '<td><span class="tag">'+x.c+'</span></td>'+
+   '<td>'+(x.h==='미보유'?'<span class="tag">미보유</span>':'<span class="tag sim">유사품만</span>')+'</td>'+
+   '<td class="num"><b>'+x.ch+'</b></td><td class="num">'+x.rv.toLocaleString()+'</td>'+
+   '<td>'+(x.pr||'—')+'</td><td class="num">'+(x.u?x.u.toLocaleString():'—')+'</td>'+
+   '<td><div class="mini" title="'+esc(x.rep)+'">'+esc(x.rep)+'</div>'+(x.url?'<a class="lk" href="'+x.url+'" target="_blank">링크 ↗</a>':'')+'</td></tr>';
+  if(isOpen){
+   html+='<tr class="det" data-d="'+esc(x.n)+'"><td colspan="10">'+
+    '<div class="mlbl"><b>의견</b><span class="st" data-t="'+esc(x.n)+'">'+(sv.t?'최근 저장 '+fmtT(sv.t):'')+'</span></div>'+
+    '<div class="memoBox"><textarea data-m="'+esc(x.n)+'" placeholder="생산 가능 여부 판단, 필요한 설비·공정, 원재료 소싱 의견 등을 남겨주세요">'+esc(sv.m||'')+'</textarea>'+
+    '<button class="btn" data-s="'+esc(x.n)+'">저장</button></div></td></tr>';
+  }
+ });
+ document.getElementById('tb').innerHTML=html;
+ bind();
+ stats();
 }
-document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('.chip').forEach(z=>z.classList.remove('on'));c.classList.add('on');fp=c.dataset.p;render();});
+function bind(){
+ document.querySelectorAll('input.cb').forEach(function(el){
+  el.onchange=function(){
+   const n=el.dataset.n;
+   const cur=SAVED[n]||{c:0,m:'',t:''};
+   cur.c=el.checked?1:0; SAVED[n]=cur; open[n]=true;
+   render();
+   save(n, cur.c, cur.m);
+  };
+ });
+ document.querySelectorAll('button[data-s]').forEach(function(b){
+  b.onclick=function(){
+   const n=b.dataset.s;
+   const ta=document.querySelector('textarea[data-m="'+n.replace(/"/g,'\\"')+'"]');
+   const memo=ta?ta.value:'';
+   const cur=SAVED[n]||{c:0,m:'',t:''}; cur.m=memo; SAVED[n]=cur;
+   b.disabled=true; b.textContent='저장 중';
+   save(n,cur.c,memo).then(function(){b.disabled=false;b.textContent='저장';});
+  };
+ });
+}
+function save(n,c,m){
+ const st=document.querySelector('span[data-t="'+n.replace(/"/g,'\\"')+'"]');
+ if(st) st.textContent='저장 중...';
+ return jsonp('action=save&item='+encodeURIComponent(n)+'&chk='+(c?1:0)+'&memo='+encodeURIComponent(m||''))
+  .then(function(r){
+   if(r&&r.ok){ SAVED[n]={c:r.c,m:r.m,t:r.t};
+    const s2=document.querySelector('span[data-t="'+n.replace(/"/g,'\\"')+'"]');
+    if(s2) s2.innerHTML='<span class="ok">✓ 저장됨</span> '+fmtT(r.t);
+    stats();
+   } else { const s3=document.querySelector('span[data-t="'+n.replace(/"/g,'\\"')+'"]'); if(s3) s3.textContent='저장 실패'; }
+  })
+  .catch(function(){ const s4=document.querySelector('span[data-t="'+n.replace(/"/g,'\\"')+'"]'); if(s4) s4.textContent='저장 실패 (네트워크)'; });
+}
+document.querySelectorAll('.chip[data-p]').forEach(function(c){c.onclick=function(){document.querySelectorAll('.chip[data-p]').forEach(z=>z.classList.remove('on'));c.classList.add('on');fp=c.dataset.p;render();};});
+document.getElementById('mm').onclick=function(){onlyMemo=!onlyMemo;this.classList.toggle('on',onlyMemo);render();};
 ['fc','fh','fq'].forEach(id=>document.getElementById(id).addEventListener('input',render));
-document.querySelectorAll('table.m th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k; if(sk===k)sd=-sd;else{sk=k;sd=1;} render();});
+document.querySelectorAll('table.m th[data-k]').forEach(function(th){th.onclick=function(){const k=th.dataset.k; if(sk===k)sd=-sd;else{sk=k;sd=1;} render();};});
+document.getElementById('reload').onclick=load;
+
+function load(){
+ const b=document.getElementById('syncbar');
+ b.textContent='⏳ 저장된 검토 내용을 불러오는 중...';
+ jsonp('action=list').then(function(r){
+  SAVED={};
+  if(r&&r.ok&&r.rows) r.rows.forEach(function(x){SAVED[x.n]={c:x.c,m:x.m,t:x.t};});
+  b.innerHTML='✅ 검토 내용은 구글시트에 자동 저장되며, 다른 사람이 새로고침하면 바로 보입니다. <a class="lk" href="https://docs.google.com/spreadsheets/d/1Kmm9GqibrYIZb79zo7rGg2QIcz9Iy2CVk9JWDMo-JYs/edit" target="_blank">시트 열기 ↗</a> <span class="st">불러온 시각 '+fmtT(r&&r.at)+'</span>';
+  render();
+ }).catch(function(){
+  b.textContent='⚠️ 저장 서버에 연결하지 못했습니다. 새로고침해 주세요.';
+  render();
+ });
+}
 render();
-</script></body></html>
+load();
+</script>
+</body></html>
