@@ -287,11 +287,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .empty-hint{font-size:12px;color:var(--ink3);padding:8px 0;}
 
 /* 팀원 순서 이동 버튼 */
-.ordb{display:flex;flex-direction:column;gap:1px;opacity:0;transition:opacity .15s;margin-right:2px;}
+.ordb{display:flex;flex-direction:column;gap:2px;opacity:.55;transition:opacity .15s;margin-right:6px;flex-shrink:0;}
 .msi:hover .ordb{opacity:1;}
-.ob{width:17px;height:13px;line-height:1;border:1px solid var(--border);background:#fff;border-radius:3px;font-size:7px;color:var(--ink3);cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
-.ob:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
-.ob:disabled{opacity:.25;cursor:default;}
+.ob{width:24px;height:18px;line-height:1;border:1px solid var(--border);background:#fff;border-radius:4px;font-size:9px;color:var(--ink2);cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+.ob:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:var(--paper2);}
+.ob:disabled{opacity:.2;cursor:default;}
 
 /* 메모 박스 */
 .memo-box{background:var(--paper);border:1px solid var(--border-soft);border-radius:999px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--ink2);white-space:pre-wrap;cursor:text;min-height:44px;outline:none;transition:border-color .15s;}
@@ -2061,7 +2061,7 @@ function renderMembers(){
   document.getElementById('m-sidebar-list').innerHTML=h;
   document.getElementById('m-count').textContent=`${CQ().members.length}명`;
   const _hint=document.getElementById('m-order-hint');
-  if(_hint)_hint.textContent='이름 위에 마우스를 올리면 ▲▼ 로 순서를 바꿀 수 있습니다. 이 순서가 아침 회의와 구글챗 게시에도 그대로 적용됩니다.';
+  if(_hint)_hint.innerHTML='<b>▲▼</b> 버튼으로 순서를 바꿀 수 있습니다. 이 순서가 <b>아침 회의</b>와 <b>구글챗 09:30 게시</b>에 그대로 적용됩니다.';
   if(selMid)renderMDetail(selMid);
 }
 function selMember(id){selMid=id;if(curView==='members')renderMembers();else nav('members');}
