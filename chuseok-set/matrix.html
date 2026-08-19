@@ -151,7 +151,7 @@ var ST=JSON.parse(localStorage.getItem('chuseok2026sim_v2')||'null')||{};
 function ensureST(){ SLOTS.forEach(function(s){ var d=DEF[s.id]||{};
   if(!ST[s.id]) ST[s.id]={items:d.it?JSON.parse(JSON.stringify(d.it)):{},price:d.p||0,list:d.l||d.p||0,name:s.n,pack:d.pk||0,qty:d.q||0};
   var t=ST[s.id]; if(!t.items)t.items={}; if(t.pack===undefined)t.pack=0; if(t.qty===undefined)t.qty=0;
-  if(t.list===undefined)t.list=Number(t.price)||0; if(!t.name)t.name=s.n; }); }
+  if(t.list===undefined)t.list=Number(t.price)||0; if(t.disc===undefined)t.disc=0; if(!t.name)t.name=s.n; }); }
 ensureST();
 (function(){ if(localStorage.getItem('ck_ono_fix_v1'))return;
   var FX={on1:{n:'온올림 #6 · LA+소불고기+갈비탕',p:69800,l:78400,it:{ONO_LA:1,ONO_BUL:1,ONO_TANG:1}},
@@ -160,6 +160,14 @@ ensureST();
   Object.keys(FX).forEach(function(k){ var f=FX[k]; if(!ST[k])ST[k]={qty:0};
    ST[k].items=JSON.parse(JSON.stringify(f.it)); ST[k].name=f.n; ST[k].price=f.p; ST[k].list=f.l; ST[k].pack=6510; if(!ST[k].qty)ST[k].qty=0; });
   localStorage.setItem('chuseok2026sim_v2',JSON.stringify(ST)); localStorage.setItem('ck_ono_fix_v1','1');
+})();
+(function(){ if(localStorage.getItem('ck_ono_disc_v1'))return;
+  ['on1','on2','on3'].forEach(function(k){ var t=ST[k]; if(!t)return;
+    var L=Number(t.list)||0, P=Number(t.price)||0;
+    if(L>P){ t.disc=L-P; } if(t.disc===undefined) t.disc=0; });
+  SLOTS.forEach(function(s){ if(s.g!=='온올림')return; var t=ST[s.id]; if(!t)return;
+    var L=Number(t.list)||0,P=Number(t.price)||0; if(L>P) t.disc=L-P; });
+  localStorage.setItem('chuseok2026sim_v2',JSON.stringify(ST)); localStorage.setItem('ck_ono_disc_v1','1');
 })();
 var SHIP=Number(localStorage.getItem('ck_ship')||3500);
 var VIEW=JSON.parse(localStorage.getItem('ck_matrix_view')||'null')||{cols:[],rows:[],collapsed:{},diff:true};
@@ -179,6 +187,8 @@ function calcOf(STx,slot){var s=STx[slot]||{items:{}},sum=0,pcost=0,wt=0,n=0,kin
  return{sum:sum,pcost:pcost,pack:pack,cost:cost,total:total,wt:wt,n:n,kinds:kinds,price:price,vx:vx,list:list,
   rate:vx?cost/vx*100:0,rateS:vx?total/vx*100:0,rateL:list?(pcost+pack+SHIP)/(list/1.1)*100:0,
   disc:sum?(sum-price)/sum*100:0,discL:sum?(sum-list)/sum*100:0,discA:list?(list-price)/list*100:0,
+  pdisc:Number(s.disc)||0, coupon:Math.max(0,list-(Number(s.disc)||0)-price),
+  pdiscR:list?((Number(s.disc)||0)/list*100):0, couponR:list?(Math.max(0,list-(Number(s.disc)||0)-price)/list*100):0,
   perMenu:kinds?price/kinds:0,margin:vx-total,profitR:vx?(vx-total)/vx*100:0,qty:Number(s.qty)||0}}
 function calcS(slot){return calcOf(ST,slot)}
 var CATORD=['온올림','고기·메인','전류','국·탕','나물류','김치·장아찌','대용량','세트','기타'];
@@ -215,9 +225,9 @@ function render(){ reSM(); syncCols(); ensureST();
  h+='<tr class="mrow"><th class="stick0">세트 포장비 (VAT 별도)</th>'+cols.map(function(id){return '<td><input class="num" data-f="pack" data-id="'+id+'" type="text" inputmode="numeric" value="'+(ST[id].pack||'')+'" placeholder="0"></td>'}).join('')+pad+'</tr>';
  h+=mrow('단품 합산가',function(id){var k=calcS(id);return k.sum?nf(k.sum):'-'});
  h+='<tr class="mrow"><th class="stick0"><b>표시가</b> (권장판매가)</th>'+cols.map(function(id){return '<td><input class="num" data-f="list" data-id="'+id+'" type="text" inputmode="numeric" value="'+(ST[id].list||'')+'" placeholder="0"></td>'}).join('')+pad+'</tr>';
- h+='<tr class="mrow"><th class="stick0">↓ 쿠폰 할인 (금액)</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="coup" data-id="'+id+'" type="text" inputmode="numeric" value="'+((k.list&&k.list>k.price)?(k.list-k.price):'')+'" placeholder="0"></td>'}).join('')+pad+'</tr>';
- h+='<tr class="mrow"><th class="stick0">↓ 쿠폰 할인율</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="discA" data-id="'+id+'" type="text" inputmode="decimal" value="'+(k.list?Number(k.discA.toFixed(1)):'')+'" placeholder="0"></td>'}).join('')+pad+'</tr>';
- h+=mrow('총 할인율 (표시가 → 실판매가)',function(id){var k=calcS(id);return (k.sum&&k.price)?k.disc.toFixed(1)+'%':'-'});
+ h+='<tr class="mrow"><th class="stick0">↓ 상품 할인 (표시가에서 차감)</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="disc" data-id="'+id+'" type="text" inputmode="numeric" value="'+(k.pdisc?k.pdisc:'')+'" placeholder="0"></td>'}).join('')+pad+'</tr>';
+ h+='<tr class="mrow"><th class="stick0">↓ 쿠폰 할인 (주문 시 차감)</th>'+cols.map(function(id){var k=calcS(id);return '<td><input class="num" data-f="coup" data-id="'+id+'" type="text" inputmode="numeric" value="'+(k.coupon?k.coupon:'')+'" placeholder="0"></td>'}).join('')+pad+'</tr>';
+ h+=mrow('총 할인율 (표시가 → 실구매가)',function(id){var k=calcS(id);return (k.list&&k.price)?k.discA.toFixed(1)+'%':'-'});
  h+=mrow('제품 원가',function(id){var k=calcS(id);return k.pcost?nf(k.pcost):'-'});
  h+=mrow('총원가율 (실판매가 기준)',function(id){var k=calcS(id);if(!k.price)return '-';var cl=k.rateS<=22?'b-ok':(k.rateS<=30?'b-warn':'b-bad');return '<span class="badge '+cl+'">'+k.rateS.toFixed(1)+'%</span>'});
  h+=mrow('이익율',function(id){var k=calcS(id);return k.price?k.profitR.toFixed(1)+'%':'-'});
@@ -250,9 +260,9 @@ mx.addEventListener('input',function(e){var t=e.target;if(!t.dataset||!t.dataset
  if(f!=='name'){ var cleaned=String(t.value).replace(/[^0-9.\-]/g,''); if(cleaned!==t.value){ var cp=t.selectionStart; t.value=cleaned; try{t.setSelectionRange(cp-1,cp-1)}catch(x){} } }
  var v=Number(t.value)||0;
  if(f==='name'){s.name=t.value}
- else if(f==='coup'){var L2=Number(s.list)||0; if(L2){s.price=Math.max(0,L2-v);}}
- else if(f==='list'){s.list=v; if(!s.price||s.price>v)s.price=v;}
- else if(f==='discA'){var L=Number(s.list)||0; if(L){s.price=Math.round(L*(1-v/100));}}
+ else if(f==='coup'){var L2=Number(s.list)||0; s.price=Math.max(0,L2-(Number(s.disc)||0)-v);}
+ else if(f==='list'){var oldL=Number(s.list)||0, dC=Number(s.disc)||0, cC=Math.max(0,oldL-dC-(Number(s.price)||0)); s.list=v; s.price=Math.max(0,v-dC-cC); if(!s.price&&!dC&&!cC)s.price=v;}
+ else if(f==='disc'){var L=Number(s.list)||0, oldC=Math.max(0,L-(Number(s.disc)||0)-(Number(s.price)||0)); s.disc=v; s.price=Math.max(0,L-v-oldC);}
  else if(f==='price'){s.price=v; if(!s.list)s.list=v;}
  else {s[f]=v}
  saveST(); var kf=t.dataset.f,ki=t.dataset.id; var pos=t.selectionStart; render();
