@@ -149,8 +149,8 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
    <div class="fields">
     <div class="f"><label>세트명</label><input type="text" id="pname" placeholder="예: 온올림 실속"></div>
     <div class="f"><label>표시가 (권장판매가)</label><input type="number" id="pdisp" placeholder="72400"></div>
-    <div class="f"><label>쿠폰 할인 (금액)</label><input type="number" id="pcoup" placeholder="0"></div>
-    <div class="f"><label>쿠폰 할인율</label><input type="number" id="pdiscA" placeholder="0" step="0.1"></div>
+    <div class="f"><label>상품 할인 (금액)</label><input type="number" id="pcoup" placeholder="0"></div>
+    <div class="f"><label>할인율 (%)</label><input type="number" id="pdiscA" placeholder="0" step="0.1"></div>
     <div class="f"><label><b>실판매가</b> (실제 결제가)</label><input type="number" id="pprice" placeholder="69800"></div>
     <div class="f"><label>세트 포장비 (VAT 별도)</label><input type="number" id="ppack" placeholder="6510"></div>
     <div class="f"><label>계획 수량 (세트)</label><input type="number" id="pqty" placeholder="200"></div>
@@ -213,9 +213,10 @@ footer{margin-top:14px;font-size:11px;color:#9aa0a9;text-align:center}
  <div class="note" style="margin-top:8px">주력 가격대에 <b>차례상 · 자사 음식세트 · 온올림이 모두 들어옵니다.</b> 서로 잡아먹지 않도록 <b>구성 차별화</b>가 필요합니다 — 차례상은 제수 중심, 음식세트는 먹는 즐거움 중심, 온올림은 육류 프리미엄으로 성격을 나눕니다.</div>
 </div>
 <div class="card"><h2>원가·이익 기준</h2><div class="note"><ul>
- <li><b>총원가율 = (제품원가 + 세트 포장비 + 택배비) ÷ 실판매가(VAT-)</b>. 세트는 <b>전부 단독판매</b> 전제이므로 택배비 3,500원이 모든 세트에 붙습니다.</li>
+ <li><b>제품 원가율 = 제품원가 ÷ 실판매가(VAT-)</b> · <b>총원가율 = (제품원가 + 세트 포장비 + 택배비) ÷ 실판매가(VAT-)</b>. 세트는 <b>전부 단독판매</b> 전제이므로 택배비 3,500원이 모든 세트에 붙습니다.</li>
  <li>자사 표준원가에는 개별 용기·필름·스티커가 포함돼 있고, <b>세트 포장비(외박스·부직포·아이스팩 등)는 별도</b> 입력입니다.</li>
- <li>온올림은 OEM 매입이라 제품 원가율이 <b>46~57%</b>로 자사 제조와 구조가 다릅니다. 같은 잣대로 비교하지 마세요.</li>
+ <li>2026 추석은 <b>쿠폰 할인을 운영하지 않습니다.</b> 모든 할인은 <b>상품 할인</b>(표시가에서 직접 차감)으로 처리합니다.</li>
+<li>온올림은 OEM 매입이라 제품 원가율이 <b>46~57%</b>로 자사 제조와 구조가 다릅니다. 같은 잣대로 비교하지 마세요.</li>
  <li><b>2만원대 세트는 구조적으로 원가율 40%를 넘습니다.</b> 제품원가 2,300원에 부대비 5,500원이 붙기 때문입니다. 단독배송으로는 남기 어려우니 <b>가격 인상 · 구성 확대 · 최소주문금액</b> 중 하나가 필요합니다.</li>
 </ul></div></div>
 <div class="card"><h2>지난 두 명절에서 배운 것</h2>
@@ -300,6 +301,7 @@ function calcS(STx,slot){
     rate: vx? cost/vx*100 : 0, rateS: vx? total/vx*100 : 0,
     disc: sum? (sum-price)/sum*100 : 0, perMenu: kinds? price/kinds : 0,
     list:list, discL: sum? (sum-list)/sum*100 : 0, discA: list? (list-price)/list*100 : 0,
+  rateP: vx? pcost/vx*100 : 0, priceRatio: list? price/list*100 : 0,
     rateL: list? (pcost+pack+SHIP)/(list/1.1)*100 : 0,
     onoShare: pcost? ono/pcost*100:0, margin: vx-total, profitR: vx? (vx-total)/vx*100 : 0,
     qty: Number(s.qty)||0 };
@@ -360,10 +362,11 @@ function renderComp(){
   document.getElementById('sum').innerHTML=
     '<div class="sm"><div class="k">단품 합산가</div><div class="v">'+nf(k.sum)+'</div><div class="d">'+k.kinds+'종 / '+k.n+'개</div></div>'
    +'<div class="sm"><div class="k">표시가</div><div class="v">'+(k.list?nf(k.list):'-')+'</div><div class="d">'+((k.sum&&k.list)?'합산 대비 '+k.discL.toFixed(1)+'% 할인':'미입력')+'</div></div>'
-   +'<div class="sm"><div class="k">실판매가</div><div class="v">'+(k.price?nf(k.price):'-')+'</div><div class="d">'+(k.list&&k.price?'표시가 대비 '+k.discA.toFixed(1)+'% 추가':'미입력')+'</div></div>'
+   +'<div class="sm"><div class="k">실판매가</div><div class="v">'+(k.price?nf(k.price):'-')+'</div><div class="d">'+(k.list&&k.price?'권장가의 <b>'+k.priceRatio.toFixed(1)+'%</b> · 할인 '+k.discA.toFixed(1)+'%':'미입력')+'</div></div>'
    +'<div class="sm"><div class="k">총 할인율</div><div class="v">'+(k.sum?k.disc.toFixed(1):'0')+'%</div><div class="d">합산 → 실판매가</div></div>'
    +'<div class="sm"><div class="k">제품 원가</div><div class="v">'+nf(k.pcost)+'</div><div class="d">+포장 '+nf(k.pack)+' +택배 '+nf(SHIP)+'</div></div>'
-   +'<div class="sm '+rc+'"><div class="k">총원가율 <span style="font-size:9.5px;color:#8b919b">실판매가 기준</span></div><div class="v">'+k.rateS.toFixed(1)+'%</div><div class="d">표시가 기준 '+k.rateL.toFixed(1)+'% · 제품만 '+k.rate.toFixed(1)+'%</div></div>'
+   +'<div class="sm"><div class="k">제품 원가율 <span style="font-size:9.5px;color:#8b919b">제품원가÷실판매가</span></div><div class="v">'+k.rateP.toFixed(1)+'%</div><div class="d">포장·택배 제외</div></div>'
++'<div class="sm '+rc+'"><div class="k">총원가율 <span style="font-size:9.5px;color:#8b919b">실판매가 기준</span></div><div class="v">'+k.rateS.toFixed(1)+'%</div><div class="d">표시가 기준 '+k.rateL.toFixed(1)+'%</div></div>'
    +'<div class="sm '+(k.profitR>=30?'good':(k.profitR>=20?'warn':'bad'))+'"><div class="k">이익율</div><div class="v">'+k.profitR.toFixed(1)+'%</div><div class="d">세트당 '+nf(k.margin)+'원</div></div>'
    +'<div class="sm"><div class="k">총 중량</div><div class="v">'+nf(k.wt)+'<span style="font-size:11px">g</span></div><div class="d">100g당 '+(k.wt?nf(k.price/k.wt*100):0)+'원</div></div>'
       +(k.onoShare>0?'<div class="sm warn"><div class="k">온올림 원가 비중</div><div class="v">'+k.onoShare.toFixed(0)+'%</div><div class="d">제품원가 중</div></div>':'')
@@ -388,13 +391,13 @@ function renderLine(){
     return '<div class="lc"><div class="lb2" style="height:'+h+'%;background:'+col+'"><b>'+(r.k.price?nf(r.k.price/10000)+'만':'-')+'</b><span>'+r.k.kinds+'종</span></div>'
      +'<div class="ll">'+(ST[r.s.id].name||r.s.n)+'<small>이익 '+r.k.profitR.toFixed(0)+'%</small></div></div>'}).join('');
   var g={}; rows.forEach(function(r){ g[r.s.g]=g[r.s.g]||[]; g[r.s.g].push(r); });
-  var tb='<table><thead><tr><th class="l">세트</th><th>구성</th><th>단품합산</th><th>표시가</th><th>실판매가</th><th>총할인율</th><th>제품원가</th><th>포장</th><th>총원가율</th><th>이익율</th><th>계획수량</th><th>계획매출</th><th>계획이익</th></tr></thead><tbody>';
+  var tb='<table><thead><tr><th class="l">세트</th><th>구성</th><th>단품합산</th><th>표시가</th><th>실판매가</th><th>총할인율</th><th>제품원가</th><th>제품원가율</th><th>포장</th><th>총원가율</th><th>이익율</th><th>계획수량</th><th>계획매출</th><th>계획이익</th></tr></thead><tbody>';
   Object.keys(g).forEach(function(gn){
     tb+='<tr class="grp"><td colspan="13">'+gn+'</td></tr>';
     g[gn].forEach(function(r){ var rc=rateClass(r.k.rateS);
       tb+='<tr><td class="nm">'+(ST[r.s.id].name||r.s.n)+'</td><td class="num">'+r.k.kinds+'종 '+r.k.n+'개</td>'
        +'<td class="num">'+nf(r.k.sum)+'</td><td class="num">'+nf(r.k.list)+'</td><td class="num"><b>'+nf(r.k.price)+'</b></td>'
-       +'<td class="num">'+(r.k.sum?r.k.disc.toFixed(1)+'%':'-')+'</td><td class="num">'+nf(r.k.pcost)+'</td>'
+       +'<td class="num">'+(r.k.sum?r.k.disc.toFixed(1)+'%':'-')+'</td><td class="num">'+nf(r.k.pcost)+'</td><td class="num">'+(r.k.price?r.k.rateP.toFixed(1)+'%':'-')+'</td>'
        +'<td class="num">'+nf(r.k.pack)+'</td>'
        +'<td class="num '+(rc==='bad'?'dn':(rc==='good'?'up':'fl'))+'">'+r.k.rateS.toFixed(1)+'%</td>'
        +'<td class="num '+(r.k.profitR>=30?'up':(r.k.profitR>=20?'fl':'dn'))+'">'+r.k.profitR.toFixed(1)+'%</td>'
@@ -498,9 +501,9 @@ document.getElementById('prop').addEventListener('click',function(){
 document.getElementById('rst').addEventListener('click',function(){if(confirm('전체 8개 세트를 초기화할까요?')){localStorage.removeItem('chuseok2026sim_v2');location.reload();}});
 document.getElementById('exp').addEventListener('click',function(){
   var out=SLOTS.map(function(s){var k=calc(s.id);
-    return [ST[s.id].name||s.n,s.g,k.kinds,k.n,k.sum,k.price,k.disc.toFixed(1)+'%',Math.round(k.pcost),k.pack,k.rateS.toFixed(1)+'%',k.profitR.toFixed(1)+'%',Math.round(k.margin),k.qty,k.wt,
+    return [ST[s.id].name||s.n,s.g,k.kinds,k.n,k.sum,k.price,k.disc.toFixed(1)+'%',Math.round(k.pcost),k.rateP.toFixed(1)+'%',k.pack,k.rateS.toFixed(1)+'%',k.profitR.toFixed(1)+'%',Math.round(k.margin),k.qty,k.wt,
       Object.keys(ST[s.id].items).map(function(c){return (BC[c]?BC[c].n:c)+'×'+ST[s.id].items[c]}).join(' / ')].join('\t')});
-  var tsv=['세트명\t구분\t품목수\t총개수\t단품합산\t판매가\t할인율\t제품원가\t포장비\t총원가율\t이익율\t세트당이익\t계획수량\t중량\t구성'].concat(out).join('\n');
+  var tsv=['세트명\t구분\t품목수\t총개수\t단품합산\t판매가\t할인율\t제품원가\t제품원가율\t포장비\t총원가율\t이익율\t세트당이익\t계획수량\t중량\t구성'].concat(out).join('\n');
   navigator.clipboard.writeText(tsv).then(function(){alert('클립보드에 복사했습니다.')});});
 function reloadState(){
   try{
@@ -895,11 +898,12 @@ function renderCompare(){
    ['표시가',function(k){return k.list?nf(k.list):'-'},function(k){return k.list}],
    ['계획 수량',function(k){return k.qty?nf(k.qty):'-'},function(k){return k.qty}],
    ['품목 수',function(k){return k.kinds?k.kinds+'종 / '+k.n+'개':'-'},function(k){return k.n}],
-   ['총원가율',function(k){return k.price?k.rateS.toFixed(1)+'%':'-'},function(k){return k.rateS}]
+   ['제품원가율',function(k){return k.price?k.rateP.toFixed(1)+'%':'-'},function(k){return k.rateP}],
+  ['총원가율',function(k){return k.price?k.rateS.toFixed(1)+'%':'-'},function(k){return k.rateS}]
   ].forEach(function(r){
    var d='-';
    if(sel.length===2){ var a=r[2](ks[0]),b=r[2](ks[1]); var dv=b-a;
-    d = Math.abs(dv)<0.05? '<span style="color:#c3c9d4">동일</span>' : '<b style="color:'+(dv>0?'#1d6fd6':'#c0392b')+'">'+(dv>0?'+':'')+(r[0]==='총원가율'?dv.toFixed(1)+'%p':nf(dv))+'</b>'; }
+    d = Math.abs(dv)<0.05? '<span style="color:#c3c9d4">동일</span>' : '<b style="color:'+(dv>0?'#1d6fd6':'#c0392b')+'">'+(dv>0?'+':'')+((r[0]==='총원가율'||r[0]==='제품원가율')?dv.toFixed(1)+'%p':nf(dv))+'</b>'; }
    h+='<tr class="mrowc"><td class="nm" style="background:#fbfcfe">'+r[0]+'</td>'
     +ks.map(function(k){return '<td class="num" style="background:#fbfcfe">'+r[1](k)+'</td>'}).join('')
     +'<td class="num" style="background:#fbfcfe">'+d+'</td></tr>';
