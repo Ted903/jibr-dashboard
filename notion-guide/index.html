@@ -139,6 +139,22 @@ kbd{
   background:#fff;padding:1px 7px;font-size:12.2px;font-family:inherit;font-weight:500;
   color:var(--ink);white-space:nowrap;min-width:22px;text-align:center
 }
+kbd.mod,kbd.sft,kbd.alt{border-color:#c3d8cb;background:#f4faf6;color:var(--accent);font-weight:700}
+
+/* OS switch */
+.osbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--line2)}
+.osbar .lbl{font-size:12.5px;color:var(--ink3);font-weight:500}
+.osbar .grp{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.osbar button{
+  appearance:none;border:0;background:#fff;cursor:pointer;font-family:inherit;
+  font-size:13px;font-weight:700;color:var(--ink2);padding:7px 16px;transition:.15s;
+}
+.osbar button + button{border-left:1px solid var(--line)}
+.osbar button.on{background:var(--accent);color:#fff}
+.osbar .hint{font-size:12px;color:var(--ink3)}
+.osonly{display:none}
+body[data-os="win"] .win-only{display:revert}
+body[data-os="mac"] .mac-only{display:revert}
 
 /* QA */
 .qa{border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;background:#fff}
@@ -210,7 +226,15 @@ footer b{color:var(--ink2)}
   <div class="meta">
     <div>읽는 데 걸리는 시간<b>약 25분</b></div>
     <div>따라 하며 익히는 시간<b>약 1시간</b></div>
-    <div>기준 화면<b>노션 한글 웹 · 데스크톱</b></div>
+    <div>기준 화면<b>노션 한글 화면 (윈도우 · 맥 동일)</b></div>
+  </div>
+  <div class="osbar">
+    <span class="lbl">쓰고 계신 컴퓨터를 골라주세요</span>
+    <span class="grp">
+      <button type="button" id="os-win">Windows</button>
+      <button type="button" id="os-mac">Mac</button>
+    </span>
+    <span class="hint">문서 안의 단축키 표기가 전부 바뀝니다</span>
   </div>
 </div>
 
@@ -379,11 +403,11 @@ footer b{color:var(--ink2)}
   <table>
     <thead><tr><th style="width:190px">단축키</th><th>효과</th></tr></thead>
     <tbody>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>B</kbd></td><td>굵게</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>I</kbd></td><td>기울임</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>U</kbd></td><td>밑줄</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd></td><td>선택한 글자에 링크 걸기</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>E</kbd></td><td>인라인 코드</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>B</kbd></td><td>굵게</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>I</kbd></td><td>기울임</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>U</kbd></td><td>밑줄</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>K</kbd></td><td>선택한 글자에 링크 걸기</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>E</kbd></td><td>인라인 코드</td></tr>
     </tbody>
   </table>
 </section>
@@ -431,7 +455,7 @@ footer b{color:var(--ink2)}
 
   <div class="warn">
     <b>알아두면 좋은 것</b>
-    <p>노션에는 <b>저장 버튼이 없습니다.</b> 입력하는 즉시 저장됩니다. 그래서 실수도 즉시 반영됩니다. 되돌리려면 <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>Z</kbd>, 그보다 오래됐다면 <b>버전 기록</b>을 쓰세요.</p>
+    <p>노션에는 <b>저장 버튼이 없습니다.</b> 입력하는 즉시 저장됩니다. 그래서 실수도 즉시 반영됩니다. 되돌리려면 <kbd class="mod">Ctrl</kbd> + <kbd>Z</kbd>, 그보다 오래됐다면 <b>버전 기록</b>을 쓰세요.</p>
   </div>
 
   <h4>링크 복사</h4>
@@ -706,18 +730,23 @@ footer b{color:var(--ink2)}
 
   <figure class="md">
     <img src="img/search.png" alt="노션 검색">
-    <figcaption><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>P</kbd> 또는 사이드바의 <b>검색</b>으로 엽니다. 제목뿐 아니라 <b>본문 내용까지</b> 찾아줍니다.</figcaption>
+    <figcaption><kbd class="mod">Ctrl</kbd> + <kbd>P</kbd> 또는 사이드바의 <b>검색</b>으로 엽니다. 제목뿐 아니라 <b>본문 내용까지</b> 찾아줍니다.</figcaption>
   </figure>
 
   <table>
     <thead><tr><th style="width:210px">방법</th><th>이럴 때</th></tr></thead>
     <tbody>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>P</kbd></td><td>문서 이름이 대충 기억날 때 (가장 빠름)</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>P</kbd></td><td>문서 이름이 대충 기억날 때 (가장 빠름)</td></tr>
       <tr><td>사이드바 · 최근 항목</td><td>조금 전에 보던 문서로 돌아갈 때</td></tr>
       <tr><td>즐겨찾기</td><td>매일 여는 문서. 상단바 별 아이콘으로 등록</td></tr>
       <tr><td>데이터베이스 안 검색</td><td>특정 DB 안에서만 찾을 때</td></tr>
     </tbody>
   </table>
+
+  <div class="note">
+    <b>브라우저에서 인쇄 창이 뜨면</b>
+    <p>간혹 브라우저가 <kbd class="mod">Ctrl</kbd> + <kbd>P</kbd>를 인쇄 단축키로 가로채기도 합니다. 그럴 땐 <kbd class="mod">Ctrl</kbd> + <kbd>K</kbd>를 쓰거나 사이드바의 <b>검색</b>을 누르면 됩니다. 단, 글자를 선택한 상태에서 <kbd class="mod">Ctrl</kbd> + <kbd>K</kbd>를 누르면 검색이 아니라 링크 입력이 됩니다.</p>
+  </div>
 
   <div class="tip">
     <b>즐겨찾기를 먼저 정리하세요</b>
@@ -768,9 +797,9 @@ footer b{color:var(--ink2)}
     <thead><tr><th style="width:220px">단축키</th><th>동작</th></tr></thead>
     <tbody>
       <tr><td><code>/</code></td><td>블록 종류 고르기 (가장 중요)</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>P</kbd></td><td>검색 · 페이지 이동</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>Z</kbd></td><td>실행 취소</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>B</kbd></td><td>굵게</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>P</kbd></td><td>검색 · 페이지 이동</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>Z</kbd></td><td>실행 취소</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>B</kbd></td><td>굵게</td></tr>
       <tr><td><code>@</code></td><td>사람 · 페이지 · 날짜 넣기</td></tr>
     </tbody>
   </table>
@@ -794,12 +823,31 @@ footer b{color:var(--ink2)}
   <table>
     <thead><tr><th style="width:220px">단축키</th><th>동작</th></tr></thead>
     <tbody>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>\</kbd></td><td>사이드바 열기 / 닫기</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>D</kbd></td><td>블록 · 페이지 복제</td></tr>
-      <tr><td><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>⇧</kbd> + <kbd>P</kbd></td><td>페이지 옮기기</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>\</kbd></td><td>사이드바 열기 / 닫기</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd>D</kbd></td><td>블록 · 페이지 복제</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd> + <kbd class="sft">Shift</kbd> + <kbd>P</kbd></td><td>페이지 옮기기</td></tr>
       <tr><td><kbd>Esc</kbd></td><td>메뉴 닫기 · 블록 선택 해제</td></tr>
     </tbody>
   </table>
+
+  <h4>윈도우와 맥의 차이</h4>
+  <p>노션 화면 구성과 기능은 윈도우와 맥이 똑같습니다. 다른 건 <b>모드키(조합키) 이름</b>과 몇 가지 운영체제 기능뿐입니다.</p>
+  <table>
+    <thead><tr><th style="width:230px">역할</th><th style="width:200px">윈도우</th><th>맥</th></tr></thead>
+    <tbody>
+      <tr><td>기본 조합키</td><td><kbd>Ctrl</kbd></td><td><kbd>⌘</kbd> (Command)</td></tr>
+      <tr><td>보조 조합키</td><td><kbd>Alt</kbd></td><td><kbd>⌥</kbd> (Option)</td></tr>
+      <tr><td>Shift 키 표기</td><td><kbd>Shift</kbd></td><td><kbd>⇧</kbd></td></tr>
+      <tr><td>이모지 불러오기 (아이콘 입력 시)</td><td><kbd>Win</kbd> + <kbd>.</kbd></td><td><kbd>Ctrl</kbd> + <kbd>⌘</kbd> + <kbd>Space</kbd></td></tr>
+      <tr><td>블록 메뉴 열기</td><td colspan="2">둘 다 동일 — 블록 손잡이(⠿) 클릭 또는 마우스 오른쪽 버튼</td></tr>
+      <tr><td>화면 구성 · 메뉴 이름</td><td colspan="2">둘 다 동일 — 이 문서의 모든 캡처를 그대로 따라가면 됩니다</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>화면 캡처에 대하여</b>
+    <p>이 문서의 캡처는 브라우저에서 열은 노션 화면입니다. 노션은 윈도우 · 맥 · 브라우저 어디서 열든 화면과 메뉴 이름이 동일해서, 윈도우 PC에서도 보이는 모양이 같습니다. 창 모서리의 창 닫기 버튼 모양 정도만 다릅니다.</p>
+  </div>
 </section>
 
 <!-- ============ PART 11 ============ -->
@@ -810,7 +858,7 @@ footer b{color:var(--ink2)}
   <details class="qa" open>
     <summary>실수로 페이지를 지웠어요</summary>
     <div class="body">
-      <p>바로 지웠다면 <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>Z</kbd>로 되돌아옵니다. 시간이 지났다면 사이드바 맨 아래 <b>휴지통</b>에서 찾아 복원하세요. 완전히 사라진 것이 아닙니다.</p>
+      <p>바로 지웠다면 <kbd class="mod">Ctrl</kbd> + <kbd>Z</kbd>로 되돌아옵니다. 시간이 지났다면 사이드바 맨 아래 <b>휴지통</b>에서 찾아 복원하세요. 완전히 사라진 것이 아닙니다.</p>
     </div>
   </details>
 
@@ -903,6 +951,28 @@ footer b{color:var(--ink2)}
 </div>
 
 <script>
+// OS별 단축키 표기 전환
+(function(){
+  var MAP = { mod:['Ctrl','\u2318'], sft:['Shift','\u21e7'], alt:['Alt','\u2325'] };
+  var bw = document.getElementById('os-win'), bm = document.getElementById('os-mac');
+  function apply(os){
+    var i = (os === 'mac') ? 1 : 0;
+    ['mod','sft','alt'].forEach(function(c){
+      [].forEach.call(document.querySelectorAll('kbd.' + c), function(k){ k.textContent = MAP[c][i]; });
+    });
+    document.body.setAttribute('data-os', os);
+    bw.classList.toggle('on', os === 'win');
+    bm.classList.toggle('on', os === 'mac');
+    try { localStorage.setItem('nguide-os', os); } catch(e){}
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('nguide-os'); } catch(e){}
+  if (!saved) saved = /Mac|iPhone|iPad/i.test(navigator.platform + navigator.userAgent) ? 'mac' : 'win';
+  bw.addEventListener('click', function(){ apply('win'); });
+  bm.addEventListener('click', function(){ apply('mac'); });
+  apply(saved);
+})();
+
 // 2x(레티나) 캡처를 실제 크기의 절반으로 표시해 선명하게
 (function(){
   function fit(img){
