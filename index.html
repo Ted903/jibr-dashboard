@@ -298,12 +298,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .memo-box:empty::before{content:'메모 클릭 후 입력...';color:var(--ink3);pointer-events:none;}
 .memo-box:focus{border-color:var(--accent);}
 
-/* 이슈 */
-.blocker-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border-soft);}
-.blocker-item:last-child{border-bottom:none;}
-.blocker-item:hover .todo-del{opacity:1;}
-.blocker-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;}
-.blocker-text{font-size:13px;line-height:1.5;flex:1;}
+/* 매일 하는 일 */
+.daily-hint{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);font-size:11px;}
+.daily-count{font-family:var(--mono);font-size:11px;font-weight:600;margin-left:6px;}
 
 /* 로그 */
 .log-layout{display:grid;grid-template-columns:240px 1fr;gap:20px;}
@@ -632,7 +629,7 @@ select.fi{cursor:pointer;}
   <!-- ════════════════════ STANDUP ════════════════════ -->
   <div id="view-standup" class="view active">
     <div class="ph">
-      <div><div class="ph-title">아침 회의</div><div class="ph-sub" id="standup-ph-sub">오늘의 To-do · 우선순위 · 이슈 공유</div></div>
+      <div><div class="ph-title">아침 회의</div><div class="ph-sub" id="standup-ph-sub">오늘의 To-do · 우선순위 · 매일 하는 일</div></div>
       <div style="display:flex;gap:8px;">
         <button class="btn bs bg" onclick="openAddTodoModal()">+ 할 일 추가</button>
         <button class="btn bs bp" onclick="finishMeeting()">✓ 회의 완료 저장</button>
@@ -883,15 +880,16 @@ select.fi{cursor:pointer;}
   </div>
 </div>
 
-<!-- Add Blocker -->
-<div class="mo" id="mo-blocker">
+<!-- Add Daily (매일 하는 일) -->
+<div class="mo" id="mo-daily">
   <div class="modal" style="width:480px;">
-    <div class="moh"><div class="mot" id="mo-blocker-title">이슈 / 블로커 추가</div><button class="btn bs" onclick="cm('mo-blocker')">✕</button></div>
+    <div class="moh"><div class="mot" id="mo-daily-title">매일 하는 일 추가</div><button class="btn bs" onclick="cm('mo-daily')">✕</button></div>
     <div class="mob">
-      <input type="hidden" id="bl-mid">
-      <div class="fg"><label class="fl">이슈 내용</label><textarea class="fi" id="bl-text" rows="3" placeholder="오늘 업무를 막고 있는 이슈나 요청 사항을 입력하세요"></textarea></div>
+      <input type="hidden" id="dl-mid">
+      <div class="fg"><label class="fl">내용 <span style="font-weight:400;color:var(--ink3);">(줄바꿈으로 여러 개 한 번에 추가)</span></label><textarea class="fi" id="dl-text" rows="4" placeholder="예) 주문 마감 확인&#10;예) 재고 현황 점검"></textarea></div>
+      <div style="font-size:12px;color:var(--ink3);line-height:1.6;">한 번 등록하면 <b>매일 자동으로 목록에 표시</b>되고, 체크 표시는 <b>날짜가 바뀌면 자동으로 해제</b>됩니다.</div>
     </div>
-    <div class="mof"><button class="btn" onclick="cm('mo-blocker')">취소</button><button class="btn bp" onclick="saveBlocker()">추가</button></div>
+    <div class="mof"><button class="btn" onclick="cm('mo-daily')">취소</button><button class="btn bp" onclick="saveDaily()">추가</button></div>
   </div>
 </div>
 
@@ -1007,6 +1005,78 @@ function getStandup(date){
   return CQ().standups[date];
 }
 
+// ══════════════════════════════════════
+// 매일 하는 일 (Daily routine)
+//  - 목록(정의)은 STORE.dailies에 팀원별로 1벌만 저장 → 매일 그대로 표시
+//  - 체크 상태는 standups[날짜].dailyDone 에 저장 → 날짜가 바뀌면 자동으로 미체크
+// ══════════════════════════════════════
+function getDailies(mid){
+  if(!STORE.dailies)STORE.dailies={};
+  if(!STORE.dailies[mid])STORE.dailies[mid]=[];
+  return STORE.dailies[mid];
+}
+function dailyChecked(date,mid,did){
+  const sd=getStandup(date);
+  return !!(sd.dailyDone&&sd.dailyDone[mid]&&sd.dailyDone[mid][did]);
+}
+function toggleDaily(date,mid,did){
+  const sd=getStandup(date);
+  if(!sd.dailyDone)sd.dailyDone={};
+  if(!sd.dailyDone[mid])sd.dailyDone[mid]={};
+  if(sd.dailyDone[mid][did])delete sd.dailyDone[mid][did];
+  else sd.dailyDone[mid][did]=true;
+  saveStore();renderStandup();renderDashStandupWidget();
+}
+function openAddDaily(mid){
+  document.getElementById('dl-mid').value=mid;
+  const m=CQ().members.find(x=>x.id===mid);
+  document.getElementById('mo-daily-title').textContent=`매일 하는 일 추가 — ${m?m.name:''}`;
+  document.getElementById('dl-text').value='';
+  om('mo-daily');setTimeout(()=>document.getElementById('dl-text').focus(),100);
+}
+function saveDaily(){
+  const mid=parseInt(document.getElementById('dl-mid').value);
+  const raw=document.getElementById('dl-text').value;
+  const list=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  if(!list.length)return alert('내용을 입력해주세요');
+  const arr=getDailies(mid);
+  const base=Date.now();
+  list.forEach((text,i)=>{arr.push({id:base+i,text});});
+  saveStore();cm('mo-daily');renderStandup();renderDashStandupWidget();
+}
+function startEditDaily(mid,did){
+  const d=getDailies(mid).find(x=>x.id===did);if(!d)return;
+  const textEl=document.getElementById('daily-text-'+did);if(!textEl)return;
+  const orig=d.text;
+  textEl.innerHTML=`<input class="todo-edit-input" id="daily-edit-input-${did}" value="${orig.replace(/"/g,'&quot;')}" style="width:100%;"/>
+    <div class="todo-edit-actions">
+      <button class="btn bp bxs" onclick="saveEditDaily(${mid},${did})">저장</button>
+      <button class="btn bxs" onclick="renderStandup()">취소</button>
+    </div>`;
+  const input=document.getElementById('daily-edit-input-'+did);
+  if(input){input.focus();input.select();input.addEventListener('keydown',e=>{if(e.key==='Enter')saveEditDaily(mid,did);if(e.key==='Escape')renderStandup();});}
+}
+function saveEditDaily(mid,did){
+  const input=document.getElementById('daily-edit-input-'+did);if(!input)return;
+  const newText=input.value.trim();if(!newText)return;
+  const d=getDailies(mid).find(x=>x.id===did);
+  if(d)d.text=newText;
+  saveStore();renderStandup();
+}
+function delDaily(mid,did){
+  const d=getDailies(mid).find(x=>x.id===did);
+  if(!confirm(`"${d?d.text:''}" 을(를) 매일 하는 일 목록에서 삭제할까요?\n(오늘 이후 모든 날짜에서 사라집니다)`))return;
+  STORE.dailies[mid]=getDailies(mid).filter(x=>x.id!==did);
+  saveStore();renderStandup();renderDashStandupWidget();
+}
+function moveDaily(mid,did,dir){
+  const arr=getDailies(mid);
+  const i=arr.findIndex(x=>x.id===did);if(i<0)return;
+  const j=i+dir;if(j<0||j>=arr.length)return;
+  const tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;
+  saveStore();renderStandup();
+}
+
 // Firebase 로드 완료 후 오늘 미완료 항목 이월 실행
 function runCarryOver(){
   const today=todayStr();
@@ -1044,20 +1114,7 @@ function runCarryOver(){
         });
       });
     }
-    // 이슈/블로커 이월 (완료 개념 없이, 삭제 전까지 계속 이월)
-    if(prev.blockers){
-      if(!CQ().standups[today].blockers)CQ().standups[today].blockers={};
-      Object.keys(prev.blockers).forEach(mid=>{
-        const items=prev.blockers[mid]||[];
-        if(!CQ().standups[today].blockers[mid])CQ().standups[today].blockers[mid]=[];
-        const existTexts=CQ().standups[today].blockers[mid].map(b=>b.text);
-        items.forEach(b=>{
-          if(!existTexts.includes(b.text)){
-            CQ().standups[today].blockers[mid].push({id:Date.now()+Math.random(),text:b.text,_carried:true});
-          }
-        });
-      });
-    }
+    // 매일 하는 일은 이월하지 않는다 (정의는 항상 유지되고, 체크만 날짜별로 초기화)
   }
   // 날짜 문자열로 저장해서 매일 새로 실행되도록
   CQ().standups[today]._carryDone=today;
@@ -1207,7 +1264,7 @@ function findLastStandup(beforeDate){
     Object.keys(sd).forEach(d=>{
       if(d>=beforeDate) return;
       const s=sd[d];
-      const has=(s.todos&&s.todos.length>0)||(s.keyTasks&&Object.keys(s.keyTasks).length>0)||(s.blockers&&Object.keys(s.blockers).length>0);
+      const has=(s.todos&&s.todos.length>0)||(s.keyTasks&&Object.keys(s.keyTasks).length>0);
       if(!has) return;
       const diff=Math.round((new Date(beforeDate+'T00:00:00')-new Date(d+'T00:00:00'))/86400000);
       if(diff>30) return;
@@ -1414,8 +1471,8 @@ function renderDashStandupWidget(){
     if(!shown.length)h+=`<div style="font-size:11px;color:var(--ink3);">보류 ${hold}건만 있습니다</div>`;
     h+=`</div></div></div>`;
   });
-  const blMs=CQ().members.filter(m=>{const b=sd.blockers&&sd.blockers[m.id];return b&&b.length>0;});
-  if(blMs.length)h+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(31,58,95,.06);border-radius:999px;font-size:12px;font-weight:700;color:var(--accent);">⚠ 이슈: ${blMs.map(m=>m.name).join(', ')}</div>`;
+  const dlPend=CQ().members.map(m=>{const ds=getDailies(m.id);if(!ds.length)return null;const done=ds.filter(d=>dailyChecked(td,m.id,d.id)).length;return done<ds.length?`${m.name} ${done}/${ds.length}`:null;}).filter(Boolean);
+  if(dlPend.length)h+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(31,58,95,.06);border-radius:999px;font-size:12px;font-weight:700;color:var(--accent);">🔁 매일 하는 일 미완료: ${dlPend.join(' · ')}</div>`;
   el.innerHTML=h;
 }
 
@@ -1495,7 +1552,8 @@ function renderStandup(){
     const _tb=buildTodoHtml(m,sd,curStandupDate);
     const todos=_tb.live;
     const keyTasks=(sd.keyTasks&&sd.keyTasks[m.id])||[];
-    const blockers=(sd.blockers&&sd.blockers[m.id])||[];
+    const dailies=getDailies(m.id);
+    const dailyDoneN=dailies.filter(d=>dailyChecked(curStandupDate,m.id,d.id)).length;
     const memo=(sd.memo&&sd.memo[m.id])||'';
     const done=todos.filter(t=>t.done).length;const total=todos.length;
     const stCol=total&&done===total?'var(--olive)':total?'var(--gold)':'var(--ink3)';
@@ -1514,14 +1572,19 @@ function renderStandup(){
     });
     if(!keyTaskHtml)keyTaskHtml=`<div style="font-size:13px;color:var(--ink3);padding:10px 0;">중요 업무를 추가해주세요</div>`;
 
-    let blHtml='';
-    blockers.forEach(b=>{blHtml+=`<div class="blocker-item" id="blocker-item-${b.id}">
-      <div class="blocker-dot"></div>
-      <div class="blocker-text" id="blocker-text-${b.id}">${b.text}${b._carried?'<span style="font-size:10px;background:var(--paper2);color:var(--ink3);padding:1px 5px;border-radius:999px;margin-left:5px;font-family:var(--mono);">이월</span>':''}</div>
-      <button class="todo-del" onclick="startEditBlocker('${curStandupDate}',${m.id},${b.id})" title="수정">✎</button>
-      <button class="todo-del" onclick="delBlocker('${curStandupDate}',${m.id},${b.id})">✕</button>
-    </div>`;});
-    if(!blHtml)blHtml=`<div style="font-size:13px;color:var(--ink3);padding:6px 0;">이슈 없음</div>`;
+    let dlHtml='';
+    dailies.forEach((d,di)=>{
+      const ck=dailyChecked(curStandupDate,m.id,d.id);
+      dlHtml+=`<div class="todo-item" id="daily-item-${d.id}">
+        <div class="todo-cb ${ck?'done':''}" onclick="toggleDaily('${curStandupDate}',${m.id},${d.id})"></div>
+        <div class="todo-text ${ck?'done-text':''}" id="daily-text-${d.id}">${d.text}</div>
+        <button class="todo-del" onclick="moveDaily(${m.id},${d.id},-1)" title="위로" ${di===0?'style="visibility:hidden;"':''}>↑</button>
+        <button class="todo-del" onclick="moveDaily(${m.id},${d.id},1)" title="아래로" ${di===dailies.length-1?'style="visibility:hidden;"':''}>↓</button>
+        <button class="todo-del" onclick="startEditDaily(${m.id},${d.id})" title="수정">✎</button>
+        <button class="todo-del" onclick="delDaily(${m.id},${d.id})" title="삭제">✕</button>
+      </div>`;
+    });
+    if(!dlHtml)dlHtml=`<div style="font-size:13px;color:var(--ink3);padding:10px 0;">매일 반복하는 업무를 추가해주세요</div>`;
 
     grid+=`<div class="standup-card">
       <div class="sc-header">
@@ -1543,10 +1606,11 @@ function renderStandup(){
             <button class="btn bxs" onclick="openAddKeyTask(${m.id})">+ 추가</button>
           </div>${keyTaskHtml}
         </div>
-        <div class="todo-section" style="margin-bottom:0;">
-          <div class="todo-section-title">이슈 / 블로커
-            <button class="btn bxs" onclick="openAddBlocker(${m.id})">+ 추가</button>
-          </div>${blHtml}
+        <div class="todo-section" style="margin-bottom:0;border-top:1px solid var(--border-soft);padding-top:14px;">
+          <div class="todo-section-title">🔁 매일 하는 일<span class="daily-count" style="color:${dailies.length&&dailyDoneN===dailies.length?'var(--olive)':'var(--ink3)'};">${dailyDoneN}/${dailies.length}</span>
+            <span class="daily-hint">· 매일 자동 표시</span>
+            <button class="btn bxs" onclick="openAddDaily(${m.id})">+ 추가</button>
+          </div>${dlHtml}
         </div>
       </div>
     </div>`;
@@ -1750,42 +1814,6 @@ function cancelEditKeyTask(kid, orig){
 function toggleTodo(date,tid){const sd=getStandup(date);const t=sd.todos.find(x=>x.id===tid);if(t){t.done=!t.done;saveStore();renderStandup();renderDashStandupWidget();}}
 function delTodo(date,tid){const sd=getStandup(date);sd.todos=sd.todos.filter(t=>t.id!==tid);saveStore();renderStandup();}
 
-function startEditBlocker(date,mid,bid){
-  const sd=getStandup(date);
-  const b=(sd.blockers&&sd.blockers[mid]||[]).find(x=>x.id===bid);if(!b)return;
-  const textEl=document.getElementById('blocker-text-'+bid);if(!textEl)return;
-  const orig=b.text;
-  textEl.innerHTML=`<input class="todo-edit-input" id="blocker-edit-input-${bid}" value="${orig.replace(/"/g,'&quot;')}" style="width:100%;"/>
-    <div class="todo-edit-actions">
-      <button class="btn bp bxs" onclick="saveEditBlocker('${date}',${mid},${bid})">저장</button>
-      <button class="btn bxs" onclick="renderStandup()">취소</button>
-    </div>`;
-  const input=document.getElementById('blocker-edit-input-'+bid);
-  if(input){input.focus();input.select();input.addEventListener('keydown',e=>{if(e.key==='Enter')saveEditBlocker(date,mid,bid);if(e.key==='Escape')renderStandup();});}
-}
-function saveEditBlocker(date,mid,bid){
-  const input=document.getElementById('blocker-edit-input-'+bid);if(!input)return;
-  const newText=input.value.trim();if(!newText)return;
-  const sd=getStandup(date);
-  const b=(sd.blockers&&sd.blockers[mid]||[]).find(x=>x.id===bid);
-  if(b)b.text=newText;
-  saveStore();renderStandup();
-}
-function carryBlocker(date,mid,bid){
-  const today=todayStr();
-  if(date===today){alert('오늘 날짜는 이월할 수 없어요.');return;}
-  const sd=getStandup(date);
-  const b=(sd.blockers&&sd.blockers[mid]||[]).find(x=>x.id===bid);if(!b)return;
-  const todaySd=getStandup(today);
-  if(!todaySd.blockers)todaySd.blockers={};
-  if(!todaySd.blockers[mid])todaySd.blockers[mid]=[];
-  // 중복 체크
-  if(todaySd.blockers[mid].find(x=>x.text===b.text)){alert('이미 오늘에 같은 이슈가 있어요.');return;}
-  todaySd.blockers[mid].push({id:Date.now(),text:b.text,_carried:true});
-  saveStore();
-  alert('오늘 날짜로 이월됐어요!');
-}
-function delBlocker(date,mid,bid){const sd=getStandup(date);if(sd.blockers&&sd.blockers[mid])sd.blockers[mid]=sd.blockers[mid].filter(b=>b.id!==bid);saveStore();renderStandup();}
 
 function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 let memoTimer={};
@@ -1886,9 +1914,6 @@ function saveTodos(){
   saveStore();cm('mo-todo');renderStandup();
 }
 
-// Blocker
-function openAddBlocker(mid){document.getElementById('bl-mid').value=mid;const m=CQ().members.find(x=>x.id===mid);document.getElementById('mo-blocker-title').textContent=`이슈 추가 — ${m?m.name:''}`;document.getElementById('bl-text').value='';om('mo-blocker');setTimeout(()=>document.getElementById('bl-text').focus(),100);}
-function saveBlocker(){const mid=parseInt(document.getElementById('bl-mid').value);const text=document.getElementById('bl-text').value.trim();if(!text)return alert('내용을 입력해주세요');const sd=getStandup(curStandupDate);if(!sd.blockers)sd.blockers={};if(!sd.blockers[mid])sd.blockers[mid]=[];sd.blockers[mid].push({id:Date.now(),text});saveStore();cm('mo-blocker');renderStandup();}
 
 // 중요 업무
 function openAddKeyTask(mid){document.getElementById('kt-mid').value=mid;const m=CQ().members.find(x=>x.id===mid);document.getElementById('mo-keytask-title').textContent=`중요 업무 추가 — ${m?m.name:''}`;document.getElementById('kt-text').value='';om('mo-keytask');setTimeout(()=>document.getElementById('kt-text').focus(),100);}
@@ -1924,8 +1949,8 @@ function renderLogDetail(dt){
     <button class="btn bp bs" onclick="copyDayLog('${dt}')">⎘ 구글챗 복사</button>
   </div><div style="padding:20px 24px;">`;
   CQ().members.forEach(m=>{
-    const todos=(sd.todos||[]).filter(t=>t.mid===m.id);const keyTasks=(sd.keyTasks&&sd.keyTasks[m.id])||[];const blockers=(sd.blockers&&sd.blockers[m.id])||[];
-    if(!todos.length&&!keyTasks.length&&!blockers.length)return;
+    const todos=(sd.todos||[]).filter(t=>t.mid===m.id);const keyTasks=(sd.keyTasks&&sd.keyTasks[m.id])||[];const dailies=getDailies(m.id);
+    if(!todos.length&&!keyTasks.length&&!dailies.length)return;
     const pc2=PC[m.part]||PC.tl;
     h+=`<div style="margin-bottom:18px;padding:16px 18px;background:var(--paper);border:1px solid var(--border-soft);border-radius:10px;">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
@@ -1941,7 +1966,7 @@ function renderLogDetail(dt){
         <span style="${t.done?'text-decoration:line-through;color:var(--ink3);':''}">${t.text}${t.okr?`<span style="color:var(--ink3);font-size:11px;"> ↳ ${t.okr}</span>`:''}</span>
       </div>`;});});}
     if(keyTasks.length){h+=`<div style="font-size:11px;font-weight:700;color:var(--md-col);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">⭐ 중요 업무</div>`;keyTasks.forEach(k=>{h+=`<div style="display:flex;gap:9px;padding:5px 0;font-size:13px;"><span style="color:${k.done?'var(--olive)':'var(--md-col)'};font-weight:700;flex-shrink:0;">${k.done?'✓':'◆'}</span><span style="${k.done?'text-decoration:line-through;color:var(--ink3);':''}">${k.text}</span></div>`;});}
-    if(blockers.length){h+=`<div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">이슈 / 블로커</div>`;blockers.forEach(b=>{h+=`<div style="display:flex;gap:9px;font-size:13px;padding:4px 0;"><span style="color:var(--accent);font-weight:700;">⚠</span>${b.text}</div>`;});}
+    if(dailies.length){const dn=dailies.filter(d=>dailyChecked(dt,m.id,d.id)).length;h+=`<div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">🔁 매일 하는 일 ${dn}/${dailies.length}</div>`;dailies.forEach(d=>{const ck=dailyChecked(dt,m.id,d.id);h+=`<div style="display:flex;gap:9px;font-size:13px;padding:4px 0;"><span style="color:${ck?'var(--olive)':'var(--ink3)'};font-weight:700;flex-shrink:0;">${ck?'✓':'○'}</span><span style="${ck?'text-decoration:line-through;color:var(--ink3);':''}">${d.text}</span></div>`;});}
 
     h+='</div>';
   });
@@ -1992,9 +2017,7 @@ function buildGChatLog(dt){
         if(m.isMe) return; // 본인 할일은 복사에서 제외
         const todos=(sd.todos||[]).filter(t=>t.mid===m.id);
         const keyTasks=(sd.keyTasks&&sd.keyTasks[m.id])||[];
-        const blockers=(sd.blockers&&sd.blockers[m.id])||[];
         [...todos,...keyTasks].forEach(t=>{out+=`\n* ${t.text}`;hasAny=true;});
-        blockers.forEach(b=>{out+=`\n⚠ ${b.text}`;hasAny=true;});
       });
       // isMe의 메모(공지글)만 표시
       ms.filter(m=>m.isMe).forEach(m=>{
@@ -2009,8 +2032,7 @@ function buildGChatLog(dt){
       ms.forEach(m=>{
         const todos=(sd.todos||[]).filter(t=>t.mid===m.id);
         const keyTasks=(sd.keyTasks&&sd.keyTasks[m.id])||[];
-        const blockers=(sd.blockers&&sd.blockers[m.id])||[];
-        if(!todos.length&&!keyTasks.length&&!blockers.length)return;
+        if(!todos.length&&!keyTasks.length)return;
 
         // 성만 제거하고 이름만 (강지예 → 지예) 또는 전체 이름 사용
         const shortName=m.name.replace(/\s*\(.*?\)\s*/g,'').trim();
@@ -2025,10 +2047,6 @@ function buildGChatLog(dt){
         if(keyTasks.length) keyTasks.forEach(k=>{out+=`    - ${k.text}\n`;});
         else out+=`    - \n`;
 
-        if(blockers.length){
-          out+=`\n⚠ 이슈/블로커\n`;
-          blockers.forEach(b=>{out+=`    - ${b.text}\n`;});
-        }
       });
     }
   });
@@ -2824,7 +2842,7 @@ function genReport(){
   let r=`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n ${CQ().teamName}  OKR 현황 리포트\n ${STORE.activeQ}  ·  생성: ${ds}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
   if(opts.s){const avg=ms.length?Math.round(ms.reduce((s,m)=>s+avgP(m),0)/ms.length):0;const del=delayed(ms);const mdA=byPart(ms,'md').length?Math.round(byPart(ms,'md').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'md').length):0;const ctA=byPart(ms,'ct').length?Math.round(byPart(ms,'ct').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'ct').length):0;
     r+=`[전체 요약]\n  팀 평균 진척도  : ${avg}% ${avg>=70?'(✓ 목표 달성권)':'(주의 필요)'}\n  MD 파트 평균   : ${mdA}%\n  콘텐츠 파트 평균: ${ctA}%\n  주목 필요 항목  : ${del.length}개\n\n`;}
-  if(opts.sd){const sd=CQ().standups[ds];r+=`[오늘 아침 회의 · ${formatDate(ds)}]\n`;if(!sd||!sd.todos||!sd.todos.length)r+='  기록 없음\n';else{ms.forEach(m=>{const todos=sd.todos.filter(t=>t.mid===m.id);if(!todos.length)return;r+=`\n  ${m.name}\n`;todos.forEach(t=>{r+=`    ${t.done?'✓':'○'} [${pl(t.prio)}] ${t.text}\n`;});const bs=(sd.blockers&&sd.blockers[m.id])||[];if(bs.length)bs.forEach(b=>{r+=`    ⚠ 이슈: ${b.text}\n`;});});}r+='\n';}
+  if(opts.sd){const sd=CQ().standups[ds];r+=`[오늘 아침 회의 · ${formatDate(ds)}]\n`;if(!sd||!sd.todos||!sd.todos.length)r+='  기록 없음\n';else{ms.forEach(m=>{const todos=sd.todos.filter(t=>t.mid===m.id);if(!todos.length)return;r+=`\n  ${m.name}\n`;todos.forEach(t=>{r+=`    ${t.done?'✓':'○'} [${pl(t.prio)}] ${t.text}\n`;});const dls=getDailies(m.id);if(dls.length){const dn=dls.filter(d=>dailyChecked(ds,m.id,d.id)).length;r+=`    🔁 매일 하는 일 ${dn}/${dls.length}\n`;}});}r+='\n';}
   if(opts.pt){r+='[파트별 현황]\n';[{part:'md',label:'MD 파트'},{part:'ct',label:'콘텐츠 파트'},{part:'tl',label:'팀장'}].forEach(s=>{const pm=byPart(ms,s.part);if(!pm.length)return;const a=Math.round(pm.reduce((x,m)=>x+avgP(m),0)/pm.length);r+=`\n  ▶ ${s.label} — 파트 평균 ${a}%\n`;pm.forEach(m=>{r+=`    · ${m.name} (${m.role}) — ${avgP(m)}%\n`;});});r+='\n';}
   if(opts.m){r+='[팀원별 OKR 상세]\n';ms.forEach(m=>{r+=`\n  ■ ${m.name} (${m.role}) — 평균 ${avgP(m)}%\n`;m.okrs.forEach(o=>{r+=`    • ${o.title}\n      ${o.progress}% · [${sl(o.status)}]\n`;if(o.note)r+=`      메모: ${o.note}\n`;(o.subOkrs||[]).forEach(s=>{r+=`        └ ${s.title} — ${s.progress}% [${sl(s.status)}]${s.note?' / '+s.note:''}\n`;});});});r+='\n';}
   if(opts.d){const del=delayed(ms);r+=`[주목 필요 항목 (${del.length}개)]\n`;if(!del.length)r+='  ✓ 없음\n';else del.forEach(d=>{r+=`  ${d.status==='delayed'?'⚠ 지연':'△ 주의'} [${d.member} · ${partLabel(d.part)}]\n  ${d.title} — ${d.progress}%\n`;if(d.note)r+=`  → ${d.note}\n`;});r+='\n';}
@@ -2867,7 +2885,7 @@ function delCi(mid,cid){if(!confirm('기록을 삭제하시겠습니까?'))retur
 // ══════════════════════════════════════
 loadStore();
 document.getElementById('sb-today-date').textContent=formatDate(todayStr());
-document.getElementById('standup-ph-sub').textContent=`${formatDate(todayStr())} · To-do · 우선순위 · 이슈 공유`;
+document.getElementById('standup-ph-sub').textContent=`${formatDate(todayStr())} · To-do · 우선순위 · 매일 하는 일`;
 
 // Firebase 로드 완료를 기다렸다가 렌더링
 function initRender(){
