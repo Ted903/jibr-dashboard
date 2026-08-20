@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026 추석 제품별 일별 생산 가능 수량</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f6f7f9;color:#242730;font-size:13px}
+.wrap{padding:12px 14px 26px}
+header{background:#fff;border:1px solid #e3e6ec;border-radius:10px;padding:11px 14px;margin-bottom:10px}
+h1{margin:0 0 3px;font-size:15px;font-weight:800}
+.sub{font-size:11.5px;color:#78808f;line-height:1.55}
+.bar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:9px}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tab{border:1px solid #d8dce4;background:#fff;border-radius:7px;padding:6px 11px;font-size:12px;font-weight:700;color:#5c6474;cursor:pointer;line-height:1.2}
+.tab b{display:block;font-size:10px;font-weight:600;color:#98a0ae;margin-top:1px}
+.tab.on{background:#2f5fd8;border-color:#2f5fd8;color:#fff}
+.tab.on b{color:#c9d8ff}
+.spacer{flex:1}
+.who{border:1px solid #d8dce4;border-radius:7px;padding:5px 8px;font-size:12px;width:110px}
+.status{font-size:11.5px;font-weight:700;color:#6b7280;white-space:nowrap}
+.status.ok{color:#1f7a4d}.status.err{color:#c0392b}.status.busy{color:#b7791f}
+.btn{border:1px solid #d8dce4;background:#fff;border-radius:7px;padding:6px 10px;font-size:11.5px;font-weight:700;color:#4a5263;cursor:pointer}
+.btn:hover{background:#f0f2f6}
+.tblbox{background:#fff;border:1px solid #e3e6ec;border-radius:10px;overflow:auto;max-height:calc(100vh - 190px)}
+table{border-collapse:separate;border-spacing:0;width:100%}
+th,td{border-bottom:1px solid #edeff3;border-right:1px solid #edeff3;padding:0;font-size:12px;text-align:center;white-space:nowrap}
+thead th{position:sticky;top:0;z-index:3;background:#f2f4f8;font-weight:700;color:#4a5263;padding:7px 6px;font-size:11.5px}
+thead th.we{background:#fdeeee;color:#b03434}
+th.nm,td.nm{position:sticky;left:0;z-index:2;background:#fff;text-align:left;padding:6px 9px;min-width:210px;font-weight:600;border-right:1px solid #dfe3ea}
+thead th.nm{z-index:4;background:#f2f4f8}
+td.cat{position:sticky;left:0;z-index:2;background:#eef1f6;text-align:left;padding:5px 9px;font-weight:800;color:#4a5263;font-size:11px;letter-spacing:.3px}
+tr.catrow td{background:#eef1f6;border-bottom:1px solid #dfe3ea}
+input.q{width:100%;border:0;background:transparent;padding:7px 2px;text-align:center;font-size:12.5px;font-family:inherit;color:#1b2230;outline:none}
+input.q:focus{background:#eaf0ff;box-shadow:inset 0 0 0 2px #2f5fd8;border-radius:3px}
+input.q.filled{font-weight:700}
+td.wecell{background:#fdf6f6}
+td.tot,th.tot{background:#f7f9fc;font-weight:800;color:#2f5fd8}
+tfoot td{position:sticky;bottom:0;z-index:3;background:#f2f4f8;font-weight:800;color:#333;padding:7px 4px}
+tfoot td.nm{z-index:4;background:#f2f4f8}
+.fillbtn{border:1px solid #dfe3ea;background:#fff;border-radius:5px;font-size:10px;padding:2px 5px;color:#78808f;cursor:pointer;margin-left:6px;font-weight:700}
+.fillbtn:hover{background:#eaf0ff;color:#2f5fd8;border-color:#b9c9f2}
+.note{margin-top:9px;font-size:11.5px;color:#78808f;line-height:1.7;background:#fff;border:1px solid #e3e6ec;border-radius:9px;padding:9px 12px}
+.note b{color:#c0392b}
+.warn{background:#fff7ed;border-color:#fcd9a8;color:#8a5a12}
+</style></head><body><div class="wrap">
+<header>
+<h1>2026 추석 · 제품별 일별 생산 가능 수량 기입</h1>
+<div class="sub">각 일자 기준 <b>해당 제품을 몇 개까지 생산 가능한지</b> 기입해 주세요 · 생산 불가한 날은 반드시 <b>0</b> 입력 (빈칸은 미확인으로 간주) · 입력하면 자동 저장되며 팀 전체가 같은 값을 봅니다</div>
+<div class="bar">
+<div class="tabs" id="tabs"></div>
+<div class="spacer"></div>
+<input class="who" id="who" placeholder="기입자 이름">
+<button class="btn" id="refresh">새로고침</button>
+<span class="status" id="status">연결 중...</span>
+</div>
+</header>
+<div class="tblbox"><table id="tbl"></table></div>
+<div class="note" id="note"></div>
+</div>
+<script>
+var FB='https://zipbanchan-review-db-default-rtdb.firebaseio.com/chuseok2026/capacity2026';
+var ITEMS=[["전류","동그랑땡","160g"],["전류","동그랑땡_대용량","450g"],["전류","동태전","150g"],["전류","동태전_대용량","500g"],["전류","깻잎전","250g"],["전류","깻잎전_대용량","500g"],["전류","녹두전","280g"],["전류","녹두전_대용량","600g"],["전류","모둠전 3종 (동태·동그랑땡·깻잎)","350g"],["전류","소고기육전과 파채","240g"],["전류","계란두부부침","170g"],["전류","애호박전","160g"],["전류","애호박전_대용량","300g"],["전류","새우전","120g"],["잡채","잡채","450g"],["나물","시금치나물","90g"],["나물","건고사리볶음 (고사리나물)","80g"],["나물","도라지볶음 (도라지나물)","80g"],["나물","무나물","100g"],["나물","콩나물무침","90g"],["기타","소고기무국 (냉동)","650g"],["기타","소불고기_완조리","300g"],["기타","한돈버섯돼지갈비찜","800g"]];
+var WEEKS=[{"t":"1주차","s":"9/1(화) ~ 9/6(일)","d":[{"k":"9-1","label":"9/1","dow":"화","we":false},{"k":"9-2","label":"9/2","dow":"수","we":false},{"k":"9-3","label":"9/3","dow":"목","we":false},{"k":"9-4","label":"9/4","dow":"금","we":false},{"k":"9-5","label":"9/5","dow":"토","we":true},{"k":"9-6","label":"9/6","dow":"일","we":true}]},{"t":"2주차","s":"9/7(월) ~ 9/13(일)","d":[{"k":"9-7","label":"9/7","dow":"월","we":false},{"k":"9-8","label":"9/8","dow":"화","we":false},{"k":"9-9","label":"9/9","dow":"수","we":false},{"k":"9-10","label":"9/10","dow":"목","we":false},{"k":"9-11","label":"9/11","dow":"금","we":false},{"k":"9-12","label":"9/12","dow":"토","we":true},{"k":"9-13","label":"9/13","dow":"일","we":true}]},{"t":"3주차","s":"9/14(월) ~ 9/20(일)","d":[{"k":"9-14","label":"9/14","dow":"월","we":false},{"k":"9-15","label":"9/15","dow":"화","we":false},{"k":"9-16","label":"9/16","dow":"수","we":false},{"k":"9-17","label":"9/17","dow":"목","we":false},{"k":"9-18","label":"9/18","dow":"금","we":false},{"k":"9-19","label":"9/19","dow":"토","we":true},{"k":"9-20","label":"9/20","dow":"일","we":true}]},{"t":"4주차","s":"9/21(월) ~ 9/23(수)","d":[{"k":"9-21","label":"9/21","dow":"월","we":false},{"k":"9-22","label":"9/22","dow":"화","we":false},{"k":"9-23","label":"9/23","dow":"수","we":false}]}];
+var DATA={}, META={}, rev=0, wi=0, timer=null, dirty=false;
+
+function key(i,d){return i+'|'+d}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function st(t,c){var e=document.getElementById('status');e.textContent=t;e.className='status '+(c||'')}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=WEEKS.map(function(w,i){
+    return '<button class="tab'+(i===wi?' on':'')+'" data-w="'+i+'">'+w.t+'<b>'+w.s+'</b></button>';
+  }).join('');
+}
+function render(){
+  var w=WEEKS[wi], days=w.d;
+  var h='<thead><tr><th class="nm">제품명</th>';
+  days.forEach(function(d){h+='<th class="'+(d.we?'we':'')+'">'+d.label+'<br><span style="font-weight:600;font-size:10px">('+d.dow+')</span></th>'});
+  h+='<th class="tot">주간계</th></tr></thead><tbody>';
+  var cat='';
+  ITEMS.forEach(function(it,ii){
+    if(it[0]!==cat){cat=it[0];h+='<tr class="catrow"><td class="cat" colspan="'+(days.length+2)+'">'+cat+'</td></tr>'}
+    h+='<tr><td class="nm">'+esc(it[1])+' <span style="color:#98a0ae;font-weight:500">'+it[2]+'</span>'+
+       '<button class="fillbtn" data-fill="'+ii+'" title="첫 칸 값을 이 주 전체에 복사">일괄</button></td>';
+    days.forEach(function(d){
+      var v=DATA[key(ii,d.k)];
+      h+='<td class="'+(d.we?'wecell':'')+'"><input class="q'+(v!==undefined&&v!==''?' filled':'')+'" inputmode="numeric" data-i="'+ii+'" data-d="'+d.k+'" value="'+(v===undefined?'':v)+'"></td>';
+    });
+    h+='<td class="tot" data-rt="'+ii+'">-</td></tr>';
+  });
+  h+='</tbody><tfoot><tr><td class="nm">일자별 합계</td>';
+  days.forEach(function(d){h+='<td data-ct="'+d.k+'">-</td>'});
+  h+='<td class="tot" data-gt="1">-</td></tr></tfoot>';
+  document.getElementById('tbl').innerHTML=h;
+  totals();
+  var isLast=(wi===WEEKS.length-1);
+  document.getElementById('note').className='note'+(isLast?' warn':'');
+  document.getElementById('note').innerHTML= isLast
+    ? '<b>4주차 참고</b> · 9/21(월)부터 생산 제한 운영이 시작되며, 컬리 예약분 마지막 센터입고는 9/24(목)입니다. 9/23(수)까지가 실질적인 마지막 생산일입니다.'
+    : '입력값은 1.5초 뒤 자동 저장됩니다 · 「일괄」 버튼은 그 행의 첫 칸 값을 해당 주 전체에 복사합니다 · 주말(토·일) 칸은 붉은색으로 표시됩니다.';
+}
+function totals(){
+  var days=WEEKS[wi].d, g=0;
+  var ct={}; days.forEach(function(d){ct[d.k]=0});
+  ITEMS.forEach(function(it,ii){
+    var s=0,any=false;
+    days.forEach(function(d){var v=DATA[key(ii,d.k)];if(v!==undefined&&v!==''){s+=Number(v)||0;any=true;ct[d.k]+=Number(v)||0}});
+    var c=document.querySelector('[data-rt="'+ii+'"]'); if(c)c.textContent=any?s.toLocaleString():'-';
+    g+=s;
+  });
+  days.forEach(function(d){var c=document.querySelector('[data-ct="'+d.k+'"]'); if(c)c.textContent=ct[d.k]?ct[d.k].toLocaleString():'-'});
+  var gt=document.querySelector('[data-gt]'); if(gt)gt.textContent=g?g.toLocaleString():'-';
+}
+function schedule(){ dirty=true; st('입력 중...','busy'); clearTimeout(timer); timer=setTimeout(push,1500); }
+function push(){
+  st('저장 중...','busy'); rev=Date.now();
+  META.by=document.getElementById('who').value||META.by||'';
+  META.at=new Date().toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+  localStorage.setItem('cap2026',JSON.stringify({d:DATA,m:META}));
+  fetch(FB+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({d:DATA,m:META,rev:rev})})
+    .then(function(r){if(!r.ok)throw 0; dirty=false; okmsg();})
+    .catch(function(){st('저장 실패 · 이 브라우저에만 저장됨','err')});
+}
+function okmsg(){ st('✓ 저장됨'+(META.at?' '+META.at:'')+(META.by?' · '+META.by:''),'ok'); }
+function pull(first){
+  fetch(FB+'.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(o){
+    if(o&&o.rev&&Number(o.rev)>rev){ rev=Number(o.rev); DATA=o.d||{}; META=o.m||{};
+      if(META.by&&!document.getElementById('who').value)document.getElementById('who').value=META.by;
+      render(); }
+    else if(first){ DATA=(o&&o.d)||{}; META=(o&&o.m)||{}; rev=Number((o&&o.rev)||0);
+      if(META.by)document.getElementById('who').value=META.by; render(); }
+    okmsg();
+  }).catch(function(){
+    if(first){var l=localStorage.getItem('cap2026'); if(l){var p=JSON.parse(l);DATA=p.d||{};META=p.m||{};render();}}
+    st('공유 저장소 연결 안 됨 · 이 브라우저에만 저장','err');
+  });
+}
+document.getElementById('tabs').addEventListener('click',function(e){
+  var b=e.target.closest('[data-w]'); if(!b)return; wi=Number(b.dataset.w); renderTabs(); render();
+});
+document.getElementById('tbl').addEventListener('input',function(e){
+  var t=e.target; if(!t.classList.contains('q'))return;
+  var v=t.value.replace(/[^0-9]/g,''); if(v!==t.value)t.value=v;
+  if(v==='')delete DATA[key(t.dataset.i,t.dataset.d)]; else DATA[key(t.dataset.i,t.dataset.d)]=Number(v);
+  t.classList.toggle('filled', v!=='');
+  totals(); schedule();
+});
+document.getElementById('tbl').addEventListener('click',function(e){
+  var b=e.target.closest('[data-fill]'); if(!b)return;
+  var ii=b.dataset.fill, days=WEEKS[wi].d, v=DATA[key(ii,days[0].k)];
+  if(v===undefined||v===''){alert('먼저 첫 번째 날짜 칸에 값을 입력해 주세요.');return}
+  days.forEach(function(d){DATA[key(ii,d.k)]=v});
+  render(); schedule();
+});
+document.getElementById('refresh').addEventListener('click',function(){rev=0;pull(false)});
+document.getElementById('who').addEventListener('change',schedule);
+window.addEventListener('beforeunload',function(e){ if(dirty){e.preventDefault();e.returnValue=''} });
+renderTabs(); render(); pull(true);
+setInterval(function(){ if(document.visibilityState==='visible'&&!dirty) pull(false); },10000);
+</script></body></html>
