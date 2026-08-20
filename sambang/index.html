@@ -1,0 +1,426 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>삼방봉투 소진 방안 전략 및 기획 · 통합본</title><style>
+:root{--muk:#1E1C1A;--hanji:#F4F0E8;--gold:#A8741A;--gray:#7A7670;--cheong:#2C5C4A;--line:#ddd7cb;--bg:#faf8f4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--muk);font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.6;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 70px}
+header{background:var(--muk);color:var(--hanji);padding:24px 28px;margin:0 -18px 0;position:relative}
+header .br{font-size:11px;letter-spacing:6px;color:var(--gold);font-weight:700}
+header h1{margin:6px 0 4px;font-size:24px;letter-spacing:-.5px}
+header .sub{opacity:.72;font-size:12.5px;margin-top:12px;border-top:1px solid rgba(168,116,26,.45);padding-top:10px}
+nav{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);margin:0 -18px 20px;padding:0 18px;display:flex;gap:2px;overflow-x:auto}
+nav button{flex:0 0 auto;background:none;border:none;border-bottom:3px solid transparent;padding:13px 18px;font-size:14px;font-weight:700;color:var(--gray);cursor:pointer;font-family:inherit;white-space:nowrap}
+nav button .st{display:block;font-size:10px;font-weight:800;letter-spacing:2px;color:#c3b9a5;margin-bottom:2px}
+nav button:hover{color:var(--muk)}
+nav button.on{color:var(--muk);border-bottom-color:var(--gold)}
+nav button.on .st{color:var(--gold)}
+section.tab{display:none;animation:fi .25s ease}
+section.tab.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:19px;margin:30px 0 12px;padding-left:11px;border-left:4px solid var(--gold)}
+h3{font-size:14.5px;margin:22px 0 8px;color:#3a3733}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:17px 19px;margin-bottom:13px}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:middle}
+th{background:#f2eee5;font-weight:700;font-size:12px}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.callout{border-left:4px solid var(--gold);background:#f7f3e9;border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:13.5px}
+.callout.warn{border-color:#b3402f;background:#fbeeeb}
+.callout.info{border-color:var(--cheong);background:#eaf2ee}
+.tag{display:inline-block;font-size:10.5px;padding:1.5px 7px;border-radius:20px;font-weight:700;white-space:nowrap}
+.t-f{background:#e6efe9;color:#2C5C4A}.t-i{background:#f7edd9;color:#8a6100}.t-x{background:#fbeeeb;color:#a03024}
+.grid{display:grid;gap:12px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 15px}
+.kpi .lb{font-size:11px;color:var(--gray)}
+.kpi .vl{font-size:23px;font-weight:800;letter-spacing:-.5px;margin:3px 0 2px}
+.kpi .ds{font-size:11px;color:var(--gray)}
+.up{color:#2C5C4A}.dn{color:#b3402f}
+.mk{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;align-items:flex-start;background:#f4f1ea;border:1px solid var(--line);border-radius:10px;padding:22px 16px}
+.mk .cap{text-align:center;font-size:12px;color:var(--gray);margin-top:9px;line-height:1.45}
+.mk .cap b{color:var(--muk);font-size:13px}
+.line{display:flex;gap:9px;flex-wrap:wrap}
+.ln{flex:1;min-width:150px;border:1px solid var(--line);border-radius:10px;padding:13px;background:#fff;text-align:center}
+.ln .ch{font-size:28px;font-weight:700;line-height:1}
+.ln .nm{font-size:12.5px;font-weight:700;margin-top:5px}
+.ln .ds{font-size:11px;color:var(--gray);margin-top:3px}
+.ln.new{border:2px solid var(--gold);background:#fdfaf2}
+ul{margin:6px 0 0;padding-left:18px}li{margin:3px 0;font-size:13.5px}
+.small{font-size:12px;color:var(--gray)}
+.ok{color:#2C5C4A;font-weight:700}.no{color:#b3402f;font-weight:700}.mid{color:#8a6100;font-weight:700}
+.ctrl{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 15px;margin-bottom:10px}
+.ctrl label{font-size:12.5px;font-weight:700}
+input[type=range]{width:180px;vertical-align:middle}
+input.num{width:78px;text-align:right;font-size:12px;padding:3px 5px;border:1px solid var(--line);border-radius:4px;font-variant-numeric:tabular-nums;font-family:inherit}
+.chart{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;margin:6px 0;color:var(--gray)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.foot{margin-top:28px;border-top:1px solid var(--line);padding-top:12px;font-size:11.5px;color:var(--gray)}
+@media print{body{background:#fff}nav{display:none}section.tab{display:block!important;page-break-before:always}.ctrl{display:none}}
+@media(max-width:820px){.g4,.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+</style></head><body><div class="wrap"><header><div class="br">온 · 올 림 &nbsp;|&nbsp; 집반찬연구소 온라인본부</div><h1>삼방봉투 소진 방안 전략 및 기획</h1><div class="sub">시장 수요조사 · 용량 시뮬레이션 · 세트구성 패키지 목업 통합본 · 2026-08-19</div></header><nav><button class="on"><span class="st">起</span>1 · 배경</button><button><span class="st">承</span>2 · 시장</button><button><span class="st">轉</span>3 · 제품</button><button><span class="st">轉</span>4 · 패키지</button><button><span class="st">結</span>5 · 실행</button></nav><section class="tab on">
+<h2>1. 이 기획이 시작된 이유</h2>
+<div class="callout"><b>3층 창고에 제품이 정해지지 않은 포장재 25만 장이 쌓여 있고, 폐기 결정이 임박했습니다.</b> 나프타 가격 급등 헤지 목적으로 선매입한 자재라 어떤 제품에도 매칭되어 있지 않습니다.</div>
+<div class="grid g4">
+ <div class="kpi"><div class="lb">보유 수량</div><div class="vl">256,251장</div><div class="ds">5개 규격</div></div>
+ <div class="kpi"><div class="lb">재고 금액</div><div class="vl">1,065만원</div><div class="ds">장당 평균 41.5원</div></div>
+ <div class="kpi"><div class="lb">폐기 시</div><div class="vl dn">전액 손실</div><div class="ds">+ 폐기비용 추가</div></div>
+ <div class="kpi"><div class="lb">소진 시</div><div class="vl up">원가 0원</div><div class="ds">신제품 포장재비 절감</div></div>
+</div>
+<h3>보유 재고</h3>
+<table><tr><th>규격(mm)</th><th class="n">수량</th><th class="n">재고금액</th><th class="n">장당</th><th class="n">유효 내경</th><th>형태 특성</th></tr>
+<tr><td>150×200</td><td class="n">54,000EA</td><td class="n">1,890,000원</td><td class="n">35원</td><td class="n">132×191</td><td>표준 소용량</td></tr>
+<tr><td>120×300</td><td class="n">65,100EA</td><td class="n">2,343,600원</td><td class="n">36원</td><td class="n">102×291</td><td>종횡비 0.35, 극단적 길쭉</td></tr>
+<tr><td>160×250</td><td class="n">17,651EA</td><td class="n">776,644원</td><td class="n">44원</td><td class="n">142×241</td><td>중형, 수량 최소</td></tr>
+<tr><td>180×200</td><td class="n">58,300EA</td><td class="n">2,332,000원</td><td class="n">40원</td><td class="n">162×191</td><td>종횡비 0.85, 넓적</td></tr>
+<tr><td>180×270</td><td class="n">61,200EA</td><td class="n">3,304,800원</td><td class="n">54원</td><td class="n">162×261</td><td>최대 용적</td></tr>
+<tr style="background:#f7f3e9"><td><b>합계</b></td><td class="n"><b>256,251EA</b></td><td class="n"><b>10,647,044원</b></td><td class="n">41.5원</td><td class="n">-</td><td>-</td></tr></table>
+
+<h2>2. 자재 스펙 — 나일론 + LLDPE 60μm</h2>
+<div class="grid g2">
+<div><table><tr><th style="width:120px">항목</th><th>내용</th></tr>
+<tr><td>필름 구성</td><td>나일론(ONy) + LLDPE 60μm 합지</td></tr>
+<tr><td>총 두께</td><td>약 75μm <span class="tag t-i">추정</span></td></tr>
+<tr><td>투명도</td><td>완전 투명 무지, 차광 없음</td></tr>
+<tr><td>산소투과도</td><td>40~90 cc/㎡·day (습도 의존)</td></tr>
+<tr><td>수증기투과도</td><td>약 6~8 g/㎡·day <span class="tag t-i">추정</span></td></tr>
+<tr><td>내열온도</td><td>90~100℃</td></tr>
+<tr><td>분리배출</td><td>OTHER (다층 이종재질)</td></tr></table></div>
+<div><table><tr><th style="width:130px">기존 미확인</th><th>스펙으로 확정된 판정</th></tr>
+<tr><td>EVOH 차단층</td><td class="no">없음. 산소차단 중간 수준</td></tr>
+<tr><td>레토르트</td><td class="no">불가 (내열 115℃ 미달)</td></tr>
+<tr><td>노치 필요성</td><td class="no">필수. 연신 나일론 고인열강도</td></tr>
+<tr><td>냉동</td><td class="ok">가능. 내한·내핀홀성 우수</td></tr>
+<tr><td>진공포장</td><td class="ok">가능. NY/LLDPE 표준 구조</td></tr></table></div>
+</div>
+<h3>차단성 비교 (20μm, 23℃, cc/㎡·day·atm)</h3>
+<table><tr><th>소재</th><th class="n">60%RH</th><th class="n">80%RH</th><th class="n">90%RH</th><th>평가</th></tr>
+<tr style="background:#f7f3e9"><td><b>나일론6 (연신)</b></td><td class="n"><b>40</b></td><td class="n"><b>52</b></td><td class="n"><b>90</b></td><td>중간. 흡습 시 급락</td></tr>
+<tr><td>EVOH (32mol%)</td><td class="n">0.5</td><td class="n">4.5</td><td class="n">50</td><td>고차단</td></tr>
+<tr><td>PET (연신)</td><td class="n">80</td><td class="n">80</td><td class="n">80</td><td>중하</td></tr>
+<tr><td>OPP</td><td class="n">2,500</td><td class="n">2,500</td><td class="n">2,500</td><td>차단 거의 없음</td></tr></table>
+<div class="callout warn"><b>제품군마다 유통기한이 갈립니다.</b> 냉동 채소·나물 <b>12개월 이상</b> / 비유탕 야채칩 <b>6~9개월</b>(실리카겔 병행) / 유탕 부각 <b>3~4개월</b>(탈산소제 필수). 김부각은 회전이 빠른 선물세트에만 넣는 것이 안전합니다.</div>
+
+<h2>3. 문제 정의</h2>
+<table><tr><th style="width:150px">제약</th><th>내용</th><th>돌파구</th></tr>
+<tr><td>수분·소스 불가</td><td>실링부 오염으로 밀봉 불량</td><td>건조·냉동 제품군으로 한정</td></tr>
+<tr><td>손질야채 무름</td><td>냉장 유통 시 조직 붕괴</td><td>냉동 전환 또는 건조 전환</td></tr>
+<tr><td>스탠딩 불가</td><td>평면 파우치, 매대 진열 불가</td><td>온라인 전용으로 설계</td></tr>
+<tr><td>재밀봉 불가</td><td>지퍼 없음</td><td>1회 소진형 소용량</td></tr>
+<tr><td>브랜드 표현 공간</td><td>완전 무지</td><td>헤더카드 또는 스티커 봉함</td></tr></table>
+<div class="callout info"><b>제약을 뒤집으면 답이 나옵니다.</b> 투명하게 보여도 예쁘고, 한 번에 다 먹고, 수분이 없는 제품 = <b>부각 · 말린야채칩</b>입니다.</div>
+</section><section class="tab">
+<h2>1. 검색 수요 추이</h2>
+<div class="grid g4">
+ <div class="kpi"><div class="lb">야채칩 YoY</div><div class="vl up">+14.8%</div><div class="ds">유일한 성장 지표</div></div>
+ <div class="kpi"><div class="lb">부각 YoY</div><div class="vl dn">-7.1%</div><div class="ds">감소폭은 가장 완만</div></div>
+ <div class="kpi"><div class="lb">한과·약과 YoY</div><div class="vl dn">-22.0%</div><div class="ds">약과붐 이후 급락</div></div>
+ <div class="kpi"><div class="lb">명절선물세트 YoY</div><div class="vl dn">-10.8%</div><div class="ds">선물 파이 축소</div></div>
+</div>
+<div class="card">
+<div class="legend"><span><i style="background:#C0392B"></i>부각</span><span><i style="background:#2E7D32"></i>야채칩</span></div>
+<svg viewBox="0 0 980 290" class="chart"><line x1="46" y1="258.0" x2="966" y2="258.0" stroke="#e8e3d8"/><text x="39" y="262.0" text-anchor="end" font-size="10.5" fill="#8d867a">0.0</text><line x1="46" y1="209.2" x2="966" y2="209.2" stroke="#e8e3d8"/><text x="39" y="213.2" text-anchor="end" font-size="10.5" fill="#8d867a">0.9</text><line x1="46" y1="160.4" x2="966" y2="160.4" stroke="#e8e3d8"/><text x="39" y="164.4" text-anchor="end" font-size="10.5" fill="#8d867a">1.8</text><line x1="46" y1="111.6" x2="966" y2="111.6" stroke="#e8e3d8"/><text x="39" y="115.6" text-anchor="end" font-size="10.5" fill="#8d867a">2.7</text><line x1="46" y1="62.8" x2="966" y2="62.8" stroke="#e8e3d8"/><text x="39" y="66.8" text-anchor="end" font-size="10.5" fill="#8d867a">3.6</text><line x1="46" y1="14.0" x2="966" y2="14.0" stroke="#e8e3d8"/><text x="39" y="18.0" text-anchor="end" font-size="10.5" fill="#8d867a">4.5</text><text x="46.0" y="279" text-anchor="middle" font-size="10.5" fill="#8d867a">2021</text><text x="210.8" y="279" text-anchor="middle" font-size="10.5" fill="#8d867a">2022</text><text x="375.6" y="279" text-anchor="middle" font-size="10.5" fill="#8d867a">2023</text><text x="540.3" y="279" text-anchor="middle" font-size="10.5" fill="#8d867a">2024</text><text x="705.1" y="279" text-anchor="middle" font-size="10.5" fill="#8d867a">2025</text><text x="869.9" y="279" text-anchor="middle" font-size="10.5" fill="#8d867a">2026</text><path d="M46.0,30.3 L59.7,86.7 L73.5,143.0 L87.2,148.5 L100.9,169.1 L114.7,177.2 L128.4,189.1 L142.1,175.0 L155.9,155.0 L169.6,175.0 L183.3,187.0 L197.0,183.2 L210.8,170.2 L224.5,171.8 L238.2,181.0 L252.0,182.1 L265.7,188.1 L279.4,191.8 L293.2,188.1 L306.9,188.6 L320.6,75.8 L334.4,189.1 L348.1,195.1 L361.8,194.0 L375.6,183.2 L389.3,187.5 L403.0,202.2 L416.7,203.8 L430.5,207.6 L444.2,206.5 L457.9,209.7 L471.7,212.5 L485.4,196.2 L499.1,203.2 L512.9,212.5 L526.6,215.7 L540.3,205.9 L554.1,207.0 L567.8,213.5 L581.5,216.8 L595.3,219.5 L609.0,222.8 L622.7,223.3 L636.4,219.5 L650.2,208.1 L663.9,219.0 L677.6,221.1 L691.4,224.9 L705.1,216.2 L718.8,218.4 L732.6,221.7 L746.3,223.8 L760.0,224.4 L773.8,222.8 L787.5,226.6 L801.2,223.3 L815.0,207.6 L828.7,214.6 L842.4,213.0 L856.1,220.0 L869.9,223.8 L883.6,213.5 L897.3,230.3 L911.1,226.6 L924.8,232.0 L938.5,233.1 L952.3,234.1 L966.0,235.2" fill="none" stroke="#C0392B" stroke-width="2.2" stroke-linejoin="round" opacity="1"/><path d="M46.0,228.2 L59.7,234.1 L73.5,233.6 L87.2,235.8 L100.9,233.1 L114.7,239.0 L128.4,240.1 L142.1,237.9 L155.9,239.6 L169.6,233.6 L183.3,235.8 L197.0,237.9 L210.8,192.9 L224.5,234.7 L238.2,236.9 L252.0,240.1 L265.7,239.0 L279.4,236.3 L293.2,243.9 L306.9,239.6 L320.6,237.9 L334.4,234.1 L348.1,236.3 L361.8,239.6 L375.6,237.9 L389.3,236.9 L403.0,235.2 L416.7,233.1 L430.5,239.0 L444.2,241.2 L457.9,242.8 L471.7,240.1 L485.4,239.6 L499.1,236.9 L512.9,237.9 L526.6,242.3 L540.3,240.1 L554.1,242.8 L567.8,242.3 L581.5,242.8 L595.3,243.4 L609.0,246.1 L622.7,246.6 L636.4,244.4 L650.2,245.5 L663.9,240.6 L677.6,241.7 L691.4,244.4 L705.1,237.4 L718.8,239.0 L732.6,237.4 L746.3,232.0 L760.0,237.9 L773.8,240.1 L787.5,239.0 L801.2,237.9 L815.0,234.7 L828.7,239.0 L842.4,238.5 L856.1,237.4 L869.9,235.2 L883.6,236.9 L897.3,235.2 L911.1,230.9 L924.8,238.5 L938.5,237.4 L952.3,240.6 L966.0,240.1" fill="none" stroke="#2E7D32" stroke-width="2.2" stroke-linejoin="round" opacity="1"/></svg>
+<div class="small">네이버 데이터랩 통합검색 상대 검색량 월평균. 2021-01~2026-08 일별 2,057일 원본 기준.</div>
+</div>
+<div class="callout info"><b>부각은 2021년 대비 72% 감소</b>했고, 2024년부터 야채칩과 거의 같은 수준까지 좁혀졌습니다. 절대 규모는 아직 부각이 1.6배지만 방향이 정반대입니다.</div>
+
+<h2>2. 계절성 — 서로 보완적</h2>
+<div class="card">
+<div class="legend"><span><i style="background:#1F6FB2"></i>명절선물세트</span><span><i style="background:#C0392B"></i>부각</span><span><i style="background:#2E7D32"></i>야채칩</span><span><i style="background:#B8860B"></i>한과·약과</span></div>
+<svg viewBox="0 0 980 270" class="chart"><line x1="46" y1="238.0" x2="966" y2="238.0" stroke="#e8e3d8"/><text x="39" y="242.0" text-anchor="end" font-size="10.5" fill="#8d867a">0</text><line x1="46" y1="193.2" x2="966" y2="193.2" stroke="#e8e3d8"/><text x="39" y="197.2" text-anchor="end" font-size="10.5" fill="#8d867a">100</text><line x1="46" y1="148.4" x2="966" y2="148.4" stroke="#e8e3d8"/><text x="39" y="152.4" text-anchor="end" font-size="10.5" fill="#8d867a">200</text><line x1="46" y1="103.6" x2="966" y2="103.6" stroke="#e8e3d8"/><text x="39" y="107.6" text-anchor="end" font-size="10.5" fill="#8d867a">300</text><line x1="46" y1="58.8" x2="966" y2="58.8" stroke="#e8e3d8"/><text x="39" y="62.8" text-anchor="end" font-size="10.5" fill="#8d867a">400</text><line x1="46" y1="14.0" x2="966" y2="14.0" stroke="#e8e3d8"/><text x="39" y="18.0" text-anchor="end" font-size="10.5" fill="#8d867a">500</text><text x="46.0" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">1월</text><text x="129.6" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">2월</text><text x="213.3" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">3월</text><text x="296.9" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">4월</text><text x="380.5" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">5월</text><text x="464.2" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">6월</text><text x="547.8" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">7월</text><text x="631.5" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">8월</text><text x="715.1" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">9월</text><text x="798.7" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">10월</text><text x="882.4" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">11월</text><text x="966.0" y="259" text-anchor="middle" font-size="10.5" fill="#8d867a">12월</text><path d="M46.0,79.0 L129.6,170.8 L213.3,235.8 L296.9,236.2 L380.5,236.7 L464.2,236.7 L547.8,234.0 L631.5,166.3 L715.1,16.2 L798.7,230.8 L882.4,236.2 L966.0,229.0" fill="none" stroke="#1F6FB2" stroke-width="2.2" stroke-linejoin="round" opacity="0.9"/><path d="M46.0,173.9 L129.6,180.7 L213.3,194.1 L296.9,195.0 L380.5,199.9 L464.2,201.7 L547.8,204.0 L631.5,201.7 L715.1,171.7 L798.7,195.0 L882.4,199.0 L966.0,200.4" fill="none" stroke="#C0392B" stroke-width="2.2" stroke-linejoin="round" opacity="1"/><path d="M46.0,173.0 L129.6,192.3 L213.3,191.0 L296.9,188.7 L380.5,194.5 L464.2,198.1 L547.8,203.1 L631.5,198.1 L715.1,196.8 L798.7,191.0 L882.4,193.6 L966.0,199.0" fill="none" stroke="#2E7D32" stroke-width="2.2" stroke-linejoin="round" opacity="1"/><path d="M46.0,154.2 L129.6,168.1 L213.3,199.5 L296.9,201.7 L380.5,207.1 L464.2,206.6 L547.8,212.5 L631.5,199.9 L715.1,156.0 L798.7,201.7 L882.4,205.3 L966.0,204.4" fill="none" stroke="#B8860B" stroke-width="2.2" stroke-linejoin="round" opacity="0.75"/></svg>
+<div class="small">각 지표의 자체 연평균을 100으로 둔 월별 지수.</div>
+</div>
+<table><tr><th>지표</th><th class="n">1월</th><th class="n">7월</th><th class="n">9월</th><th>성격</th></tr>
+<tr><td>명절선물세트</td><td class="n">355</td><td class="n">9</td><td class="n">495</td><td>극단적 시즌형</td></tr>
+<tr><td><b>부각</b></td><td class="n">143</td><td class="n">76</td><td class="n">148</td><td>명절 연동</td></tr>
+<tr><td><b>야채칩</b></td><td class="n">145</td><td class="n">78</td><td class="n">92</td><td class="ok">연중 상시형</td></tr>
+<tr><td>한과·약과</td><td class="n">187</td><td class="n">57</td><td class="n">183</td><td>극단적 시즌형</td></tr></table>
+<div class="callout"><b>부각으로 명절 두 시즌을 먹고, 야채칩으로 나머지 10개월을 채운다.</b> 부각만 하면 연중 10개월이 비고, 야채칩만 하면 명절 특수를 못 먹습니다.</div>
+
+<h2>3. 채널별 실측</h2>
+<div class="grid g2">
+<div class="card"><h3 style="margin-top:0">쿠팡 <span class="tag t-f">11개 키워드</span></h3><ul>
+<li>상위 15개 리뷰 합계 222,104건</li>
+<li>가격대 1,500~36,710원, 100g당 3,000~10,000원 밀집</li>
+<li>최다 노출 브랜드도 165개 중 9회 — <b>절대강자 없음</b></li>
+<li>로켓배송 45.5%</li>
+<li><b>선물세트는 165개 중 9개(5.5%)뿐</b></li></ul></div>
+<div class="card"><h3 style="margin-top:0">컬리 <span class="tag t-f">105개 상품</span></h3><ul>
+<li>오희숙부각 찹쌀부각 30g 3,200원 — <b>리뷰 25,538건</b></li>
+<li>브랜드 2강 : 오희숙부각 · VASAK</li>
+<li><b>컬리Only(PB) 0건</b></li>
+<li>한과 평균가 18,480원, 15개 중 8개 선물세트</li>
+<li><b>감자부각·다시마튀각·우엉칩·단호박칩 판매상품 0개</b></li></ul></div>
+<div class="card"><h3 style="margin-top:0">네이버 <span class="tag t-f">14개 키워드</span></h3><ul>
+<li>일반판매 평균가 5,960~27,900원</li>
+<li>선물세트 평균가 27,080원(부각) / 36,347원(한과)</li>
+<li>부각 세트 = 30~60g × 5~10봉, 25,000~47,000원</li>
+<li>향토 브랜드 다수 (지리산부각·해누리·티각태각)</li>
+<li><b>우엉칩 검색결과 0건</b></li></ul>
+<div class="small">일반검색은 캡차로 차단되어 선물샵 경로로 수집. 선물 상품 편향 가능성 있음.</div></div>
+<div class="card"><h3 style="margin-top:0">카카오 선물하기 <span class="tag t-f">10개 키워드</span></h3><ul>
+<li>부각 64건 — <b>사실상 VASAK 단독 과점</b></li>
+<li><b>야채칩·채소칩 관련 상품 0개</b></li>
+<li>한과 630건 / 15개 브랜드 — 성숙 시장</li>
+<li>카테고리 : 떡·한과 &gt; 한과·화과자 567개</li>
+<li>주력 가격대 <b>2만~4만원</b></li></ul>
+<div class="small">시장 3.3조(2022) → 3.8조(2024). 단 2025년 3분기 성장 +1%로 정체.</div></div>
+</div>
+
+<h2>4. 경쟁 제품 벤치마크</h2>
+<table><tr><th>브랜드</th><th>대표 제품</th><th class="n">중량</th><th class="n">판매가</th><th class="n">100g당</th><th class="n">리뷰</th><th>포지션</th></tr>
+<tr><td>오희숙부각</td><td>찹쌀부각 4종</td><td class="n">30g</td><td class="n">3,200원</td><td class="n">10,670원</td><td class="n">25,538</td><td>명인·스테디셀러</td></tr>
+<tr><td>미식가부각</td><td>김부각</td><td class="n">80g</td><td class="n">6,900원</td><td class="n">8,630원</td><td class="n">7,662</td><td>가성비</td></tr>
+<tr><td>VASAK</td><td>김부각 시그니처 6종</td><td class="n">70g</td><td class="n">18,000원</td><td class="n">25,710원</td><td class="n">114</td><td>프리미엄 선물</td></tr>
+<tr><td>VASAK</td><td>셰프에디션 2종</td><td class="n">70g</td><td class="n">22,000원</td><td class="n">31,430원</td><td class="n">71</td><td>초프리미엄</td></tr>
+<tr><td>동원</td><td>양반 김부각 3종</td><td class="n">50g</td><td class="n">3,480원</td><td class="n">6,960원</td><td class="n">1,941</td><td>대기업 저가</td></tr>
+<tr><td>비비고</td><td>김부각 50g 3종</td><td class="n">50g</td><td class="n">5,980원</td><td class="n">11,960원</td><td class="n">90</td><td>대기업 중가</td></tr>
+<tr><td>티각태각</td><td>속초 김부각 60g×6</td><td class="n">360g</td><td class="n">15,600원</td><td class="n">4,330원</td><td class="n">1,475</td><td>멀티팩</td></tr>
+<tr><td>지리산부각</td><td>전통김부각 55g×10 세트</td><td class="n">550g</td><td class="n">47,000원</td><td class="n">8,545원</td><td class="n">419</td><td>선물세트 상단</td></tr>
+<tr><td>DJ&amp;A</td><td>표고버섯 크리스프</td><td class="n">65g</td><td class="n">8,010원</td><td class="n">12,320원</td><td class="n">2,708</td><td>수입 야채칩</td></tr>
+<tr><td>올가</td><td>순감자칩·순고구마칩</td><td class="n">40g</td><td class="n">3,550원</td><td class="n">8,880원</td><td class="n">1,370</td><td>친환경 야채칩</td></tr>
+</table>
+<div class="callout"><b>부각 진영과 야채칩 진영이 완전히 분리되어 있습니다.</b> 부각은 오희숙·VASAK·지리산부각·티각태각, 야채칩은 칩스앤너츠·더하루·올가·간식명가·DJ&amp;A. <b>둘을 한 브랜드로 함께 운영하는 사업자가 4개 채널 어디에도 없습니다.</b></div>
+
+<h2>5. 화이트스페이스</h2>
+<table><tr><th style="width:100px">채널</th><th>비어 있는 자리</th><th style="width:80px">확실성</th></tr>
+<tr><td>컬리</td><td>감자부각·다시마튀각·우엉칩·단호박칩 판매상품 0개. 컬리Only(PB)도 0개</td><td><span class="tag t-f">실측</span></td></tr>
+<tr><td>카카오</td><td>야채칩 카테고리 자체가 없음. 부각은 VASAK 단독이라 2위 자리 공석</td><td><span class="tag t-f">실측</span></td></tr>
+<tr><td>쿠팡</td><td>부각·김부각 외 전 키워드에 선물세트가 사실상 전무 (5.5%)</td><td><span class="tag t-f">실측</span></td></tr>
+<tr><td>네이버</td><td>우엉칩 0건. 전통·건강간식 선물세트 상위 15위 내 부각/야채칩 0건</td><td><span class="tag t-f">실측</span></td></tr></table>
+
+<h2>6. 시장성 종합 판단</h2>
+<div class="grid g2">
+<div class="card"><h3 style="margin-top:0">항목별 평가</h3>
+<table><tr><th>항목</th><th class="n">점수</th><th>근거</th></tr>
+<tr><td>시장 규모</td><td class="n">6</td><td>부각·야채칩 모두 니치</td></tr>
+<tr><td>성장성</td><td class="n dn">4</td><td>야채칩만 플러스</td></tr>
+<tr><td>진입 용이성</td><td class="n up">8</td><td>파편화, 화이트스페이스 명확</td></tr>
+<tr><td>자사 적합도</td><td class="n up">9</td><td>봉투 규격·가격대 일치</td></tr>
+<tr><td>선물시장 적합도</td><td class="n">7</td><td>부각은 검증, 야채칩은 미형성</td></tr>
+<tr><td>수익성</td><td class="n">6</td><td>포장재 원가 0이 유일한 우위</td></tr>
+<tr><td>리스크</td><td class="n">5</td><td>시장 정체 + 기술 리스크</td></tr>
+<tr style="background:#f7f3e9"><td><b>종합</b></td><td class="n"><b>6.4</b></td><td><b>조건부 진입</b></td></tr></table></div>
+<div class="card"><h3 style="margin-top:0">가장 큰 함정</h3>
+<div class="callout warn" style="margin-top:0"><b>"부각 시장이 크니까 부각으로 가자"는 위험합니다.</b> 부각 검색량은 5년간 72% 감소했습니다. 커 보이는 이유는 2021~2023년 잔상이지 현재 수요가 아닙니다.</div>
+<p style="font-size:13.5px"><b>부각은 명절 2회를 먹는 수단으로, 상시 매출의 축은 야채칩에</b> 둬야 데이터와 맞습니다.</p>
+<h3>미확인 사항</h3><ul>
+<li>쿠팡·네이버 총 SKU 수 미노출 → 리뷰 합계를 대리지표로 사용</li>
+<li>실판매량은 전 채널 비공개 → 상대 비교용</li>
+<li>네이버 쇼핑인사이트는 2024년 이후 9개 키워드 일제 급락 → 집계 변화로 판단해 제외</li></ul></div>
+</div>
+</section><section class="tab">
+<h2>1. 봉투를 용기로 환산</h2>
+<div class="ctrl"><label>충전율 <b id="fv">40</b>%</label><input type="range" id="fill" min="30" max="60" value="40">
+<span class="small">스낵은 질소충전 여유가 필요해 40%가 표준. 슬라이더로 재계산됩니다.</span></div>
+<table id="mx"><tr><th style="width:110px">품목</th><th class="n" style="width:80px">부피밀도</th><th class="n">150×200</th><th class="n">120×300</th><th class="n">160×250</th><th class="n">180×200</th><th class="n">180×270</th></tr>
+<tr data-d="0.08"><td><b>김부각</b></td><td class="n"><input class="num dz" type="number" step="0.01" value="0.08"></td>
+<td class="n w" data-bag="150×200"></td><td class="n w" data-bag="120×300"></td><td class="n w" data-bag="160×250"></td><td class="n w" data-bag="180×200"></td><td class="n w" data-bag="180×270"></td></tr><tr data-d="0.12"><td><b>감자부각</b></td><td class="n"><input class="num dz" type="number" step="0.01" value="0.12"></td>
+<td class="n w" data-bag="150×200"></td><td class="n w" data-bag="120×300"></td><td class="n w" data-bag="160×250"></td><td class="n w" data-bag="180×200"></td><td class="n w" data-bag="180×270"></td></tr><tr data-d="0.1"><td><b>표고버섯칩</b></td><td class="n"><input class="num dz" type="number" step="0.01" value="0.1"></td>
+<td class="n w" data-bag="150×200"></td><td class="n w" data-bag="120×300"></td><td class="n w" data-bag="160×250"></td><td class="n w" data-bag="180×200"></td><td class="n w" data-bag="180×270"></td></tr><tr data-d="0.15"><td><b>연근칩</b></td><td class="n"><input class="num dz" type="number" step="0.01" value="0.15"></td>
+<td class="n w" data-bag="150×200"></td><td class="n w" data-bag="120×300"></td><td class="n w" data-bag="160×250"></td><td class="n w" data-bag="180×200"></td><td class="n w" data-bag="180×270"></td></tr><tr data-d="0.22"><td><b>우엉스틱</b></td><td class="n"><input class="num dz" type="number" step="0.01" value="0.22"></td>
+<td class="n w" data-bag="150×200"></td><td class="n w" data-bag="120×300"></td><td class="n w" data-bag="160×250"></td><td class="n w" data-bag="180×200"></td><td class="n w" data-bag="180×270"></td></tr><tr data-d="0.3"><td><b>고구마스틱</b></td><td class="n"><input class="num dz" type="number" step="0.01" value="0.3"></td>
+<td class="n w" data-bag="150×200"></td><td class="n w" data-bag="120×300"></td><td class="n w" data-bag="160×250"></td><td class="n w" data-bag="180×200"></td><td class="n w" data-bag="180×270"></td></tr><tr data-d="0.15"><td><b>모둠칩</b></td><td class="n"><input class="num dz" type="number" step="0.01" value="0.15"></td>
+<td class="n w" data-bag="150×200"></td><td class="n w" data-bag="120×300"></td><td class="n w" data-bag="160×250"></td><td class="n w" data-bag="180×200"></td><td class="n w" data-bag="180×270"></td></tr>
+</table>
+<div class="callout info"><b>같은 봉투에 담아도 품목별 중량이 최대 3.75배 차이납니다.</b> 김부각 0.08 vs 고구마스틱 0.30. 그래서 "용량을 다르게 잡는다"가 아니라 <b>"품목의 밀도가 용량을 결정한다"</b>가 맞습니다.</div>
+
+<h2>2. 규격별 품목 배치</h2>
+<table><tr><th>품목</th><th class="n">규격</th><th class="n">밀도</th><th class="n">중량</th><th class="n">낱개가</th><th class="n">100g당</th><th>시장 밴드</th></tr><tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#33422f;margin-right:6px"></span><b>김부각</b></td><td class="n">180×200</td><td class="n">0.08</td><td class="n">51g</td><td class="n">4,900원</td><td class="n">9,608원</td><td class="small">50g 3,200~6,900원 / 100g당 8,600~11,900</td></tr><tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e3ce9e;margin-right:6px"></span><b>감자부각</b></td><td class="n">150×200</td><td class="n">0.12</td><td class="n">51g</td><td class="n">4,500원</td><td class="n">8,824원</td><td class="small">100g당 4,700~11,800</td></tr><tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#8b6f4e;margin-right:6px"></span><b>표고버섯칩</b></td><td class="n">150×200</td><td class="n">0.1</td><td class="n">42g</td><td class="n">4,500원</td><td class="n">10,714원</td><td class="small">65g 8,010원 = 100g당 12,320</td></tr><tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#efe4cd;margin-right:6px"></span><b>연근칩</b></td><td class="n">160×250</td><td class="n">0.15</td><td class="n">93g</td><td class="n">6,900원</td><td class="n">7,419원</td><td class="small">100g당 4,300~19,400</td></tr><tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#b08050;margin-right:6px"></span><b>우엉스틱</b></td><td class="n">120×300</td><td class="n">0.22</td><td class="n">85g</td><td class="n">5,500원</td><td class="n">6,471원</td><td class="small">100g당 4,300~9,400</td></tr><tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#d98a4a;margin-right:6px"></span><b>고구마스틱</b></td><td class="n">120×300</td><td class="n">0.3</td><td class="n">116g</td><td class="n">5,900원</td><td class="n">5,086원</td><td class="small">100g당 1,000~6,900</td></tr><tr><td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#c9924f;margin-right:6px"></span><b>모둠칩</b></td><td class="n">180×270</td><td class="n">0.15</td><td class="n">131g</td><td class="n">8,900원</td><td class="n">6,794원</td><td class="small">100g당 2,600~6,000</td></tr></table>
+<div class="callout"><b>7개 조합 모두 시장 100g 단가 밴드 안에 들어옵니다.</b> 억지로 끼워 맞춘 게 아니라 봉투 규격이 시장 표준과 맞아떨어집니다.</div>
+
+<h2>3. 설계 원칙 3가지</h2>
+<table><tr><th style="width:40px">#</th><th style="width:210px">원칙</th><th>이유</th></tr>
+<tr><td>1</td><td><b>브랜드 이원화</b></td><td>온올림 = 선물세트 / 집반찬연구소 = 낱개. 봉투·내용물 100% 공유, 라벨만 교체</td></tr>
+<tr><td>2</td><td><b>규격 = 티어 고정</b></td><td>자유 조합 시 SKU 30개, 초기비용 600~990만원으로 절감액 상쇄</td></tr>
+<tr><td>3</td><td><b>봉투 티어별 균일가</b></td><td>중량 기준 가격은 라인업이 무너짐. 100g당 단가가 품목별로 달라지는 건 시장도 동일</td></tr></table>
+
+<h2>4. 걸러낸 품목</h2>
+<table><tr><th style="width:110px">품목</th><th>탈락 사유</th><th style="width:70px">판정</th></tr>
+<tr><td>다시마튀각</td><td>시장 100g당 1,500~3,800원으로 최저권. 봉투에 담아 팔면 시장가의 2~4배</td><td class="no">제외</td></tr>
+<tr><td>단호박칩</td><td>시장 100g당 1,500~6,700원. 원물 단가가 낮아 봉투가 공짜여도 마진 방어 어려움</td><td class="mid">보류</td></tr>
+<tr><td>견과·강정</td><td>밀도는 좋지만 유지 산패 + 투명 봉투 광산화</td><td class="no">제외</td></tr>
+<tr><td>모둠칩</td><td>기여이익률 33%로 낮고 큰상 원가를 밀어올림</td><td class="mid">세트 제외</td></tr></table>
+<div class="callout info"><b>시뮬레이션의 진짜 효용</b>은 여기 있습니다. 다시마튀각은 아이디어 단계에선 좋아 보였지만 <b>용적 × 밀도 × 시장 단가</b>를 곱해보니 애초에 성립하지 않는 조합이었습니다.</div>
+
+<h2>5. 주력 노선</h2>
+<table><tr><th style="width:130px">구분</th><th>내용</th></tr>
+<tr><td>주력</td><td><b>비유탕 열풍건조 야채칩.</b> 기름이 없어 산패·차광 문제가 통째로 사라짐</td></tr>
+<tr><td>보조</td><td>김부각(유탕). 유통기한 3~4개월이라 <b>회전이 빠른 선물세트에만</b> 배치</td></tr>
+<tr><td>확장 여지</td><td>냉동 채소·나물. 유통기한 12개월 이상, 3층 냉동창고 증설과 타이밍 일치</td></tr></table>
+</section><section class="tab">
+<h2>1. 온올림 브랜드 체계 안에서의 위치</h2>
+<div class="card"><div class="small" style="margin-bottom:9px">노션 온올림 원본에 확정된 3단계 로드맵에 <b>4번째 라인으로 신설</b>하는 안입니다.</div>
+<div class="line">
+ <div class="ln"><div class="ch">肉</div><div class="nm">온올림 육</div><div class="ds">갈비구이·소불고기<br>LA갈비·갈비탕</div><div class="ds" style="color:var(--muk)">묵 블랙 · 냉동</div></div>
+ <div class="ln"><div class="ch">粥</div><div class="nm">온올림 죽</div><div class="ds">전복죽·흑임자죽<br>+ 나물반찬</div><div class="ds" style="color:var(--muk)">한지 크림</div></div>
+ <div class="ln"><div class="ch">飯</div><div class="nm">온올림 반</div><div class="ds">큐레이션 밑반찬<br>한 상 (B2B)</div><div class="ds" style="color:var(--muk)">미정</div></div>
+ <div class="ln new"><div class="ch" style="color:var(--gold)">菓</div><div class="nm" style="color:var(--gold)">온올림 과 (신설)</div><div class="ds">부각·말린야채칩<br>전통 다과</div><div class="ds" style="color:var(--muk)"><b>한지 크림 · 상온</b></div></div>
+</div></div>
+<table><tr><th style="width:130px">항목</th><th>내용</th><th style="width:90px">근거</th></tr>
+<tr><td>서브라인명</td><td><b>온올림 과(菓)</b> — 肉·粥·飯 한자 1글자 체계 계승</td><td><span class="tag t-i">제안</span></td></tr>
+<tr><td>박스 등급</td><td>한지 크림 박스(Standard). 큰상만 금 앰버 에디션</td><td><span class="tag t-i">제안</span></td></tr>
+<tr><td>온도대</td><td><b>상온.</b> 온올림 최초 비냉동 라인 → 아이스박스 불필요</td><td><span class="tag t-f">확정</span></td></tr>
+<tr><td>브랜드 컬러</td><td>묵 블랙 #1E1C1A / 한지 크림 #F4F0E8 / 금 앰버 #A8741A</td><td><span class="tag t-f">확정</span></td></tr>
+<tr><td>카니발라이제이션</td><td>肉·粥·飯은 끼니, 菓는 다과 → 카테고리 중복 없음</td><td><span class="tag t-i">판단</span></td></tr></table>
+
+<h2>2. 봉투 상단 처리 — 2안 비교</h2>
+<div class="mk"><div><div><svg viewBox="0 0 93 170" style="width:93px;height:auto"><rect x="1" y="1" width="91" height="54" rx="3" fill="#F4F0E8" stroke="#A8741A" stroke-width="1.4"/><circle cx="46.5" cy="13" r="5" fill="none" stroke="#7A7670" stroke-width="1.2"/><text x="46.5" y="30" text-anchor="middle" font-size="9" fill="#A8741A" font-weight="700" letter-spacing="2">온 · 올 림</text><text x="46.5" y="43" text-anchor="middle" font-size="11" fill="#1E1C1A" font-weight="800">菓 감자부각</text><line x1="6" y1="52" x2="87" y2="52" stroke="#7A7670" stroke-dasharray="3 2" stroke-width="1"/><rect x="1" y="45" width="91" height="122" rx="2" fill="#fbfcfc" stroke="#c3ccce" stroke-width="1.2"/><rect x="5" y="56" width="83" height="104" fill="#e3ce9e" opacity=".84"/><text x="46.5" y="164" text-anchor="middle" font-size="8.5" fill="#7A7670">150×200 · 51g</text></svg></div><div class="cap"><b>A안 · 접착식 헤더카드</b><br>40~60원 · 표시사항 뒷면 통합</div></div><div><div><svg viewBox="0 0 93 126" style="width:93px;height:auto"><rect x="1" y="1" width="91" height="122" rx="2" fill="#fbfcfc" stroke="#c3ccce" stroke-width="1.2"/><rect x="1" y="1" width="91" height="15" fill="#A8741A" opacity=".45"/><rect x="26.040000000000003" y="4" width="40.92" height="18" rx="9" fill="#F4F0E8" stroke="#A8741A" stroke-width="1.2"/><text x="46.5" y="17" text-anchor="middle" font-size="8" fill="#A8741A" font-weight="700">온올림 菓</text><rect x="6" y="30" width="81" height="26" rx="2" fill="#fff" stroke="#7A7670" stroke-dasharray="2 2"/><text x="46.5" y="47" text-anchor="middle" font-size="9.5" fill="#1E1C1A" font-weight="700">감자부각</text><rect x="5" y="62" width="83" height="54" fill="#e3ce9e" opacity=".84"/><text x="46.5" y="120" text-anchor="middle" font-size="8.5" fill="#7A7670">150×200 · 51g</text></svg></div><div class="cap"><b>B안 · 실링 + 스티커 봉함</b><br>15~30원 · 라벨 별도 필요</div></div></div>
+<table style="margin-top:12px"><tr><th style="width:165px">방식</th><th class="n" style="width:78px">장당</th><th>장점</th><th>단점</th></tr>
+<tr style="background:#f7f3e9"><td><b>A. 접착식 헤더카드</b></td><td class="n">40~60원</td><td>표시사항을 뒷면에 통합해 <b>별도 라벨 불필요</b>. 브랜드 면적 최대. 걸이구멍 진열 가능. 헤더 아래를 뜯는 개봉 동선 확보</td><td>원가 최고. 부착 공정 추가</td></tr>
+<tr><td>A-1. 스테이플 헤더카드</td><td class="n">30~50원</td><td>원가 낮음</td><td class="no">스테이플 이물 클레임 리스크</td></tr>
+<tr><td><b>B. 실링 + 스티커 봉함</b></td><td class="n">15~30원</td><td>최저 원가. 수제 느낌. 높이 편차 100→55mm 축소</td><td>브랜드 면적 작음. 표시사항 라벨 별도</td></tr>
+<tr><td>C. 전면 라벨만</td><td class="n">50~80원</td><td>완성도 최고</td><td>상단이 헐렁해 보임. 원가 높음</td></tr></table>
+<div class="callout"><b>낱개는 B, 선물세트는 A</b>를 권합니다. 낱개는 원가 민감도가 높고, 선물세트는 <b>박스를 열었을 때 헤더가 가지런히 서 있는 그림</b>이 개봉감을 좌우합니다. 실질 추가원가는 세트당 4~6봉 × 30원 = 120~180원입니다.</div>
+
+<h2>3. 세트 구성 3안</h2>
+<table><tr><th>세트</th><th class="n">봉</th><th class="n">중량</th><th class="n">판매가</th><th class="n">100g당</th><th class="n">박스 내경(mm)</th><th>포지션</th></tr>
+<tr><td><b>온올림 菓 · 소반</b></td><td class="n">4봉</td><td class="n">237g</td><td class="n"><b>22,000원</b></td><td class="n">9,283원</td><td class="n">215×195×150</td><td class="small">진입 · 답례품</td></tr><tr><td><b>온올림 菓 · 중반</b></td><td class="n">5봉</td><td class="n">322g</td><td class="n"><b>27,000원</b></td><td class="n">8,385원</td><td class="n">215×195×185</td><td class="small">주력 명절 선물</td></tr><tr><td><b>온올림 菓 · 큰상</b></td><td class="n">6봉</td><td class="n">438g</td><td class="n"><b>33,000원</b></td><td class="n">7,534원</td><td class="n">215×195×220</td><td class="small">프리미엄 · 법인</td></tr>
+</table>
+<table><tr><th style="width:150px">구성 품목</th><th class="n">소반</th><th class="n">중반</th><th class="n">큰상</th></tr>
+<tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#33422f;margin-right:6px"></span>김부각 <span class="small">51g</span></td><td class="n">●</td><td class="n">●</td><td class="n">●</td></tr><tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#e3ce9e;margin-right:6px"></span>감자부각 <span class="small">51g</span></td><td class="n">●</td><td class="n">●</td><td class="n">●</td></tr><tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#8b6f4e;margin-right:6px"></span>표고버섯칩 <span class="small">42g</span></td><td class="n">●</td><td class="n">●</td><td class="n">●</td></tr><tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#efe4cd;margin-right:6px"></span>연근칩 <span class="small">93g</span></td><td class="n">●</td><td class="n">●</td><td class="n">●</td></tr><tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#b08050;margin-right:6px"></span>우엉스틱 <span class="small">85g</span></td><td class="n">·</td><td class="n">●</td><td class="n">●</td></tr><tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:#d98a4a;margin-right:6px"></span>고구마스틱 <span class="small">116g</span></td><td class="n">·</td><td class="n">·</td><td class="n">●</td></tr>
+</table>
+<div class="callout"><b>가격대를 육류 세트 아래에 깔았습니다.</b> 온올림 육 최저가가 69,800원이라 그 위로 올리면 카니발라이제이션이 생깁니다. 22,000~33,000원은 시장 부각 선물세트 밴드 하단에 걸치면서 <b>육류 세트 구매자의 추가 구매</b>로 붙기 좋은 자리입니다.</div>
+
+<h2>4. 박스 목업</h2>
+<h3>외관</h3>
+<div class="mk" style="align-items:flex-end"><div style="text-align:center"><svg viewBox="0 0 239.70399999999998 180.502" style="width:100%;max-width:240px;height:auto"><polygon points="57.501999999999995,57.501999999999995 182.202,57.501999999999995 182.202,144.502 57.501999999999995,144.502" fill="#F4F0E8" stroke="#1E1C1A" stroke-width="1.6"/><polygon points="182.202,57.501999999999995 229.704,10 229.704,97 182.202,144.502" fill="#F4F0E8" stroke="#1E1C1A" stroke-width="1.6" opacity=".8"/><polygon points="57.501999999999995,57.501999999999995 105.00399999999999,10 229.704,10 182.202,57.501999999999995" fill="#eae4d6" stroke="#1E1C1A" stroke-width="1.6"/><line x1="57.501999999999995" y1="66.502" x2="182.202" y2="66.502" stroke="#1E1C1A" stroke-width="1" opacity=".45"/><line x1="182.202" y1="66.502" x2="229.704" y2="19" stroke="#1E1C1A" stroke-width="1" opacity=".45"/><line x1="69.502" y1="83.66199999999999" x2="170.202" y2="83.66199999999999" stroke="#A8741A" stroke-width="1.1"/><text x="119.85199999999999" y="81.322" text-anchor="middle" font-size="8" fill="#A8741A" font-weight="700" letter-spacing="4">온 · 올 림</text><text x="119.85199999999999" y="111.74199999999999" text-anchor="middle" font-size="30" fill="#1E1C1A" font-weight="700">菓</text><text x="119.85199999999999" y="128.902" text-anchor="middle" font-size="11" fill="#1E1C1A" font-weight="700">소반</text><line x1="69.502" y1="136.702" x2="170.202" y2="136.702" stroke="#A8741A" stroke-width="1.1"/><text x="119.85199999999999" y="162.502" text-anchor="middle" font-size="9.5" fill="#1E1C1A" font-weight="700">4종 237g</text><text x="119.85199999999999" y="177.502" text-anchor="middle" font-size="9" fill="#7A7670">215 × 195 × 150mm</text></svg><div class="cap"><b>온올림 菓 · 소반</b><br>22,000원 · 봉투 4장</div></div><div style="text-align:center"><svg viewBox="0 0 239.70399999999998 200.802" style="width:100%;max-width:240px;height:auto"><polygon points="57.501999999999995,57.501999999999995 182.202,57.501999999999995 182.202,164.802 57.501999999999995,164.802" fill="#F4F0E8" stroke="#1E1C1A" stroke-width="1.6"/><polygon points="182.202,57.501999999999995 229.704,10 229.704,117.3 182.202,164.802" fill="#F4F0E8" stroke="#1E1C1A" stroke-width="1.6" opacity=".8"/><polygon points="57.501999999999995,57.501999999999995 105.00399999999999,10 229.704,10 182.202,57.501999999999995" fill="#eae4d6" stroke="#1E1C1A" stroke-width="1.6"/><line x1="57.501999999999995" y1="68.232" x2="182.202" y2="68.232" stroke="#1E1C1A" stroke-width="1" opacity=".45"/><line x1="182.202" y1="68.232" x2="229.704" y2="20.73" stroke="#1E1C1A" stroke-width="1" opacity=".45"/><line x1="69.502" y1="89.4774" x2="170.202" y2="89.4774" stroke="#A8741A" stroke-width="1.1"/><text x="119.85199999999999" y="86.5803" text-anchor="middle" font-size="8" fill="#A8741A" font-weight="700" letter-spacing="4">온 · 올 림</text><text x="119.85199999999999" y="124.24259999999998" text-anchor="middle" font-size="30" fill="#1E1C1A" font-weight="700">菓</text><text x="119.85199999999999" y="145.488" text-anchor="middle" font-size="11" fill="#1E1C1A" font-weight="700">중반</text><line x1="69.502" y1="155.14499999999998" x2="170.202" y2="155.14499999999998" stroke="#A8741A" stroke-width="1.1"/><text x="119.85199999999999" y="182.802" text-anchor="middle" font-size="9.5" fill="#1E1C1A" font-weight="700">5종 322g</text><text x="119.85199999999999" y="197.802" text-anchor="middle" font-size="9" fill="#7A7670">215 × 195 × 185mm</text></svg><div class="cap"><b>온올림 菓 · 중반</b><br>27,000원 · 봉투 5장</div></div><div style="text-align:center"><svg viewBox="0 0 239.70399999999998 221.10199999999998" style="width:100%;max-width:240px;height:auto"><polygon points="57.501999999999995,57.501999999999995 182.202,57.501999999999995 182.202,185.10199999999998 57.501999999999995,185.10199999999998" fill="#f4e6c9" stroke="#1E1C1A" stroke-width="1.6"/><polygon points="182.202,57.501999999999995 229.704,10 229.704,137.6 182.202,185.10199999999998" fill="#f4e6c9" stroke="#1E1C1A" stroke-width="1.6" opacity=".8"/><polygon points="57.501999999999995,57.501999999999995 105.00399999999999,10 229.704,10 182.202,57.501999999999995" fill="#ecdcb8" stroke="#1E1C1A" stroke-width="1.6"/><line x1="57.501999999999995" y1="70.262" x2="182.202" y2="70.262" stroke="#1E1C1A" stroke-width="1" opacity=".45"/><line x1="182.202" y1="70.262" x2="229.704" y2="22.759999999999998" stroke="#1E1C1A" stroke-width="1" opacity=".45"/><line x1="69.502" y1="95.5268" x2="170.202" y2="95.5268" stroke="#A8741A" stroke-width="1.1"/><text x="119.85199999999999" y="92.0816" text-anchor="middle" font-size="8" fill="#A8741A" font-weight="700" letter-spacing="4">온 · 올 림</text><text x="119.85199999999999" y="136.86919999999998" text-anchor="middle" font-size="30" fill="#1E1C1A" font-weight="700">菓</text><text x="119.85199999999999" y="162.13400000000001" text-anchor="middle" font-size="11" fill="#1E1C1A" font-weight="700">큰상</text><line x1="69.502" y1="173.618" x2="170.202" y2="173.618" stroke="#A8741A" stroke-width="1.1"/><text x="119.85199999999999" y="203.10199999999998" text-anchor="middle" font-size="9.5" fill="#1E1C1A" font-weight="700">6종 438g</text><text x="119.85199999999999" y="218.10199999999998" text-anchor="middle" font-size="9" fill="#7A7670">215 × 195 × 220mm</text></svg><div class="cap"><b>온올림 菓 · 큰상</b><br>33,000원 · 봉투 6장</div></div></div>
+<h3>개봉 단면</h3>
+<div class="mk" style="align-items:flex-end"><div style="text-align:center"><svg viewBox="0 0 154.79999999999998 108" style="width:100%;max-width:155px;height:auto"><rect x="0" y="0" width="154.79999999999998" height="108" rx="5" fill="#F4F0E8" stroke="#1E1C1A" stroke-width="2"/><rect x="5" y="5" width="144.79999999999998" height="98" rx="3" fill="none" stroke="#A8741A" stroke-dasharray="3 3" opacity=".6"/><rect x="9" y="11" width="136.79999999999998" height="17.5" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="13" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="22" width="124.79999999999998" height="1.5" fill="#33422f" opacity=".55"/><text x="77.39999999999999" y="24.25" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">김부각</text><rect x="9" y="33.5" width="136.79999999999998" height="17.5" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="35.5" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="44.5" width="124.79999999999998" height="1.5" fill="#e3ce9e" opacity=".55"/><text x="77.39999999999999" y="46.75" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">감자부각</text><rect x="9" y="56" width="136.79999999999998" height="17.5" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="58" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="67" width="124.79999999999998" height="1.5" fill="#8b6f4e" opacity=".55"/><text x="77.39999999999999" y="69.25" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">표고버섯칩</text><rect x="9" y="78.5" width="136.79999999999998" height="17.5" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="80.5" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="89.5" width="124.79999999999998" height="1.5" fill="#efe4cd" opacity=".55"/><text x="77.39999999999999" y="91.75" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">연근칩</text></svg><div class="cap"><b>소반 개봉 단면</b><br>봉투 4봉 눕혀 적층</div></div><div style="text-align:center"><svg viewBox="0 0 154.79999999999998 133.2" style="width:100%;max-width:155px;height:auto"><rect x="0" y="0" width="154.79999999999998" height="133.2" rx="5" fill="#F4F0E8" stroke="#1E1C1A" stroke-width="2"/><rect x="5" y="5" width="144.79999999999998" height="123.19999999999999" rx="3" fill="none" stroke="#A8741A" stroke-dasharray="3 3" opacity=".6"/><rect x="9" y="11" width="136.79999999999998" height="18.04" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="13" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="22" width="124.79999999999998" height="2.039999999999999" fill="#33422f" opacity=".55"/><text x="77.39999999999999" y="24.52" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">김부각</text><rect x="9" y="34.04" width="136.79999999999998" height="18.04" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="36.04" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="45.04" width="124.79999999999998" height="2.039999999999999" fill="#e3ce9e" opacity=".55"/><text x="77.39999999999999" y="47.56" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">감자부각</text><rect x="9" y="57.08" width="136.79999999999998" height="18.04" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="59.08" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="68.08" width="124.79999999999998" height="2.039999999999999" fill="#8b6f4e" opacity=".55"/><text x="77.39999999999999" y="70.6" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">표고버섯칩</text><rect x="9" y="80.12" width="136.79999999999998" height="18.04" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="82.12" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="91.12" width="124.79999999999998" height="2.039999999999999" fill="#efe4cd" opacity=".55"/><text x="77.39999999999999" y="93.64" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">연근칩</text><rect x="9" y="103.16" width="136.79999999999998" height="18.04" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="105.16" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="114.16" width="124.79999999999998" height="2.039999999999999" fill="#b08050" opacity=".55"/><text x="77.39999999999999" y="116.67999999999999" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">우엉스틱</text></svg><div class="cap"><b>중반 개봉 단면</b><br>봉투 5봉 눕혀 적층</div></div><div style="text-align:center"><svg viewBox="0 0 154.79999999999998 158.4" style="width:100%;max-width:155px;height:auto"><rect x="0" y="0" width="154.79999999999998" height="158.4" rx="5" fill="#F4F0E8" stroke="#1E1C1A" stroke-width="2"/><rect x="5" y="5" width="144.79999999999998" height="148.4" rx="3" fill="none" stroke="#A8741A" stroke-dasharray="3 3" opacity=".6"/><rect x="9" y="11" width="136.79999999999998" height="18.400000000000002" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="13" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="22" width="124.79999999999998" height="2.400000000000002" fill="#33422f" opacity=".55"/><text x="77.39999999999999" y="24.700000000000003" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">김부각</text><rect x="9" y="34.400000000000006" width="136.79999999999998" height="18.400000000000002" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="36.400000000000006" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="45.400000000000006" width="124.79999999999998" height="2.400000000000002" fill="#e3ce9e" opacity=".55"/><text x="77.39999999999999" y="48.10000000000001" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">감자부각</text><rect x="9" y="57.800000000000004" width="136.79999999999998" height="18.400000000000002" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="59.800000000000004" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="68.80000000000001" width="124.79999999999998" height="2.400000000000002" fill="#8b6f4e" opacity=".55"/><text x="77.39999999999999" y="71.5" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">표고버섯칩</text><rect x="9" y="81.2" width="136.79999999999998" height="18.400000000000002" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="83.2" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="92.2" width="124.79999999999998" height="2.400000000000002" fill="#efe4cd" opacity=".55"/><text x="77.39999999999999" y="94.9" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">연근칩</text><rect x="9" y="104.60000000000001" width="136.79999999999998" height="18.400000000000002" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="106.60000000000001" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="115.60000000000001" width="124.79999999999998" height="2.400000000000002" fill="#b08050" opacity=".55"/><text x="77.39999999999999" y="118.30000000000001" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">우엉스틱</text><rect x="9" y="128" width="136.79999999999998" height="18.400000000000002" rx="2" fill="#fbfcfc" stroke="#c3ccce"/><rect x="11" y="130" width="132.79999999999998" height="6" fill="#A8741A" opacity=".45"/><rect x="15" y="139" width="124.79999999999998" height="2.400000000000002" fill="#d98a4a" opacity=".55"/><text x="77.39999999999999" y="141.70000000000002" text-anchor="middle" font-size="10" fill="#1E1C1A" font-weight="700" stroke="#fff" stroke-width="3" paint-order="stroke">고구마스틱</text></svg><div class="cap"><b>큰상 개봉 단면</b><br>봉투 6봉 눕혀 적층</div></div></div>
+<div class="small" style="margin-top:8px">봉투를 눕혀 적층하는 구조입니다. 세워 꽂으면 봉투 높이가 200~300mm로 제각각이라 상단이 최대 100mm 어긋납니다.</div>
+<h3>전개도</h3>
+<div class="mk"><div><svg viewBox="0 0 274 200.5" style="width:100%;max-width:274px;height:auto"><rect x="0" y="0" width="274" height="200.5" fill="#fff"/><rect x="72.5" y="72.5" width="64.5" height="55.5" fill="#F4F0E8" stroke="#1E1C1A" stroke-width="1.1"/><text x="104.75" y="103.25" text-anchor="middle" font-size="8" fill="#7A7670">전면</text><rect x="137" y="72.5" width="58.5" height="55.5" fill="#efeadd" stroke="#1E1C1A" stroke-width="1.1"/><text x="166.25" y="103.25" text-anchor="middle" font-size="8" fill="#7A7670">측면</text><rect x="14" y="72.5" width="58.5" height="55.5" fill="#efeadd" stroke="#1E1C1A" stroke-width="1.1"/><text x="43.25" y="103.25" text-anchor="middle" font-size="8" fill="#7A7670">측면</text><rect x="72.5" y="14" width="64.5" height="58.5" fill="#e9e3d4" stroke="#1E1C1A" stroke-width="1.1"/><text x="104.75" y="46.25" text-anchor="middle" font-size="8" fill="#7A7670">뚜껑</text><rect x="72.5" y="128" width="64.5" height="58.5" fill="#e9e3d4" stroke="#1E1C1A" stroke-width="1.1"/><text x="104.75" y="160.25" text-anchor="middle" font-size="8" fill="#7A7670">바닥</text><line x1="72.5" y1="72.5" x2="72.5" y2="128" stroke="#A8741A" stroke-dasharray="4 3" stroke-width="1"/><line x1="137" y1="72.5" x2="137" y2="128" stroke="#A8741A" stroke-dasharray="4 3" stroke-width="1"/><line x1="72.5" y1="72.5" x2="137" y2="72.5" stroke="#A8741A" stroke-dasharray="4 3" stroke-width="1"/><line x1="72.5" y1="128" x2="137" y2="128" stroke="#A8741A" stroke-dasharray="4 3" stroke-width="1"/><text x="104.75" y="94.7" text-anchor="middle" font-size="16" fill="#1E1C1A" font-weight="700">菓</text><text x="137" y="197.5" text-anchor="middle" font-size="8.5" fill="#7A7670">전개도 · 금색 점선 = 접는 선</text></svg><div class="cap"><b>중반 기준 다이라인</b><br>215×195×185mm · 상개형</div></div></div>
+
+<h2>5. 패키지 사양</h2>
+<table><tr><th style="width:120px">요소</th><th>사양</th><th style="width:105px">근거</th></tr>
+<tr><td>구조</td><td>상개형(뚜껑 분리) + 골판지 격자 칸막이 + 한지 라이너</td><td><span class="tag t-i">제안</span></td></tr>
+<tr><td>바탕색</td><td>한지 크림 #F4F0E8 / 큰상은 금 앰버 계열</td><td><span class="tag t-f">브랜드 확정</span></td></tr>
+<tr><td>로고·서체</td><td>묵 블랙 #1E1C1A, 상하 금 앰버 라인</td><td><span class="tag t-f">브랜드 확정</span></td></tr>
+<tr><td>카피</td><td>"온 마음을 담아, 정성껏 올립니다" 계승</td><td><span class="tag t-f">브랜드 확정</span></td></tr>
+<tr><td>윈도우</td><td><b>넣지 않음.</b> 내용물이 밖에서 다 보이면 완제품 과자 대비 저가로 읽힘</td><td><span class="tag t-i">판단</span></td></tr>
+<tr><td>부직포 가방</td><td><b>창고 재고 추석 부직포 2파레트 활용</b> (단가 2,273원, 대표님 승인 완료)</td><td><span class="tag t-f">노션 확인</span></td></tr>
+<tr><td>간지</td><td>기존 띤또레또 350g 체계 계승. 다과용 규격 별도 산출</td><td><span class="tag t-x">미정</span></td></tr>
+<tr><td>박스 단가</td><td>소반 2,800 / 중반 3,200 / 큰상 4,000원</td><td><span class="tag t-i">추정</span></td></tr></table>
+<div class="callout info"><b>부자재 소진 2건을 동시에 해결합니다.</b> 삼방봉투와 함께 창고에 남아 있는 추석 부직포 2파레트도 이 세트에 그대로 씁니다.</div>
+</section><section class="tab">
+<h2>1. 원가 · 손익 시뮬레이션</h2>
+<div class="callout warn"><b>모든 원가는 추정치입니다.</b> 실제 OEM 견적을 받기 전까지는 방향 판단용으로만 쓰십시오. 100g당 제조원가 칸을 직접 수정하면 아래 표가 재계산됩니다.</div>
+<h3>낱개 기여이익 (자사몰 · 합배송 기준)</h3>
+<table id="pl"><tr><th style="width:110px">품목</th><th class="n">중량</th><th class="n" style="width:105px">100g당 제조원가</th><th class="n">제조원가</th><th class="n">부자재</th><th class="n">판매가</th><th class="n">기여이익</th><th class="n">이익률</th></tr>
+<tr data-g="51" data-p="4900"><td><b>김부각</b></td><td class="n">51g</td>
+<td class="n"><input class="num cst" type="number" step="100" value="6000"></td>
+<td class="n c1"></td><td class="n">60원</td><td class="n">4,900원</td><td class="n c2"></td><td class="n c3"></td></tr><tr data-g="51" data-p="4500"><td><b>감자부각</b></td><td class="n">51g</td>
+<td class="n"><input class="num cst" type="number" step="100" value="4200"></td>
+<td class="n c1"></td><td class="n">60원</td><td class="n">4,500원</td><td class="n c2"></td><td class="n c3"></td></tr><tr data-g="42" data-p="4500"><td><b>표고버섯칩</b></td><td class="n">42g</td>
+<td class="n"><input class="num cst" type="number" step="100" value="7000"></td>
+<td class="n c1"></td><td class="n">60원</td><td class="n">4,500원</td><td class="n c2"></td><td class="n c3"></td></tr><tr data-g="93" data-p="6900"><td><b>연근칩</b></td><td class="n">93g</td>
+<td class="n"><input class="num cst" type="number" step="100" value="3800"></td>
+<td class="n c1"></td><td class="n">60원</td><td class="n">6,900원</td><td class="n c2"></td><td class="n c3"></td></tr><tr data-g="85" data-p="5500"><td><b>우엉스틱</b></td><td class="n">85g</td>
+<td class="n"><input class="num cst" type="number" step="100" value="3200"></td>
+<td class="n c1"></td><td class="n">60원</td><td class="n">5,500원</td><td class="n c2"></td><td class="n c3"></td></tr><tr data-g="116" data-p="5900"><td><b>고구마스틱</b></td><td class="n">116g</td>
+<td class="n"><input class="num cst" type="number" step="100" value="2400"></td>
+<td class="n c1"></td><td class="n">60원</td><td class="n">5,900원</td><td class="n c2"></td><td class="n c3"></td></tr><tr data-g="131" data-p="8900"><td><b>모둠칩</b></td><td class="n">131g</td>
+<td class="n"><input class="num cst" type="number" step="100" value="4500"></td>
+<td class="n c1"></td><td class="n">60원</td><td class="n">8,900원</td><td class="n c2"></td><td class="n c3"></td></tr>
+</table>
+<div class="callout warn"><b>낱개 단독배송은 구조적으로 적자입니다.</b> 김부각 4,900원 − 배송비 3,500원 − 제조원가 3,060원 = <b>-1,720원</b>. 낱개는 반드시 <b>정기식단·반찬 주문에 얹는 add-on</b> 또는 <b>3개 이상 묶음</b> 전제로 설계해야 합니다.</div>
+<h3>세트 기여이익</h3>
+<table><tr><th>세트</th><th class="n">원물원가</th><th class="n">부자재</th><th class="n">박스</th><th class="n">간지</th><th class="n">총원가</th><th class="n">판매가</th><th class="n">기여이익</th><th class="n">이익률</th><th class="n">배송비 후</th></tr>
+<tr><td><b>소반</b></td><td class="n">11,676</td><td class="n">240</td><td class="n">2,800</td><td class="n">500</td><td class="n">15,216</td><td class="n">22,000</td><td class="n"><b>6,784원</b></td><td class="n ok">30.8%</td><td class="n">3,284원 (14.9%)</td></tr><tr><td><b>중반</b></td><td class="n">14,396</td><td class="n">300</td><td class="n">3,200</td><td class="n">500</td><td class="n">18,396</td><td class="n">27,000</td><td class="n"><b>8,604원</b></td><td class="n ok">31.9%</td><td class="n">5,104원 (18.9%)</td></tr><tr><td><b>큰상</b></td><td class="n">17,180</td><td class="n">360</td><td class="n">4,000</td><td class="n">500</td><td class="n">22,040</td><td class="n">33,000</td><td class="n"><b>10,960원</b></td><td class="n ok">33.2%</td><td class="n">7,460원 (22.6%)</td></tr>
+</table>
+<div class="callout"><b>봉투 원가 0원이 이익률 전부를 만듭니다.</b> 봉투를 정상 구매했다면 세트당 160~240원이 추가되어 이익률이 1%p 가까이 떨어집니다. 더 중요한 건 <b>같은 판매가에서 원물 품질에 재투자할 여력</b>이 생긴다는 점입니다.</div>
+
+<h2>2. 소진 시뮬레이션</h2>
+<table><tr><th>시나리오</th><th class="n">낱개</th><th class="n">세트</th><th class="n">Track A</th><th class="n">사내·B2B</th><th class="n">연 소진</th><th class="n">소진기간</th></tr>
+<tr><td>낱개만 (보수)</td><td class="n">57,600</td><td class="n">3,500</td><td class="n">-</td><td class="n">-</td><td class="n">61,100</td><td class="n">50개월</td></tr>
+<tr><td>낱개만 (기준)</td><td class="n">108,000</td><td class="n">4,200</td><td class="n">-</td><td class="n">-</td><td class="n">112,200</td><td class="n">27개월</td></tr>
+<tr style="background:#f7f3e9"><td><b>낱개 + Track A 병행</b></td><td class="n">108,000</td><td class="n">4,200</td><td class="n">50,000</td><td class="n">25,000</td><td class="n"><b>187,200</b></td><td class="n"><b>16개월</b></td></tr>
+<tr><td>전면 병행 (공격)</td><td class="n">158,400</td><td class="n">7,000</td><td class="n">80,000</td><td class="n">35,000</td><td class="n">280,400</td><td class="n">11개월</td></tr></table>
+<div class="callout warn"><b>선물세트는 봉투 소진의 주력이 될 수 없습니다.</b> 온올림 2026 추석 확정 물량이 750세트(자사몰 550 · 네이버 100 · B2B 100)입니다. 다과 세트를 시즌당 300세트로 잡아도 연 4,200장, 전체 재고의 <b>1.6%</b>입니다. <b>Track A(기존 구매 봉투 규격 대체)가 이 계획의 성패를 가릅니다.</b></div>
+
+<h2>3. 실행 프로세스</h2>
+<table><tr><th style="width:80px">시점</th><th>내용</th><th style="width:110px">담당</th></tr>
+<tr><td>0주</td><td>사양서·노치 인열 테스트·물 충전 실측</td><td>자재반</td></tr>
+<tr><td>0주</td><td>건조·유탕 설비 확인 → 자사 / OEM 분기</td><td>생산본부</td></tr>
+<tr><td>1주</td><td>후보 OEM 3~5곳 설비 호환 5문항 질의</td><td>온라인본부</td></tr>
+<tr><td>2~3주</td><td>규격별 봉투 샘플 발송, 시험 실링·낙하·보관</td><td>온라인본부</td></tr>
+<tr><td>4주</td><td>단가·사급조건 협의 (무상사급/라벨범위/로스율/MOQ)</td><td>온라인본부</td></tr>
+<tr><td>5~6주</td><td>계약 체결, 사급자재 관리대장 개설, 봉투 출고</td><td>온라인본부·자재반</td></tr>
+<tr><td>8주</td><td>초도 생산·입고 → 채널 등록 → 판매 개시</td><td>온라인본부</td></tr></table>
+<table><tr><th style="width:35px">#</th><th>OEM 설비 호환 5문항</th><th style="width:170px">안 되면</th></tr>
+<tr><td>1</td><td>재단된 완성 파우치 급지가 가능한 설비인가</td><td class="no">롤 필름 전용이면 사용 불가</td></tr>
+<tr><td>2</td><td>대응 봉투 폭이 120~180mm를 커버하는가</td><td>일부 규격만 사용 가능</td></tr>
+<tr><td>3</td><td>진공포장기(체임버식) 보유 여부</td><td>냉동·진공 라인 전개 불가</td></tr>
+<tr><td>4</td><td>라벨·헤더 제작 부착을 범위에 포함 가능한가</td><td>부자재비 자사 부담</td></tr>
+<tr><td>5</td><td>최소 생산 로트 수량</td><td>로트가 작으면 소진 속도 미달</td></tr></table>
+<div class="callout warn"><b>2026 추석은 물리적으로 불가능합니다.</b> OEM 리드타임 8주 기준 초도 생산이 10월 중순입니다. 목표는 <b>2027 설(2월)</b>이며, 그 전에 <b>낱개 라인을 10~11월 먼저 출시</b>해 판매 데이터를 확보한 뒤 설 세트를 구성하는 순서가 맞습니다.</div>
+
+<h2>4. 표시사항 · 인증 요건</h2>
+<table><tr><th style="width:130px">항목</th><th>내용</th><th style="width:80px">상태</th></tr>
+<tr><td>식품유형</td><td>비유탕 야채칩 = <b>건조농산물</b> 또는 <b>과자류(스낵)</b>. 유탕 부각 = <b>과자류</b>. 유형에 따라 규격·표시가 달라짐</td><td><span class="tag t-x">확인 필요</span></td></tr>
+<tr><td>의무 표시사항</td><td>제품명 / 식품유형 / 영업소 명칭·소재지 / 유통기한 / 내용량 / 원재료명 / 영양성분 / 보관방법 / 주의사항</td><td><span class="tag t-f">법정</span></td></tr>
+<tr><td>알레르기 표기</td><td>밀·대두·새우·오징어 등 22종. 김부각 찹쌀풀·튀김유 계열 확인 필수</td><td><span class="tag t-x">확인 필요</span></td></tr>
+<tr><td>영양성분 표시</td><td>과자류는 의무 대상. 시험성적서 필요 (품목당 15~30만원 <span class="tag t-i">추정</span>)</td><td><span class="tag t-x">비용 발생</span></td></tr>
+<tr><td>자가품질검사</td><td>과자류 기준 주기 확인 필요. OEM 위탁 시 수탁사 책임 범위 계약 명시</td><td><span class="tag t-x">확인 필요</span></td></tr>
+<tr><td>품목제조보고</td><td>OEM 생산이면 <b>수탁사가 제조원</b>. 위탁자 표시 방식 결정 필요</td><td><span class="tag t-x">확인 필요</span></td></tr>
+<tr><td>표시 면적</td><td>헤더카드 뒷면에 통합 시 <b>최소 활자크기 규정</b> 충족 여부 사전 검토</td><td><span class="tag t-x">확인 필요</span></td></tr>
+<tr><td>분리배출 표시</td><td>봉투는 <b>OTHER</b>. 박스는 종이. 세트 전체 표시 방식 정리 필요</td><td><span class="tag t-f">확정</span></td></tr></table>
+<div class="callout info"><b>영양성분 시험이 숨은 초기비용입니다.</b> 7개 품목 × 15~30만원 = <b>105~210만원</b>. SKU를 한 번에 다 열지 말고 <b>파일럿 3~4종부터</b> 시작해야 하는 실질적 이유입니다.</div>
+
+<h2>5. 리스크 · 선결 조건</h2>
+<table><tr><th style="width:120px">리스크</th><th>내용</th><th>대응</th></tr>
+<tr><td>노치 없음</td><td>연신 나일론 고인열강도로 손으로 안 뜯어짐</td><td>후가공 2~5원 또는 헤더카드 개봉 동선</td></tr>
+<tr><td>산소차단성</td><td>EVOH 없음. OTR 40~90</td><td>탈산소제 + 유통기한 단축</td></tr>
+<tr><td>방습성 부족</td><td>LLDPE만으로 바삭함 유지 한계</td><td>실리카겔 동봉</td></tr>
+<tr><td>낱개 배송비</td><td>단독배송 시 구조적 적자</td><td>add-on / 3개 이상 묶음 전제</td></tr>
+<tr><td>영양성분 시험비</td><td>품목당 15~30만원</td><td>파일럿 3~4종으로 시작</td></tr>
+<tr><td>시장 정체</td><td>명절세트 -10.8%, 카카오 +1%</td><td>상시 축을 야채칩에 배치</td></tr>
+<tr><td>판매량 미검증</td><td>월 1,500봉은 내부 가정</td><td>낱개 선출시로 실데이터 확보</td></tr></table>
+
+<h2>6. 의사결정 요청</h2>
+<table><tr><th style="width:35px">#</th><th>요청 사항</th><th style="width:100px">대상</th><th style="width:70px">시급도</th></tr>
+<tr><td>1</td><td>삼방봉투 5종 1차 폐기 제외 및 3층 밖 이관</td><td>생산본부</td><td class="no">즉시</td></tr>
+<tr><td>2</td><td>노치 유무 확인 (실물 인열 테스트)</td><td>자재반</td><td>금주</td></tr>
+<tr><td>3</td><td>건조·유탕 설비 보유 여부 확인</td><td>생산본부</td><td>금주</td></tr>
+<tr><td>4</td><td>현재 구매 중인 봉투류 규격 리스트 제공</td><td>자재반</td><td>금주</td></tr>
+<tr><td>5</td><td>추석 부직포 재고 전용 가능 여부</td><td>생산본부</td><td>8월 내</td></tr>
+<tr><td>6</td><td>OEM 사급 승인 및 후보사 접촉 권한</td><td>대표님</td><td>8월 내</td></tr>
+<tr><td>7</td><td>봉투 상단 처리 A안(헤더카드) / B안(스티커) 확정</td><td>온라인본부</td><td>8월 내</td></tr></table>
+
+<h2>7. 완료 기준</h2>
+<table><tr><th style="width:130px">단계</th><th>기준</th></tr>
+<tr><td>1단계 (10~11월)</td><td>낱개 3~4 SKU 자사몰·쿠팡 등록 및 판매 개시</td></tr>
+<tr><td>2단계 (12~1월)</td><td>판매 데이터 기반 세트 구성 확정, OEM 계약 체결</td></tr>
+<tr><td>3단계 (2027 설)</td><td>온올림 菓 세트 3안 출시</td></tr>
+<tr><td>최종</td><td>12개월 내 봉투 재고 50% 이상 소진</td></tr></table>
+</section><div class="foot"><span class="tag t-f">확정</span> 노션 원본·실측으로 확인된 값 · <span class="tag t-i">제안/추정</span> 이번 기획의 제안 또는 추론값 · <span class="tag t-x">미확인</span> 확인 필요<br>브랜드 컬러·박스 등급·라인 로드맵·2026 추석 물량(750세트)·필름 사양은 확정 사실입니다. 세트 구성·가격·박스 규격·제조원가·판매량은 이번 제안이자 내부 가정치이며 시장 실측 데이터가 아닙니다.<br>데이터 출처 : 네이버 데이터랩 검색어트렌드(2021-01~2026-08 일별 2,057일), 쿠팡·컬리·네이버쇼핑·카카오 선물하기 실측(2026-08-19).</div></div><script>
+(function(){
+ var tabs=document.querySelectorAll('section.tab'), btns=document.querySelectorAll('nav button');
+ btns.forEach(function(b,i){ b.addEventListener('click', function(){
+   btns.forEach(function(x){x.classList.remove('on');}); tabs.forEach(function(x){x.classList.remove('on');});
+   b.classList.add('on'); tabs[i].classList.add('on'); window.scrollTo(0,0);
+   try{ localStorage.setItem('sambang_tab', String(i)); }catch(e){}
+ });});
+ var saved=0; try{ saved=parseInt(localStorage.getItem('sambang_tab')||'0',10)||0; }catch(e){}
+ if(btns[saved]) btns[saved].click();
+ var VOL={"150×200":1059,"120×300":964,"160×250":1547,"180×200":1596,"180×270":2180};
+ var fill=document.getElementById('fill'), fv=document.getElementById('fv');
+ function calcMx(){
+   if(!fill) return; var f=+fill.value/100; fv.textContent=fill.value;
+   document.querySelectorAll('#mx tr[data-d]').forEach(function(tr){
+     var d=parseFloat(tr.querySelector('.dz').value)||0;
+     tr.querySelectorAll('td.w').forEach(function(td){ td.textContent=Math.round(VOL[td.dataset.bag]*f*d)+'g'; });
+   });
+ }
+ if(fill){ fill.addEventListener('input',calcMx); document.querySelectorAll('.dz').forEach(function(i){i.addEventListener('input',calcMx);}); calcMx(); }
+ function calcPl(){
+   document.querySelectorAll('#pl tr[data-g]').forEach(function(tr){
+     var g=+tr.dataset.g, p=+tr.dataset.p, c100=parseFloat(tr.querySelector('.cst').value)||0;
+     var cost=Math.round(g*c100/100), cm=p-cost-60, r=Math.round(cm/p*1000)/10;
+     tr.querySelector('.c1').textContent=cost.toLocaleString()+'원';
+     tr.querySelector('.c2').textContent=cm.toLocaleString()+'원';
+     var c3=tr.querySelector('.c3'); c3.textContent=r+'%';
+     c3.className='n '+(r>=40?'ok':(r>=25?'mid':'no'));
+   });
+ }
+ document.querySelectorAll('.cst').forEach(function(i){i.addEventListener('input',calcPl);});
+ calcPl();
+})();</script></body></html>
