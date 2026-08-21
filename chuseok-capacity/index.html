@@ -69,7 +69,7 @@ input.c:focus{background:#d3e2ff;border-radius:3px}
 </style></head><body><div class="wrap">
 <header>
 <h1>2026 추석 · 제품별 일별 생산 가능 수량 기입</h1>
-<div class="sub"><b>전류</b>는 <b>낱개 수</b>로 기입해 주세요 (좌측 「1팩당 낱개 수」를 먼저 채우면 팩 수가 자동 환산됩니다) · <b>그 외 품목</b>은 제품(팩) 수 기입 · 생산 불가한 날은 반드시 <b>0</b> 입력 (빈칸은 미확인으로 간주) · 입력하면 자동 저장되며 팀 전체가 같은 값을 봅니다</div>
+<div class="sub"><b>전류</b>는 <b>낱개 수</b>로 기입해 주세요 · 단 <b>동태전 2종 · 소고기육전과 파채</b>는 <b>g</b>로 기입 (좌측 「1팩당 낱개 수 · g」를 먼저 채우면 팩 수가 자동 환산됩니다) · <b>그 외 품목</b>은 제품(팩) 수 기입 · 생산 불가한 날은 반드시 <b>0</b> 입력 (빈칸은 미확인으로 간주) · 입력하면 자동 저장되며 팀 전체가 같은 값을 봅니다</div>
 <div class="bar">
 <div class="tabs" id="tabs"></div>
 <div class="spacer"></div>
@@ -84,16 +84,16 @@ input.c:focus{background:#d3e2ff;border-radius:3px}
 <b>▣ 통합 행 보는 법</b> · 용량이 나뉜 전류 제품(동그랑땡·동태전·깻잎전·녹두전·애호박전)은 바로 위에 파란색 통합 행이 있습니다.<br>
 · 통합 행 숫자 <b>「6,500개 · 600팩」</b> = 그 날 해당 전 종류에 들어간 <b>총 낱개</b>와 <b>총 팩 수</b>입니다.<br>
 · 통합 행 입력칸에 <b>그 날 생산 가능한 총 낱개(상한)</b>를 넣으면 <span style="color:#1f7a4d;font-weight:700">잔여</span> / <span style="color:#c0392b;font-weight:700">초과</span>가 자동 표시됩니다. 비워두면 단순 합산만 표시됩니다.<br>
-· <b>모둠전 3종</b>은 팩 수를 입력하면, 좌측 개입수(동태·동그·깻잎)만큼 <span style="color:#8a5a12;font-weight:700">(모둠 300)</span> 형태로 각 통합 행에 자동 가산됩니다.<br>
-· 팩 수는 <b>내림</b> 처리하며, 나누어떨어지지 않는 낱개는 <b>(+3)</b> 처럼 표시됩니다.
+· <b>모둠전 3종</b>은 팩 수를 입력하면, 좌측 개입수(동태·동그·깻잎)만큼 <span style="color:#8a5a12;font-weight:700">(모둠 300)</span> 형태로 각 통합 행에 자동 가산됩니다. 동태 칸만 <b>g</b> 기준입니다.<br>
+· 팩 수는 <b>내림</b> 처리하며, 나누어떨어지지 않는 잔량은 <b>(+3)</b> · <b>(+30g)</b> 처럼 표시됩니다.<br>· <b>g 기준 품목</b>(동태전 150g/500g, 소고기육전과 파채)은 「1팩당 g」에 1팩에 담기는 <b>중량(g)</b>을 넣고, 날짜 칸에는 그 날 만들 수 있는 <b>총 g</b>을 넣습니다.
 </div>
 </div>
 <script>
 var FB='https://zipbanchan-review-db-default-rtdb.firebaseio.com/chuseok2026/capacity2026';
-var MIX=[{k:'dtj',l:'동태'},{k:'dgt',l:'동그'},{k:'kyj',l:'깻잎'}];
+var MIX=[{k:'dtj',l:'동태',u:'g'},{k:'dgt',l:'동그',u:'개'},{k:'kyj',l:'깻잎',u:'개'}];
 var GROUPS={
  G_DGT:{name:'동그랑땡',mk:'dgt'},
- G_DTJ:{name:'동태전',mk:'dtj'},
+ G_DTJ:{name:'동태전',mk:'dtj',u:'g'},
  G_KYJ:{name:'깻잎전',mk:'kyj'},
  G_NDJ:{name:'녹두전',mk:null},
  G_AHB:{name:'애호박전',mk:null}
@@ -101,14 +101,14 @@ var GROUPS={
 var ITEMS=[
  {id:'dgt160',cat:'전류',n:'동그랑땡',g:'160g',grp:'G_DGT'},
  {id:'dgt450',cat:'전류',n:'동그랑땡_대용량',g:'450g',grp:'G_DGT'},
- {id:'dtj150',cat:'전류',n:'동태전',g:'150g',grp:'G_DTJ'},
- {id:'dtj500',cat:'전류',n:'동태전_대용량',g:'500g',grp:'G_DTJ'},
+ {id:'dtj150',cat:'전류',n:'동태전',g:'150g',grp:'G_DTJ',u:'g'},
+ {id:'dtj500',cat:'전류',n:'동태전_대용량',g:'500g',grp:'G_DTJ',u:'g'},
  {id:'kyj250',cat:'전류',n:'깻잎전',g:'250g',grp:'G_KYJ'},
  {id:'kyj500',cat:'전류',n:'깻잎전_대용량',g:'500g',grp:'G_KYJ'},
  {id:'ndj280',cat:'전류',n:'녹두전',g:'280g',grp:'G_NDJ'},
  {id:'ndj600',cat:'전류',n:'녹두전_대용량',g:'600g',grp:'G_NDJ'},
  {id:'modum',cat:'전류',n:'모둠전 3종 (동태·동그랑땡·깻잎)',g:'350g',mix:true},
- {id:'yukjeon',cat:'전류',n:'소고기육전과 파채',g:'240g'},
+ {id:'yukjeon',cat:'전류',n:'소고기육전과 파채',g:'240g',u:'g'},
  {id:'gyeran',cat:'전류',n:'계란두부부침',g:'170g'},
  {id:'ahb160',cat:'전류',n:'애호박전',g:'160g',grp:'G_AHB'},
  {id:'ahb300',cat:'전류',n:'애호박전_대용량',g:'300g',grp:'G_AHB'},
@@ -142,10 +142,18 @@ function packsOf(it,dk){
   var p=nz(PPU[it.id]);
   return p>0?Math.floor(q/p):0;
 }
-function mixPieces(dk){
-  var q=nz(DATA[key('modum',dk)]),t=0;
-  MIX.forEach(function(m){t+=q*nz(PPU['modum|'+m.k])});
-  return t;
+function uOf(it){return it.u||'개'}
+function guOf(g){return GROUPS[g].u||'개'}
+function mixSplit(dk){
+  var q=nz(DATA[key('modum',dk)]),o={p:0,g:0};
+  MIX.forEach(function(m){var v=q*nz(PPU['modum|'+m.k]); if(m.u==='g')o.g+=v; else o.p+=v;});
+  return o;
+}
+function mixTxt(dk){
+  var o=mixSplit(dk),a=[];
+  if(o.p)a.push('낱개 '+fmt(o.p));
+  if(o.g)a.push(fmt(o.g)+'g');
+  return a.length?a.join(' · '):'0';
 }
 function groupCalc(g,dk){
   var pieces=0,packs=0,mix=0;
@@ -164,18 +172,18 @@ function ppCell(it){
   if(it.mix){
     return '<td class="pp"><div class="ppwrap">'+MIX.map(function(m){
       var v=PPU['modum|'+m.k];
-      return '<div class="pprow">'+m.l+'<input class="p'+(v!==undefined&&v!==''?' filled':'')+'" inputmode="numeric" data-pp="modum|'+m.k+'" value="'+(v===undefined?'':v)+'"></div>';
+      return '<div class="pprow">'+m.l+'<input class="p'+(v!==undefined&&v!==''?' filled':'')+'" inputmode="numeric" data-pp="modum|'+m.k+'" value="'+(v===undefined?'':v)+'">'+m.u+'</div>';
     }).join('')+'</div></td>';
   }
   if(it.cat==='전류'){
     var v=PPU[it.id];
-    return '<td class="pp"><div class="ppwrap"><div class="pprow"><input class="p'+(v!==undefined&&v!==''?' filled':'')+'" inputmode="numeric" data-pp="'+it.id+'" value="'+(v===undefined?'':v)+'">개</div></div></td>';
+    return '<td class="pp"><div class="ppwrap"><div class="pprow"><input class="p'+(v!==undefined&&v!==''?' filled':'')+'" inputmode="numeric" data-pp="'+it.id+'" value="'+(v===undefined?'':v)+'">'+uOf(it)+'</div></div></td>';
   }
   return '<td class="pp"><span class="dash">–</span></td>';
 }
 function render(){
   var w=WEEKS[wi],days=w.d,span=days.length+3;
-  var h='<thead><tr><th class="nm">제품명</th><th class="pp">1팩당<br>낱개 수</th>';
+  var h='<thead><tr><th class="nm">제품명</th><th class="pp">1팩당<br>낱개 수 · g</th>';
   days.forEach(function(d){h+='<th class="'+(d.we?'we':'')+'">'+d.label+'<br><span style="font-weight:600;font-size:10px">('+d.dow+')</span></th>'});
   h+='<th class="tot">주간계</th></tr></thead><tbody>';
   var cat='',doneG={};
@@ -202,7 +210,7 @@ function itemRow(it,days){
   s+=ppCell(it);
   days.forEach(function(d){
     var v=DATA[key(it.id,d.k)];
-    s+='<td class="'+(d.we?'wecell':'')+'"><input class="q'+(v!==undefined&&v!==''?' filled':'')+'" inputmode="numeric" data-i="'+it.id+'" data-d="'+d.k+'" value="'+(v===undefined?'':v)+'" placeholder="'+(it.mix?'팩':(isJ?'낱개':''))+'">'+
+    s+='<td class="'+(d.we?'wecell':'')+'"><input class="q'+(v!==undefined&&v!==''?' filled':'')+'" inputmode="numeric" data-i="'+it.id+'" data-d="'+d.k+'" value="'+(v===undefined?'':v)+'" placeholder="'+(it.mix?'팩':(isJ?uOf(it).replace('개','낱개'):''))+'">'+
        (isJ?'<span class="pack zero" data-pk="'+it.id+'|'+d.k+'">-</span>':'')+'</td>';
   });
   s+='<td class="tot" data-rt="'+it.id+'">-</td></tr>';
@@ -212,7 +220,7 @@ function groupRow(g,days){
   var G=GROUPS[g];
   var s='<tr class="grouprow"><td class="gnm">▣ '+G.name+' 통합<span style="font-weight:600;color:#5b7fc7;font-size:10px"> · 용량 합산</span>'+
         '<button class="fillbtn" data-gfill="'+g+'" title="첫 칸 값을 이 주 전체에 복사">일괄</button></td>';
-  s+='<td class="gpp">총 가능 낱개<br>(상한·선택)</td>';
+  s+='<td class="gpp">총 가능 '+(guOf(g)==='g'?'g':'낱개')+'<br>(상한·선택)</td>';
   days.forEach(function(d){
     var v=CAP[key(g,d.k)];
     s+='<td><input class="c" inputmode="numeric" data-g="'+g+'" data-d="'+d.k+'" placeholder="상한" value="'+(v===undefined?'':v)+'">'+
@@ -225,25 +233,29 @@ function totals(){
   var days=WEEKS[wi].d, g=0, ct={};
   days.forEach(function(d){ct[d.k]=0});
   ITEMS.forEach(function(it){
-    var pk=0,pc=0,any=false,isJ=(it.cat==='전류');
+    var pk=0,pcA=0,pcG=0,any=false,isJ=(it.cat==='전류'),u=uOf(it);
     days.forEach(function(d){
       var raw=DATA[key(it.id,d.k)];
       var p=packsOf(it,d.k);
       if(raw!==undefined&&raw!==''){any=true}
       pk+=p; ct[d.k]+=p;
       if(isJ){
-        pc+= it.mix? mixPieces(d.k) : nz(raw);
+        if(it.mix){var o=mixSplit(d.k);pcA+=o.p;pcG+=o.g}
+        else if(u==='g'){pcG+=nz(raw)}else{pcA+=nz(raw)}
         var sp=document.querySelector('[data-pk="'+it.id+'|'+d.k+'"]');
         if(sp){
           if(raw===undefined||raw===''){sp.textContent='-';sp.className='pack zero'}
-          else if(it.mix){sp.textContent='낱개 '+fmt(mixPieces(d.k));sp.className='pack'}
-          else if(nz(PPU[it.id])<=0){sp.textContent='개입수?';sp.className='pack zero'}
-          else{var r=nz(raw)%nz(PPU[it.id]);sp.textContent='= '+fmt(p)+'팩'+(r?' (+'+r+')':'');sp.className='pack'}
+          else if(it.mix){sp.textContent=mixTxt(d.k);sp.className='pack'}
+          else if(nz(PPU[it.id])<=0){sp.textContent=(u==='g'?'1팩당 g?':'개입수?');sp.className='pack zero'}
+          else{var r=nz(raw)%nz(PPU[it.id]);sp.textContent='= '+fmt(p)+'팩'+(r?' (+'+r+(u==='g'?'g':'')+')':'');sp.className='pack'}
         }
       }
     });
     var c=document.querySelector('[data-rt="'+it.id+'"]');
-    if(c){ c.innerHTML = any ? (fmt(pk)+'팩'+(isJ?'<span class="sm">낱개 '+fmt(pc)+'</span>':'')) : '-'; }
+    if(c){
+      var sub=[];if(pcA)sub.push('낱개 '+fmt(pcA));if(pcG)sub.push(fmt(pcG)+'g');
+      c.innerHTML = any ? (fmt(pk)+'팩'+(isJ&&sub.length?'<span class="sm">'+sub.join(' · ')+'</span>':'')) : '-';
+    }
     g+=pk;
   });
   Object.keys(GROUPS).forEach(function(gk){
@@ -255,18 +267,19 @@ function totals(){
       if(el){
         if(!r.pieces&&!r.cap){el.innerHTML='-'}
         else{
-          var t='<b>'+fmt(r.pieces)+'개</b> · '+fmt(r.packs)+'팩';
-          if(r.mix)t+=' <span class="gmix">(모둠 '+fmt(r.mix)+')</span>';
+          var gu=guOf(gk);
+          var t='<b>'+fmt(r.pieces)+gu+'</b> · '+fmt(r.packs)+'팩';
+          if(r.mix)t+=' <span class="gmix">(모둠 '+fmt(r.mix)+gu+')</span>';
           if(r.cap){
             var left=r.cap-r.pieces;
-            t+='<br>'+(left<0?'<span class="gover">초과 '+fmt(-left)+'</span>':'<span class="gleft">잔여 '+fmt(left)+'</span>');
+            t+='<br>'+(left<0?'<span class="gover">초과 '+fmt(-left)+gu+'</span>':'<span class="gleft">잔여 '+fmt(left)+gu+'</span>');
           }
           el.innerHTML=t;
         }
       }
     });
     var gc=document.querySelector('[data-grt="'+gk+'"]');
-    if(gc){gc.innerHTML= anyg ? (fmt(tp)+'개<span class="sm">'+fmt(tk)+'팩</span>') : '-';}
+    if(gc){gc.innerHTML= anyg ? (fmt(tp)+guOf(gk)+'<span class="sm">'+fmt(tk)+'팩</span>') : '-';}
   });
   days.forEach(function(d){var c=document.querySelector('[data-ct="'+d.k+'"]');if(c)c.textContent=ct[d.k]?fmt(ct[d.k]):'-'});
   var gt=document.querySelector('[data-gt]');if(gt)gt.textContent=g?fmt(g):'-';
