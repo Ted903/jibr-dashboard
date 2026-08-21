@@ -458,7 +458,10 @@ function renderLine(){
 /* ---- 이벤트 ---- */
 document.getElementById('slots').addEventListener('click',function(e){var b=e.target.closest('[data-s]');if(!b)return;cur=b.dataset.s;renderAll();});
 document.getElementById('chips').addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(!b)return;filt=b.dataset.f;renderCatalog();});
-document.getElementById('kw').addEventListener('input',function(e){kw=e.target.value.trim();renderCatalog();});
+(function(){var el=document.getElementById('kw'),ime=false;
+ el.addEventListener('compositionstart',function(){ime=true});
+ el.addEventListener('compositionend',function(){ime=false;kw=el.value.trim();renderCatalog();});
+ el.addEventListener('input',function(){ if(ime)return; kw=el.value.trim();renderCatalog();});})();
 document.getElementById('list').addEventListener('click',function(e){var b=e.target.closest('[data-add]');if(!b)return;
   var c=b.dataset.add; ST[cur].items[c]=(ST[cur].items[c]||0)+1; renderAll();});
 document.getElementById('cmp').addEventListener('click',function(e){
@@ -483,7 +486,10 @@ function priceSync(src){
   else if(id==='pqty') ST[cur].qty=Number(e.target.value)||0;
   else priceSync(id);
   renderComp(); renderSlots(); renderLine(); save(); }); });
-document.getElementById('pname').addEventListener('input',function(e){ST[cur].name=e.target.value;renderSlots();renderLine();save();});
+(function(){var el=document.getElementById('pname'),ime=false;
+ el.addEventListener('compositionstart',function(){ime=true});
+ el.addEventListener('compositionend',function(){ime=false;ST[cur].name=el.value;renderSlots();renderLine();save();});
+ el.addEventListener('input',function(){ST[cur].name=el.value;save(); if(ime)return; renderSlots();renderLine();});})();
 document.getElementById('ship').addEventListener('input',function(e){SHIP=Number(e.target.value)||0;renderComp();renderLine();save();});
 document.getElementById('preset').addEventListener('change',function(e){
   var p=PRE.filter(function(x){return x.id===e.target.value})[0]; if(!p)return;
