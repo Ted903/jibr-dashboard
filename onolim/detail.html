@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>온올림 상세페이지 와이어프레임 · 2026 추석</title>
+<style>
+:root{
+  --ink:#1E1C1A; --cream:#F4F0E8; --gold:#A8741A; --gold2:#C9974A;
+  --bg:#F4F0E8; --gray:#7A7670; --line:#ddd8cc; --red:#B03A2E; --blue:#2f5a8a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#e6e2d8;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);line-height:1.6;font-size:14px}
+.wrap{max-width:780px;margin:0 auto;background:var(--bg);min-height:100vh;padding-bottom:70px}
+
+/* header */
+.hd{background:var(--ink);color:#fff;padding:26px 22px 22px}
+.hd h1{margin:0 0 6px;font-size:22px;font-weight:800;letter-spacing:-.5px}
+.hd p{margin:0;font-size:12.5px;color:#c8c2b6}
+.hd .chips{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+.hd .chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#f0ebe0;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px}
+
+/* note */
+.note{background:#fff8e6;border-left:4px solid var(--gold);padding:14px 16px;font-size:12.5px;color:#6b5410;line-height:1.6;margin:0}
+.note b{color:var(--gold)}
+.note.red{background:#fdeeec;border-left-color:var(--red);color:#7d2b21}
+.note.red b{color:var(--red)}
+.note.blue{background:#eaf0f7;border-left-color:var(--blue);color:#274a70}
+.note.blue b{color:var(--blue)}
+
+/* zone */
+.zone{background:var(--ink);color:#fff;padding:12px 20px;font-size:13px;font-weight:800;letter-spacing:.3px;display:flex;justify-content:space-between;align-items:center}
+.zone span{font-size:11px;font-weight:600;color:#b8b2a4}
+.zone.b{background:var(--gold)}
+.zone.b span{color:#f6e9d0}
+
+/* section */
+.sec{padding:30px 20px 22px;border-bottom:8px solid #e6e2d8;position:relative;background:var(--bg)}
+.sec::before{content:attr(data-s);position:absolute;top:0;left:0;background:var(--ink);color:#fff;font-size:10.5px;font-weight:800;padding:3px 10px;letter-spacing:.5px}
+.sec.plat::before{background:#8a8578}
+.scr{position:absolute;top:0;right:0;background:#ddd8cc;color:#5f5a51;font-size:10.5px;font-weight:700;padding:3px 10px}
+.purpose{font-size:11.5px;color:var(--gold);font-weight:700;margin:6px 0 12px;letter-spacing:-.2px}
+
+/* mock primitives */
+.slot{border:2px dashed #b8b2a4;background:#ece7db;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;color:#7a756a;font-size:12px;gap:4px}
+.slot .id{font-weight:800;color:var(--gold);font-size:12.5px;letter-spacing:.4px}
+.slot .spec{font-size:11px;color:#98928400}
+.slot .spec{font-size:11px;color:#98927f}
+.h1{font-size:25px;font-weight:800;line-height:1.32;letter-spacing:-.6px;margin:0 0 10px}
+.h2{font-size:19.5px;font-weight:800;line-height:1.35;letter-spacing:-.5px;margin:0 0 8px}
+.h3{font-size:15px;font-weight:700;margin:0 0 6px}
+.sub{font-size:13px;color:#5f5a51;margin:0 0 14px}
+.tag{display:inline-block;background:#fff;border:1px solid var(--line);color:var(--gold);font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;margin:0 4px 6px 0}
+.cta{display:block;width:100%;background:var(--ink);color:#fff;text-align:center;font-size:16px;font-weight:800;padding:15px;border-radius:9px;text-decoration:none;margin:12px 0 0}
+.cta.g{background:var(--gold)}
+.cta.o{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.row{display:flex;gap:9px}.row>*{flex:1}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+table{width:100%;border-collapse:collapse;font-size:12px;background:#fff;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 6px;text-align:center;vertical-align:middle}
+th{background:#efe9dc;font-weight:700;color:var(--ink);font-size:11px}
+td.l{text-align:left}
+.card{background:#fff;border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-bottom:12px}
+.card .body{padding:13px}
+.pr1{font-size:12.5px;color:#9a948a;text-decoration:line-through}
+.pr2{font-size:22px;font-weight:800;color:var(--red)}
+.unit{font-size:11.5px;color:#6d685e;background:#efe9dc;padding:3px 8px;border-radius:5px;display:inline-block;margin-top:5px}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:12px}
+.box b{display:block;font-size:16px;color:var(--gold);margin-bottom:3px}
+.rv{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 12px;margin-bottom:8px;font-size:12.5px}
+.rv .who{font-size:11px;color:#8a8478;margin-top:5px}
+.star{color:#e6a020;font-size:12px}
+.faq{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin-bottom:7px;font-size:12.5px}
+.faq b{display:block;color:var(--gold);margin-bottom:3px}
+
+/* spec panel */
+.spc{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.spc dt{background:#efe9dc;font-size:10.5px;font-weight:800;color:#5f5a51;padding:5px 11px;letter-spacing:.3px}
+.spc dd{margin:0;padding:9px 11px;font-size:12px;border-bottom:1px solid #f1ece0;line-height:1.55}
+.spc dd:last-child{border-bottom:none}
+.spc dd b{color:var(--gold)}
+.cut{display:inline-block;background:var(--ink);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;margin-right:5px}
+
+/* competitor */
+.cmp{margin-top:10px;background:#f7f3ea;border:1px dashed #cfc7b4;border-radius:9px;padding:10px 12px;font-size:11.5px;color:#6b6459;line-height:1.6}
+.cmp .t{font-weight:800;color:var(--ink);font-size:11px;margin-bottom:5px;letter-spacing:.3px}
+.cmp em{font-style:normal;font-weight:700;color:var(--gold)}
+
+/* sticky bar mock */
+.sticky{background:#fff;border-bottom:1px solid var(--line)}
+.sticky .tabs{display:flex}
+.sticky .tabs a{flex:1;text-align:center;padding:10px 0;font-size:12.5px;font-weight:700;color:#6d685e;text-decoration:none;border-bottom:3px solid transparent}
+.sticky .tabs a.on{color:var(--ink);border-bottom-color:var(--ink)}
+.bottombar{display:flex;gap:8px;padding:10px 14px;background:#fff;border-top:1px solid var(--line)}
+.bottombar a{flex:1;text-align:center;padding:13px;border-radius:9px;font-weight:800;font-size:14.5px;text-decoration:none}
+.bottombar .a{background:var(--ink);color:#fff;flex:2.2}
+.bottombar .b{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+
+h2.big{font-size:18px;font-weight:800;margin:0;padding:20px 20px 0}
+.pad{padding:0 20px 22px}
+.foot{padding:18px 20px 30px;font-size:11px;color:#8a8478;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd">
+  <h1>온올림 상세페이지 와이어프레임</h1>
+  <p>2026 추석 · 선물세트 3종 공통 프레임 · 자사몰 / 네이버 스마트스토어 겸용</p>
+  <div class="chips">
+    <span class="chip">예시 SKU · 온마음 99,800원</span>
+    <span class="chip">촬영 8/28</span>
+    <span class="chip">제작 8/29~9/3</span>
+    <span class="chip">오픈 9/4</span>
+  </div>
+</div>
+
+<div class="note red">
+<b>먼저 짚을 것 — 상세페이지는 두 개의 영역으로 나뉩니다.</b><br>
+경쟁사 3곳(경복궁 · 사미헌 · 한촌설렁탕)을 실제로 열어 확인한 결과, <b>가격과 구매 버튼은 3곳 모두 예외 없이 첫 화면에 있습니다.</b>
+이건 우리가 정하는 게 아니라 <b>플랫폼이 자동으로 만드는 영역(영역 A)</b>입니다.<br><br>
+우리가 만드는 「상세페이지」는 그 아래 <b>상세정보 이미지 영역(영역 B)</b>입니다.
+「가격을 첫 화면에 넣지 않는다」는 원칙은 영역 B의 첫 컷에만 적용됩니다. 두 영역을 섞어 생각하면 설계가 어긋납니다.
+</div>
+
+<div class="note blue">
+<b>채널별 차이 — 자사몰은 연속형, 네이버는 토글형</b><br>
+자사몰(cafe24 기반 경복궁·사미헌)은 상세정보 이미지가 스크롤하면 바로 이어집니다.<br>
+네이버 스마트스토어(한촌설렁탕)는 <b>「상세정보 펼쳐보기」 버튼으로 접혀 있습니다.</b>
+즉 네이버에서는 <b>접힌 상태에서 보이는 첫 화면(S1~S2)이 펼침 클릭을 유도해야</b> 하고, 그 아래는 클릭한 사람만 봅니다.<br>
+→ 같은 이미지 한 벌을 쓰되 <b>S1·S2에 후킹 화력을 집중</b>합니다.
+</div>
+
+<!-- ========== ZONE A ========== -->
+<div class="zone">영역 A · 플랫폼 고정 영역 <span>우리가 통제하는 건 대표이미지 5장과 상품명뿐</span></div>
+
+<div class="sec plat" data-s="A1"><div class="scr">스크롤 0~10%</div>
+  <div class="purpose">목적 · 3초 안에 "선물세트다"를 인지시킨다</div>
+  <div class="slot" style="height:190px">
+    <div class="id">대표이미지 1번 (썸네일)</div>
+    <div>완성 세트 정면 45도 히어로컷 · 배경 심플</div>
+    <div class="spec">1000×1000 정사각 · 흰 배경 또는 한지 크림</div>
+  </div>
+  <div class="g2" style="margin-top:9px">
+    <div class="slot" style="height:95px"><div class="id">2번</div><div class="spec">구성 오버헤드(탑뷰)</div></div>
+    <div class="slot" style="height:95px"><div class="id">3번</div><div class="spec">외박스 개봉 상태</div></div>
+    <div class="slot" style="height:95px"><div class="id">4번</div><div class="spec">부직포가방 연출</div></div>
+    <div class="slot" style="height:95px"><div class="id">5번</div><div class="spec">조리 후 상차림</div></div>
+  </div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd><span class="cut">촬영 #2</span>1번 썸네일 — 검색결과·카테고리·기획전에 노출되는 유일한 이미지. <b>여기서 클릭이 갈린다</b></dd>
+    <dd><span class="cut">촬영 #4</span>2번 구성 탑뷰 — 3종이 한눈에. 세트 값어치를 즉시 전달</dd>
+    <dd><span class="cut">촬영 #6</span>3번 개봉 — 스티로폼 3칸에 담긴 상태</dd>
+    <dd><span class="cut">촬영 #10</span>4번 부직포가방 — 선물 맥락. 경쟁사 대부분 종이박스라 차별점</dd>
+    <dd><span class="cut">촬영 #12</span>5번 조리 후 — 먹는 장면으로 마무리</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    3곳 모두 첫 이미지가 <em>제품 패키지/스튜디오컷</em>입니다. 인물이 들어간 연출컷을 썸네일로 쓴 곳은 없었습니다.
+    한촌설렁탕만 갤러리 5장 + 썸네일 인디케이터를 운영합니다. → <em>우리도 5장을 채웁니다.</em>
+  </div>
+</div>
+
+<div class="sec plat" data-s="A2"><div class="scr">스크롤 10~18%</div>
+  <div class="purpose">목적 · 검색 노출 + 구성 즉시 파악</div>
+  <div class="card"><div class="body">
+    <div style="font-size:11px;color:#8a8478">원산지 · 미국산(LA갈비/소갈비) · 호주산(소불고기)</div>
+    <div class="h3" style="margin:5px 0 8px">온올림 추석 선물세트 LA양념갈비 소불고기 소갈비 2.8kg</div>
+    <div style="font-size:11.5px;color:#5f5a51">LA양념갈비 850g + 옛날 소불고기 950g + 소갈비 1,000g</div>
+    <div style="margin-top:9px"><span class="star">★★★★★</span> <span style="font-size:11.5px;color:#8a8478">리뷰 0건</span></div>
+    <div style="margin-top:11px">
+      <span class="pr1">109,400원</span>　<span style="color:var(--red);font-weight:800;font-size:13px">8%</span>
+      <div class="pr2">99,800원</div>
+      <div class="unit">무료배송 · 냉동 · 추석 전 도착마감 9/24</div>
+    </div>
+  </div></div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd>상품명 <b>25~35자</b> · 완성형 키워드 앞배치 · 세트명(온마음)은 넣지 않음 (자수를 검색어에 사용)</dd>
+    <dd>「할인 · 특가 · 1+1 · [이벤트]」 등 수식어는 <b>네이버 감점 요소</b></dd>
+    <dd>리뷰 0건 구간이 가장 위험 → 오픈 첫 주 체험단 30건이 이 자리를 채운다</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    첫 화면 카피는 3곳 모두 <em>감성 문구 없이 상품명 + 구성 요약</em>뿐이었습니다(예 · 사미헌 「갈비탕 3팩, LA갈비 2팩」).
+    감성 카피는 20~30% 지점부터 등장합니다. 한촌만 <em>배송 D-day 카운트다운</em>을 첫 화면에 넣어 압박을 겁니다.
+  </div>
+</div>
+
+<div class="sec plat" data-s="A3"><div class="scr">스크롤 18~25%</div>
+  <div class="purpose">목적 · 구매 행동 유도 (네이버 인기도 점수에 직결)</div>
+  <div class="card"><div class="body">
+    <div style="font-size:12px;font-weight:700;margin-bottom:7px">세트 선택</div>
+    <div class="slot" style="height:38px;margin-bottom:6px"><div class="spec">고운마음 69,800 / 깊은마음 84,800 / 온마음 99,800</div></div>
+    <div style="font-size:12px;color:#5f5a51">수량 1 · 총 99,800원</div>
+  </div></div>
+  <div class="bottombar" style="border-radius:9px;border:1px solid var(--line)">
+    <a class="b" href="#">찜</a><a class="b" href="#">장바구니</a><a class="a" href="#">구매하기</a>
+  </div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd><b>2026년 네이버는 체류시간·스크롤 깊이·찜/장바구니 같은 능동 행동을 순위에 반영</b>합니다. 옵션 선택 UI를 상단에 두는 것 자체가 랭킹 요소입니다</dd>
+    <dd>네이버 <b>선물하기 버튼</b>을 살리려면 옵션을 2개 이상 선택하게 만들면 안 됩니다 → SKU별 단일 상품 등록</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    3곳 모두 CTA 버튼군에 <em>네이버페이를 병기</em>합니다. 사미헌은 CTA 앞뒤로 업셀 캐러셀을 2번 노출합니다.
+  </div>
+</div>
+
+<div class="sec plat" data-s="A4"><div class="scr">스크롤 25~30%</div>
+  <div class="purpose">목적 · 법정 준수 + 탭 진입</div>
+  <div class="sticky" style="border-radius:9px;border:1px solid var(--line);overflow:hidden">
+    <div class="tabs"><a class="on" href="#">상세정보</a><a href="#">리뷰</a><a href="#">Q&amp;A</a><a href="#">판매자정보</a></div>
+  </div>
+  <div class="card" style="margin-top:9px"><div class="body" style="font-size:11.5px;color:#5f5a51">
+    <b style="color:var(--ink)">상품정보제공고시</b><br>
+    제품명 · 식품유형 · 생산자(숭의가든/주식회사 스테까) · 원산지 · 중량 · <b>소비기한</b> · <b>보관방법 -18℃ 이하 냉동</b> · 원재료 · 영양성분 · 알레르기(소고기·밀·대두) · 수입여부
+  </div></div>
+  <div class="cmp"><div class="t">타사 비교</div>
+    한촌설렁탕(스마트스토어)은 법정 표시사항을 <em>CTA 직후 35% 지점</em>에 텍스트 블록으로 명확히 노출합니다. 3곳 중 가장 이른 위치입니다.
+    자사몰 2곳은 하단부에 둡니다. → <em>네이버는 상단, 자사몰은 하단</em>이 관행입니다.
+  </div>
+  <div class="cmp" style="background:#fdeeec;border-color:#e3b5ae"><div class="t" style="color:var(--red)">현재 미확정 · 최우선 리스크</div>
+    등급 · 부위 · 뼈 포함 비율 · 소비기한이 아직 확보되지 않았습니다. <em>누락 시 판매정지 대상</em>입니다. 상세페이지 제작 전에 숭의가든에서 받아야 합니다.
+  </div>
+</div>
+
+<!-- ========== ZONE B ========== -->
+<div class="zone b">영역 B · 상세정보 이미지 (우리가 만드는 9블록) <span>네이버는 여기가 「펼쳐보기」로 접힘</span></div>
+
+<div class="sec" data-s="S1"><div class="scr">영역B 0~8%</div>
+  <div class="purpose">목적 · 펼침 클릭 유도 + 첫 3초 이탈 방지</div>
+  <div class="slot" style="height:200px">
+    <div class="id">후킹 컷</div>
+    <div>선물 받는 사람의 손 · 부직포가방 매듭을 푸는 순간</div>
+    <div class="spec">가로 860px · 인물(손)만 · 가격/할인율 넣지 않음</div>
+  </div>
+  <div class="h1" style="margin-top:14px">받는 분이<br>먼저 웃습니다</div>
+  <p class="sub">온 마음을 담아, 정성껏 올립니다</p>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd><span class="cut">촬영 #1</span>수령 순간 컷 — 이 한 컷이 영역 B 전체의 클릭률을 좌우</dd>
+    <dd>카피는 <b>이미지에 박은 글자 + 실제 텍스트를 병기</b>. 네이버가 상세 내용을 데이터로 읽습니다</dd>
+    <dd>가격·할인율은 여기 넣지 않습니다. 선물 카테고리에서 격을 떨어뜨립니다</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    3곳 모두 영역 B의 시작을 <em>브랜드 카피 + 연출컷</em>으로 엽니다(경복궁 17~30% 지점). 제품 스펙부터 시작하는 곳은 없었습니다.
+  </div>
+</div>
+
+<div class="sec" data-s="S2"><div class="scr">영역B 8~18%</div>
+  <div class="purpose">목적 · 구매자가 자기 상황을 매칭한다</div>
+  <div class="h2">누구에게 보내시나요</div>
+  <div class="g3">
+    <div class="box"><b>부모님</b>깊은마음<br><span style="color:#8a8478">LA갈비 2팩</span></div>
+    <div class="box"><b>시댁·처가</b>온마음<br><span style="color:#8a8478">소갈비 포함</span></div>
+    <div class="box"><b>거래처</b>고운마음<br><span style="color:#8a8478">3종 밸런스</span></div>
+  </div>
+  <div class="slot" style="height:120px;margin-top:10px"><div class="id">상황 연출컷</div><div class="spec">명절 상차림 위 / 거래처 전달 장면</div></div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd><span class="cut">촬영 #3</span>상황 연출 2컷</dd>
+    <dd>선물세트는 <b>구매자와 수령자가 다릅니다.</b> 구매 동인은 「맛있겠다」가 아니라 「센스 있어 보이고 싶다 + 실패하면 안 된다」</dd>
+    <dd>세 상황에 각각 다른 세트를 지정해 <b>3종 전부에 진입로</b>를 만듭니다</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    받는사람 소구 카피는 3곳 다 상세이미지 안에 있으나 <em>이미지에 박혀 있어 텍스트 추출이 안 됩니다.</em>
+    → 우리는 실제 텍스트를 병기해 네이버가 읽게 만듭니다. <em>차별화 지점</em>입니다.
+  </div>
+</div>
+
+<div class="sec" data-s="S3"><div class="scr">영역B 18~28%</div>
+  <div class="purpose">목적 · 리뷰 0의 신뢰 공백을 모브랜드로 메운다</div>
+  <div class="h2">9년, 20만 건의 후기로<br>검증된 곳에서 만듭니다</div>
+  <div class="g2" style="margin-top:10px">
+    <div class="box"><b>201,381건</b>자사몰 누적 후기</div>
+    <div class="box"><b>4.83점</b>평균 평점</div>
+  </div>
+  <div class="g2" style="margin-top:8px">
+    <div class="box"><b>4,268건</b>네이버 누적 리뷰</div>
+    <div class="box"><b>HACCP</b>숭의가든 제조</div>
+  </div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd>온올림은 리뷰 0에서 시작하지만 <b>집반찬연구소의 20만 건은 그대로 인용 가능</b>합니다. 비용 0원</dd>
+    <dd>숭의가든 1991년 창업 · 인천 제물포 · HACCP 인증 시설 — 제조 신뢰 근거</dd>
+    <dd>실제 후기 3~4건을 캡처가 아닌 <b>텍스트로</b> 인용</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    한촌설렁탕은 <em>포토리뷰 캐러셀을 CTA 버튼 바로 아래</em>에 배치합니다(영역 A 25~30%). 우리는 리뷰가 0이라 이 자리를 못 씁니다.
+    → <em>모브랜드 후기로 대체</em>하는 것이 유일한 방법입니다.
+  </div>
+</div>
+
+<div class="sec" data-s="S4"><div class="scr">영역B 28~42%</div>
+  <div class="purpose">목적 · 정보 신뢰 · 원산지 정면 돌파</div>
+  <div class="h2">무엇이 들어 있나</div>
+  <div class="slot" style="height:150px;margin-bottom:10px"><div class="id">구성 오버헤드</div><div class="spec">촬영 #4 · 3종 나란히 탑뷰</div></div>
+  <table>
+    <tr><th>품목</th><th>중량</th><th>원산지</th><th>부위</th></tr>
+    <tr><td class="l">LA 양념갈비</td><td>850g</td><td>미국산</td><td>소갈비 · 간장양념</td></tr>
+    <tr><td class="l">옛날 소불고기</td><td>950g</td><td>호주산</td><td>소 알목심</td></tr>
+    <tr><td class="l">소갈비</td><td>1,000g</td><td>미국산</td><td>소 양념갈비</td></tr>
+    <tr><th class="l">합계</th><th>2,800g</th><th>—</th><th>3종</th></tr>
+  </table>
+  <div class="slot" style="height:110px"><div class="id">개별 패키지 정면컷</div><div class="spec">촬영 #5 · 슬리브 부착 상태 4종</div></div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd><b>원산지를 숨기지 않습니다.</b> 미국산/호주산을 표에 그대로 쓰고 부위·양념 노하우로 정면 돌파</dd>
+    <dd>표는 이미지가 아니라 <b>HTML 표로</b> 만듭니다 (네이버가 읽고, 모바일에서 깨지지 않음)</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    3곳 모두 <em>브랜드스토리 → 제품컷 → 스펙표 → 레시피 → 포장</em> 순서였습니다. 스펙표 위치는 공통적으로 상세이미지 중반입니다.
+  </div>
+</div>
+
+<div class="sec" data-s="S5"><div class="scr">영역B 42~52%</div>
+  <div class="purpose">목적 · 할인이 아니라 합리로 프레임을 바꾼다</div>
+  <div class="h2">따로 사면 109,400원</div>
+  <table>
+    <tr><th>품목</th><th>단품가</th></tr>
+    <tr><td class="l">LA 양념갈비 850g</td><td>33,800원</td></tr>
+    <tr><td class="l">옛날 소불고기 950g</td><td>19,800원</td></tr>
+    <tr><td class="l">소갈비 1,000g</td><td>49,800원</td></tr>
+    <tr><td class="l">선물 패키지 일체</td><td>+6,000원</td></tr>
+    <tr><th class="l">따로 살 때</th><th>109,400원</th></tr>
+    <tr><th class="l" style="background:#fdeeec">세트가</th><th style="background:#fdeeec;color:var(--red);font-size:14px">99,800원</th></tr>
+  </table>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd>「8% 할인」이 아니라 <b>「따로 사면 얼마」</b>로 제시합니다. 선물 카테고리에서 할인율 강조는 격을 깎습니다</dd>
+    <dd>표시가는 <b>단품 합산 + 패키지 실비</b>라 임의로 부풀린 정가가 아닙니다. 10월 단품 오픈 후 검증 가능 — 표시광고법 대응</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    경쟁사 상세페이지에서 단품 합산 대비 세트가를 제시하는 <em>가격 정당화 블록은 발견되지 않았습니다.</em>
+    할인율만 표기하거나 아예 표기하지 않습니다. → <em>우리 차별화 블록</em>입니다.
+  </div>
+</div>
+
+<div class="sec" data-s="S6"><div class="scr">영역B 52~68%</div>
+  <div class="purpose">목적 · 가격 저항을 지우는 핵심 블록</div>
+  <div class="h2">열기 전부터<br>이미 선물입니다</div>
+  <div class="slot" style="height:150px;margin-bottom:9px"><div class="id">개봉 시퀀스 3컷</div><div class="spec">촬영 #6 · 닫힘 → 반개봉 → 완전개봉</div></div>
+  <div class="g2">
+    <div class="slot" style="height:100px"><div class="id">슬리브 금박</div><div class="spec">촬영 #8 · 측광 클로즈업</div></div>
+    <div class="slot" style="height:100px"><div class="id">간지 질감</div><div class="spec">촬영 #9 · 띤또레또 엠보</div></div>
+  </div>
+  <div class="g2" style="margin-top:8px">
+    <div class="slot" style="height:100px"><div class="id">3칸 담김 탑뷰</div><div class="spec">촬영 #7</div></div>
+    <div class="slot" style="height:100px"><div class="id">부직포가방</div><div class="spec">촬영 #10 · 들고 있는 컷</div></div>
+  </div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd>구성품 · 3구 스티로폼(M3) · 금박 슬리브(로얄지 330g) · 띤또레또 350g 간지 · 부직포 가방</dd>
+    <dd>세트 포장비 <b>6,510원</b>이 실제로 들어간 값. 이 블록이 99,800원의 근거가 됩니다</dd>
+    <dd><b>경쟁사 대부분 종이박스만 사용</b> — 여기가 유일하게 눈으로 이기는 지점</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    포장/언박싱 컷은 3곳 모두 <em>상세이미지 중반(50~67%)</em>에 있었습니다. 위치는 같지만 <em>분량이 1~2컷에 그칩니다.</em>
+    → 우리는 <em>6컷으로 이 구간을 압도</em>합니다.
+  </div>
+</div>
+
+<div class="sec" data-s="S7"><div class="scr">영역B 68~78%</div>
+  <div class="purpose">목적 · 선물세트 최대 이탈 구간 방어</div>
+  <div class="h2">추석 전에 도착합니다</div>
+  <div class="card"><div class="body">
+    <div style="text-align:center">
+      <div style="font-size:12px;color:#8a8478">추석 전 도착 주문 마감</div>
+      <div style="font-size:26px;font-weight:800;color:var(--red);margin:4px 0">9월 23일</div>
+      <div class="unit">남은 기간 D-30</div>
+    </div>
+  </div></div>
+  <table>
+    <tr><th>구분</th><th>내용</th></tr>
+    <tr><td>배송 방식</td><td class="l">냉동 택배 · 아이스팩 패드 동봉</td></tr>
+    <tr><td>배송비</td><td class="l">전 세트 무료</td></tr>
+    <tr><td>희망일 지정</td><td class="l">가능 (주문서에서 선택)</td></tr>
+    <tr><td>배송 마감</td><td class="l">9/24(목) 도착분까지</td></tr>
+  </table>
+  <div class="slot" style="height:100px;margin-top:9px"><div class="id">냉동 출고 상태</div><div class="spec">촬영 #11 · 실제 포장 형태</div></div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd>D-day 카운터를 <b>상단 고정</b>으로. 한촌설렁탕이 첫 화면에서 쓰는 압박 장치를 우리는 이 블록에서 씁니다</dd>
+    <dd>냉동 선물은 「받는 사람 집에 사람이 있나」가 최대 불안 → 희망일 지정 가능을 명시</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    배송일 지정·메시지카드 UI는 3곳 다 <em>상세페이지에서 확인되지 않았습니다</em>(주문서 단계로 추정).
+    → 상세에 명시하는 것만으로 <em>안심 요소를 선점</em>할 수 있습니다.
+  </div>
+</div>
+
+<div class="sec" data-s="S8"><div class="scr">영역B 78~92%</div>
+  <div class="purpose">목적 · 전환 방어 + 규정 준수</div>
+  <div class="h2">받으신 분이 실패하지 않도록</div>
+  <div class="slot" style="height:120px;margin-bottom:9px"><div class="id">조리 스텝컷</div><div class="spec">촬영 #13 · 제품별 2~3컷 · 이미지로 제작</div></div>
+  <table>
+    <tr><th>제품</th><th>해동</th><th>조리</th></tr>
+    <tr><td class="l">LA 양념갈비</td><td>완전 자연해동</td><td class="l">팬에 굽기. 양념째 바로 조리 시 물이 나옴</td></tr>
+    <tr><td class="l">옛날 소불고기</td><td>먹기 하루 전 냉장</td><td class="l">야채·버섯 추가해 끓임</td></tr>
+    <tr><td class="l">소갈비</td><td>완전 해동</td><td class="l">찜 조리</td></tr>
+  </table>
+  <div class="faq"><b>소비기한이 얼마나 되나요</b>수령일 기준 확보 예정 (숭의가든 확인 중)</div>
+  <div class="faq"><b>보관은 어떻게 하나요</b>-18℃ 이하 냉동 보관</div>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd><b>조리법은 반드시 이미지로</b> 만듭니다. 받은 사람이 조리에 실패하면 그 책임이 구매자에게 돌아갑니다</dd>
+    <dd>교환·반품 규정 · 상품정보제공고시 전항목을 텍스트로 병기</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    경복궁은 조리법 스텝컷을 <em>50~67% 구간</em>에, 인증·원산지를 67~83%에 배치합니다. 순서가 우리와 동일합니다.
+  </div>
+</div>
+
+<div class="sec" data-s="S9"><div class="scr">영역B 92~100%</div>
+  <div class="purpose">목적 · 객단가 · 3종 상호 순환</div>
+  <div class="h2">다른 세트도 보시겠어요</div>
+  <div class="card"><div class="body" style="display:flex;gap:10px;align-items:center">
+    <div class="slot" style="width:74px;height:74px;flex:none"><div class="spec">고운</div></div>
+    <div><div class="h3">온올림 고운마음</div><div style="font-size:11.5px;color:#5f5a51">LA갈비 + 소불고기 + 갈비탕</div><div class="pr2" style="font-size:17px">69,800원</div></div>
+  </div></div>
+  <div class="card"><div class="body" style="display:flex;gap:10px;align-items:center">
+    <div class="slot" style="width:74px;height:74px;flex:none"><div class="spec">깊은</div></div>
+    <div><div class="h3">온올림 깊은마음</div><div style="font-size:11.5px;color:#5f5a51">LA갈비 2팩 + 갈비탕</div><div class="pr2" style="font-size:17px">84,800원</div></div>
+  </div></div>
+  <div class="slot" style="height:110px;margin:9px 0"><div class="id">3종 비교컷</div><div class="spec">촬영 #14 · 가격 사다리 시각화</div></div>
+  <a class="cta g" href="#">이 세트로 선물하기</a>
+  <dl class="spc">
+    <dt>슬롯 명세</dt>
+    <dd>고운마음 페이지에서는 <b>온마음을 우선 노출</b>(상향), 온마음 페이지에서는 고운마음·깊은마음을 나란히</dd>
+    <dd>네이버 <b>그룹상품으로 묶으면</b> 이 순환이 자동화되지만 <b>해제 불가</b>이므로 등록 전 결정 필요</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    사미헌은 업셀 캐러셀을 <em>CTA 앞뒤로 2번</em> 노출합니다. 경복궁은 CTA와 상세이미지 사이에 관련상품을 둡니다.
+    → <em>업셀은 최하단만이 아니라 상단에도 한 번</em> 두는 것이 관행입니다.
+  </div>
+</div>
+
+<!-- 종합 비교표 -->
+<h2 class="big">타사 스크롤 순서 종합 비교</h2>
+<div class="pad">
+  <table>
+    <tr><th>순서</th><th>경복궁<br>자사몰</th><th>사미헌<br>자사몰</th><th>한촌설렁탕<br>스마트스토어</th><th>온올림<br>설계안</th></tr>
+    <tr><td>1</td><td>제품컷+가격+CTA</td><td>제품컷+가격+구매방법</td><td>갤러리+평점+가격<br>+배송D-day+CTA</td><td class="l">A1~A3<br>갤러리5+가격+CTA</td></tr>
+    <tr><td>2</td><td>관련상품 캐러셀</td><td>업셀 캐러셀</td><td>포토리뷰 캐러셀</td><td class="l">A4<br>법정표시(네이버)</td></tr>
+    <tr><td>3</td><td>상세이미지<br>스토리→스펙→레시피→포장</td><td>CTA 버튼군</td><td>묶음상품 추천</td><td class="l">S1~S3<br>후킹→대상→브랜드</td></tr>
+    <tr><td>4</td><td>결제/배송/반품</td><td>상세이미지 시작</td><td>탭바+법정표시</td><td class="l">S4~S6<br>구성→가격정당화→포장</td></tr>
+    <tr><td>5</td><td>리뷰</td><td>결제/배송/반품</td><td>상세이미지(펼침형)</td><td class="l">S7~S8<br>배송→불안제거</td></tr>
+    <tr><td>6</td><td>상품문의</td><td>상세이미지+리뷰+문의</td><td>리뷰/Q&amp;A/추천</td><td class="l">S9<br>업셀+CTA</td></tr>
+  </table>
+  <div class="note" style="margin-top:12px">
+  <b>공통 규칙 3가지 — 이건 반드시 지킨다</b><br>
+  ① 가격과 CTA는 예외 없이 0~1스크롤 안에 (영역 A, 플랫폼이 처리)<br>
+  ② 법정 표시사항은 CTA 직후~중반부 (네이버는 상단, 자사몰은 하단)<br>
+  ③ 리뷰 · Q&amp;A는 최하단
+  </div>
+  <div class="note red" style="margin-top:10px">
+  <b>온올림만의 차별화 3가지</b><br>
+  ① <b>가격 정당화 블록(S5)</b> — 경쟁 3곳 어디에도 없었습니다. 단품 합산 대비 세트가를 표로 제시<br>
+  ② <b>포장 6컷(S6)</b> — 경쟁사는 1~2컷. 부직포가방·금박·간지·3칸 구조로 이 구간을 압도<br>
+  ③ <b>실제 텍스트 병기</b> — 경쟁 3곳 다 이미지에 글자를 박아 네이버가 못 읽습니다. 우리는 표와 카피를 HTML로
+  </div>
+</div>
+
+<h2 class="big">촬영 컷 ↔ 블록 매핑</h2>
+<div class="pad">
+  <table>
+    <tr><th>컷</th><th>내용</th><th>쓰이는 곳</th><th>우선순위</th></tr>
+    <tr><td>#1</td><td class="l">수령 순간 (손·매듭)</td><td>S1</td><td>최상</td></tr>
+    <tr><td>#2</td><td class="l">완성 세트 히어로</td><td>A1 썸네일 · S1</td><td>최상</td></tr>
+    <tr><td>#3</td><td class="l">상황 연출</td><td>S2</td><td>상</td></tr>
+    <tr><td>#4</td><td class="l">구성 오버헤드</td><td>A1(2번) · S4</td><td>최상</td></tr>
+    <tr><td>#5</td><td class="l">개별 패키지 정면</td><td>S4</td><td>최상</td></tr>
+    <tr><td>#6</td><td class="l">개봉 시퀀스 3컷</td><td>A1(3번) · S6</td><td>최상</td></tr>
+    <tr><td>#7</td><td class="l">3칸 담김 탑뷰</td><td>S6</td><td>최상</td></tr>
+    <tr><td>#8</td><td class="l">슬리브 금박</td><td>S6</td><td>최상</td></tr>
+    <tr><td>#9</td><td class="l">간지 질감</td><td>S6</td><td>최상</td></tr>
+    <tr><td>#10</td><td class="l">부직포가방</td><td>A1(4번) · S6</td><td>상</td></tr>
+    <tr><td>#11</td><td class="l">냉동 출고 상태</td><td>S7</td><td>중</td></tr>
+    <tr><td>#12</td><td class="l">조리 후 플레이팅</td><td>A1(5번) · S8</td><td>상</td></tr>
+    <tr><td>#13</td><td class="l">조리 스텝컷</td><td>S8</td><td>중</td></tr>
+    <tr><td>#14</td><td class="l">3종 비교컷</td><td>S9</td><td>상</td></tr>
+  </table>
+</div>
+
+<div class="foot">
+온올림 상세페이지 와이어프레임 · 집반찬연구소 온라인본부 · 2026-08-23<br>
+타사 조사 · 경복궁(entasmall.co.kr) · 사미헌(samihunmall.com) · 한촌설렁탕(brand.naver.com/hanchon) 2026-08-23 실측
+</div>
+
+</div>
+</body>
+</html>

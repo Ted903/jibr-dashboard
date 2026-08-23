@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>온올림 선물세트 촬영 기획안 · 2026.08.28</title>
+<style>
+:root{
+  --cream:#F6F1E7; --paper:#FFFFFF; --ink:#1F1D1A; --ink2:#3B3730;
+  --sub:#6E675C; --line:#E2D9C8; --gold:#9C8248; --gold-l:#EFE6D0;
+  --warm:#B8AFA1; --green:#3F6152; --green-l:#E4EDE8;
+  --red:#A8463C; --red-l:#F6E4E1; --blue:#3C5673; --blue-l:#E5ECF4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  background:var(--cream);color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px 80px}
+
+header{background:var(--ink);color:var(--cream);padding:50px 0 42px;margin-bottom:38px;
+  border-bottom:3px solid var(--gold)}
+header .wrap{padding-bottom:0}
+.eyebrow{font-size:12.5px;letter-spacing:.3em;color:var(--gold);font-weight:700;margin-bottom:14px}
+header h1{font-size:32px;font-weight:800;letter-spacing:-.02em;line-height:1.3}
+header .lead{margin-top:14px;font-size:14.5px;color:#CFC8B9;max-width:700px}
+.metabar{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+.metabar span{background:rgba(255,255,255,.08);border:1px solid rgba(230,215,180,.25);
+  padding:6px 13px;border-radius:999px;font-size:12.5px;color:#E9E1D2}
+
+section{margin-bottom:48px}
+h2{font-size:21px;font-weight:800;letter-spacing:-.01em;padding-bottom:11px;margin-bottom:20px;
+  border-bottom:2px solid var(--ink);display:flex;align-items:center;gap:11px}
+h2 .num{background:var(--ink);color:var(--cream);width:29px;height:29px;border-radius:7px;
+  display:inline-flex;align-items:center;justify-content:center;font-size:13.5px;flex:none}
+h3{font-size:15.5px;font-weight:800;margin:26px 0 11px}
+h3::before{content:"";display:inline-block;width:4px;height:14px;background:var(--gold);
+  margin-right:9px;vertical-align:-2px;border-radius:2px}
+p{font-size:14.5px;margin-bottom:11px}
+.muted{color:var(--sub);font-size:13px}
+
+table{width:100%;border-collapse:collapse;background:var(--paper);font-size:13.5px;
+  margin:13px 0 6px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+thead th{background:#EFE7D7;font-weight:800;font-size:12.5px;text-align:left;padding:10px 12px;
+  border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #F1EBE0;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:#FCFAF6}
+td.c,th.c{text-align:center}
+tr.sum td{background:#EFE7D7;font-weight:800}
+tr.total td{background:var(--ink);color:var(--cream);font-weight:800}
+td small{color:var(--sub);font-size:12px}
+
+.bd{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11.5px;font-weight:800;white-space:nowrap}
+.bd-t{background:var(--green-l);color:var(--green)}
+.bd-s{background:var(--blue-l);color:var(--blue)}
+.bd-c{background:var(--red-l);color:var(--red)}
+.bd-n{background:var(--gold-l);color:#7A6428}
+
+.box{border-radius:9px;padding:17px 19px;margin:17px 0;font-size:14px;border-left:5px solid}
+.box .t{font-weight:800;margin-bottom:6px;display:block;font-size:14.5px}
+.box-note{background:#F1EADC;border-color:var(--gold)}
+.box-warn{background:var(--red-l);border-color:var(--red)}
+.box-ok{background:var(--green-l);border-color:var(--green)}
+
+.grid{display:grid;gap:13px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:15px 17px}
+.card .k{font-size:11.5px;color:var(--sub);font-weight:700;letter-spacing:.06em;margin-bottom:5px}
+.card .v{font-size:22px;font-weight:800;line-height:1.2}
+.card .v small{font-size:12.5px;font-weight:700;color:var(--sub)}
+.card .d{font-size:12.5px;color:var(--sub);margin-top:6px;line-height:1.5}
+.card.hi{background:var(--ink);border-color:var(--ink)}
+.card.hi .k{color:var(--gold)}.card.hi .v{color:var(--cream)}.card.hi .d{color:#C0B8A8}
+
+/* swatch */
+.sw{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+.sw-item{flex:1 1 150px;min-width:140px;background:var(--paper);border:1px solid var(--line);
+  border-radius:9px;overflow:hidden}
+.sw-chip{height:66px}
+.sw-txt{padding:10px 12px}
+.sw-txt .n{font-size:13.5px;font-weight:800}
+.sw-txt .u{font-size:11.5px;color:var(--sub);margin-top:3px;line-height:1.45}
+
+/* package flow */
+.pkg{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:22px;margin:15px 0}
+.pkg-row{display:flex;align-items:stretch;flex-wrap:wrap;gap:0}
+.pkg-step{flex:1 1 150px;min-width:140px;background:#F7F2E7;border:1.5px solid var(--line);
+  border-radius:9px;padding:14px}
+.pkg-step .n{font-size:11px;font-weight:800;color:var(--gold);letter-spacing:.08em;margin-bottom:5px}
+.pkg-step .t{font-size:14px;font-weight:800}
+.pkg-step .s{font-size:11.5px;color:var(--sub);margin-top:5px;line-height:1.5}
+.pkg-arrow{display:flex;align-items:center;justify-content:center;width:26px;flex:none;
+  font-size:17px;font-weight:800;color:var(--gold)}
+.pkg-sep{margin-top:16px;padding-top:16px;border-top:1px dashed var(--line)}
+
+/* timeline */
+.tl{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:20px;margin:15px 0}
+.tl-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.tl-time{width:100px;flex:none;font-size:11.5px;color:var(--sub);font-weight:700;text-align:right}
+.tl-bar{flex:1;height:31px;background:#F4EFE4;border-radius:6px;position:relative;overflow:hidden}
+.tl-fill{position:absolute;top:0;height:100%;border-radius:6px;display:flex;align-items:center;
+  padding:0 11px;font-size:12px;font-weight:800;color:#fff;white-space:nowrap}
+.c1{background:#7C6437}.c2{background:#3F6152}.c3{background:#3C5673}
+.c4{background:#6B5580}.c5{background:#8A5148}.c0{background:#B3AA9B}
+.tl-note{font-size:12px;color:var(--sub);margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+
+/* checklist */
+.chk{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:13px 0}
+.chk-head{background:#EFE7D7;padding:10px 14px;font-size:12.5px;font-weight:800;
+  display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.chk-head .sp{margin-left:auto;font-weight:700;color:var(--sub);font-size:11.5px}
+.chk-row{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;border-bottom:1px solid #F1EBE0}
+.chk-row:last-child{border-bottom:none}
+.chk-row input[type=checkbox]{width:18px;height:18px;flex:none;margin-top:3px;accent-color:var(--green);cursor:pointer}
+.chk-txt{flex:1;font-size:13.5px;line-height:1.5;cursor:pointer}
+.chk-txt .s{display:block;font-size:12px;color:var(--sub);margin-top:2px}
+.chk-memo{width:170px;flex:none}
+.chk-memo input{width:100%;border:1px solid var(--line);border-radius:6px;padding:6px 9px;
+  font-size:12.5px;font-family:inherit;background:#FCFAF6;color:var(--ink)}
+.chk-memo input:focus{outline:2px solid var(--gold-l);border-color:var(--gold)}
+.chk-row.on .chk-txt{color:var(--sub);text-decoration:line-through;text-decoration-color:#CCC3B2}
+
+footer{border-top:1px solid var(--line);padding-top:22px;margin-top:52px;font-size:12.5px;color:var(--sub)}
+
+@page{ size:A4; margin:12mm 7mm; }
+@media print{
+  body{background:#fff}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:none;padding:0 7mm}
+  header{padding:28px 0 24px;margin:0 0 22px;width:auto}
+  header h1{font-size:27px}
+  header .lead{font-size:13px}
+
+  /* 섹션 단위로 페이지 시작 */
+  section{break-before:page;page-break-before:always;margin-bottom:0}
+  section:first-of-type{break-before:auto;page-break-before:auto}
+  section.flow{break-before:auto;page-break-before:auto;margin-top:30px}
+
+  /* 제목은 뒤 내용과 붙여둔다 */
+  h2{break-after:avoid;page-break-after:avoid}
+  h3{break-after:avoid;page-break-after:avoid;margin-top:18px}
+  h3.pg{break-before:page;page-break-before:always;margin-top:0;padding-top:2px}
+
+  /* 잘리면 안 되는 덩어리 */
+  .box,.card,.grid,.sw,.sw-item,.pkg,.pkg-row,.tl,.chk{break-inside:avoid;page-break-inside:avoid}
+  .chk-row{break-inside:avoid;page-break-inside:avoid}
+  p{break-inside:avoid;page-break-inside:avoid}
+
+  /* 표는 행 단위로만 나뉘고 헤더는 매 페이지 반복 */
+  table{break-inside:auto;page-break-inside:auto}
+  thead{display:table-header-group}
+  tr{break-inside:avoid;page-break-inside:avoid}
+
+  /* 인쇄 밀도 조정 */
+  body{line-height:1.62}
+  h2{font-size:19px;padding-bottom:9px;margin-bottom:15px}
+  h2 .num{width:26px;height:26px;font-size:12.5px}
+  h3{font-size:14.5px;margin:15px 0 9px}
+  p{font-size:13px;margin-bottom:8px}
+  table{font-size:12.3px;margin:10px 0 4px}
+  thead th{padding:7px 9px;font-size:11.5px}
+  td{padding:7px 9px}
+  .box{padding:13px 15px;margin:12px 0;font-size:13px}
+  .card{padding:12px 14px}
+  .card .v{font-size:19px}
+  .grid{gap:10px}
+  .pkg{padding:16px;margin:11px 0}
+  .pkg-step{padding:11px 12px}
+  .sw{margin:10px 0}
+  .sw-chip{height:52px}
+  .chk-row{padding:8px 12px}
+  .muted{font-size:11.8px}
+  footer{padding-top:16px;margin-top:26px}
+  .chk-head .sp{display:none}
+  .chk-memo input{border:none;border-bottom:1px solid #ccc;border-radius:0}
+  footer{break-inside:avoid;page-break-inside:avoid}
+}
+@media(max-width:820px){
+  .g4,.g3,.g2{grid-template-columns:1fr 1fr}
+  header h1{font-size:25px}
+  .chk-memo{width:110px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">ON · OLLIM</div>
+    <h1>온올림 선물세트 촬영 기획안</h1>
+    <p class="lead">2026년 추석 온올림 선물세트의 온라인 첫 등록을 위한 촬영입니다.
+    촬영 현장 진행과 브랜드 톤 공유를 목적으로 작성했습니다.</p>
+    <div class="metabar">
+      <span>촬영일 2026. 08. 28</span>
+      <span>대상 단품 4종 · 세트 3종 · 패키지</span>
+      <span>18개 항목 / 약 43컷</span>
+      <span>집반찬연구소 온라인본부</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- 1 -->
+<section>
+  <h2><span class="num">1</span>개요</h2>
+
+  <div class="grid g4">
+    <div class="card hi"><div class="k">촬영 항목</div><div class="v">18<small>항목</small></div>
+      <div class="d">단품 4 · 세트 3 · 패키지 4 · 연출 2 · 담음새 4 · 라벨 1</div></div>
+    <div class="card"><div class="k">예상 컷수</div><div class="v">약 43<small>컷</small></div>
+      <div class="d">비율 변형컷 별도</div></div>
+    <div class="card"><div class="k">촬영일</div><div class="v">08.28<small>(금)</small></div>
+      <div class="d">1일 진행</div></div>
+    <div class="card"><div class="k">주요 용도</div><div class="v" style="font-size:16px">썸네일 · 상세페이지</div>
+      <div class="d">자사몰 · 네이버</div></div>
+  </div>
+
+  <div class="box box-note">
+    <span class="t">이번 촬영의 성격</span>
+    <b>온올림 브랜드의 첫 제품 촬영</b>입니다. 이번 추석 한 시즌용이 아니라,
+    앞으로 반복 사용할 브랜드 이미지 자산을 만드는 촬영입니다.
+    패키지와 브랜드 톤은 매년 유지되고 세트 구성만 바뀌므로,
+    <b>패키지·브랜드 컷은 재사용을 전제로</b> 촬영합니다.
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <h2><span class="num">2</span>브랜드 톤앤무드</h2>
+
+  <h3>컬러</h3>
+  <div class="sw">
+    <div class="sw-item"><div class="sw-chip" style="background:#1F1D1A"></div>
+      <div class="sw-txt"><div class="n">묵 블랙</div><div class="u">깊이·정성·전통<br>어두운 배경, 무쇠·검정 식기</div></div></div>
+    <div class="sw-item"><div class="sw-chip" style="background:#F0E9DA"></div>
+      <div class="sw-txt"><div class="n">한지 크림</div><div class="u">담백함·정갈함<br>배경지, 유백색 식기</div></div></div>
+    <div class="sw-item"><div class="sw-chip" style="background:#B8AFA1"></div>
+      <div class="sw-txt"><div class="n">웜그레이</div><div class="u">기본 배경<br>사내 표준 배경색</div></div></div>
+    <div class="sw-item"><div class="sw-chip" style="background:#9C8248"></div>
+      <div class="sw-txt"><div class="n">금박</div><div class="u">간지 레터링<br>포인트로만 사용</div></div></div>
+  </div>
+
+  <h3>무드 키워드</h3>
+  <div class="grid g3">
+    <div class="card"><div class="k">CONCEPT</div><div class="v" style="font-size:17px">정적인 한국적 정성</div>
+      <div class="d">화려한 명절 연출이 아니라, 절제되고 단정한 선물의 무게감</div></div>
+    <div class="card"><div class="k">LIGHT</div><div class="v" style="font-size:17px">부드러운 측광</div>
+      <div class="d">패키지는 그림자 최소화 / 슬리브·간지는 측광으로 광택과 엠보 질감을 드러냄</div></div>
+    <div class="card"><div class="k">PROPS</div><div class="v" style="font-size:17px">마른 가지 · 돌 · 유목 · 솔가지</div>
+      <div class="d">자연 오브제 중심. 명절 소품(복주머니·한복 등)은 사용하지 않음</div></div>
+  </div>
+
+  <h3>배경 운용 원칙</h3>
+  <table>
+    <thead><tr><th>촬영군</th><th>배경</th><th>이유</th></tr></thead>
+    <tbody>
+      <tr><td>단품 썸네일 (1~4)</td><td><b>웜그레이 또는 화이트 계열</b></td><td>채널 썸네일 기준. 제품 색이 정확히 보여야 함</td></tr>
+      <tr><td>라벨·표시사항 (5)</td><td>화이트</td><td>글자 판독이 최우선</td></tr>
+      <tr><td>세트 (6~8)</td><td>웜그레이 또는 화이트 계열</td><td>단품과 톤을 맞춰 세트 3종 비교컷이 성립하도록</td></tr>
+      <tr><td>패키지·브랜드 (9~12)</td><td>한지 크림 · 웜그레이</td><td>간지·슬리브의 질감이 드러나는 톤</td></tr>
+      <tr><td>연출컷 (13~14)</td><td>한지 크림 · 묵 블랙</td><td>소품과 함께 브랜드 무드를 만드는 컷</td></tr>
+      <tr><td>담음새 (15~18)</td><td><b>화이트</b></td><td>음식 색이 가장 정확하게 나오는 배경</td></tr>
+    </tbody>
+  </table>
+  <div class="box box-ok">
+    <span class="t">디자이너님 의견 반영 가능</span>
+    위 배경은 사내 표준(웜그레이 / 화이트)과 브랜드 톤을 기준으로 정리한 <b>기본안</b>입니다.
+    상세페이지 디자인 방향에 따라 조정이 필요하면 촬영 전에 알려주시면 반영하겠습니다.
+  </div>
+</section>
+
+<!-- 3 -->
+<section>
+  <h2><span class="num">3</span>제품 및 패키지 구조</h2>
+
+  <h3>단품 4종</h3>
+  <table>
+    <thead><tr><th>제품명</th><th class="c">중량</th><th>특징</th></tr></thead>
+    <tbody>
+      <tr><td><b>LA양념갈비</b></td><td class="c">850g</td><td>냉동 양념육 · 세트 3종 전부에 포함되는 대표 품목</td></tr>
+      <tr><td><b>옛날 소불고기</b></td><td class="c">950g</td><td>냉동 양념육</td></tr>
+      <tr><td><b>갈비탕</b></td><td class="c">1,000g</td><td>탕류 · 갈빗대가 보이는 연출 필요</td></tr>
+      <tr><td><b>소갈비</b></td><td class="c">1,000g</td><td>냉동 양념육 · 최고가 품목</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">전 품목 진공팩 포장 상태이며, <b>각 단품에 슬리브가 부착</b>됩니다.</p>
+
+  <h3>세트 3종</h3>
+  <table>
+    <thead><tr><th>세트명</th><th>구성</th><th class="c">수량</th></tr></thead>
+    <tbody>
+      <tr><td><b>고운마음 세트</b></td><td>LA양념갈비 + 옛날 소불고기 + 갈비탕</td><td class="c">3ea</td></tr>
+      <tr><td><b>깊은마음 세트</b></td><td>LA양념갈비 <b>2ea</b> + 갈비탕</td><td class="c">3ea</td></tr>
+      <tr><td><b>온마음 세트</b></td><td>LA양념갈비 + 옛날 소불고기 + 소갈비</td><td class="c">3ea</td></tr>
+    </tbody>
+  </table>
+
+  <h3>포장 구조</h3>
+  <div class="pkg">
+    <div class="pkg-row">
+      <div class="pkg-step"><div class="n">STEP 1</div><div class="t">슬리브</div>
+        <div class="s">단품 진공팩에 부착<br>제품별 디자인</div></div>
+      <div class="pkg-arrow">›</div>
+      <div class="pkg-step"><div class="n">STEP 2</div><div class="t">스티로폼 박스</div>
+        <div class="s">세트 구성품을 담는 용기<br>냉동 보냉 기능</div></div>
+      <div class="pkg-arrow">›</div>
+      <div class="pkg-step"><div class="n">STEP 3</div><div class="t">부직포 가방</div>
+        <div class="s">선물 전달 상태<br>온올림 로고 노출</div></div>
+    </div>
+    <div class="pkg-sep">
+      <div class="pkg-row">
+        <div class="pkg-step" style="background:#F1EADC;flex:0 1 210px"><div class="n">동봉</div><div class="t">간지 카드</div>
+          <div class="s">띤또레또 펠트 엠보 + 금박 레터링</div></div>
+      </div>
+    </div>
+  </div>
+  <p class="muted"><b>별도의 외박스(포장박스)는 없습니다.</b>
+  선물을 받는 사람이 보는 최종 상태는 <b>부직포 가방</b>이며,
+  가방을 열면 스티로폼 박스, 그 안에 슬리브가 부착된 단품이 들어 있는 구조입니다.</p>
+</section>
+
+<!-- 4 -->
+<section>
+  <h2><span class="num">4</span>촬영 리스트</h2>
+  <p>구도 표기 &nbsp;<span class="bd bd-t">탑</span> 정수직 &nbsp;
+  <span class="bd bd-s">사이드</span> 측면·45도 &nbsp;
+  <span class="bd bd-c">클로즈</span> 근접·접사</p>
+
+  <h3>그룹 A · 단품 썸네일 (4종 / 16컷)</h3>
+  <table>
+    <thead><tr><th class="c">No</th><th>대상</th><th>용도</th><th class="c">비율</th><th>구도</th><th>촬영 내용</th><th class="c">컷</th></tr></thead>
+    <tbody>
+      <tr><td class="c">1</td><td><b>LA양념갈비</b></td><td>썸네일</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span> <span class="bd bd-c">클로즈</span></td>
+        <td>① 탑·사이드 — 슬리브 부착 완제품<br>② 클로즈 — 슬리브 측광으로 광택이 드러나게<br>③ 진공팩 너머 고기결·양념 상태 <small>(권장)</small></td><td class="c">4</td></tr>
+      <tr><td class="c">2</td><td><b>갈비탕</b></td><td>썸네일</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span> <span class="bd bd-c">클로즈</span></td>
+        <td>1번과 동일</td><td class="c">4</td></tr>
+      <tr><td class="c">3</td><td><b>옛날 소불고기</b></td><td>썸네일</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span> <span class="bd bd-c">클로즈</span></td>
+        <td>1번과 동일</td><td class="c">4</td></tr>
+      <tr><td class="c">4</td><td><b>소갈비</b></td><td>썸네일</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span> <span class="bd bd-c">클로즈</span></td>
+        <td>① 탑·사이드 — 슬리브 부착 완제품<br>② 클로즈 — <b>슬리브 컷</b><br>③ 진공팩 너머 고기결·양념 상태 <small>(권장)</small></td><td class="c">4</td></tr>
+      <tr class="sum"><td colspan="6">그룹 A 소계</td><td class="c">16</td></tr>
+    </tbody>
+  </table>
+
+  <h3>그룹 B · 라벨 및 표시사항 (4컷) <span style="font-size:12px;font-weight:600;color:var(--sub)">신규 추가</span></h3>
+  <table>
+    <thead><tr><th class="c">No</th><th>대상</th><th>용도</th><th class="c">비율</th><th>구도</th><th>촬영 내용</th><th class="c">컷</th></tr></thead>
+    <tbody>
+      <tr><td class="c">5</td><td><b>단품 4종 라벨</b></td><td>상세페이지</td><td class="c">1:1</td>
+        <td><span class="bd bd-c">클로즈</span></td>
+        <td>제품별 표시사항 판독 가능하게 정면 접사<br>원산지 · 중량 · 유통기한 · 알레르기 표기</td><td class="c">4</td></tr>
+    </tbody>
+  </table>
+  <div class="box box-note">
+    <span class="t">라벨컷을 추가한 이유</span>
+    원산지·중량·유통기한은 온라인 식품 판매에서 문의가 가장 많은 항목입니다.
+    이번 촬영 때 함께 찍으면 추가 부담이 거의 없지만,
+    나중에 따로 촬영하면 별도 일정과 비용이 다시 발생합니다.
+  </div>
+
+  <h3 class="pg">그룹 C · 세트 3종 (9컷)</h3>
+  <table>
+    <thead><tr><th class="c">No</th><th>대상</th><th>용도</th><th class="c">비율</th><th>구도</th><th>촬영 내용</th><th class="c">컷</th></tr></thead>
+    <tbody>
+      <tr><td class="c">6</td><td><b>고운마음 세트</b><br><small>LA + 소불고기 + 갈비탕</small></td>
+        <td>썸네일<br>상세페이지</td><td class="c">1:1<br>4:3</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span></td>
+        <td>① 스티로폼에 담긴 컷<br>② 구성품 펼친 컷<br>③ 제품 세운 컷</td><td class="c">3</td></tr>
+      <tr><td class="c">7</td><td><b>깊은마음 세트</b><br><small>LA 2ea + 갈비탕</small></td>
+        <td>썸네일<br>상세페이지</td><td class="c">1:1<br>4:3</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span></td>
+        <td>① 스티로폼에 담긴 컷<br>② 구성품 펼친 컷<br>③ 제품 세운 컷</td><td class="c">3</td></tr>
+      <tr><td class="c">8</td><td><b>온마음 세트</b><br><small>LA + 소불고기 + 소갈비</small></td>
+        <td>썸네일<br>상세페이지</td><td class="c">1:1<br>4:3</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span></td>
+        <td>① 스티로폼에 담긴 컷<br>② 구성품 펼친 컷<br>③ 제품 세운 컷<br><b>→ 세운 컷은 세트 3종 비교용</b></td><td class="c">3</td></tr>
+      <tr class="sum"><td colspan="6">그룹 C 소계</td><td class="c">9</td></tr>
+    </tbody>
+  </table>
+  <div class="box box-warn">
+    <span class="t">세운 컷은 3종을 동일 조건으로</span>
+    세운 컷(③)은 <b>세트 3종을 나란히 비교하는 용도</b>이므로
+    카메라 위치·조명·배경·제품 각도를 3종 모두 동일하게 유지해야 합니다.
+    세트별로 따로 세팅하지 말고 <b>연속으로 촬영</b>해 주세요.
+  </div>
+
+  <h3>그룹 D · 패키지 및 브랜드 (6컷)</h3>
+  <table>
+    <thead><tr><th class="c">No</th><th>대상</th><th>용도</th><th class="c">비율</th><th>구도</th><th>촬영 내용</th><th class="c">컷</th></tr></thead>
+    <tbody>
+      <tr><td class="c">9</td><td><b>개봉 시퀀스</b></td><td>상세페이지</td><td class="c">1:1</td>
+        <td><span class="bd bd-s">사이드</span></td>
+        <td>① 부직포 가방 닫힘 → ② 스티로폼 반개봉 → ③ 구성품 완전개봉<br><b>카메라 고정, 동일 앵글로 3컷</b></td><td class="c">3</td></tr>
+      <tr><td class="c">10</td><td><b>간지 카드</b></td><td>상세페이지</td><td class="c">1:1</td>
+        <td><span class="bd bd-c">클로즈</span></td>
+        <td>띤또레또 펠트 엠보 질감 + 금박 레터링<br>측광으로 엠보 요철과 금박 반사를 살릴 것</td><td class="c">1</td></tr>
+      <tr><td class="c">11</td><td><b>부직포 가방</b></td><td>상세페이지</td><td class="c">1:1</td>
+        <td><span class="bd bd-s">사이드</span></td>
+        <td>온올림 로고가 정면으로 보이게</td><td class="c">1</td></tr>
+      <tr><td class="c">12</td><td><b>브랜드 무드컷</b></td><td>상세페이지</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span></td>
+        <td>간지 + 슬리브 + 부직포 가방을 함께 배치<br>브랜드 요소만으로 구성하는 컷</td><td class="c">1</td></tr>
+      <tr class="sum"><td colspan="6">그룹 D 소계</td><td class="c">6</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="pg">그룹 E · 연출컷 (4컷)</h3>
+  <table>
+    <thead><tr><th class="c">No</th><th>대상</th><th>용도</th><th class="c">비율</th><th>구도</th><th>촬영 내용</th><th class="c">컷</th></tr></thead>
+    <tbody>
+      <tr><td class="c">13</td><td><b>브랜드 히어로컷</b><br><small>단품 4종 구성</small></td><td>연출컷</td><td class="c">4:3</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span></td>
+        <td>단품 4종 + 소품<br>소품: 마른 가지 · 돌 · 유목 · 솔가지</td><td class="c">2</td></tr>
+      <tr><td class="c">14</td><td><b>떼샷</b><br><small>제품 + 부직포가방 + 세트</small></td><td>연출컷</td><td class="c">4:3<br>9:16</td>
+        <td><span class="bd bd-t">탑</span></td>
+        <td>① 부직포 가방 + 스티로폼 박스 함께 배치<br>② 솔가지·돌을 곁들인 <b>세로 배너용 여백컷</b></td><td class="c">2</td></tr>
+      <tr class="sum"><td colspan="6">그룹 E 소계</td><td class="c">4</td></tr>
+    </tbody>
+  </table>
+  <div class="box box-note">
+    <span class="t">14-② 여백컷 요청</span>
+    세로 배너용 여백컷은 <b>화면 상단 또는 한쪽에 카피·가격을 올릴 공간을 비워 두고</b> 촬영합니다.
+    제품을 화면 중앙에 꽉 채우지 않도록 주의해 주세요.
+  </div>
+
+  <h3>그룹 F · 담음새 (4컷) — 배경 화이트</h3>
+  <table>
+    <thead><tr><th class="c">No</th><th>대상</th><th>용도</th><th class="c">비율</th><th>구도</th><th>촬영 내용</th><th class="c">컷</th></tr></thead>
+    <tbody>
+      <tr><td class="c">15</td><td><b>LA양념갈비 구이</b></td><td>담음새</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span></td><td>팬 또는 접시 플레이팅</td><td class="c">2</td></tr>
+      <tr><td class="c">16</td><td><b>옛날 소불고기 전골</b></td><td>담음새</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span></td><td>냄비 또는 전골그릇<br>국물과 건더기가 함께 보이게</td><td class="c">2</td></tr>
+      <tr><td class="c">17</td><td><b>갈비탕</b></td><td>담음새</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span></td><td>뚝배기<br><b>갈빗대가 보이도록</b> 배치</td><td class="c">2</td></tr>
+      <tr><td class="c">18</td><td><b>소갈비</b></td><td>담음새</td><td class="c">1:1</td>
+        <td><span class="bd bd-t">탑</span> <span class="bd bd-s">사이드</span></td><td>무쇠 또는 검정 그릇 탑뷰<br><b>김(스팀)이 보이게</b></td><td class="c">2</td></tr>
+      <tr class="sum"><td colspan="6">그룹 F 소계</td><td class="c">8</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">식기는 브랜드 톤(묵 블랙 / 한지 크림)에 맞는 <b>무광</b> 식기를 권장합니다.
+  광택 있는 식기는 조명 반사로 음식보다 그릇이 먼저 보일 수 있습니다.</p>
+
+  <h3>총계</h3>
+  <table>
+    <thead><tr><th>그룹</th><th>내용</th><th class="c">항목</th><th class="c">컷수</th></tr></thead>
+    <tbody>
+      <tr><td>A</td><td>단품 썸네일</td><td class="c">4</td><td class="c">16</td></tr>
+      <tr><td>B</td><td>라벨·표시사항</td><td class="c">1</td><td class="c">4</td></tr>
+      <tr><td>C</td><td>세트 3종</td><td class="c">3</td><td class="c">9</td></tr>
+      <tr><td>D</td><td>패키지·브랜드</td><td class="c">4</td><td class="c">6</td></tr>
+      <tr><td>E</td><td>연출컷</td><td class="c">2</td><td class="c">4</td></tr>
+      <tr><td>F</td><td>담음새</td><td class="c">4</td><td class="c">8</td></tr>
+      <tr class="total"><td colspan="2">합계</td><td class="c">18</td><td class="c">47</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">단품 ③ 진공팩 근접컷(권장, 4컷)을 제외하면 <b>43컷</b>입니다. 비율 변형컷(1:1 ↔ 4:3 ↔ 9:16)은 동일 세팅에서 프레이밍만 조정합니다.</p>
+</section>
+
+<!-- 5 -->
+<section>
+  <h2><span class="num">5</span>촬영 순서 제안</h2>
+
+  <div class="grid g3">
+    <div class="card hi"><div class="k">기본 시간</div><div class="v">10:00~14:00</div>
+      <div class="d">4시간 · 47컷 기준 시간당 약 12컷 페이스</div></div>
+    <div class="card"><div class="k">연장 가능</div><div class="v">~16:00</div>
+      <div class="d">담음새·연출컷이 밀릴 경우 사용</div></div>
+    <div class="card"><div class="k">세부 진행</div><div class="v" style="font-size:17px">작가님 재량</div>
+      <div class="d">아래는 준비 로드를 줄이기 위한 순서 제안입니다</div></div>
+  </div>
+
+  <div class="box box-note">
+    <span class="t">이 순서를 제안하는 이유</span>
+    촬영 시간의 상당 부분은 셔터가 아니라 <b>배경 교체와 세팅 전환</b>에 쓰입니다.
+    아래 순서는 배경을 바꾸는 횟수를 줄이고, 한 번 개봉하면 되돌릴 수 없는 포장 상태를
+    순서대로 소비하도록 구성한 것입니다.
+  </div>
+
+  <h3>순서 설계 원칙 4가지</h3>
+  <table>
+    <thead><tr><th class="c">No</th><th>원칙</th><th>이유</th></tr></thead>
+    <tbody>
+      <tr><td class="c">1</td><td><b>배경이 같은 항목끼리 묶는다</b></td>
+        <td>배경지 교체와 조명 재세팅이 세팅 시간의 대부분을 차지합니다</td></tr>
+      <tr><td class="c">2</td><td><b>미개봉 → 개봉 순서로 진행한다</b></td>
+        <td>포장은 한 번 뜯으면 되돌릴 수 없습니다. 개봉 전 상태 컷을 반드시 먼저 확보합니다</td></tr>
+      <tr><td class="c">3</td><td><b>포장 상태 컷을 먼저, 음식 컷을 뒤로</b></td>
+        <td>해동육은 시간이 지날수록 색이 갈변합니다. 포장 상태는 시간 영향을 받지 않습니다</td></tr>
+      <tr><td class="c">4</td><td><b>비율 변형은 동일 세팅에서 한 번에</b></td>
+        <td>1:1 · 4:3 · 9:16은 세팅을 다시 잡지 않고 프레이밍만 조정하면 됩니다</td></tr>
+    </tbody>
+  </table>
+
+  <h3>권장 순서</h3>
+  <div class="pkg">
+    <div class="pkg-row">
+      <div class="pkg-step"><div class="n">STEP 1</div><div class="t">단품 4종 + 라벨</div>
+        <div class="s">그룹 A · B / 20컷<br>웜그레이 또는 화이트<br>미개봉 · 슬리브 부착 상태</div></div>
+      <div class="pkg-arrow">›</div>
+      <div class="pkg-step"><div class="n">STEP 2</div><div class="t">패키지 · 브랜드</div>
+        <div class="s">그룹 D 중 간지·가방·무드컷 / 3컷<br>한지 크림<br>제품 개봉 불필요</div></div>
+      <div class="pkg-arrow">›</div>
+      <div class="pkg-step"><div class="n">STEP 3</div><div class="t">개봉 시퀀스</div>
+        <div class="s">그룹 D 개봉컷 / 3컷<br>가방 닫힘 → 스티로폼 반개봉 → 완전개봉<br>카메라 고정</div></div>
+    </div>
+    <div class="pkg-sep">
+      <div class="pkg-row">
+        <div class="pkg-step"><div class="n">STEP 4</div><div class="t">세트 3종</div>
+          <div class="s">그룹 C / 9컷<br>스티로폼 담김 → 펼침 → 세움<br>3종 연속 촬영</div></div>
+        <div class="pkg-arrow">›</div>
+        <div class="pkg-step"><div class="n">STEP 5</div><div class="t">연출컷</div>
+          <div class="s">그룹 E / 4컷<br>소품 세팅 필요<br>마른 가지 · 돌 · 유목 · 솔가지</div></div>
+        <div class="pkg-arrow">›</div>
+        <div class="pkg-step"><div class="n">STEP 6</div><div class="t">담음새</div>
+          <div class="s">그룹 F / 8컷<br>화이트 배경<br>조리 완료 직후 촬영</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="box box-ok">
+    <span class="t">STEP 3 → STEP 4가 이 순서의 핵심입니다</span>
+    개봉 시퀀스의 마지막 컷(완전개봉)이 <b>세트 촬영의 첫 컷(스티로폼에 담긴 컷)과 같은 상태</b>입니다.
+    두 항목을 따로 진행하면 포장을 두 번 세팅해야 하지만,
+    이어서 진행하면 <b>세팅 한 번으로 두 항목을 모두 소화</b>할 수 있습니다.
+  </div>
+
+  <h3 class="pg">시간을 줄일 수 있는 지점</h3>
+  <table>
+    <thead><tr><th>지점</th><th>내용</th><th>효과</th></tr></thead>
+    <tbody>
+      <tr><td><b>배경 통합</b></td>
+        <td>그룹 A · B · C가 모두 웜그레이 또는 화이트 계열입니다. 한지 크림은 그룹 D · E에만 필요합니다</td>
+        <td>배경 교체를 <b>2회</b>로 축소</td></tr>
+      <tr><td><b>단품 4종 연속</b></td>
+        <td>4종 모두 슬리브 부착 상태에 동일 구도(탑·사이드·클로즈)입니다. 카메라·조명을 고정하고 제품만 교체합니다</td>
+        <td>세팅 1회로 <b>16컷</b> 소화</td></tr>
+      <tr><td><b>라벨컷을 단품 직후에</b></td>
+        <td>같은 제품, 같은 배경입니다. 렌즈와 거리만 바꾸면 됩니다</td>
+        <td>별도 세팅 <b>불필요</b></td></tr>
+      <tr><td><b>개봉 → 세트 연결</b></td>
+        <td>개봉 완료 상태가 그대로 세트 첫 컷이 됩니다</td>
+        <td>포장 세팅 <b>1회 절약</b></td></tr>
+      <tr><td><b>세트 3종 연속</b></td>
+        <td>세운 컷은 3종 비교용이라 어차피 동일 조건이어야 합니다</td>
+        <td>세팅 1회로 <b>9컷</b> 소화</td></tr>
+      <tr><td><b>비율 변형 동시 처리</b></td>
+        <td>1:1 촬영 후 그 자리에서 4:3 · 9:16 프레이밍으로 추가 촬영합니다</td>
+        <td>재세팅 <b>불필요</b></td></tr>
+      <tr><td><b>조리 착수 타이밍</b></td>
+        <td>담음새 촬영 시작 <b>30분 전</b>에 조리를 시작합니다</td>
+        <td>대기 시간 <b>0분</b>, 김·윤기 확보</td></tr>
+    </tbody>
+  </table>
+
+  <div class="box box-warn">
+    <span class="t">역순으로 진행하면 안 되는 것</span>
+    <b>담음새(조리)를 먼저 찍고 포장 컷을 나중에</b> 진행하면,
+    조리로 개봉한 제품 때문에 미개봉 상태의 단품·세트컷을 찍을 수 없게 됩니다.
+    여분 제품이 충분하지 않으면 재촬영이 발생합니다.
+  </div>
+</section>
+
+<!-- 6 -->
+<section>
+  <h2><span class="num">6</span>준비물</h2>
+
+  <div class="chk" data-chk="prep">
+    <div class="chk-head">촬영 준비 체크리스트 <span class="sp">체크 상태는 이 브라우저에 저장됩니다</span></div>
+
+    <div class="chk-row"><input type="checkbox" id="a1">
+      <label class="chk-txt" for="a1"><b>전날(8/27) 냉장 해동 착수</b>
+      <span class="s">담음새 촬영용 제품. 당일 해동은 시간이 부족합니다</span></label>
+      <span class="chk-memo"><input type="text" placeholder="담당"></span></div>
+
+    <div class="chk-row"><input type="checkbox" id="a2">
+      <label class="chk-txt" for="a2"><b>재촬영·리터치용 여분 1세트 이상 확보</b>
+      <span class="s">해동육 갈변, 포장 흠집, 금박 지문 등으로 교체가 발생합니다</span></label>
+      <span class="chk-memo"><input type="text" placeholder="담당"></span></div>
+
+    <div class="chk-row"><input type="checkbox" id="a3">
+      <label class="chk-txt" for="a3"><b>슬리브 부착 완제품 준비</b>
+      <span class="s">단품 4종 전부. 그룹 A의 모든 컷이 슬리브 부착 상태 기준입니다</span></label>
+      <span class="chk-memo"><input type="text" placeholder="담당"></span></div>
+
+    <div class="chk-row"><input type="checkbox" id="a4">
+      <label class="chk-txt" for="a4"><b>스티로폼 박스 · 부직포 가방 · 간지 카드</b>
+      <span class="s">개봉 전 상태와 개봉 후 상태 양쪽이 필요하므로 각 2개 이상 권장</span></label>
+      <span class="chk-memo"><input type="text" placeholder="담당"></span></div>
+
+    <div class="chk-row"><input type="checkbox" id="a5">
+      <label class="chk-txt" for="a5"><b>연출 소품 — 마른 가지 · 돌 · 유목 · 솔가지</b>
+      <span class="s">그룹 E 히어로컷·떼샷용</span></label>
+      <span class="chk-memo"><input type="text" placeholder="담당"></span></div>
+
+    <div class="chk-row"><input type="checkbox" id="a6">
+      <label class="chk-txt" for="a6"><b>식기 — 접시 · 전골냄비 · 뚝배기 · 무쇠(검정) 그릇</b>
+      <span class="s">브랜드 톤에 맞는 무광 식기 권장</span></label>
+      <span class="chk-memo"><input type="text" placeholder="담당"></span></div>
+
+    <div class="chk-row"><input type="checkbox" id="a7">
+      <label class="chk-txt" for="a7"><b>조리 담당자 배정 및 부재료 준비</b>
+      <span class="s">사내 조리 담당자가 진행. 소불고기 전골용 육수·채소 등 부재료 포함</span></label>
+      <span class="chk-memo"><input type="text" placeholder="담당"></span></div>
+
+    <div class="chk-row"><input type="checkbox" id="a8">
+      <label class="chk-txt" for="a8"><b>현장 컨펌 담당자 배정</b>
+      <span class="s">컷별 승인. 현장에서 확인해야 재촬영이 줄어듭니다</span></label>
+      <span class="chk-memo"><input type="text" placeholder="담당"></span></div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section>
+  <h2><span class="num">7</span>촬영 시 유의사항</h2>
+  <table>
+    <thead><tr><th>구분</th><th>내용</th><th>대응</th></tr></thead>
+    <tbody>
+      <tr><td><b>해동육 변색</b></td><td>해동 후 시간이 지나면 선홍빛이 갈변합니다</td><td>세팅을 먼저 완성하고 제품은 마지막에 투입</td></tr>
+      <tr><td><b>진공팩 결로·성에</b></td><td>냉동 상태에서 꺼내면 표면에 성에가 생깁니다</td><td>성에 있는 버전 / 닦아낸 버전 양쪽 촬영 후 선택</td></tr>
+      <tr><td><b>금박 지문</b></td><td>간지 카드 금박에 지문이 잘 남습니다</td><td>면장갑 착용, 예비 카드 확보</td></tr>
+      <tr><td><b>부직포 가방 구김</b></td><td>보관 중 접힘 자국이 남습니다</td><td>촬영 직전 개봉, 예비 확보</td></tr>
+      <tr><td><b>슬리브 광택</b></td><td>정면광에서는 광택이 죽습니다</td><td>클로즈컷은 측광으로 광택 방향을 만들 것</td></tr>
+      <tr><td><b>세트 3종 비교컷</b></td><td>세팅이 달라지면 비교컷으로 쓸 수 없습니다</td><td>3종을 연속 촬영, 카메라·조명 고정</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 8 -->
+<section class="flow">
+  <h2><span class="num">8</span>납품 규격</h2>
+  <table>
+    <thead><tr><th>비율</th><th>용도</th><th>해당 항목</th></tr></thead>
+    <tbody>
+      <tr><td><b>1:1</b></td><td>자사몰·네이버 썸네일, 상세페이지</td><td>1~12, 15~18</td></tr>
+      <tr><td><b>4:3</b></td><td>상세페이지 본문, 연출컷</td><td>6~8, 13~14</td></tr>
+      <tr><td><b>9:16</b></td><td>세로 배너, 모바일·SNS</td><td>14</td></tr>
+    </tbody>
+  </table>
+  <p class="muted">
+    상세페이지 본문 이미지는 가로 860px 기준으로 사용합니다(네이버 스마트스토어 권장 규격).
+    원본은 재가공과 차년도 재사용을 위해 <b>무보정 고해상도 전량</b> 수령을 기준으로 합니다.
+  </p>
+</section>
+
+<!-- 9 -->
+<section class="flow">
+  <h2><span class="num">9</span>협의가 필요한 항목</h2>
+  <table>
+    <thead><tr><th class="c">No</th><th>항목</th><th>현재 상태</th><th>확인 필요 사항</th></tr></thead>
+    <tbody>
+      <tr><td class="c">1</td><td><b>배경 최종 확정</b></td><td>웜그레이 또는 화이트 계열 기본안</td>
+        <td>상세페이지 디자인 방향에 맞는 배경 톤 의견</td></tr>
+      <tr><td class="c">2</td><td><b>세트 "펼친 컷" 배치</b></td><td>구성품을 펼쳐서 촬영</td>
+        <td>가로 일렬 / 삼각 배치 / 겹치기 등 배치 방식</td></tr>
+      <tr><td class="c">3</td><td><b>세로 배너 여백 위치</b></td><td>여백 확보만 명시</td>
+        <td>카피가 상단인지 하단인지에 따라 제품 위치가 달라짐</td></tr>
+      <tr><td class="c">4</td><td><b>브랜드 무드컷 배치</b></td><td>간지 + 슬리브 + 가방</td>
+        <td>소품(마른 가지·돌 등)을 함께 쓸지 여부</td></tr>
+      <tr><td class="c">5</td><td><b>레퍼런스 이미지</b></td><td>미첨부</td>
+        <td>톤앤무드 방향을 맞추기 위한 참고 이미지 공유</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <p><b>집반찬연구소 온라인본부</b> · 온올림 선물세트 촬영 기획안 · 촬영일 2026. 08. 28</p>
+  <p style="margin-top:6px">본 기획안은 「08.28 촬영 리스트」를 기준으로 작성했으며,
+  라벨·표시사항 컷(그룹 B)이 추가되었고 제품명 표기를 통일했습니다.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var KEY='onollim-shoot-0828-v1';
+  var state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ state={}; }
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} }
+  document.querySelectorAll('.chk').forEach(function(block){
+    var g=block.getAttribute('data-chk');
+    block.querySelectorAll('.chk-row').forEach(function(row,i){
+      var cb=row.querySelector('input[type=checkbox]');
+      var memo=row.querySelector('.chk-memo input');
+      var ck=g+'.c'+i, mk=g+'.m'+i;
+      if(cb){
+        if(state[ck]){ cb.checked=true; row.classList.add('on'); }
+        cb.addEventListener('change',function(){ state[ck]=cb.checked; row.classList.toggle('on',cb.checked); save(); });
+      }
+      if(memo){
+        if(state[mk]) memo.value=state[mk];
+        memo.addEventListener('input',function(){ state[mk]=memo.value; save(); });
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

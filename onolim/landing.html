@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>온올림 랜딩페이지 와이어프레임 · 2026 추석</title>
+<style>
+:root{
+  --ink:#1E1C1A; --cream:#F4F0E8; --gold:#A8741A; --gold2:#C9974A;
+  --bg:#F4F0E8; --gray:#7A7670; --line:#ddd8cc; --red:#B03A2E; --blue:#2f5a8a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#e6e2d8;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);line-height:1.6;font-size:14px}
+.wrap{max-width:780px;margin:0 auto;background:var(--bg);min-height:100vh;padding-bottom:70px}
+.hd{background:var(--ink);color:#fff;padding:26px 22px 22px}
+.hd h1{margin:0 0 6px;font-size:22px;font-weight:800;letter-spacing:-.5px}
+.hd p{margin:0;font-size:12.5px;color:#c8c2b6}
+.hd .chips{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+.hd .chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#f0ebe0;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px}
+.note{background:#fff8e6;border-left:4px solid var(--gold);padding:14px 16px;font-size:12.5px;color:#6b5410;line-height:1.6;margin:0}
+.note b{color:var(--gold)}
+.note.red{background:#fdeeec;border-left-color:var(--red);color:#7d2b21}
+.note.red b{color:var(--red)}
+.note.blue{background:#eaf0f7;border-left-color:var(--blue);color:#274a70}
+.note.blue b{color:var(--blue)}
+.sec{padding:30px 20px 22px;border-bottom:8px solid #e6e2d8;position:relative;background:var(--bg)}
+.sec::before{content:attr(data-s);position:absolute;top:0;left:0;background:var(--gold);color:#fff;font-size:10.5px;font-weight:800;padding:3px 10px;letter-spacing:.5px}
+.scr{position:absolute;top:0;right:0;background:#ddd8cc;color:#5f5a51;font-size:10.5px;font-weight:700;padding:3px 10px}
+.purpose{font-size:11.5px;color:var(--gold);font-weight:700;margin:6px 0 12px}
+.slot{border:2px dashed #b8b2a4;background:#ece7db;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;color:#7a756a;font-size:12px;gap:4px}
+.slot .id{font-weight:800;color:var(--gold);font-size:12.5px}
+.slot .spec{font-size:11px;color:#98927f}
+.h1{font-size:26px;font-weight:800;line-height:1.32;letter-spacing:-.6px;margin:0 0 10px}
+.h2{font-size:19.5px;font-weight:800;line-height:1.35;letter-spacing:-.5px;margin:0 0 8px}
+.h3{font-size:15px;font-weight:700;margin:0 0 6px}
+.sub{font-size:13px;color:#5f5a51;margin:0 0 14px}
+.cta{display:block;width:100%;background:var(--ink);color:#fff;text-align:center;font-size:16px;font-weight:800;padding:15px;border-radius:9px;text-decoration:none;margin:12px 0 0}
+.cta.g{background:var(--gold)}
+.cta.o{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+table{width:100%;border-collapse:collapse;font-size:12px;background:#fff;margin:8px 0}
+th,td{border:1px solid var(--line);padding:7px 6px;text-align:center;vertical-align:middle}
+th{background:#efe9dc;font-weight:700;color:var(--ink);font-size:11px}
+td.l{text-align:left}
+.card{background:#fff;border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-bottom:12px}
+.card .body{padding:13px}
+.pr1{font-size:12.5px;color:#9a948a;text-decoration:line-through}
+.pr2{font-size:21px;font-weight:800;color:var(--red)}
+.unit{font-size:11.5px;color:#6d685e;background:#efe9dc;padding:3px 8px;border-radius:5px;display:inline-block;margin-top:5px}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center;font-size:12px}
+.box b{display:block;font-size:16px;color:var(--gold);margin-bottom:3px}
+.rv{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 12px;margin-bottom:8px;font-size:12.5px}
+.rv .who{font-size:11px;color:#8a8478;margin-top:5px}
+.star{color:#e6a020;font-size:12px}
+.faq{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin-bottom:7px;font-size:12.5px}
+.faq b{display:block;color:var(--gold);margin-bottom:3px}
+.spc{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.spc dt{background:#efe9dc;font-size:10.5px;font-weight:800;color:#5f5a51;padding:5px 11px}
+.spc dd{margin:0;padding:9px 11px;font-size:12px;border-bottom:1px solid #f1ece0;line-height:1.55}
+.spc dd:last-child{border-bottom:none}
+.spc dd b{color:var(--gold)}
+.cut{display:inline-block;background:var(--ink);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;margin-right:5px}
+.cmp{margin-top:10px;background:#f7f3ea;border:1px dashed #cfc7b4;border-radius:9px;padding:10px 12px;font-size:11.5px;color:#6b6459;line-height:1.6}
+.cmp .t{font-weight:800;color:var(--ink);font-size:11px;margin-bottom:5px}
+.cmp em{font-style:normal;font-weight:700;color:var(--gold)}
+.sticky{background:var(--ink);color:#fff}
+.sticky .bar1{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;font-size:12.5px;font-weight:700}
+.sticky .tabs{display:flex;background:#fff}
+.sticky .tabs a{flex:1;text-align:center;padding:10px 0;font-size:12.5px;font-weight:700;color:#6d685e;text-decoration:none;border-bottom:3px solid transparent}
+.sticky .tabs a.on{color:var(--ink);border-bottom-color:var(--gold)}
+.bottombar{display:flex;gap:8px;padding:10px 14px;background:#fff;border-top:1px solid var(--line)}
+.bottombar a{flex:1;text-align:center;padding:13px;border-radius:9px;font-weight:800;font-size:14.5px;text-decoration:none}
+.bottombar .a{background:var(--gold);color:#fff;flex:2.2}
+.bottombar .b{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+h2.big{font-size:18px;font-weight:800;margin:0;padding:20px 20px 0}
+.pad{padding:0 20px 22px}
+.foot{padding:18px 20px 30px;font-size:11px;color:#8a8478;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hd">
+  <h1>온올림 랜딩페이지 와이어프레임</h1>
+  <p>2026 추석 · 자사몰 온올림 전용 기획전 랜딩 · 세트 3종 통합</p>
+  <div class="chips">
+    <span class="chip">오픈 9/4(금)</span>
+    <span class="chip">자사몰 550세트 목표</span>
+    <span class="chip">배송마감 9/24</span>
+  </div>
+</div>
+
+<div class="note red">
+<b>이 랜딩이 필요한 이유 — 9/4~9/6 사흘의 공백</b><br>
+온올림 오픈은 <b>9/4(금)</b>인데 자사몰 추석 랜딩(세트 9종)은 <b>9/7(월)</b>에 열립니다.<br>
+그 사흘간 온올림은 상품 페이지만으로 팔리는 상태가 됩니다. <b>이 랜딩이 그 구간의 진입점</b>입니다.<br><br>
+9/7 이후에는 두 랜딩이 공존합니다 · 추석 랜딩(9종) 안에 <b>온올림 진입 배너 섹션</b>을 넣어 이 페이지로 연결합니다.
+</div>
+
+<div class="note blue">
+<b>랜딩과 상세페이지는 역할이 다릅니다.</b><br>
+랜딩 = <b>어떤 세트를 살지 고르게 하는 곳</b> · 상세 = 고른 세트를 사게 하는 곳<br>
+그래서 랜딩의 핵심은 <b>3종 비교와 상황별 추천</b>이고, 브랜드 스토리·포장·조리법은 요약만 하고 상세로 넘깁니다.
+</div>
+
+<!-- sticky -->
+<div class="sec" data-s="L0"><div class="scr">상단 고정</div>
+  <div class="purpose">목적 · 이탈 방지 + 세트 간 이동</div>
+  <div class="sticky" style="border-radius:9px;overflow:hidden;border:1px solid var(--line)">
+    <div class="bar1"><span>추석 배송 마감 9/24(목) 도착</span><span>D-30</span></div>
+    <div class="tabs"><a class="on" href="#">세트 3종</a><a href="#">비교</a><a href="#">포장</a><a href="#">배송</a></div>
+  </div>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd>상단 바에 <b>배송 마감 D-day</b>를 상시 노출. 명절 랜딩 최대 이탈 사유가 「제때 오나」입니다</dd>
+    <dd>탭은 4개까지. 5개 넘어가면 모바일에서 눌리지 않습니다</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    한촌설렁탕 브랜드스토어는 랜딩 레벨 배송 배너가 <em>없고</em> 상품 카드마다 개별 표기합니다.
+    → <em>랜딩 상단 고정 D-day는 우리 차별 요소</em>입니다.
+  </div>
+</div>
+
+<div class="sec" data-s="L1"><div class="scr">스크롤 0~12%</div>
+  <div class="purpose">목적 · 3초 안에 브랜드와 시즌을 인지</div>
+  <div class="slot" style="height:210px">
+    <div class="id">히어로 · 세트 3종 히어로컷</div>
+    <div>묵 블랙 배경 · 금 앰버 포인트 · 3종 나란히</div>
+    <div class="spec">촬영 #14 (3종 비교컷) 활용 · 가로 860px</div>
+  </div>
+  <div class="h1" style="margin-top:14px">온 마음을 담아,<br>정성껏 올립니다</div>
+  <p class="sub">집반찬연구소가 만드는 한식 선물 브랜드 · 온올림<br>2026 추석 선물세트 3종</p>
+  <div class="g3">
+    <div class="box"><b>2.7~2.8kg</b>넉넉한 중량</div>
+    <div class="box"><b>전용 패키지</b>부직포가방 포함</div>
+    <div class="box"><b>무료배송</b>전 세트</div>
+  </div>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd><span class="cut">촬영 #14</span>3종 비교컷을 히어로로 재활용. 별도 촬영 불필요</dd>
+    <dd>슬로건은 <b>이미지가 아니라 텍스트</b>로. 검색 노출과 접근성 모두에 유리</dd>
+    <dd>가격은 히어로에 넣지 않습니다. 바로 아래 카드에서 3종을 나란히 보여주는 게 순서</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    한촌설렁탕 랜딩은 히어로에 <em>영상 배너 + 시즌 카피</em>를 씁니다. 영상 제작 여력이 없으면 정지컷으로 충분합니다.
+  </div>
+</div>
+
+<div class="sec" data-s="L2"><div class="scr">스크롤 12~24%</div>
+  <div class="purpose">목적 · 구매자가 자기 상황을 고르게 한다 (진입 분기)</div>
+  <div class="h2">누구에게 보내시나요</div>
+  <p class="sub">상황을 고르면 어울리는 세트로 바로 이동합니다</p>
+  <div class="g3">
+    <div class="box"><b>부모님께</b>깊은마음<br><span style="color:#8a8478">84,800원</span></div>
+    <div class="box"><b>시댁·처가</b>온마음<br><span style="color:#8a8478">99,800원</span></div>
+    <div class="box"><b>거래처</b>고운마음<br><span style="color:#8a8478">69,800원</span></div>
+  </div>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd>선물세트는 <b>구매자와 수령자가 다릅니다.</b> 「무엇이 들어있나」보다 <b>「누구에게 어울리나」</b>가 먼저입니다</dd>
+    <dd>카드 3개를 각각 다른 세트로 연결해 <b>3종 전부에 진입로</b>를 만듭니다</dd>
+    <dd>클릭 시 아래 L3 해당 카드로 스크롤 이동 (페이지 이탈 없이)</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    한촌 랜딩은 <em>「몸보신 선물세트 추천」 캐러셀</em>로 세트만 모아두지만 <em>상황별 분기는 없습니다.</em>
+    → <em>상황 분기는 우리 차별 블록</em>입니다.
+  </div>
+</div>
+
+<div class="sec" data-s="L3"><div class="scr">스크롤 24~48%</div>
+  <div class="purpose">목적 · 가격 사다리로 상향 구매 유도</div>
+  <div class="h2">세트 3종</div>
+  <p class="sub">낮은 가격순이 아니라 <b>추천순</b>으로 배열합니다</p>
+
+  <div class="card"><div class="body">
+    <div class="slot" style="height:120px;margin-bottom:10px"><div class="id">온마음 구성 탑뷰</div><div class="spec">촬영 #4</div></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+      <span style="background:var(--gold);color:#fff;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:4px">추천</span>
+      <span class="h3" style="margin:0">온올림 온마음</span>
+    </div>
+    <div style="font-size:12px;color:#5f5a51">LA양념갈비 850g + 옛날 소불고기 950g + 소갈비 1,000g · 2.8kg</div>
+    <div style="margin-top:8px"><span class="pr1">109,400원</span> <span class="pr2">99,800원</span></div>
+    <div class="unit">소갈비 1kg 포함 · 선물 임팩트 최상</div>
+    <a class="cta g" href="#">온마음 보러가기</a>
+  </div></div>
+
+  <div class="card"><div class="body">
+    <div class="slot" style="height:120px;margin-bottom:10px"><div class="id">깊은마음 구성 탑뷰</div><div class="spec">촬영 #4</div></div>
+    <div class="h3">온올림 깊은마음</div>
+    <div style="font-size:12px;color:#5f5a51">LA양념갈비 850g ×2 + 갈비탕 1,000g · 2.7kg</div>
+    <div style="margin-top:8px"><span class="pr1">92,400원</span> <span class="pr2">84,800원</span></div>
+    <div class="unit">LA갈비를 좋아하는 분께</div>
+    <a class="cta o" href="#">깊은마음 보러가기</a>
+  </div></div>
+
+  <div class="card"><div class="body">
+    <div class="slot" style="height:120px;margin-bottom:10px"><div class="id">고운마음 구성 탑뷰</div><div class="spec">촬영 #4</div></div>
+    <div class="h3">온올림 고운마음</div>
+    <div style="font-size:12px;color:#5f5a51">LA양념갈비 850g + 옛날 소불고기 950g + 갈비탕 1,000g · 2.8kg</div>
+    <div style="margin-top:8px"><span class="pr1">78,400원</span> <span class="pr2">69,800원</span></div>
+    <div class="unit">구이 2 + 탕 1 · 가장 무난한 구성</div>
+    <a class="cta o" href="#">고운마음 보러가기</a>
+  </div></div>
+
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd><b>고가부터 배열합니다.</b> 낮은 가격순으로 두면 69,800원에서 멈춥니다. 앵커링 효과로 객단가가 올라갑니다</dd>
+    <dd>「추천」 배지는 <b>한 개에만</b>. 두 개 이상이면 배지가 무의미해집니다</dd>
+    <dd>카드마다 촬영 #4(구성 탑뷰)를 세트별로 3장 사용</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    한촌 랜딩 카드에는 <em>가격 · 할인율 · 배송일 · 평점 · 리뷰수가 모두 표기</em>됩니다.
+    우리는 리뷰가 0이라 <em>평점·리뷰수 자리를 비우고 구성 요약으로 대체</em>합니다. 리뷰 30건 확보 후 노출 전환.
+  </div>
+</div>
+
+<div class="sec" data-s="L4"><div class="scr">스크롤 48~58%</div>
+  <div class="purpose">목적 · 비교 마비를 끊고 결정시킨다</div>
+  <div class="h2">3종 한눈에 비교</div>
+  <table>
+    <tr><th></th><th>고운마음</th><th>깊은마음</th><th>온마음</th></tr>
+    <tr><td class="l">LA 양념갈비 850g</td><td>1</td><td>2</td><td>1</td></tr>
+    <tr><td class="l">옛날 소불고기 950g</td><td>1</td><td>—</td><td>1</td></tr>
+    <tr><td class="l">갈비탕 1,000g</td><td>1</td><td>1</td><td>—</td></tr>
+    <tr><td class="l">소갈비 1,000g</td><td>—</td><td>—</td><td>1</td></tr>
+    <tr><td class="l">총 중량</td><td>2,800g</td><td>2,700g</td><td>2,800g</td></tr>
+    <tr><td class="l">어울리는 분</td><td>거래처</td><td>부모님</td><td>시댁·처가</td></tr>
+    <tr><th class="l">가격</th><th>69,800</th><th>84,800</th><th style="background:#fdeeec;color:var(--red)">99,800</th></tr>
+  </table>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd>표는 <b>이미지가 아니라 HTML 표</b>로. 모바일에서 가로 스크롤 없이 읽혀야 합니다</dd>
+    <dd>행 순서는 <b>비싼 품목부터</b>. 위에서부터 차이가 보여야 상향 구매가 일어납니다</dd>
+    <dd>「어울리는 분」 행이 L2 상황 분기와 짝을 이룹니다</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    한촌 브랜드스토어 랜딩에는 <em>세트 비교표가 아예 없었습니다</em>(카드 나열이 전부).
+    → 3종뿐이라 표로 보여주는 게 가능하고, <em>이게 결정 속도를 가장 크게 올리는 블록</em>입니다.
+  </div>
+</div>
+
+<div class="sec" data-s="L5"><div class="scr">스크롤 58~70%</div>
+  <div class="purpose">목적 · 가격 저항 해소 · 경쟁 세트와 눈으로 구분</div>
+  <div class="h2">열기 전부터<br>이미 선물입니다</div>
+  <div class="slot" style="height:150px;margin-bottom:9px"><div class="id">개봉 시퀀스</div><div class="spec">촬영 #6 · 반개봉 컷 1장만</div></div>
+  <div class="g2">
+    <div class="slot" style="height:100px"><div class="id">슬리브 금박</div><div class="spec">촬영 #8</div></div>
+    <div class="slot" style="height:100px"><div class="id">부직포가방</div><div class="spec">촬영 #10</div></div>
+  </div>
+  <div class="g2" style="margin-top:9px">
+    <div class="box"><b>3구 스티로폼</b>냉동 안전 배송</div>
+    <div class="box"><b>금박 슬리브</b>제품별 전용</div>
+  </div>
+  <div class="g2" style="margin-top:8px">
+    <div class="box"><b>부직포 가방</b>전 세트 기본</div>
+    <div class="box"><b>파우치형 간지</b>띤또레또 350g</div>
+  </div>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd>랜딩에서는 <b>3컷까지만.</b> 6컷 전체는 상세페이지 S6에서 보여줍니다</dd>
+    <dd>포장비 6,510원이 실제로 들어간 값 — 이게 가격 정당화의 근거</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    경쟁 3곳 모두 포장 컷을 <em>상세페이지 중반에 1~2컷</em>만 씁니다. 랜딩에 포장 섹션을 따로 두는 곳은 없었습니다.
+  </div>
+</div>
+
+<div class="sec" data-s="L6"><div class="scr">스크롤 70~80%</div>
+  <div class="purpose">목적 · 리뷰 0의 신뢰 공백 방어</div>
+  <div class="h2">처음 만드는 선물세트,<br>처음 만드는 곳은 아닙니다</div>
+  <div class="g2">
+    <div class="box"><b>201,381건</b>자사몰 누적 후기</div>
+    <div class="box"><b>4.83점</b>평균 평점</div>
+  </div>
+  <div class="rv" style="margin-top:10px"><span class="star">★★★★★</span> 실제 후기 인용 1<div class="who">집반찬연구소 · 구매자</div></div>
+  <div class="rv"><span class="star">★★★★★</span> 실제 후기 인용 2<div class="who">집반찬연구소 · 구매자</div></div>
+  <div class="rv"><span class="star">★★★★★</span> 실제 후기 인용 3<div class="who">집반찬연구소 · 구매자</div></div>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd>온올림 리뷰가 0이라 <b>모브랜드 후기를 인용</b>합니다. 2025 추석 랜딩에서는 20만 건을 전혀 쓰지 않았습니다</dd>
+    <dd>후기는 캡처 이미지가 아니라 <b>텍스트로</b>. 네이버·검색엔진이 읽습니다</dd>
+    <dd>온올림 리뷰 30건 확보 후 이 블록을 온올림 자체 후기로 교체</dd>
+  </dl>
+  <div class="cmp"><div class="t">타사 비교</div>
+    한촌은 상품 카드마다 <em>평점·리뷰수를 노출</em>합니다. 리뷰가 있는 브랜드의 기본 문법입니다.
+    → 우리는 <em>모브랜드 자산으로 대체</em>하는 것 외에 방법이 없습니다.
+  </div>
+</div>
+
+<div class="sec" data-s="L7"><div class="scr">스크롤 80~90%</div>
+  <div class="purpose">목적 · 명절 랜딩 최대 이탈 사유 제거</div>
+  <div class="h2">추석 배송 일정</div>
+  <div class="card"><div class="body" style="text-align:center">
+    <div style="font-size:12px;color:#8a8478">추석 전 도착 주문 마감</div>
+    <div style="font-size:28px;font-weight:800;color:var(--red);margin:4px 0">9월 23일 (수)</div>
+    <div class="unit">9/24(목) 도착분까지 발송</div>
+  </div></div>
+  <table>
+    <tr><th>구분</th><th>내용</th></tr>
+    <tr><td>배송 방식</td><td class="l">냉동 택배 · 아이스팩 패드 동봉</td></tr>
+    <tr><td>배송비</td><td class="l">전 세트 무료</td></tr>
+    <tr><td>희망일 지정</td><td class="l">주문서에서 선택 가능</td></tr>
+    <tr><td>연휴</td><td class="l">9/24(목) ~ 9/26(토) · 추석 9/25(금)</td></tr>
+  </table>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd>D-day 숫자를 <b>가장 크게</b>. 이 페이지에서 제일 큰 글씨여야 합니다</dd>
+    <dd>9/16부터 상단 고정 바에 카운트다운 문구를 「D-7」 형태로 전환</dd>
+  </dl>
+</div>
+
+<div class="sec" data-s="L8"><div class="scr">스크롤 90~97%</div>
+  <div class="purpose">목적 · 마지막 불안 제거</div>
+  <div class="h2">자주 묻는 질문</div>
+  <div class="faq"><b>받는 분 집에 사람이 없으면요</b>냉동 택배라 부재 시 문 앞 보관이 가능합니다. 희망일 지정을 권합니다</div>
+  <div class="faq"><b>조리가 어렵지 않을까요</b>세 제품 모두 해동 후 굽거나 끓이면 됩니다. 조리법 카드를 동봉합니다</div>
+  <div class="faq"><b>선물 포장이 따로 되나요</b>부직포 가방과 슬리브가 전 세트에 기본 포함됩니다</div>
+  <div class="faq"><b>소비기한은 얼마나 되나요</b>확보 후 기재 (숭의가든 확인 중)</div>
+  <div class="faq"><b>여러 곳에 나눠 보낼 수 있나요</b>주문을 분리하시면 각각 다른 주소로 발송됩니다</div>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd>FAQ는 <b>5개까지.</b> 많으면 오히려 불안을 만듭니다</dd>
+    <dd>질문은 <b>구매자 관점</b>으로 씁니다 — 「받는 분 집에 사람이 없으면」처럼</dd>
+  </dl>
+</div>
+
+<div class="sec" data-s="L9"><div class="scr">스크롤 97~100%</div>
+  <div class="purpose">목적 · 최종 전환</div>
+  <div class="h2" style="text-align:center">올 추석,<br>온 마음을 담아 보내세요</div>
+  <div class="g3" style="margin-top:12px">
+    <div class="box"><b>69,800</b>고운마음</div>
+    <div class="box"><b>84,800</b>깊은마음</div>
+    <div class="box"><b>99,800</b>온마음</div>
+  </div>
+  <a class="cta g" href="#">세트 고르러 가기</a>
+  <div class="bottombar" style="margin-top:14px;border:1px solid var(--line);border-radius:9px">
+    <a class="b" href="#">비교표</a><a class="a" href="#">온마음 99,800원</a>
+  </div>
+  <dl class="spc"><dt>슬롯 명세</dt>
+    <dd>하단 고정 바는 <b>추천 세트(온마음) 1개</b>만 노출. 선택지를 늘리면 결정이 미뤄집니다</dd>
+    <dd>「비교표」 버튼으로 L4로 되돌아갈 수 있게</dd>
+  </dl>
+</div>
+
+<h2 class="big">타사 랜딩 비교 · 한촌설렁탕 브랜드스토어</h2>
+<div class="pad">
+  <table>
+    <tr><th>순서</th><th>한촌설렁탕 (실측)</th><th>온올림 설계안</th><th>판단</th></tr>
+    <tr><td>1</td><td class="l">GNB + 카테고리 메뉴</td><td class="l">L0 상단 고정 (배송 D-day + 탭)</td><td>차별</td></tr>
+    <tr><td>2</td><td class="l">히어로 영상 배너 + 시즌 카피</td><td class="l">L1 히어로 (정지컷 + 슬로건)</td><td>동일</td></tr>
+    <tr><td>3</td><td class="l">개별 제품 카드 그리드</td><td class="l">L2 상황별 분기 3카드</td><td>차별</td></tr>
+    <tr><td>4</td><td class="l">선물세트 추천 캐러셀</td><td class="l">L3 세트 3종 카드 (고가순)</td><td>동일</td></tr>
+    <tr><td>5</td><td class="l">— (비교표 없음)</td><td class="l">L4 3종 비교표</td><td>차별</td></tr>
+    <tr><td>6</td><td class="l">— (포장 섹션 없음)</td><td class="l">L5 포장</td><td>차별</td></tr>
+    <tr><td>7</td><td class="l">베스트 랭킹 탭</td><td class="l">L6 모브랜드 후기</td><td>대체</td></tr>
+    <tr><td>8</td><td class="l">— (상품 카드에 개별 표기)</td><td class="l">L7 배송 일정</td><td>차별</td></tr>
+    <tr><td>9</td><td class="l">알림받기 · 쿠폰 배너</td><td class="l">L8 FAQ → L9 최종 CTA</td><td>대체</td></tr>
+  </table>
+  <div class="note" style="margin-top:12px">
+  <b>한촌과 우리의 근본 차이 — 상품 수</b><br>
+  한촌은 수십 개 SKU라 <b>랭킹·카테고리 필터로 탐색</b>시킵니다. 우리는 3종뿐이라 <b>비교표로 결정</b>시키는 게 맞습니다.<br>
+  세트가 3종일 때는 탐색 UI를 만들 이유가 없습니다. 한 화면에 다 보여주고 고르게 하는 편이 빠릅니다.
+  </div>
+  <div class="note red" style="margin-top:10px">
+  <b>제작 시 반드시 지킬 3가지</b><br>
+  ① <b>정렬은 고가순</b> — 낮은 가격순으로 두면 69,800원에서 멈춥니다<br>
+  ② <b>표와 카피는 HTML 텍스트로</b> — 이미지에 박으면 검색엔진이 못 읽습니다<br>
+  ③ <b>추천 배지는 하나만</b> — 온마음에만
+  </div>
+</div>
+
+<h2 class="big">촬영 컷 ↔ 랜딩 블록 매핑</h2>
+<div class="pad">
+  <table>
+    <tr><th>컷</th><th>내용</th><th>랜딩 위치</th><th>상세 위치</th></tr>
+    <tr><td>#14</td><td class="l">3종 비교컷</td><td>L1 히어로</td><td>S9</td></tr>
+    <tr><td>#4</td><td class="l">구성 오버헤드 (세트별 3장)</td><td>L3 카드 3장</td><td>A1 · S4</td></tr>
+    <tr><td>#6</td><td class="l">개봉 시퀀스</td><td>L5 (1장만)</td><td>A1 · S6</td></tr>
+    <tr><td>#8</td><td class="l">슬리브 금박</td><td>L5</td><td>S6</td></tr>
+    <tr><td>#10</td><td class="l">부직포가방</td><td>L5</td><td>A1 · S6</td></tr>
+    <tr><td>#3</td><td class="l">상황 연출</td><td>L2 (선택)</td><td>S2</td></tr>
+  </table>
+  <div class="note blue" style="margin-top:12px">
+  <b>랜딩은 새 촬영이 필요 없습니다.</b><br>
+  8/28 촬영 14컷 안에서 <b>6컷을 재활용</b>하면 랜딩이 완성됩니다. 별도 촬영 일정을 잡지 않아도 됩니다.
+  </div>
+</div>
+
+<div class="foot">
+온올림 랜딩페이지 와이어프레임 · 집반찬연구소 온라인본부 · 2026-08-23<br>
+타사 조사 · 한촌설렁탕 브랜드스토어(brand.naver.com/hanchon) 2026-08-23 실측
+</div>
+
+</div>
+</body>
+</html>
