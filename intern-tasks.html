@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026 인턴 업무 가능여부 체크리스트 · 온라인본부</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;background:#f4f5f7;color:#1f2328;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1400px;margin:0 auto;padding:24px 20px 120px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.sub{font-size:14px;color:#6b7280;margin-top:6px;line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}
+.st{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:13px 15px}
+.st .n{font-size:24px;font-weight:800;line-height:1.1}
+.st .l{font-size:12px;color:#6b7280;font-weight:700;margin-top:3px}
+.bar{height:7px;background:#eef0f3;border-radius:4px;overflow:hidden;display:flex;margin-top:9px}
+.bar i{display:block;height:100%}
+.panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px;margin-bottom:16px;position:sticky;top:0;z-index:20;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.frow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:9px}
+.frow:last-child{margin-bottom:0}
+.flabel{font-size:12px;font-weight:800;color:#6b7280;width:56px;flex:none}
+.chip{border:1.5px solid #e5e7eb;background:#fff;border-radius:20px;padding:6px 13px;font-size:13px;font-weight:700;cursor:pointer;color:#4b5563}
+.chip:hover{border-color:#9ca3af}
+.chip.on{background:#111827;border-color:#111827;color:#fff}
+input.search{flex:1;min-width:170px;border:1.5px solid #e5e7eb;border-radius:9px;padding:8px 12px;font-size:14px;font-family:inherit}
+input.search:focus{outline:none;border-color:#111827}
+.btn{border:1.5px solid #e5e7eb;background:#fff;border-radius:9px;padding:7px 13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;color:#374151}
+.btn:hover{background:#f9fafb}
+.btn.d{color:#b91c1c;border-color:#fecaca}
+section{margin-bottom:22px}
+.chead{display:flex;align-items:center;gap:10px;margin-bottom:9px;padding-left:2px}
+.cbadge{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:14px}
+.ctitle{font-size:17px;font-weight:800}
+.ccount{font-size:12px;color:#6b7280;font-weight:700;background:#e9ebef;padding:3px 9px;border-radius:12px}
+.tbox{background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:separate;border-spacing:0}
+th{background:#fafbfc;font-size:11.5px;font-weight:800;color:#6b7280;text-align:left;padding:9px 10px;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #f1f2f4;font-size:14px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr.done{background:#f0fdf4}
+tr.hold{background:#fffbeb}
+tr.no{background:#fef2f2;opacity:.65}
+.f{width:100%;border:1px solid transparent;border-radius:7px;padding:6px 8px;font-size:14px;font-family:inherit;background:transparent;color:#1f2328}
+.f:hover{background:#f3f4f6}
+.f:focus{outline:none;border-color:#111827;background:#fff}
+.f.small{font-size:13px;color:#4b5563}
+.f.name{font-weight:600}
+.f::placeholder{color:#c3c7cd;font-weight:400}
+select.bsel{border:none;border-radius:6px;font-size:11px;font-weight:800;padding:4px 6px;font-family:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;text-align:center}
+.p-pre{background:#fff7ed;color:#c2410c}.p-post{background:#eff6ff;color:#1d4ed8}.p-always{background:#f5f3ff;color:#7c3aed}
+.r-must{background:#fee2e2;color:#b91c1c}.r-need{background:#fef3c7;color:#b45309}.r-cond{background:#e0f2fe;color:#0369a1}.r-no{background:#f1f5f9;color:#64748b}
+.b{display:inline-block;font-size:11px;font-weight:800;padding:4px 8px;border-radius:6px;white-space:nowrap}
+.s-oppm{background:#e9ebef;color:#4b5563}.s-new{background:#dcfce7;color:#15803d}.s-add{background:#ede9fe;color:#6d28d9}
+.seg{display:flex;gap:3px;background:#f1f2f4;padding:3px;border-radius:9px;width:fit-content}
+.seg button{border:none;background:transparent;font-size:12px;font-weight:800;padding:5px 10px;border-radius:7px;cursor:pointer;color:#6b7280;font-family:inherit}
+.seg button:hover{color:#111827}
+.seg button.a-y.on{background:#059669;color:#fff}
+.seg button.a-h.on{background:#d97706;color:#fff}
+.seg button.a-n.on{background:#dc2626;color:#fff}
+.del{border:none;background:transparent;color:#c3c7cd;font-size:17px;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1}
+.del:hover{background:#fee2e2;color:#dc2626}
+.addrow{padding:9px 12px;border-top:1px dashed #e5e7eb;background:#fbfcfd}
+.addrow button{border:none;background:transparent;color:#6b7280;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;padding:4px}
+.addrow button:hover{color:#111827}
+.foot{position:fixed;left:0;right:0;bottom:0;background:#111827;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;justify-content:center;flex-wrap:wrap;z-index:30}
+.foot b{font-size:16px}
+.foot .fs{font-size:13px;color:#cbd5e1}
+.empty{padding:26px;text-align:center;color:#9ca3af;font-size:14px}
+@media print{.panel,.foot,.del,.addrow{display:none}body{background:#fff}.f{background:transparent!important}}
+</style></head><body>
+<div class="wrap">
+<h1>2026 인턴 업무 가능여부 체크리스트</h1>
+<div class="sub">집반찬연구소 온라인본부 · 인턴 2명 (2026-08-31 출근 ~ 11월말) · 추석 09/25(금), 연휴 9/24~27<br>
+각 업무를 <b>가능 / 보류 / 불가</b>로 판정하세요. <b>업무명·산출물·시점·검수는 직접 눌러서 수정</b>할 수 있고, 행 오른쪽 ×로 삭제, 카테고리 하단에서 추가할 수 있습니다. 모든 변경은 자동 저장됩니다.</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="panel">
+  <div class="frow"><span class="flabel">시점</span><div id="fPhase"></div></div>
+  <div class="frow"><span class="flabel">카테고리</span><div id="fCat"></div></div>
+  <div class="frow"><span class="flabel">검수</span><div id="fRev"></div></div>
+  <div class="frow"><span class="flabel">판정</span><div id="fJudge"></div></div>
+  <div class="frow"><span class="flabel">검색</span>
+    <input class="search" id="q" placeholder="업무명·산출물 검색">
+    <button class="btn" onclick="resetFilters()">필터 초기화</button>
+    <button class="btn" onclick="copyMd()">결과 복사</button>
+    <button class="btn" onclick="dl()">JSON 저장</button>
+    <button class="btn" onclick="document.getElementById('up').click()">JSON 불러오기</button>
+    <input type="file" id="up" accept=".json" style="display:none" onchange="upload(this)">
+    <button class="btn" onclick="window.print()">인쇄</button>
+    <button class="btn d" onclick="resetJudge()">판정 초기화</button>
+    <button class="btn d" onclick="restore()">기본 목록 복원</button>
+  </div>
+</div>
+
+<div id="list"></div>
+</div>
+
+<div class="foot">
+  <span class="fs">판정 진행</span><b id="fProg">0 / 0</b>
+  <span class="fs">가능</span><b id="fY" style="color:#34d399">0</b>
+  <span class="fs">보류</span><b id="fH" style="color:#fbbf24">0</b>
+  <span class="fs">불가</span><b id="fN" style="color:#f87171">0</b>
+  <span class="fs" id="fNote"></span>
+</div>
+
+<script>
+const CATS={"A":"시딩·체험단 운영","B":"콘텐츠 소재 제작","C":"채널 발행·SEO","D":"광고 세팅·집행","E":"성과 측정·리포팅","F":"자사몰 정보·콘텐츠 정비","G":"CS·리스크 대응","H":"고객 소통·CRM","I":"데이터 자산화"};
+const CATC={A:"#0891b2",B:"#7c3aed",C:"#059669",D:"#dc2626",E:"#2563eb",F:"#d97706",G:"#db2777",H:"#ea580c",I:"#475569"};
+const BASE=[{"id":"t1","cat":"A","task":"블로그 체험단(직접) 인플루언서 리스트업","phase":"추석 전","out":"후보 리스트 시트","rev":"필요","src":"OPPM"},{"id":"t2","cat":"A","task":"블로그 체험단(직접) 후보군 검증","phase":"추석 전","out":"검증 체크시트","rev":"필요","src":"OPPM"},{"id":"t3","cat":"A","task":"블로그 체험단(직접) 단가 협의 및 계약 진행","phase":"추석 전","out":"계약 내역","rev":"필수","src":"OPPM"},{"id":"t4","cat":"A","task":"블로그 체험단(직접) 콘텐츠 가이드 작성 및 제품 배송","phase":"추석 전","out":"가이드 문서·배송 이력","rev":"필요","src":"OPPM"},{"id":"t5","cat":"A","task":"블로그 체험단(직접) 제작물 피드백 및 수정 요청","phase":"추석 전","out":"수정 요청 이력","rev":"조건부","src":"OPPM"},{"id":"t6","cat":"A","task":"레뷰/쇼핑커넥트 가이드라인 작성 및 캠페인 오픈","phase":"추석 전","out":"캠페인 세팅","rev":"필요","src":"OPPM"},{"id":"t7","cat":"A","task":"레뷰/쇼핑커넥트 체험단 선정","phase":"추석 전","out":"선정 리스트","rev":"조건부","src":"OPPM"},{"id":"t8","cat":"A","task":"레뷰/쇼핑커넥트 게시 및 수정 요청","phase":"추석 전","out":"게시 링크 목록","rev":"불필요","src":"OPPM"},{"id":"t9","cat":"A","task":"DA 인플루언서 리스트업","phase":"추석 전","out":"후보 리스트","rev":"필요","src":"OPPM"},{"id":"t10","cat":"A","task":"DA 인플루언서 후보군 검증","phase":"추석 전","out":"검증 시트","rev":"필요","src":"OPPM"},{"id":"t11","cat":"A","task":"DA 인플루언서 콘텐츠 가이드 및 제품 배송","phase":"추석 전","out":"가이드·배송 이력","rev":"조건부","src":"OPPM"},{"id":"t12","cat":"A","task":"DA 인플루언서 제작물 피드백 및 수정 요청","phase":"추석 전","out":"수정 요청 이력","rev":"조건부","src":"OPPM"},{"id":"t13","cat":"B","task":"광고 기획안 작성","phase":"추석 전","out":"기획안","rev":"필요","src":"OPPM"},{"id":"t14","cat":"B","task":"촬영 진행 및 1차 편집본 검수","phase":"추석 전","out":"촬영 원본·1차 편집본","rev":"필요","src":"OPPM"},{"id":"t15","cat":"B","task":"이미지 소재 제작","phase":"추석 전","out":"소재 세트","rev":"필요","src":"OPPM"},{"id":"t16","cat":"B","task":"상시 광고 소재 제작 (썸네일·배너·상세컷)","phase":"상시","out":"소재 뱅크","rev":"필요","src":"신규"},{"id":"t17","cat":"B","task":"릴스·숏폼 제작 (주 1회 기준)","phase":"상시","out":"숏폼 영상","rev":"필요","src":"신규"},{"id":"t18","cat":"B","task":"다음 시즌 선행 콘텐츠 (수능식단·김장·연말)","phase":"추석 후","out":"시즌 소재 세트","rev":"필요","src":"신규"},{"id":"t19","cat":"C","task":"기사 기획안 작성","phase":"추석 전","out":"기획안","rev":"필요","src":"OPPM"},{"id":"t20","cat":"C","task":"기자 섭외 및 단가 협의","phase":"추석 전","out":"섭외 내역","rev":"필수","src":"OPPM"},{"id":"t21","cat":"C","task":"원고 작성 및 수정 피드백","phase":"추석 전","out":"원고","rev":"필요","src":"OPPM"},{"id":"t22","cat":"C","task":"게재 후 노출 모니터링 및 재배포","phase":"추석 전","out":"노출 리포트","rev":"불필요","src":"OPPM"},{"id":"t23","cat":"C","task":"지식인 댓글 작업","phase":"추석 전","out":"작업 이력","rev":"조건부","src":"OPPM"},{"id":"t24","cat":"C","task":"인스타그램 피드 게시 및 소통","phase":"추석 전","out":"피드·소통 이력","rev":"조건부","src":"OPPM"},{"id":"t25","cat":"C","task":"공식 블로그 발행","phase":"추석 전","out":"포스팅","rev":"필요","src":"OPPM"},{"id":"t26","cat":"C","task":"상시 블로그·지식인 발행 루틴","phase":"상시","out":"월간 발행 캘린더","rev":"조건부","src":"신규"},{"id":"t27","cat":"C","task":"인스타 상시 콘텐츠 운영","phase":"상시","out":"콘텐츠 캘린더","rev":"조건부","src":"신규"},{"id":"t28","cat":"D","task":"SA 키워드 최적화","phase":"추석 전","out":"키워드 세팅","rev":"필요","src":"OPPM"},{"id":"t29","cat":"D","task":"SA 차례상·명절 캠페인 소재 업데이트","phase":"추석 전","out":"캠페인 소재","rev":"필요","src":"OPPM"},{"id":"t30","cat":"D","task":"SA 광고 셋팅","phase":"추석 전","out":"캠페인","rev":"필수","src":"OPPM"},{"id":"t31","cat":"D","task":"GFA 캠페인 생성 (텍스트·이미지 소재 확정)","phase":"추석 전","out":"캠페인","rev":"필요","src":"OPPM"},{"id":"t32","cat":"D","task":"광고 집행 연동 (DA 직접제작)","phase":"추석 전","out":"연동 완료","rev":"필요","src":"OPPM"},{"id":"t33","cat":"D","task":"업로드 일정 관리 및 광고 집행 연동 (인플루언서)","phase":"추석 전","out":"업로드 일정표","rev":"조건부","src":"OPPM"},{"id":"t34","cat":"E","task":"GFA 성과 모니터링 및 보고","phase":"추석 전","out":"주간 성과 리포트","rev":"불필요","src":"OPPM"},{"id":"t35","cat":"E","task":"Daily check 광고 지출·ROAS 입력","phase":"추석 전","out":"일일 데이터","rev":"불필요","src":"신규"},{"id":"t36","cat":"E","task":"추석 채널별 성과 집계","phase":"추석 후","out":"집계표","rev":"조건부","src":"신규"},{"id":"t37","cat":"F","task":"조리법 > 추석 제품 맛있게 먹는 법 추가","phase":"추석 전","out":"조리법 페이지","rev":"조건부","src":"OPPM"},{"id":"t38","cat":"F","task":"자주묻는질문 > 명절 FAQ 영역 추가","phase":"추석 전","out":"FAQ","rev":"필요","src":"OPPM"},{"id":"t39","cat":"F","task":"레시피·매거진 콘텐츠 코너 신설","phase":"상시","out":"콘텐츠 코너","rev":"필요","src":"신규"},{"id":"t40","cat":"F","task":"정기식단 8종 소구 문구 개선","phase":"상시","out":"상세 문구","rev":"필요","src":"신규"},{"id":"t41","cat":"F","task":"상품 데이터·이미지 정비 (독립몰 이관용)","phase":"추석 후","out":"상품 마스터","rev":"조건부","src":"신규"},{"id":"t42","cat":"G","task":"유형별 대처법 대응 가이드라인 확인","phase":"추석 전","out":"가이드라인","rev":"필요","src":"OPPM"},{"id":"t43","cat":"G","task":"AI 답변 템플릿 보강","phase":"추석 전","out":"템플릿","rev":"필요","src":"OPPM"},{"id":"t44","cat":"G","task":"명절 판매차단·노출 점검 체크리스트 운영","phase":"추석 전","out":"체크리스트","rev":"필요","src":"신규"},{"id":"t45","cat":"H","task":"추석 세트 안내콜 스크립트 작성 (온올림 포함)","phase":"추석 전","out":"콜 스크립트","rev":"필수","src":"신규"},{"id":"t46","cat":"H","task":"수신동의 모수 추출 + 세그먼트 리스트업","phase":"추석 전","out":"세그먼트별 콜 리스트","rev":"필요","src":"신규"},{"id":"t47","cat":"H","task":"전 고객 추석 안내 문자 1차 발송 (오픈 직후)","phase":"추석 전","out":"발송 결과 리포트","rev":"필수","src":"신규"},{"id":"t48","cat":"H","task":"구매이력 세그먼트 문자 2차 발송 (마감 임박)","phase":"추석 전","out":"발송 결과 리포트","rev":"필수","src":"신규"},{"id":"t49","cat":"H","task":"추석 세트 안내콜 실행 (인턴 직접)","phase":"추석 전","out":"통화 결과 DB","rev":"필요","src":"신규"},{"id":"t50","cat":"H","task":"통화 결과 기록 및 전환 분석","phase":"추석 전","out":"OB콜 DB + 전환율","rev":"불필요","src":"신규"},{"id":"t51","cat":"H","task":"리뷰 수집·답글·자사몰 노출화","phase":"추석 후","out":"리뷰 노출 세팅","rev":"조건부","src":"신규"},{"id":"t52","cat":"H","task":"정기구독 전환 캠페인 (추석 신규 구매자)","phase":"추석 후","out":"캠페인 결과","rev":"필요","src":"신규"},{"id":"t53","cat":"H","task":"SNS 댓글·DM 응대","phase":"상시","out":"응대 이력","rev":"불필요","src":"신규"},{"id":"t54","cat":"H","task":"정기구독자 이탈 방지 소통","phase":"상시","out":"소통 이력","rev":"조건부","src":"신규"},{"id":"t55","cat":"H","task":"CRM 발송 소재 제작·발송","phase":"상시","out":"CRM 소재","rev":"필요","src":"신규"},{"id":"t56","cat":"I","task":"인플루언서·체험단 풀 성과 등급 DB","phase":"추석 후","out":"인플루언서 DB","rev":"조건부","src":"신규"},{"id":"t57","cat":"I","task":"광고 소재 성과 라이브러리","phase":"추석 후","out":"소재↔성과 아카이브","rev":"조건부","src":"신규"},{"id":"t58","cat":"I","task":"VOC·CS 유형 분해 DB","phase":"추석 후","out":"VOC DB","rev":"조건부","src":"신규"}];
+const KEY="jibr_intern_check_v2";
+const PHASES=["추석 전","추석 후","상시"];
+const REVS=["필수","필요","조건부","불필요"];
+let ST=load();
+let F={phase:"전체",cat:"전체",rev:"전체",judge:"전체",q:""};
+
+function load(){
+  try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.list)return s;}catch(e){}
+  return {list:JSON.parse(JSON.stringify(BASE)), j:{}};
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(ST));}
+const pcls=p=>p==="추석 전"?"p-pre":p==="추석 후"?"p-post":"p-always";
+const rcls=r=>r==="필수"?"r-must":r==="필요"?"r-need":r==="조건부"?"r-cond":"r-no";
+const scls=s=>s==="OPPM"?"s-oppm":s==="신규"?"s-new":"s-add";
+const esc=s=>String(s||"").replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+function chips(el,list,key){
+  const d=document.getElementById(el);
+  d.innerHTML=list.map(v=>'<button class="chip'+(F[key]===v?' on':'')+'" data-v="'+esc(v)+'">'+v+'</button>').join(' ');
+  d.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{F[key]=b.dataset.v;render();});
+}
+function buildFilters(){
+  chips('fPhase',["전체",...PHASES],"phase");
+  chips('fCat',["전체",...Object.keys(CATS).map(c=>c+". "+CATS[c])],"cat");
+  chips('fRev',["전체",...REVS],"rev");
+  chips('fJudge',["전체","미판정","가능","보류","불가"],"judge");
+}
+function match(d){
+  if(F.phase!=="전체"&&d.phase!==F.phase)return false;
+  if(F.cat!=="전체"&&!F.cat.startsWith(d.cat+". "))return false;
+  if(F.rev!=="전체"&&d.rev!==F.rev)return false;
+  const j=(ST.j[d.id]||{}).j||"";
+  if(F.judge==="미판정"&&j)return false;
+  if(["가능","보류","불가"].includes(F.judge)&&j!==F.judge)return false;
+  if(F.q&&!((d.task+d.out).toLowerCase().includes(F.q.toLowerCase())))return false;
+  return true;
+}
+function setJ(id,v){ST.j[id]=ST.j[id]||{};ST.j[id].j=(ST.j[id].j===v?"":v);save();render();}
+function setM(id,v){ST.j[id]=ST.j[id]||{};ST.j[id].m=v;save();updateFoot();}
+function edit(id,field,v){const t=ST.list.find(x=>x.id===id);if(!t)return;t[field]=v;save();if(field==="phase"||field==="rev")render();else updateFoot();}
+function del(id){const t=ST.list.find(x=>x.id===id);if(!t)return;if(!confirm('"'+t.task+'"\n\n이 업무를 목록에서 삭제할까요?'))return;ST.list=ST.list.filter(x=>x.id!==id);delete ST.j[id];save();render();}
+function add(cat){
+  const id='c'+Date.now()+Math.floor(Math.random()*99);
+  ST.list.push({id,cat,task:"",phase:"추석 전",out:"",rev:"필요",src:"추가"});
+  save();render();
+  setTimeout(()=>{const el=document.querySelector('[data-focus="'+id+'"]');if(el){el.focus();el.scrollIntoView({block:"center",behavior:"smooth"});}},60);
+}
+function restore(){if(!confirm("업무 목록을 최초 58개 기본 상태로 되돌립니다.\n직접 추가·수정·삭제한 내용은 사라집니다. (판정·메모는 유지)\n계속할까요?"))return;ST.list=JSON.parse(JSON.stringify(BASE));save();render();}
+function resetJudge(){if(!confirm("모든 판정과 메모를 지웁니다. 업무 목록은 그대로 둡니다.\n계속할까요?"))return;ST.j={};save();render();}
+
+function render(){
+  buildFilters();
+  const shown=ST.list.filter(match);
+  const cats=Object.keys(CATS).filter(c=>F.cat==="전체"||F.cat.startsWith(c+". "));
+  const noneAtAll = shown.length===0 && (F.phase!=="전체"||F.rev!=="전체"||F.judge!=="전체"||F.q);
+  document.getElementById('list').innerHTML = cats.map(c=>{
+    const items=shown.filter(d=>d.cat===c);
+    if(items.length===0 && noneAtAll) return '';
+    return '<section><div class="chead"><div class="cbadge" style="background:'+CATC[c]+'">'+c+'</div>'
+      +'<div class="ctitle">'+CATS[c]+'</div><div class="ccount">'+items.length+'건</div></div><div class="tbox">'
+      +'<table><thead><tr><th style="width:26%">업무</th><th style="width:88px">시점</th><th style="width:19%">산출물</th><th style="width:84px">검수</th><th style="width:60px">출처</th><th style="width:168px">판정</th><th>메모</th><th style="width:34px"></th></tr></thead><tbody>'
+      +items.map(d=>{
+        const st=ST.j[d.id]||{};const j=st.j||"";
+        const rc=j==="가능"?"done":j==="보류"?"hold":j==="불가"?"no":"";
+        return '<tr class="'+rc+'">'
+        +'<td><input class="f name" data-focus="'+d.id+'" value="'+esc(d.task)+'" placeholder="업무명 입력" oninput="edit(\''+d.id+'\',\'task\',this.value)"></td>'
+        +'<td><select class="bsel '+pcls(d.phase)+'" onchange="edit(\''+d.id+'\',\'phase\',this.value)">'+PHASES.map(p=>'<option'+(p===d.phase?' selected':'')+'>'+p+'</option>').join('')+'</select></td>'
+        +'<td><input class="f small" value="'+esc(d.out)+'" placeholder="산출물" oninput="edit(\''+d.id+'\',\'out\',this.value)"></td>'
+        +'<td><select class="bsel '+rcls(d.rev)+'" onchange="edit(\''+d.id+'\',\'rev\',this.value)">'+REVS.map(r=>'<option'+(r===d.rev?' selected':'')+'>'+r+'</option>').join('')+'</select></td>'
+        +'<td><span class="b '+scls(d.src)+'">'+d.src+'</span></td>'
+        +'<td><div class="seg">'
+          +'<button class="a-y'+(j==="가능"?" on":"")+'" onclick="setJ(\''+d.id+'\',\'가능\')">가능</button>'
+          +'<button class="a-h'+(j==="보류"?" on":"")+'" onclick="setJ(\''+d.id+'\',\'보류\')">보류</button>'
+          +'<button class="a-n'+(j==="불가"?" on":"")+'" onclick="setJ(\''+d.id+'\',\'불가\')">불가</button>'
+        +'</div></td>'
+        +'<td><input class="f small" placeholder="사유·조건" value="'+esc(st.m)+'" oninput="setM(\''+d.id+'\',this.value)"></td>'
+        +'<td><button class="del" title="삭제" onclick="del(\''+d.id+'\')">&times;</button></td></tr>';
+      }).join('')
+      +'</tbody></table><div class="addrow"><button onclick="add(\''+c+'\')">+ 이 카테고리에 업무 추가</button></div></div></section>';
+  }).join('') || '<div class="empty">조건에 맞는 업무가 없습니다.</div>';
+  updateFoot();
+}
+function counts(){
+  let y=0,h=0,n=0;ST.list.forEach(d=>{const j=(ST.j[d.id]||{}).j;if(j==="가능")y++;else if(j==="보류")h++;else if(j==="불가")n++;});
+  return {y,h,n,done:y+h+n,total:ST.list.length};
+}
+function updateFoot(){
+  const c=counts();
+  fProg.textContent=c.done+' / '+c.total; fY.textContent=c.y; fH.textContent=c.h; fN.textContent=c.n;
+  fNote.textContent = (c.total>0&&c.done===c.total)?'판정 완료 — 인원 매칭 단계로':'';
+  renderStats();
+}
+function renderStats(){
+  const c=counts();
+  const cnt=p=>ST.list.filter(d=>d.phase===p).length;
+  const yPre=ST.list.filter(d=>d.phase==="추석 전"&&(ST.j[d.id]||{}).j==="가능").length;
+  const pct=c.total?Math.round(c.done/c.total*100):0;
+  document.getElementById('stats').innerHTML=
+   '<div class="st"><div class="n">'+c.total+'</div><div class="l">전체 업무</div></div>'
+  +'<div class="st"><div class="n" style="color:#c2410c">'+cnt("추석 전")+'</div><div class="l">추석 전 (8/31~9/27)</div></div>'
+  +'<div class="st"><div class="n" style="color:#1d4ed8">'+cnt("추석 후")+'</div><div class="l">추석 후 (9/28~11월말)</div></div>'
+  +'<div class="st"><div class="n" style="color:#7c3aed">'+cnt("상시")+'</div><div class="l">상시</div></div>'
+  +'<div class="st"><div class="n">'+pct+'%</div><div class="l">판정 진행 · 추석 전 가능 '+yPre+'건</div>'
+  +'<div class="bar"><i style="width:'+(c.total?c.y/c.total*100:0)+'%;background:#059669"></i><i style="width:'+(c.total?c.h/c.total*100:0)+'%;background:#d97706"></i><i style="width:'+(c.total?c.n/c.total*100:0)+'%;background:#dc2626"></i></div></div>';
+}
+function resetFilters(){F={phase:"전체",cat:"전체",rev:"전체",judge:"전체",q:""};document.getElementById('q').value="";render();}
+function copyMd(){
+  let md="# 인턴 업무 판정 결과\n\n";
+  ["가능","보류","불가","미판정"].forEach(g=>{
+    const items=ST.list.filter(d=>((ST.j[d.id]||{}).j||"미판정")===g);
+    if(!items.length)return;
+    md+="## "+g+" ("+items.length+")\n\n| 카테고리 | 업무 | 시점 | 산출물 | 검수 | 메모 |\n|---|---|---|---|---|---|\n";
+    items.forEach(d=>{md+="| "+d.cat+". "+CATS[d.cat]+" | "+d.task+" | "+d.phase+" | "+d.out+" | "+d.rev+" | "+((ST.j[d.id]||{}).m||"")+" |\n";});
+    md+="\n";
+  });
+  const done=()=>alert("판정 결과를 마크다운 표로 복사했습니다.");
+  if(navigator.clipboard) navigator.clipboard.writeText(md).then(done,fb); else fb();
+  function fb(){const t=document.createElement('textarea');t.value=md;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();done();}
+}
+function dl(){
+  const b=new Blob([JSON.stringify(ST,null,2)],{type:"application/json"});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download="인턴업무_체크리스트_"+new Date().toISOString().slice(0,10)+".json";a.click();
+}
+function upload(el){
+  const f=el.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{try{const d=JSON.parse(e.target.result);if(!d.list)throw 0;ST=d;save();render();alert("불러왔습니다.");}catch(x){alert("형식이 맞지 않는 파일입니다.");}el.value="";};
+  r.readAsText(f);
+}
+document.getElementById('q').addEventListener('input',e=>{F.q=e.target.value;render();});
+render();
+</script></body></html>
