@@ -298,9 +298,28 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .memo-box:empty::before{content:'메모 클릭 후 입력...';color:var(--ink3);pointer-events:none;}
 .memo-box:focus{border-color:var(--accent);}
 
-/* 매일 하는 일 */
+/* 반복 업무 (일/주/월) */
 .daily-hint{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);font-size:11px;}
 .daily-count{font-family:var(--mono);font-size:11px;font-weight:600;margin-left:6px;}
+.rp-chips{display:flex;gap:6px;margin:2px 0 10px;flex-wrap:wrap;}
+.rp-chip{font-size:11px;font-weight:800;padding:5px 12px;border-radius:999px;border:1.5px solid;background:#fff;display:flex;align-items:center;gap:5px;cursor:pointer;transition:all .13s;white-space:nowrap;}
+.rp-chip .n{font-family:var(--mono);font-size:10px;font-weight:700;opacity:.8;}
+.rp-chip.c-d{border-color:#bcd3f0;color:#1f3a5f;background:#eef4fc;}
+.rp-chip.c-w{border-color:#f0d9a6;color:#8a5a00;background:#fdf5e6;}
+.rp-chip.c-m{border-color:#b7dfc4;color:#137333;background:#eaf6ee;}
+.rp-chip.c-d:hover{filter:brightness(.97);}
+.rp-chip.c-w:hover{filter:brightness(.97);}
+.rp-chip.c-m:hover{filter:brightness(.97);}
+.rp-chip.c-d.on{background:#1f3a5f;color:#fff;border-color:#1f3a5f;}
+.rp-chip.c-w.on{background:#b07400;color:#fff;border-color:#b07400;}
+.rp-chip.c-m.on{background:#137333;color:#fff;border-color:#137333;}
+.rp-bd{font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:5px;flex-shrink:0;font-family:var(--mono);border:1px solid;cursor:pointer;user-select:none;line-height:1.5;}
+.rp-bd.c-d{background:#eef4fc;color:#1f3a5f;border-color:#bcd3f0;}
+.rp-bd.c-w{background:#fdf5e6;color:#8a5a00;border-color:#f0d9a6;}
+.rp-bd.c-m{background:#eaf6ee;color:#137333;border-color:#b7dfc4;}
+.rp-bd:hover{filter:brightness(.94);}
+#rp-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);background:#171b21;color:#fff;font-size:13px;font-weight:600;padding:10px 20px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9999;box-shadow:0 6px 20px rgba(23,27,33,.25);}
+#rp-toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* 로그 */
 .log-layout{display:grid;grid-template-columns:240px 1fr;gap:20px;}
@@ -629,7 +648,7 @@ select.fi{cursor:pointer;}
   <!-- ════════════════════ STANDUP ════════════════════ -->
   <div id="view-standup" class="view active">
     <div class="ph">
-      <div><div class="ph-title">아침 회의</div><div class="ph-sub" id="standup-ph-sub">오늘의 To-do · 우선순위 · 매일 하는 일</div></div>
+      <div><div class="ph-title">아침 회의</div><div class="ph-sub" id="standup-ph-sub">오늘의 To-do · 우선순위 · 반복 업무</div></div>
       <div style="display:flex;gap:8px;">
         <button class="btn bs bg" onclick="openAddTodoModal()">+ 할 일 추가</button>
         <button class="btn bs bp" onclick="finishMeeting()">✓ 회의 완료 저장</button>
@@ -880,14 +899,15 @@ select.fi{cursor:pointer;}
   </div>
 </div>
 
-<!-- Add Daily (매일 하는 일) -->
+<!-- Add Repeat (반복 업무 · 일/주/월) -->
 <div class="mo" id="mo-daily">
   <div class="modal" style="width:480px;">
-    <div class="moh"><div class="mot" id="mo-daily-title">매일 하는 일 추가</div><button class="btn bs" onclick="cm('mo-daily')">✕</button></div>
+    <div class="moh"><div class="mot" id="mo-daily-title">반복 업무 추가</div><button class="btn bs" onclick="cm('mo-daily')">✕</button></div>
     <div class="mob">
       <input type="hidden" id="dl-mid">
+      <div class="fg"><label class="fl">주기</label><div class="rp-chips" id="dl-cycle-row"></div></div>
       <div class="fg"><label class="fl">내용 <span style="font-weight:400;color:var(--ink3);">(줄바꿈으로 여러 개 한 번에 추가)</span></label><textarea class="fi" id="dl-text" rows="4" placeholder="예) 주문 마감 확인&#10;예) 재고 현황 점검"></textarea></div>
-      <div style="font-size:12px;color:var(--ink3);line-height:1.6;">한 번 등록하면 <b>매일 자동으로 목록에 표시</b>되고, 체크 표시는 <b>날짜가 바뀌면 자동으로 해제</b>됩니다.</div>
+      <div style="font-size:12px;color:var(--ink3);line-height:1.6;" id="dl-cycle-hint"></div>
     </div>
     <div class="mof"><button class="btn" onclick="cm('mo-daily')">취소</button><button class="btn bp" onclick="saveDaily()">추가</button></div>
   </div>
@@ -1006,32 +1026,98 @@ function getStandup(date){
 }
 
 // ══════════════════════════════════════
-// 매일 하는 일 (Daily routine)
+// 반복 업무 (Repeat routine — 일/주/월)
 //  - 목록(정의)은 STORE.dailies에 팀원별로 1벌만 저장 → 매일 그대로 표시
 //  - 체크 상태는 standups[날짜].dailyDone 에 저장 → 날짜가 바뀌면 자동으로 미체크
 // ══════════════════════════════════════
+// 주기 정의 — 일(d) / 주(w) / 월(m). cycle 필드가 없는 기존 항목은 전부 '일'로 본다.
+const RP_CYCLES=[
+  {k:'d',label:'일',full:'일 단위',cls:'c-d',reset:'매일 00시'},
+  {k:'w',label:'주',full:'주 단위',cls:'c-w',reset:'매주 월요일 00시'},
+  {k:'m',label:'월',full:'월 단위',cls:'c-m',reset:'매월 1일 00시'}
+];
+function rpCycleOf(d){ const k=d&&d.cycle; return (k==='w'||k==='m')?k:'d'; }
+function rpMeta(k){ return RP_CYCLES.find(c=>c.k===k)||RP_CYCLES[0]; }
+// 그 날짜가 속한 주의 월요일 (YYYY-MM-DD)
+function rpWeekKey(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  d.setDate(d.getDate()-((d.getDay()+6)%7));
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function rpMonthKey(dateStr){ return String(dateStr).slice(0,7); }
+function rpDoneStore(){
+  if(!STORE.repeatDone)STORE.repeatDone={};
+  if(!STORE.repeatDone.w)STORE.repeatDone.w={};
+  if(!STORE.repeatDone.m)STORE.repeatDone.m={};
+  return STORE.repeatDone;
+}
+// 카드별로 지금 보고 있는 주기 칩
+let rpSel={};
+function setRpSel(mid,k){ rpSel[mid]=k; renderStandup(); }
+function rpToast(msg){
+  let el=document.getElementById('rp-toast');
+  if(!el){ el=document.createElement('div'); el.id='rp-toast'; document.body.appendChild(el); }
+  el.textContent=msg; el.className='on';
+  clearTimeout(window._rpToastT);
+  window._rpToastT=setTimeout(()=>{ el.className=''; },1900);
+}
+
 function getDailies(mid){
   if(!STORE.dailies)STORE.dailies={};
   if(!STORE.dailies[mid])STORE.dailies[mid]=[];
   return STORE.dailies[mid];
 }
 function dailyChecked(date,mid,did){
+  const it=getDailies(mid).find(x=>x.id===did);
+  const cy=rpCycleOf(it);
+  if(cy!=='d'){
+    const S=rpDoneStore(), bk=(cy==='w'?S.w:S.m), key=(cy==='w'?rpWeekKey(date):rpMonthKey(date));
+    return !!(bk[key]&&bk[key][mid]&&bk[key][mid][did]);
+  }
   const sd=getStandup(date);
   return !!(sd.dailyDone&&sd.dailyDone[mid]&&sd.dailyDone[mid][did]);
 }
 function toggleDaily(date,mid,did){
-  const sd=getStandup(date);
-  if(!sd.dailyDone)sd.dailyDone={};
-  if(!sd.dailyDone[mid])sd.dailyDone[mid]={};
-  if(sd.dailyDone[mid][did])delete sd.dailyDone[mid][did];
-  else sd.dailyDone[mid][did]=true;
+  const it=getDailies(mid).find(x=>x.id===did);
+  const cy=rpCycleOf(it);
+  if(cy!=='d'){
+    const S=rpDoneStore(), bk=(cy==='w'?S.w:S.m), key=(cy==='w'?rpWeekKey(date):rpMonthKey(date));
+    if(!bk[key])bk[key]={};
+    if(!bk[key][mid])bk[key][mid]={};
+    if(bk[key][mid][did])delete bk[key][mid][did]; else bk[key][mid][did]=true;
+  } else {
+    const sd=getStandup(date);
+    if(!sd.dailyDone)sd.dailyDone={};
+    if(!sd.dailyDone[mid])sd.dailyDone[mid]={};
+    if(sd.dailyDone[mid][did])delete sd.dailyDone[mid][did]; else sd.dailyDone[mid][did]=true;
+  }
   saveStore();renderStandup();renderDashStandupWidget();
+}
+// 배지 클릭 → 일 → 주 → 월 → 일 순환. 옮겨간 그룹으로 칩도 같이 전환해서 사라진 것처럼 보이지 않게 한다.
+function cycleRepeat(mid,did){
+  const it=getDailies(mid).find(x=>x.id===did); if(!it)return;
+  const order=['d','w','m'];
+  const next=order[(order.indexOf(rpCycleOf(it))+1)%3];
+  it.cycle=next;
+  rpSel[mid]=next;
+  saveStore();renderStandup();renderDashStandupWidget();
+  rpToast(rpMeta(next).full+'로 옮겼습니다');
+}
+let dlCycle='d';
+function setDlCycle(k){ dlCycle=k; renderDlCycle(); }
+function renderDlCycle(){
+  document.getElementById('dl-cycle-row').innerHTML=RP_CYCLES.map(c=>
+    `<span class="rp-chip ${c.cls}${dlCycle===c.k?' on':''}" onclick="setDlCycle('${c.k}')">${c.full}</span>`).join('');
+  document.getElementById('dl-cycle-hint').innerHTML=
+    `한 번 등록하면 <b>매일 목록에 표시</b>되고, 체크는 <b>${rpMeta(dlCycle).reset}에 자동 해제</b>됩니다.`;
 }
 function openAddDaily(mid){
   document.getElementById('dl-mid').value=mid;
   const m=CQ().members.find(x=>x.id===mid);
-  document.getElementById('mo-daily-title').textContent=`매일 하는 일 추가 — ${m?m.name:''}`;
+  dlCycle=rpSel[mid]||'d';
+  document.getElementById('mo-daily-title').textContent=`반복 업무 추가 — ${m?m.name:''}`;
   document.getElementById('dl-text').value='';
+  renderDlCycle();
   om('mo-daily');setTimeout(()=>document.getElementById('dl-text').focus(),100);
 }
 function saveDaily(){
@@ -1041,7 +1127,8 @@ function saveDaily(){
   if(!list.length)return alert('내용을 입력해주세요');
   const arr=getDailies(mid);
   const base=Date.now();
-  list.forEach((text,i)=>{arr.push({id:base+i,text});});
+  list.forEach((text,i)=>{arr.push({id:base+i,text,cycle:dlCycle});});
+  rpSel[mid]=dlCycle;
   saveStore();cm('mo-daily');renderStandup();renderDashStandupWidget();
 }
 function startEditDaily(mid,did){
@@ -1065,14 +1152,17 @@ function saveEditDaily(mid,did){
 }
 function delDaily(mid,did){
   const d=getDailies(mid).find(x=>x.id===did);
-  if(!confirm(`"${d?d.text:''}" 을(를) 매일 하는 일 목록에서 삭제할까요?\n(오늘 이후 모든 날짜에서 사라집니다)`))return;
+  if(!confirm(`"${d?d.text:''}" 을(를) 반복 업무 목록에서 삭제할까요?\n(오늘 이후 모든 날짜에서 사라집니다)`))return;
   STORE.dailies[mid]=getDailies(mid).filter(x=>x.id!==did);
   saveStore();renderStandup();renderDashStandupWidget();
 }
 function moveDaily(mid,did,dir){
   const arr=getDailies(mid);
   const i=arr.findIndex(x=>x.id===did);if(i<0)return;
-  const j=i+dir;if(j<0||j>=arr.length)return;
+  const cy=rpCycleOf(arr[i]);
+  let j=i+dir;
+  while(j>=0&&j<arr.length&&rpCycleOf(arr[j])!==cy)j+=dir;   // 같은 주기 항목끼리만 교환
+  if(j<0||j>=arr.length)return;
   const tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;
   saveStore();renderStandup();
 }
@@ -1114,7 +1204,7 @@ function runCarryOver(){
         });
       });
     }
-    // 매일 하는 일은 이월하지 않는다 (정의는 항상 유지되고, 체크만 날짜별로 초기화)
+    // 반복 업무는 이월하지 않는다 (정의는 항상 유지되고, 체크만 주기별로 초기화)
   }
   // 날짜 문자열로 저장해서 매일 새로 실행되도록
   CQ().standups[today]._carryDone=today;
@@ -1472,7 +1562,7 @@ function renderDashStandupWidget(){
     h+=`</div></div></div>`;
   });
   const dlPend=CQ().members.map(m=>{const ds=getDailies(m.id);if(!ds.length)return null;const done=ds.filter(d=>dailyChecked(td,m.id,d.id)).length;return done<ds.length?`${m.name} ${done}/${ds.length}`:null;}).filter(Boolean);
-  if(dlPend.length)h+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(31,58,95,.06);border-radius:999px;font-size:12px;font-weight:700;color:var(--accent);">🔁 매일 하는 일 미완료: ${dlPend.join(' · ')}</div>`;
+  if(dlPend.length)h+=`<div style="margin-top:10px;padding:8px 10px;background:rgba(31,58,95,.06);border-radius:999px;font-size:12px;font-weight:700;color:var(--accent);">🔁 반복 업무 미완료: ${dlPend.join(' · ')}</div>`;
   el.innerHTML=h;
 }
 
@@ -1572,19 +1662,30 @@ function renderStandup(){
     });
     if(!keyTaskHtml)keyTaskHtml=`<div style="font-size:13px;color:var(--ink3);padding:10px 0;">중요 업무를 추가해주세요</div>`;
 
+    // 반복 업무 — 주기 칩으로 전환, 선택된 주기만 목록에 표시
+    const rpCur=rpSel[m.id]||'d';
+    const rpChips=RP_CYCLES.map(c=>{
+      const lst=dailies.filter(d=>rpCycleOf(d)===c.k);
+      const dn=lst.filter(d=>dailyChecked(curStandupDate,m.id,d.id)).length;
+      return `<span class="rp-chip ${c.cls}${rpCur===c.k?' on':''}" onclick="setRpSel(${m.id},'${c.k}')" title="${c.full} · ${c.reset}에 리셋">${c.label} <span class="n">${dn}/${lst.length}</span></span>`;
+    }).join('');
+    const rpList=dailies.filter(d=>rpCycleOf(d)===rpCur);
     let dlHtml='';
-    dailies.forEach((d,di)=>{
+    rpList.forEach((d,di)=>{
       const ck=dailyChecked(curStandupDate,m.id,d.id);
+      const cyM=rpMeta(rpCycleOf(d));
       dlHtml+=`<div class="todo-item" id="daily-item-${d.id}">
         <div class="todo-cb ${ck?'done':''}" onclick="toggleDaily('${curStandupDate}',${m.id},${d.id})"></div>
+        <span class="rp-bd ${cyM.cls}" onclick="cycleRepeat(${m.id},${d.id})" title="클릭하면 일 → 주 → 월 순으로 주기가 바뀝니다">${cyM.label}</span>
         <div class="todo-text ${ck?'done-text':''}" id="daily-text-${d.id}">${d.text}</div>
         <button class="todo-del" onclick="moveDaily(${m.id},${d.id},-1)" title="위로" ${di===0?'style="visibility:hidden;"':''}>↑</button>
-        <button class="todo-del" onclick="moveDaily(${m.id},${d.id},1)" title="아래로" ${di===dailies.length-1?'style="visibility:hidden;"':''}>↓</button>
+        <button class="todo-del" onclick="moveDaily(${m.id},${d.id},1)" title="아래로" ${di===rpList.length-1?'style="visibility:hidden;"':''}>↓</button>
         <button class="todo-del" onclick="startEditDaily(${m.id},${d.id})" title="수정">✎</button>
         <button class="todo-del" onclick="delDaily(${m.id},${d.id})" title="삭제">✕</button>
       </div>`;
     });
-    if(!dlHtml)dlHtml=`<div style="font-size:13px;color:var(--ink3);padding:10px 0;">매일 반복하는 업무를 추가해주세요</div>`;
+    if(!dlHtml)dlHtml=`<div style="font-size:13px;color:var(--ink3);padding:10px 0;">${rpMeta(rpCur).full} 반복 업무가 없습니다</div>`;
+    dlHtml=`<div class="rp-chips">${rpChips}</div>`+dlHtml;
 
     grid+=`<div class="standup-card">
       <div class="sc-header">
@@ -1607,8 +1708,8 @@ function renderStandup(){
           </div>${keyTaskHtml}
         </div>
         <div class="todo-section" style="margin-bottom:0;border-top:1px solid var(--border-soft);padding-top:14px;">
-          <div class="todo-section-title">🔁 매일 하는 일<span class="daily-count" style="color:${dailies.length&&dailyDoneN===dailies.length?'var(--olive)':'var(--ink3)'};">${dailyDoneN}/${dailies.length}</span>
-            <span class="daily-hint">· 매일 자동 표시</span>
+          <div class="todo-section-title">🔁 반복 업무<span class="daily-count" style="color:${dailies.length&&dailyDoneN===dailies.length?'var(--olive)':'var(--ink3)'};">${dailyDoneN}/${dailies.length}</span>
+            <span class="daily-hint">· 배지 클릭=주기 변경</span>
             <button class="btn bxs" onclick="openAddDaily(${m.id})">+ 추가</button>
           </div>${dlHtml}
         </div>
@@ -1966,7 +2067,7 @@ function renderLogDetail(dt){
         <span style="${t.done?'text-decoration:line-through;color:var(--ink3);':''}">${t.text}${t.okr?`<span style="color:var(--ink3);font-size:11px;"> ↳ ${t.okr}</span>`:''}</span>
       </div>`;});});}
     if(keyTasks.length){h+=`<div style="font-size:11px;font-weight:700;color:var(--md-col);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">⭐ 중요 업무</div>`;keyTasks.forEach(k=>{h+=`<div style="display:flex;gap:9px;padding:5px 0;font-size:13px;"><span style="color:${k.done?'var(--olive)':'var(--md-col)'};font-weight:700;flex-shrink:0;">${k.done?'✓':'◆'}</span><span style="${k.done?'text-decoration:line-through;color:var(--ink3);':''}">${k.text}</span></div>`;});}
-    if(dailies.length){const dn=dailies.filter(d=>dailyChecked(dt,m.id,d.id)).length;h+=`<div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">🔁 매일 하는 일 ${dn}/${dailies.length}</div>`;dailies.forEach(d=>{const ck=dailyChecked(dt,m.id,d.id);h+=`<div style="display:flex;gap:9px;font-size:13px;padding:4px 0;"><span style="color:${ck?'var(--olive)':'var(--ink3)'};font-weight:700;flex-shrink:0;">${ck?'✓':'○'}</span><span style="${ck?'text-decoration:line-through;color:var(--ink3);':''}">${d.text}</span></div>`;});}
+    if(dailies.length){RP_CYCLES.forEach(c=>{const lst=dailies.filter(d=>rpCycleOf(d)===c.k);if(!lst.length)return;const dn=lst.filter(d=>dailyChecked(dt,m.id,d.id)).length;h+=`<div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">🔁 ${c.full} ${dn}/${lst.length}</div>`;lst.forEach(d=>{const ck=dailyChecked(dt,m.id,d.id);h+=`<div style="display:flex;gap:9px;font-size:13px;padding:4px 0;"><span style="color:${ck?'var(--olive)':'var(--ink3)'};font-weight:700;flex-shrink:0;">${ck?'✓':'○'}</span><span style="${ck?'text-decoration:line-through;color:var(--ink3);':''}">${d.text}</span></div>`;});});}
 
     h+='</div>';
   });
@@ -2842,7 +2943,7 @@ function genReport(){
   let r=`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n ${CQ().teamName}  OKR 현황 리포트\n ${STORE.activeQ}  ·  생성: ${ds}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
   if(opts.s){const avg=ms.length?Math.round(ms.reduce((s,m)=>s+avgP(m),0)/ms.length):0;const del=delayed(ms);const mdA=byPart(ms,'md').length?Math.round(byPart(ms,'md').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'md').length):0;const ctA=byPart(ms,'ct').length?Math.round(byPart(ms,'ct').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'ct').length):0;
     r+=`[전체 요약]\n  팀 평균 진척도  : ${avg}% ${avg>=70?'(✓ 목표 달성권)':'(주의 필요)'}\n  MD 파트 평균   : ${mdA}%\n  콘텐츠 파트 평균: ${ctA}%\n  주목 필요 항목  : ${del.length}개\n\n`;}
-  if(opts.sd){const sd=CQ().standups[ds];r+=`[오늘 아침 회의 · ${formatDate(ds)}]\n`;if(!sd||!sd.todos||!sd.todos.length)r+='  기록 없음\n';else{ms.forEach(m=>{const todos=sd.todos.filter(t=>t.mid===m.id);if(!todos.length)return;r+=`\n  ${m.name}\n`;todos.forEach(t=>{r+=`    ${t.done?'✓':'○'} [${pl(t.prio)}] ${t.text}\n`;});const dls=getDailies(m.id);if(dls.length){const dn=dls.filter(d=>dailyChecked(ds,m.id,d.id)).length;r+=`    🔁 매일 하는 일 ${dn}/${dls.length}\n`;}});}r+='\n';}
+  if(opts.sd){const sd=CQ().standups[ds];r+=`[오늘 아침 회의 · ${formatDate(ds)}]\n`;if(!sd||!sd.todos||!sd.todos.length)r+='  기록 없음\n';else{ms.forEach(m=>{const todos=sd.todos.filter(t=>t.mid===m.id);if(!todos.length)return;r+=`\n  ${m.name}\n`;todos.forEach(t=>{r+=`    ${t.done?'✓':'○'} [${pl(t.prio)}] ${t.text}\n`;});const dls=getDailies(m.id);if(dls.length){RP_CYCLES.forEach(c=>{const lst=dls.filter(d=>rpCycleOf(d)===c.k);if(!lst.length)return;const dn=lst.filter(d=>dailyChecked(ds,m.id,d.id)).length;r+=`    🔁 ${c.full} ${dn}/${lst.length}\n`;});}});}r+='\n';}
   if(opts.pt){r+='[파트별 현황]\n';[{part:'md',label:'MD 파트'},{part:'ct',label:'콘텐츠 파트'},{part:'tl',label:'팀장'}].forEach(s=>{const pm=byPart(ms,s.part);if(!pm.length)return;const a=Math.round(pm.reduce((x,m)=>x+avgP(m),0)/pm.length);r+=`\n  ▶ ${s.label} — 파트 평균 ${a}%\n`;pm.forEach(m=>{r+=`    · ${m.name} (${m.role}) — ${avgP(m)}%\n`;});});r+='\n';}
   if(opts.m){r+='[팀원별 OKR 상세]\n';ms.forEach(m=>{r+=`\n  ■ ${m.name} (${m.role}) — 평균 ${avgP(m)}%\n`;m.okrs.forEach(o=>{r+=`    • ${o.title}\n      ${o.progress}% · [${sl(o.status)}]\n`;if(o.note)r+=`      메모: ${o.note}\n`;(o.subOkrs||[]).forEach(s=>{r+=`        └ ${s.title} — ${s.progress}% [${sl(s.status)}]${s.note?' / '+s.note:''}\n`;});});});r+='\n';}
   if(opts.d){const del=delayed(ms);r+=`[주목 필요 항목 (${del.length}개)]\n`;if(!del.length)r+='  ✓ 없음\n';else del.forEach(d=>{r+=`  ${d.status==='delayed'?'⚠ 지연':'△ 주의'} [${d.member} · ${partLabel(d.part)}]\n  ${d.title} — ${d.progress}%\n`;if(d.note)r+=`  → ${d.note}\n`;});r+='\n';}
@@ -2885,7 +2986,7 @@ function delCi(mid,cid){if(!confirm('기록을 삭제하시겠습니까?'))retur
 // ══════════════════════════════════════
 loadStore();
 document.getElementById('sb-today-date').textContent=formatDate(todayStr());
-document.getElementById('standup-ph-sub').textContent=`${formatDate(todayStr())} · To-do · 우선순위 · 매일 하는 일`;
+document.getElementById('standup-ph-sub').textContent=`${formatDate(todayStr())} · To-do · 우선순위 · 반복 업무`;
 
 // Firebase 로드 완료를 기다렸다가 렌더링
 function initRender(){
