@@ -151,7 +151,7 @@ body{font-family:var(--sans);background:var(--paper);color:var(--ink);display:fl
 .part-sub{font-size:12px;color:var(--ink3);font-weight:400;}
 
 /* ══ Stats ══ */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px;}
 .stat-card{background:white;border:1px solid var(--border);border-radius:10px;padding:20px;}
 .sl{font-family:var(--sans);font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.03em;text-transform:uppercase;margin-bottom:8px;}
 .sv{font-family:var(--serif);font-size:34px;font-weight:400;line-height:1;}
@@ -601,7 +601,7 @@ select.fi{cursor:pointer;}
   <!-- ════════════════════ DASHBOARD ════════════════════ -->
   <div id="view-dashboard" class="view">
     <div class="ph">
-      <div><div class="ph-title">온라인팀 OKR 현황</div><div class="ph-sub">2파트 통합형 · MD 파트 + 콘텐츠 파트</div></div>
+      <div><div class="ph-title">온라인팀 OKR 현황</div><div class="ph-sub">MD 파트 + 팀장</div></div>
       <div style="display:flex;gap:8px;align-items:center;">
         <div class="ph-quarter-badge" id="ph-q-badge">—</div>
         <button class="btn bs" onclick="openSettings()">설정</button>
@@ -615,10 +615,6 @@ select.fi{cursor:pointer;}
           <div style="margin-bottom:22px;">
             <div class="part-header"><span class="part-title md">MD 파트</span><span class="part-sub">자사몰 MD · 외부몰 MD</span><div class="part-line"></div></div>
             <div class="card"><div class="ct">진척도</div><div id="md-progress-list"></div></div>
-          </div>
-          <div style="margin-bottom:22px;">
-            <div class="part-header"><span class="part-title ct">콘텐츠 파트</span><span class="part-sub">콘텐츠 마케터 · PD</span><div class="part-line"></div></div>
-            <div class="card"><div class="ct">진척도</div><div id="ct-progress-list"></div></div>
           </div>
           <div style="margin-bottom:22px;">
             <div class="part-header"><span class="part-title tl">팀장</span><div class="part-line"></div></div>
@@ -792,7 +788,7 @@ select.fi{cursor:pointer;}
       <div class="fg"><label class="fl">이름</label><input class="fi" id="me-name"></div>
       <div class="fg"><label class="fl">역할 / 직책</label><input class="fi" id="me-role"></div>
       <div class="fg"><label class="fl">파트</label>
-        <select class="fi" id="me-part"><option value="tl">팀장</option><option value="md">MD 파트</option><option value="ct">콘텐츠 파트</option></select>
+        <select class="fi" id="me-part"><option value="tl">팀장</option><option value="md">MD 파트</option></select>
       </div>
       <div class="fg"><label style="display:flex;align-items:center;gap:9px;font-size:14px;cursor:pointer;font-weight:500;"><input type="checkbox" id="me-isme"> 나 (팀장) 표시</label></div>
     </div>
@@ -1006,14 +1002,14 @@ select.fi{cursor:pointer;}
 // ══════════════════════════════════════
 // 유틸
 // ══════════════════════════════════════
-const PC={md:{bg:'rgba(47,111,181,.12)',col:'#2f6fb5'},ct:{bg:'rgba(19,115,51,.12)',col:'#137333'},tl:{bg:'rgba(47,111,181,.12)',col:'#2f6fb5'}};
+const PC={md:{bg:'rgba(47,111,181,.12)',col:'#2f6fb5'},tl:{bg:'rgba(47,111,181,.12)',col:'#2f6fb5'}};
 const PRIO_C={high:'var(--accent)',mid:'var(--gold)',low:'var(--olive)'};
 function avStyle(part){const p=PC[part]||PC.tl;return`color:${p.col};background:${p.bg};`;}
 function progColor(p){return p>=70?'#137333':p>=40?'#2f6fb5':'#1f3a5f';}
 function ini(n){const clean=n.replace(/\s*\(.*?\)\s*/g,'').replace(/\s/g,'').trim();return clean.slice(0,2)||n.slice(0,2);}
 function sl(s){return{on_track:'정상',delayed:'지연',completed:'완료',at_risk:'주의'}[s]||s;}
 function pl(s){return{high:'높음',mid:'중간',low:'낮음'}[s]||s;}
-function partLabel(p){return{md:'MD 파트',ct:'콘텐츠 파트',tl:'팀장'}[p]||p;}
+function partLabel(p){return{md:'MD 파트',tl:'팀장'}[p]||p;}
 function todayStr(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
 function formatDate(ds){if(!ds)return'';const[y,m,d]=ds.split('-');const days=['일','월','화','수','목','금','토'];const day=new Date(ds).getDay();return`${y}년 ${parseInt(m)}월 ${parseInt(d)}일 (${days[day]})`;}
 function weekday(ds){const days=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];return days[new Date(ds).getDay()];}
@@ -1245,28 +1241,7 @@ const SAMPLE_MEMBERS=[
       {id:3021,title:'쿠팡 CPC 광고 ROAS 400% 이상',progress:65,status:'on_track',note:''},
       {id:3022,title:'컬리 디스플레이 CTR 2% 달성',progress:55,status:'at_risk',note:'소재 개선 필요'}
     ]}
-  ],checkins:[{id:1,date:'2025-04-11',type:'praise',note:'쿠팡 기획전 입찰 전략 탁월.'}]},
-  {id:4,name:'박소현',role:'콘텐츠 마케터',part:'ct',isMe:false,okrs:[
-    {id:401,title:'브랜드 콘텐츠 자산 구축 및 SNS 성장',progress:68,status:'on_track',note:'',subOkrs:[
-      {id:4011,title:'인스타그램 팔로워 월 500명 순증',progress:70,status:'on_track',note:''},
-      {id:4012,title:'SNS 콘텐츠 주 4회 이상 게시',progress:80,status:'on_track',note:''},
-      {id:4013,title:'브랜드 블로그 월 방문자 5,000명',progress:55,status:'at_risk',note:''}
-    ]},
-    {id:402,title:'MD 요청 콘텐츠 브랜드 자산화',progress:35,status:'delayed',note:'요청 과부하',subOkrs:[
-      {id:4021,title:'MD 요청 콘텐츠 납기율 90% 이상',progress:45,status:'delayed',note:''},
-      {id:4022,title:'콘텐츠 가이드라인 문서 완성',progress:25,status:'delayed',note:''}
-    ]}
-  ],checkins:[{id:1,date:'2025-04-09',type:'concern',note:'MD 요청 병목 발생. 표준 요청서 빠른 도입 필요.'}]},
-  {id:5,name:'최지훈',role:'PD',part:'ct',isMe:false,okrs:[
-    {id:501,title:'콘텐츠 제작 납기 및 품질 관리',progress:75,status:'on_track',note:'',subOkrs:[
-      {id:5011,title:'제작 납기율 95% 이상',progress:80,status:'on_track',note:''},
-      {id:5012,title:'촬영 취소율 5% 이하',progress:70,status:'on_track',note:''}
-    ]},
-    {id:502,title:'제작 효율 및 Express Lane 운영',progress:50,status:'at_risk',note:'',subOkrs:[
-      {id:5021,title:'Express Lane 처리 평균 1일 이내',progress:55,status:'at_risk',note:'기준 미정의'},
-      {id:5022,title:'재촬영 요청률 10% 이하',progress:45,status:'at_risk',note:'브리핑 부족'}
-    ]}
-  ],checkins:[]}
+  ],checkins:[{id:1,date:'2025-04-11',type:'praise',note:'쿠팡 기획전 입찰 전략 탁월.'}]}
 ];
 
 const DEF_STORE={
@@ -1573,16 +1548,13 @@ function renderDash(){
   const avg=ms.length?Math.round(ms.reduce((s,m)=>s+avgP(m),0)/ms.length):0;
   const del=delayed(ms);
   const mdA=byPart(ms,'md').length?Math.round(byPart(ms,'md').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'md').length):0;
-  const ctA=byPart(ms,'ct').length?Math.round(byPart(ms,'ct').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'ct').length):0;
 
   document.getElementById('stats-grid').innerHTML=`
     <div class="stat-card"><div class="sl">팀 평균 진척도</div><div class="sv" style="color:${progColor(avg)}">${avg}<span>%</span></div><div class="sh">70% = Google 성공 기준</div></div>
     <div class="stat-card"><div class="sl">MD 파트 평균</div><div class="sv" style="color:${progColor(mdA)}">${mdA}<span>%</span></div><div class="sh">자사몰 MD · 외부몰 MD</div></div>
-    <div class="stat-card"><div class="sl">콘텐츠 파트 평균</div><div class="sv" style="color:${progColor(ctA)}">${ctA}<span>%</span></div><div class="sh">콘텐츠 마케터 · PD</div></div>
     <div class="stat-card"><div class="sl">주목 필요 항목</div><div class="sv" style="color:${del.length>0?'var(--accent)':'var(--olive)'}">${del.length}<span>개</span></div><div class="sh">지연 + 주의 합계</div></div>`;
 
   document.getElementById('md-progress-list').innerHTML=progListHtml(byPart(ms,'md'));
-  document.getElementById('ct-progress-list').innerHTML=progListHtml(byPart(ms,'ct'));
   document.getElementById('tl-progress-list').innerHTML=progListHtml(byPart(ms,'tl'));
 
   let dh='';
@@ -2097,10 +2069,9 @@ function buildGChatLog(dt){
   const partOrder=[
     {part:'tl', label:'공지 및 요청사항', num:'1'},
     {part:'md', label:'MD파트',           num:'2'},
-    {part:'ct', label:'콘텐츠 파트',      num:'3'},
   ];
-  const extraParts=[...new Set(CQ().members.map(m=>m.part))].filter(p=>!['tl','md','ct'].includes(p));
-  let pNum=4;
+  const extraParts=[...new Set(CQ().members.map(m=>m.part))].filter(p=>!['tl','md'].includes(p));
+  let pNum=3;
   extraParts.forEach(p=>partOrder.push({part:p,label:partLabel(p),num:String(pNum++)}));
 
   let out=header+'\n';
@@ -2161,7 +2132,7 @@ function buildGChatLog(dt){
 function renderMembers(){
   archiveBannerUpdate();
   let h='';
-  [{part:'tl',label:'팀장'},{part:'md',label:'MD 파트'},{part:'ct',label:'콘텐츠 파트'}].forEach(s=>{
+  [{part:'tl',label:'팀장'},{part:'md',label:'MD 파트'}].forEach(s=>{
     const ms=CQ().members.filter(m=>m.part===s.part);if(!ms.length)return;
     h+=`<div class="part-section-label ${s.part}">${s.label}</div>`;
     ms.forEach(m=>{const p=avgP(m);
@@ -2274,7 +2245,7 @@ function rateLabel(r){return r===100?'완료':r>=75?'마무리':r>=50?'진행중
 function renderTasks(){
   // 사이드바 팀원 목록
   let sh='';
-  [{part:'tl',label:'팀장'},{part:'md',label:'MD 파트'},{part:'ct',label:'콘텐츠 파트'}].forEach(s=>{
+  [{part:'tl',label:'팀장'},{part:'md',label:'MD 파트'}].forEach(s=>{
     const ms=CQ().members.filter(m=>m.part===s.part);if(!ms.length)return;
     sh+=`<div style="padding:8px 14px 4px;font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.08em;text-transform:uppercase;">${s.label}</div>`;
     ms.forEach(m=>{
@@ -2654,7 +2625,7 @@ function saveRate(){
 // ══════════════════════════════════════
 function renderCi(){
   let h='';
-  [{part:'tl',label:'팀장'},{part:'md',label:'MD 파트'},{part:'ct',label:'콘텐츠 파트'}].forEach(s=>{
+  [{part:'tl',label:'팀장'},{part:'md',label:'MD 파트'}].forEach(s=>{
     const ms=CQ().members.filter(m=>m.part===s.part);if(!ms.length)return;
     h+=`<div class="part-section-label ${s.part}">${s.label}</div>`;
     ms.forEach(m=>{h+=`<div class="msi ${ciMid===m.id?'active':''}" onclick="selCi(${m.id})">
@@ -2790,7 +2761,7 @@ function renderHistoryOkrTab(q){
   const ms=qd.members||[];
   if(!ms.length){document.getElementById('history-tab-okr').innerHTML='<div class="es"><div class="ei">○</div><div>팀원 데이터가 없습니다</div></div>';return;}
   let h='<div style="display:flex;flex-direction:column;gap:14px;">';
-  [{part:'tl',label:'팀장'},{part:'md',label:'MD 파트'},{part:'ct',label:'콘텐츠 파트'}].forEach(s=>{
+  [{part:'tl',label:'팀장'},{part:'md',label:'MD 파트'}].forEach(s=>{
     const pm=ms.filter(m=>m.part===s.part);if(!pm.length)return;
     h+=`<div><div class="part-header"><span class="part-title ${s.part}">${s.label}</span><div class="part-line"></div></div>`;
     h+=`<div class="card">`;
@@ -2941,10 +2912,10 @@ function genReport(){
   const now=new Date();const ds=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const ms=CQ().members;
   let r=`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n ${CQ().teamName}  OKR 현황 리포트\n ${STORE.activeQ}  ·  생성: ${ds}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-  if(opts.s){const avg=ms.length?Math.round(ms.reduce((s,m)=>s+avgP(m),0)/ms.length):0;const del=delayed(ms);const mdA=byPart(ms,'md').length?Math.round(byPart(ms,'md').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'md').length):0;const ctA=byPart(ms,'ct').length?Math.round(byPart(ms,'ct').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'ct').length):0;
-    r+=`[전체 요약]\n  팀 평균 진척도  : ${avg}% ${avg>=70?'(✓ 목표 달성권)':'(주의 필요)'}\n  MD 파트 평균   : ${mdA}%\n  콘텐츠 파트 평균: ${ctA}%\n  주목 필요 항목  : ${del.length}개\n\n`;}
+  if(opts.s){const avg=ms.length?Math.round(ms.reduce((s,m)=>s+avgP(m),0)/ms.length):0;const del=delayed(ms);const mdA=byPart(ms,'md').length?Math.round(byPart(ms,'md').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'md').length):0;
+    r+=`[전체 요약]\n  팀 평균 진척도  : ${avg}% ${avg>=70?'(✓ 목표 달성권)':'(주의 필요)'}\n  MD 파트 평균   : ${mdA}%\n  주목 필요 항목  : ${del.length}개\n\n`;}
   if(opts.sd){const sd=CQ().standups[ds];r+=`[오늘 아침 회의 · ${formatDate(ds)}]\n`;if(!sd||!sd.todos||!sd.todos.length)r+='  기록 없음\n';else{ms.forEach(m=>{const todos=sd.todos.filter(t=>t.mid===m.id);if(!todos.length)return;r+=`\n  ${m.name}\n`;todos.forEach(t=>{r+=`    ${t.done?'✓':'○'} [${pl(t.prio)}] ${t.text}\n`;});const dls=getDailies(m.id);if(dls.length){RP_CYCLES.forEach(c=>{const lst=dls.filter(d=>rpCycleOf(d)===c.k);if(!lst.length)return;const dn=lst.filter(d=>dailyChecked(ds,m.id,d.id)).length;r+=`    🔁 ${c.full} ${dn}/${lst.length}\n`;});}});}r+='\n';}
-  if(opts.pt){r+='[파트별 현황]\n';[{part:'md',label:'MD 파트'},{part:'ct',label:'콘텐츠 파트'},{part:'tl',label:'팀장'}].forEach(s=>{const pm=byPart(ms,s.part);if(!pm.length)return;const a=Math.round(pm.reduce((x,m)=>x+avgP(m),0)/pm.length);r+=`\n  ▶ ${s.label} — 파트 평균 ${a}%\n`;pm.forEach(m=>{r+=`    · ${m.name} (${m.role}) — ${avgP(m)}%\n`;});});r+='\n';}
+  if(opts.pt){r+='[파트별 현황]\n';[{part:'md',label:'MD 파트'},{part:'tl',label:'팀장'}].forEach(s=>{const pm=byPart(ms,s.part);if(!pm.length)return;const a=Math.round(pm.reduce((x,m)=>x+avgP(m),0)/pm.length);r+=`\n  ▶ ${s.label} — 파트 평균 ${a}%\n`;pm.forEach(m=>{r+=`    · ${m.name} (${m.role}) — ${avgP(m)}%\n`;});});r+='\n';}
   if(opts.m){r+='[팀원별 OKR 상세]\n';ms.forEach(m=>{r+=`\n  ■ ${m.name} (${m.role}) — 평균 ${avgP(m)}%\n`;m.okrs.forEach(o=>{r+=`    • ${o.title}\n      ${o.progress}% · [${sl(o.status)}]\n`;if(o.note)r+=`      메모: ${o.note}\n`;(o.subOkrs||[]).forEach(s=>{r+=`        └ ${s.title} — ${s.progress}% [${sl(s.status)}]${s.note?' / '+s.note:''}\n`;});});});r+='\n';}
   if(opts.d){const del=delayed(ms);r+=`[주목 필요 항목 (${del.length}개)]\n`;if(!del.length)r+='  ✓ 없음\n';else del.forEach(d=>{r+=`  ${d.status==='delayed'?'⚠ 지연':'△ 주의'} [${d.member} · ${partLabel(d.part)}]\n  ${d.title} — ${d.progress}%\n`;if(d.note)r+=`  → ${d.note}\n`;});r+='\n';}
   if(opts.c){let allCi=[];ms.forEach(m=>(m.checkins||[]).forEach(c=>allCi.push({...c,mn:m.name})));allCi.sort((a,b)=>b.date.localeCompare(a.date));const tl2={feedback:'피드백',concern:'우려',praise:'칭찬',action:'액션',note:'메모'};r+='[최근 체크인]\n';if(!allCi.length)r+='  기록 없음\n';else allCi.slice(0,8).forEach(c=>{r+=`  [${c.date}] ${c.mn} — ${tl2[c.type]||c.type}\n  ${c.note}\n\n`;});}
