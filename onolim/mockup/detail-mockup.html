@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>온올림 상세페이지 시안 · 2026 추석</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+@font-face{font-family:'MaruBuri';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/MaruBuri-Regular.woff') format('woff');font-weight:400;font-display:swap}
+@font-face{font-family:'MaruBuri';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/MaruBuri-SemiBold.woff') format('woff');font-weight:600;font-display:swap}
+@font-face{font-family:'MaruBuri';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/MaruBuri-Bold.woff') format('woff');font-weight:700;font-display:swap}
+:root{
+  /* 온올림 브랜딩 컬러 — 실제 패키지에서 추출 */
+  --paper:#EFEDE7;      /* 한지 아이보리 · 페이지 배경 */
+  --paper2:#E6E2D9;     /* 한지 그늘 */
+  --ink:#332A27;        /* 묵 · 본문 */
+  --sub:#6B5F58;
+  --mute:#9A8F86;
+  --brown:#4E3C3F;      /* 선물가방 브라운 · 헤드/CTA */
+  --wine:#7A3B3E;       /* 수묵 크림슨 · 강조 */
+  --gold:#A98B52;       /* 로고 골드 */
+  --terra:#D0936C;      /* 연출 배경 톤 */
+  --line:#DED8CC;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#2E2724;color:var(--ink);
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;
+  -webkit-font-smoothing:antialiased}
+.mb{font-family:'MaruBuri','Nanum Myeongjo','Apple SD Gothic Neo',serif}
+
+.bar{position:sticky;top:0;z-index:99;background:#1F1A18;color:#E7DFD2;padding:11px 16px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #3E3631}
+.bar .lg{font-size:12px;letter-spacing:.14em;color:var(--gold);font-weight:800}
+.bar .lb{font-size:11px;color:#9A8F82;margin-right:2px}
+.bar button{background:#332B27;color:#CFC4B5;border:1px solid #4C423C;border-radius:99px;
+  padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.bar button.on{background:var(--gold);color:#1F1A18;border-color:var(--gold)}
+.bar .meta{margin-left:auto;font-size:11px;color:#867A6E}
+
+.stage{display:flex;justify-content:center;padding:20px 12px 60px}
+.page{width:860px;max-width:100%;background:var(--paper);box-shadow:0 8px 40px rgba(0,0,0,.4);overflow:hidden}
+
+img{display:block;width:100%}
+.ph{overflow:hidden;position:relative;background:var(--paper2)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph.hero{aspect-ratio:4/3}
+.ph.hero img{transform:scale(1.06);transform-origin:50% 62%}
+.ph.w32{aspect-ratio:3/2}
+#trayImg{object-position:50% 40%}
+.ph.w43{aspect-ratio:4/3}
+.ph.sq{aspect-ratio:1/1}
+.ph.card{aspect-ratio:16/10}
+.ph.rd{border-radius:12px}
+
+.pad{padding:46px 46px}
+.pad.t{padding:32px 46px}
+.eyebrow{font-size:11.5px;letter-spacing:.22em;color:var(--gold);font-weight:800;text-align:center;margin-bottom:14px}
+h2.h{font-size:31px;line-height:1.5;letter-spacing:-.02em;text-align:center;margin:0;font-weight:700;color:var(--brown)}
+h2.h.sm{font-size:26px}
+p.sub{font-size:15px;color:var(--sub);text-align:center;margin:16px 0 0;line-height:1.85}
+.rule{width:30px;height:1px;background:var(--gold);margin:22px auto}
+.w{color:var(--wine);font-weight:700}
+.gd{color:var(--gold);font-weight:700}
+.divider{height:1px;background:var(--line);margin:0 46px}
+.gap{height:12px;background:var(--paper2)}
+
+/* 상단 배송 바 */
+.dbar{background:var(--brown);color:#F2EADF;padding:13px 20px;text-align:center}
+.dbar b{font-size:14.5px;letter-spacing:-.01em}
+.dbar span{display:block;font-size:12px;color:#C9B9AC;margin-top:4px}
+
+/* 히어로 카피 */
+.hcap{padding:42px 46px 30px;text-align:center}
+.hcap .kk{font-size:11px;letter-spacing:.3em;color:var(--gold);font-weight:800}
+.hcap h1{font-size:35px;line-height:1.5;letter-spacing:-.03em;margin:16px 0 0;font-weight:700;color:var(--brown)}
+.hcap .sl{font-size:14px;color:var(--sub);margin-top:18px}
+
+/* 체크 */
+.chks{display:flex;flex-direction:column;gap:8px;padding:0 46px}
+.chk{display:flex;gap:11px;align-items:center;background:#FFFDF8;border:1px solid var(--line);
+  border-radius:12px;padding:13px 16px;font-size:14.5px}
+.chk2 b{display:block;font-size:15.5px;letter-spacing:-.02em;color:var(--brown)}
+.chk2 span{display:block;font-size:12.5px;color:var(--sub);margin-top:4px;line-height:1.6}
+.chk i{width:20px;height:20px;border-radius:50%;background:var(--brown);color:#F2EADF;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-style:normal}
+
+/* CTA */
+.ctaWrap{padding:26px 46px 0}
+.cta{display:block;background:var(--brown);color:#F5EEE3;text-align:center;padding:19px;
+  border-radius:10px;font-size:17px;font-weight:800;text-decoration:none;letter-spacing:-.01em}
+.cta.line{background:transparent;border:1.5px solid var(--brown);color:var(--brown)}
+.cta.wine{background:var(--wine)}
+.cta .s{display:block;font-size:12px;font-weight:600;color:#D3BDB0;margin-top:5px;letter-spacing:0}
+.cta.line .s{color:var(--sub)}
+.ctaNote{text-align:center;font-size:12px;color:var(--mute);margin-top:10px}
+
+/* 통계 */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;padding:20px 14px;text-align:center}
+.stat b{display:block;font-size:26px;letter-spacing:-.03em;color:var(--brown)}
+.stat span{display:block;font-size:12px;color:var(--sub);margin-top:6px}
+.rvw{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin-top:8px}
+.rvw .st{color:var(--gold);font-size:12px;letter-spacing:2px}
+.rvw p{margin:6px 0 0;font-size:13.5px;line-height:1.7}
+.rvw .who{font-size:11.5px;color:var(--mute);margin-top:7px}
+
+/* 상황 */
+.sit{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.sitc{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;padding:18px 10px;text-align:center}
+.sitc .to{font-size:11.5px;color:var(--gold);font-weight:800;line-height:1.5;min-height:34px;display:flex;align-items:center;justify-content:center}
+.sitc .sh{font-family:'MaruBuri',serif;font-size:13.5px;color:var(--sub);margin-top:6px}
+.sitc .nm{font-size:15px;font-weight:700;margin:9px 0 5px;letter-spacing:-.02em;color:var(--brown)}
+.sitc .pr{font-size:13px;color:var(--sub)}
+
+/* 표 */
+table{width:100%;border-collapse:collapse;font-size:13.5px;background:#FFFDF8;
+  border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);padding:13px 12px;text-align:center}
+th{background:var(--paper2);font-weight:700;font-size:12.5px;color:var(--brown)}
+td.l,th.l{text-align:left}
+tr:last-child td{border-bottom:none}
+tfoot td{background:var(--paper2);font-weight:800}
+
+/* 조리컷 4분할 */
+.cook{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cookc{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.cookc .t{padding:11px 12px 14px;text-align:center}
+.cookc .t b{display:block;font-size:13.5px;color:var(--brown);letter-spacing:-.02em}
+.cookc .t span{display:block;font-size:11.5px;color:var(--sub);margin-top:4px;line-height:1.5}
+
+/* 가치 리스트 */
+.vals .val{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+.vals .val:last-child{border-bottom:none}
+.vals .no{flex:0 0 34px;font-size:12.5px;font-weight:800;color:var(--gold);padding-top:3px}
+.vals .tx b{display:block;font-size:16px;margin-bottom:6px;letter-spacing:-.02em;color:var(--brown)}
+.vals .tx p{margin:0;font-size:13.5px;color:var(--sub);line-height:1.8}
+
+/* D-day */
+.dd{background:#FFFDF8;border:1px solid var(--line);border-radius:14px;padding:26px;text-align:center}
+.dd .t{font-size:13px;color:var(--sub)}
+.dd .n{font-size:36px;font-weight:800;color:var(--wine);letter-spacing:-.03em;margin:8px 0 4px}
+.dd .u{font-size:12.5px;color:var(--mute)}
+
+.faq{background:#FFFDF8;border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:7px}
+.faq b{display:block;font-size:14px;margin-bottom:6px;color:var(--brown)}
+.faq p{margin:0;font-size:13px;color:var(--sub);line-height:1.7}
+
+/* 첫 구매자 */
+.fb{background:var(--brown);color:#F2EADF;border-radius:14px;padding:30px 24px;text-align:center}
+.fb h3{margin:0;font-size:21px;letter-spacing:-.02em;line-height:1.55;font-weight:700}
+.fb p{margin:13px 0 0;font-size:13.5px;color:#CDBBAE;line-height:1.75}
+.fb .tg{display:inline-block;background:var(--gold);color:#1F1A18;font-size:11.5px;font-weight:800;
+  padding:4px 12px;border-radius:99px;margin-bottom:14px;letter-spacing:.05em}
+
+/* 업셀 */
+.up{display:flex;gap:12px;background:#FFFDF8;border:1px solid var(--line);border-radius:12px;
+  padding:12px;align-items:center;margin-bottom:8px}
+.up .ph{width:104px;height:104px;border-radius:8px;flex:none;aspect-ratio:auto;background:#F6F4EF}
+.up .ph img{object-fit:contain}
+.up .i .n{font-size:15px;font-weight:700;color:var(--brown)}
+.up .i .c{font-size:12.5px;color:var(--sub);margin:5px 0 7px}
+.up .i .p{font-size:17px;font-weight:800;color:var(--wine)}
+
+.closing{background:var(--brown);color:#F2EADF;padding:48px;text-align:center}
+.closing .s{font-size:23px;letter-spacing:-.02em;line-height:1.7}
+.legal{font-size:11.5px;color:var(--sub);line-height:1.9}
+.legal table{font-size:11.5px}.legal th,.legal td{padding:8px 10px}
+
+.fixbar{position:sticky;bottom:0;z-index:70;background:rgba(51,42,39,.97);
+  display:flex;align-items:center;gap:10px;padding:11px 16px}
+.fixbar .i{flex:1;color:#EFE7DB}
+.fixbar .i b{display:block;font-size:14px}
+.fixbar .i span{font-size:12px;color:#B7A99B}
+.fixbar a{background:var(--gold);color:#1F1A18;text-decoration:none;padding:13px 20px;
+  border-radius:9px;font-size:14.5px;font-weight:800}
+
+@media(max-width:900px){.pad{padding:32px 22px}.hcap{padding:30px 22px 24px}.chks,.ctaWrap{padding-left:22px;padding-right:22px}
+  .divider{margin:0 22px}.hcap h1{font-size:28px}h2.h{font-size:25px}.sit{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="lg">ON·OLLIM 상세페이지</span>
+  <span class="lb">구성</span>
+  <button class="on" data-plan="A" onclick="setPlan('A')">A안 · 신뢰 먼저</button>
+  <button data-plan="B" onclick="setPlan('B')">B안 · 맛 먼저</button>
+  <span class="lb" style="margin-left:8px">세트</span>
+  <button class="on" data-set="s1" onclick="setSet('s1')">3종 실속</button>
+  <button data-set="s2" onclick="setSet('s2')">LA갈비 두배</button>
+  <button data-set="s3" onclick="setSet('s3')">소갈비 프리미엄</button>
+  <span class="meta">Pretendard + MaruBuri · CTA 4회</span>
+</div>
+
+<div class="stage"><div class="page">
+  <div class="dbar">
+    <b>추석 전 도착 &middot; 9월 23일(수)까지 주문</b>
+    <span>냉동 택배 &middot; 전 세트 무료배송 &middot; 받는 날짜를 지정할 수 있어요</span>
+  </div>
+  <div id="flow"></div>
+  <div class="fixbar">
+    <div class="i"><b id="fxName">온올림 3종 실속</b><span id="fxPrice">69,800원 · 무료배송</span></div>
+    <a href="#">선물하기</a>
+  </div>
+</div></div>
+
+<div id="tpl" style="display:none">
+
+  <!-- B0 후킹 -->
+  <section data-b="B0">
+    <div class="ph hero"><img id="heroImg" src="img2/bag03.jpg" alt="온올림 선물세트"></div>
+    <div class="hcap">
+      <div class="kk">ON &middot; OLLIM</div>
+      <h1 class="mb" id="heroCopy">무엇을 좋아하실지 몰라,<br>골고루 담았습니다</h1>
+      <div class="sl" id="heroSub">구이 둘, 탕 하나 &middot; 온올림 3종 실속 세트</div>
+    </div>
+    <div class="chks">
+      <div class="chk chk2"><i>&check;</i><div><b>열면 바로 선물입니다</b><span>전용 선물가방과 슬리브가 기본 포함됩니다</span></div></div>
+      <div class="chk chk2"><i>&check;</i><div><b>데우면 바로 한 상입니다</b><span>해동 후 굽거나 끓이기만 하면 됩니다</span></div></div>
+      <div class="chk chk2"><i>&check;</i><div><b>처음이어도 실패하지 않습니다</b><span>집반찬연구소 누적 후기 201,381건이 검증한 맛</span></div></div>
+    </div>
+    <!-- CTA 1 · 탐색 프레임 -->
+    <div class="ctaWrap">
+      <a class="cta line" href="#b4">구성과 가격 먼저 보기<span class="s">3종을 나란히 비교하실 수 있어요</span></a>
+    </div>
+    <div style="height:34px"></div>
+  </section>
+
+  <!-- B1 신제품 선언 -->
+  <section data-b="B1">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">2026 추석 첫 출시</div>
+      <h2 class="h mb">집반찬연구소가<br>처음 내놓는 선물세트입니다</h2>
+      <div class="rule"></div>
+      <p class="sub">후기는 아직 없습니다.<br>대신 <span class="w">20만 명</span>이 확인한 집반찬연구소의 맛을 그대로 담았어요.</p>
+    </div>
+    <div class="ph card"><img src="img2/card.jpg" alt="온올림"></div>
+  </section>
+
+  <!-- B2 신뢰 -->
+  <section data-b="B2">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">WHO MAKES IT</div>
+      <h2 class="h mb sm">처음 만드는 선물세트,<br>처음 만드는 곳은 아닙니다</h2>
+      <div class="rule"></div>
+      <div class="stats" style="margin-top:24px">
+        <div class="stat"><b>201,381</b><span>자사몰 누적 후기</span></div>
+        <div class="stat"><b>4.83</b><span>평균 평점</span></div>
+        <div class="stat"><b>35년</b><span>한식 노하우</span></div>
+        <div class="stat"><b>HACCP</b><span>인증 시설 &middot; 당일 조리</span></div>
+      </div>
+      <div class="rvw"><div class="st">&#9679;&#9679;&#9679;&#9679;&#9679;</div>
+        <p>명절마다 시켜 먹는데 한 번도 실패한 적이 없어요. 부모님이 특히 좋아하십니다.</p>
+        <div class="who">집반찬연구소 구매 고객</div></div>
+      <div class="rvw"><div class="st">&#9679;&#9679;&#9679;&#9679;&#9679;</div>
+        <p>포장이 꼼꼼해서 선물로 보내도 민망하지 않았어요.</p>
+        <div class="who">집반찬연구소 구매 고객</div></div>
+    </div>
+    <div class="ph w32"><img src="img2/lineup.jpg" alt="온올림 제품 라인업"></div>
+  </section>
+
+  <!-- B2.5 체크포인트 -->
+  <section data-b="B25">
+    <div class="gap"></div>
+    <div class="pad t">
+      <div class="eyebrow">CHECK POINT</div>
+      <div class="chks" style="padding:8px 0 0">
+        <div class="chk"><i>1</i><div><b>HACCP 인증 시설</b>에서 당일 조리합니다</div></div>
+        <div class="chk"><i>2</i><div id="cpComp">LA양념갈비 + 옛날 소불고기 + 전통 갈비탕 &middot; 총 <b>2.8kg</b></div></div>
+        <div class="chk"><i>3</i><div>전용 선물가방 &middot; 제품별 슬리브 <b>기본 포함</b></div></div>
+        <div class="chk"><i>4</i><div>냉동 택배 &middot; 무료배송 &middot; <b>받는 날짜 지정 가능</b></div></div>
+        <div class="chk"><i>5</i><div>해동 후 <b>굽거나 끓이기만</b> 하면 됩니다</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B3 상황 -->
+  <section data-b="B3">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">HOW TO CHOOSE</div>
+      <h2 class="h mb sm">어떤 상을<br>올려드릴까요</h2>
+      <p class="sub" style="margin-bottom:26px">보내는 마음의 모양에 따라 구성이 달라집니다</p>
+      <div class="sit">
+        <div class="sitc"><div class="to">무엇을 좋아하실지 모를 때</div><div class="sh">골고루 챙긴 정성</div><div class="nm">3종 실속</div><div class="pr">69,800원</div></div>
+        <div class="sitc"><div class="to">좋아하시는 걸 아실 때</div><div class="sh">넉넉히 담은 정성</div><div class="nm">LA갈비 두배</div><div class="pr">84,800원</div></div>
+        <div class="sitc"><div class="to">가장 귀한 자리에</div><div class="sh">귀하게 갖춘 정성</div><div class="nm">소갈비 프리미엄</div><div class="pr">99,800원</div></div>
+      </div>
+    </div>
+    <div class="ph w32"><img src="img2/scene05b.jpg" alt="온올림 연출"></div>
+  </section>
+
+  <!-- B4 구성 -->
+  <section data-b="B4" id="b4">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">COMPOSITION</div>
+      <h2 class="h mb sm">무엇이 들어 있나</h2>
+      <p class="sub" style="margin-bottom:26px">중량과 원산지를 그대로 적었습니다</p>
+    </div>
+    <div class="ph card"><img id="trayImg" src="img2/setA_tray.jpg" alt="구성"></div>
+    <div class="pad t">
+      <table id="compTable"></table>
+      <div class="ctaWrap" style="padding:26px 0 0">
+        <!-- CTA 2 · 구성 확정 프레임 -->
+        <a class="cta" href="#" id="cta2">이 구성으로 선물하기<span class="s" id="cta2s">69,800원 · 총 2.8kg · 무료배송</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- B5 맛 -->
+  <section data-b="B5">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">TASTE</div>
+      <h2 class="h mb">정성은 눈에 보이지 않아서,<br>맛으로만 남습니다</h2>
+      <div class="rule"></div>
+      <p class="sub" style="margin-bottom:26px">해동 후 굽거나 끓이면, 상 위에는 이렇게 오릅니다</p>
+      <div class="cook" id="cookGrid"></div>
+      <div class="vals" style="margin-top:30px">
+        <div class="val"><div class="no">01</div><div class="tx"><b>과일로 낸 자연스러운 단맛</b>
+          <p>배와 양파, 마늘을 갈아 넣어 단맛을 냈습니다. 설탕으로 맞춘 단맛과는 결이 다릅니다.</p></div></div>
+        <div class="val"><div class="no">02</div><div class="tx"><b>재우는 시간을 지켰습니다</b>
+          <p>양념이 고기 속까지 배어들 때까지 두었습니다. 겉만 묻은 양념은 구우면 그대로 타 버립니다.</p></div></div>
+        <div class="val"><div class="no">03</div><div class="tx"><b>손질을 먼저 합니다</b>
+          <p>불필요한 지방을 정리하고 칼집을 넣어, 받으신 분이 손질할 일이 없도록 했습니다.</p></div></div>
+        <div class="val"><div class="no">04</div><div class="tx"><b>35년 한식 노하우</b>
+          <p>집반찬연구소가 20만 건의 후기로 검증해 온 간을 그대로 옮겼습니다.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B6 포장 -->
+  <section data-b="B6">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">PACKAGE</div>
+      <h2 class="h mb">열기 전부터<br>이미 선물입니다</h2>
+      <div class="rule"></div>
+      <p class="sub">받는 분의 첫인상은 맛보다 먼저 도착합니다.</p>
+    </div>
+    <div class="ph w32"><img src="img2/bag04.jpg" alt="선물가방"></div>
+    <div class="pad t">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="ph sq rd"><img src="img2/scene07.jpg" alt="포장"></div>
+        <div class="ph sq rd"><img src="img2/scene08.jpg" alt="포장"></div>
+      </div>
+      <div class="vals" style="margin-top:26px">
+        <div class="val"><div class="no">&mdash;</div><div class="tx"><b>전용 선물가방</b>
+          <p>전 세트에 기본 포함됩니다. 그대로 들고 가서 건네시면 됩니다.</p></div></div>
+        <div class="val"><div class="no">&mdash;</div><div class="tx"><b>제품별 전용 슬리브</b>
+          <p>제품마다 다른 수묵 그림을 넣었습니다. 열지 않아도 무엇이 들었는지 보입니다.</p></div></div>
+        <div class="val"><div class="no">&mdash;</div><div class="tx"><b>냉동 전용 포장</b>
+          <p>스티로폼 박스와 아이스팩으로, 얼어 있는 상태 그대로 도착합니다.</p></div></div>
+      </div>
+      <!-- CTA 3 · 마음 전달 프레임 -->
+      <div class="ctaWrap" style="padding:28px 0 0">
+        <a class="cta wine" href="#">이 마음 그대로 보내기<span class="s">포장까지 준비되어 배송됩니다</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- B7 배송·조리 -->
+  <section data-b="B7">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">DELIVERY</div>
+      <h2 class="h mb sm">추석 전에 도착합니다</h2>
+      <div class="rule"></div>
+      <div class="dd" style="margin-top:20px">
+        <div class="t">추석 전 도착 주문 마감</div>
+        <div class="n">9월 23일 (수)</div>
+        <div class="u">9월 24일(목) 도착분까지 발송 &middot; 연휴 9/24~9/26</div>
+      </div>
+      <table style="margin-top:18px">
+        <tr><th class="l" style="width:34%">배송 방식</th><td class="l">냉동 택배 &middot; 아이스팩 동봉</td></tr>
+        <tr><th class="l">배송비</th><td class="l">전 세트 무료</td></tr>
+        <tr><th class="l">희망일 지정</th><td class="l">주문서에서 선택 가능</td></tr>
+        <tr><th class="l">부재 시</th><td class="l">문 앞 보관 가능 &middot; 희망일 지정을 권합니다</td></tr>
+      </table>
+
+      <h2 class="h mb sm" style="margin-top:46px">받으신 분이<br>실패하지 않도록</h2>
+      <div class="rule"></div>
+      <table style="margin-top:18px">
+        <thead><tr><th>제품</th><th>해동</th><th>조리</th></tr></thead>
+        <tr><td class="l">LA 양념갈비</td><td>완전 자연해동</td><td class="l">달군 팬에 굽기</td></tr>
+        <tr><td class="l">옛날 소불고기</td><td>먹기 하루 전 냉장</td><td class="l">야채 &middot; 버섯 넣고 끓이기</td></tr>
+        <tr><td class="l">소 양념갈비</td><td>완전 자연해동</td><td class="l">찜 조리</td></tr>
+        <tr><td class="l">전통 갈비탕</td><td>필요 없음</td><td class="l">봉지째 데우기</td></tr>
+      </table>
+      <div style="margin-top:28px">
+        <div class="eyebrow" style="text-align:left">이렇게도 드실 수 있어요</div>
+        <div class="vals">
+          <div class="val"><div class="no">&mdash;</div><div class="tx"><b>소불고기에 버섯 &middot; 대파 &middot; 당면</b><p>전골처럼 끓이면 한 상이 됩니다.</p></div></div>
+          <div class="val"><div class="no">&mdash;</div><div class="tx"><b>갈비탕에 소면 &middot; 떡국떡</b><p>국물을 남기지 않고 한 끼 더 드실 수 있습니다.</p></div></div>
+        </div>
+      </div>
+      <div style="margin-top:32px">
+        <div class="faq"><b>받는 분 집에 사람이 없으면요</b><p>냉동 택배라 문 앞 보관이 가능합니다. 주문서에서 희망일을 지정해 두시면 더 안전합니다.</p></div>
+        <div class="faq"><b>해동은 어떻게 하나요</b><p>냉장실에서 자연해동을 권합니다. 급하시면 봉지째 흐르는 물에 담가 두세요.</p></div>
+        <div class="faq"><b>냉동육 냄새가 나지 않나요</b><p>급속 동결해 얼린 상태 그대로 배송합니다. 해동 후 바로 조리하시면 됩니다.</p></div>
+        <div class="faq"><b>선물 포장이 따로 되나요</b><p>선물가방과 전용 슬리브가 전 세트에 기본 포함됩니다.</p></div>
+        <div class="faq"><b>소비기한은 얼마나 되나요</b><p>확보되는 대로 기재합니다.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B8 첫 구매자 -->
+  <section data-b="B8">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="fb">
+        <span class="tg">2026 추석 첫 출시</span>
+        <h3 class="mb">지금은 첫 후기를<br>남기실 수 있는 시점입니다</h3>
+        <p>포토후기를 남겨 주시면 적립금을 드려요.<br>구매하신 분 누구나 받으실 수 있습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- B9 업셀 + 최종 CTA -->
+  <section data-b="B9">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">OTHER SETS</div>
+      <h2 class="h mb sm">다른 세트도 보시겠어요</h2>
+      <div style="margin-top:24px" id="upsell"></div>
+      <!-- CTA 4 · 마감 압박 프레임 -->
+      <div class="ctaWrap" style="padding:26px 0 0">
+        <a class="cta" href="#">9월 23일 마감 &middot; 지금 주문하기<span class="s" id="cta4s">온올림 3종 실속 · 69,800원</span></a>
+        <div class="ctaNote">추석 배송은 조기 마감될 수 있습니다</div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="pad legal">
+      <div class="eyebrow" style="text-align:left">상품정보제공고시</div>
+      <table style="margin-top:10px">
+        <tr><th class="l" style="width:33%">제품명</th><td class="l" id="lgName">온올림 3종 실속 세트</td></tr>
+        <tr><th class="l">식품유형</th><td class="l">축산물가공품(양념육) &middot; 즉석조리식품</td></tr>
+        <tr><th class="l">생산자 및 소재지</th><td class="l">확보 후 기재</td></tr>
+        <tr><th class="l">원산지</th><td class="l" id="lgOrigin">미국산(LA양념갈비) &middot; 호주산(옛날 소불고기 &middot; 전통 갈비탕)</td></tr>
+        <tr><th class="l">중량</th><td class="l" id="lgWeight">2,800g</td></tr>
+        <tr><th class="l">소비기한</th><td class="l">확보 후 기재</td></tr>
+        <tr><th class="l">보관방법</th><td class="l">-18&deg;C 이하 냉동 보관</td></tr>
+        <tr><th class="l">원재료 &middot; 함량</th><td class="l">확보 후 기재</td></tr>
+        <tr><th class="l">알레르기 유발물질</th><td class="l">소고기 &middot; 밀 &middot; 대두 함유</td></tr>
+        <tr><th class="l">소비자상담</th><td class="l">1588-3754 (평일 08:30~17:30)</td></tr>
+      </table>
+    </div>
+    <div class="closing">
+      <div class="s mb">온 마음을 담아,<br>정성껏 올립니다</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const COOK={
+  la:['img2/cook_la1.jpg','LA 양념갈비','달군 팬에 그대로 굽기'],
+  bul:['img2/cook_bul1.jpg','옛날 소불고기','야채 넣고 자작하게 끓이기'],
+  gal:['img2/cook_gal1.jpg','소 양념갈비','부드럽게 찜 조리'],
+  tang:['img2/cook_tang1.jpg','전통 갈비탕','봉지째 데우기']
+};
+const SETS={
+ s1:{name:'온올림 3종 실속 세트',short:'온올림 3종 실속',price:'69,800원',pnum:'69,800',weight:'2,800g',
+   hero:'img2/bag03.jpg',tray:'img2/setA_tray.jpg',thumb:'img2/setA_stand.jpg',
+   copy:'무엇을 좋아하실지 몰라,<br>골고루 담았습니다',sub:'구이 둘, 탕 하나 · 온올림 3종 실속 세트',
+   cp:'LA양념갈비 + 옛날 소불고기 + 전통 갈비탕 · 총 <b>2.8kg</b>',
+   origin:'미국산(LA양념갈비) · 호주산(옛날 소불고기 · 전통 갈비탕)',
+   summ:'LA갈비 + 소불고기 + 갈비탕',
+   rows:[['LA 양념갈비','850g','미국산','소갈비 · 간장양념'],['옛날 소불고기','950g','호주산','소 알목심'],['전통 갈비탕','1,000g','호주산','소갈비']],
+   cook:['la','bul','tang'],up:['s3','s2']},
+ s2:{name:'온올림 LA갈비 두배 세트',short:'온올림 LA갈비 두배',price:'84,800원',pnum:'84,800',weight:'2,700g',
+   hero:'img2/scene05b.jpg',tray:'img2/setB_tray.jpg',thumb:'img2/setB_stand.jpg',
+   copy:'맛있는 건 더 드리고 싶어서,<br>갈비를 두 팩 담았습니다',sub:'LA양념갈비 850g × 2 · 온올림 LA갈비 두배 세트',
+   cp:'LA양념갈비 × 2 + 전통 갈비탕 · 총 <b>2.7kg</b>',
+   origin:'미국산(LA양념갈비) · 호주산(전통 갈비탕)',
+   summ:'LA갈비 두 팩 + 갈비탕',
+   rows:[['LA 양념갈비','850g × 2','미국산','소갈비 · 간장양념'],['전통 갈비탕','1,000g','호주산','소갈비']],
+   cook:['la','tang'],up:['s3','s1']},
+ s3:{name:'온올림 소갈비 프리미엄 세트',short:'온올림 소갈비 프리미엄',price:'99,800원',pnum:'99,800',weight:'2,800g',
+   hero:'img2/bag04.jpg',tray:'img2/setC_tray.jpg',thumb:'img2/setC_stand.jpg',
+   copy:'이 자리만큼은,<br>가장 좋은 것으로 올렸습니다',sub:'소 양념갈비 1kg 포함 · 온올림 소갈비 프리미엄 세트',
+   cp:'LA양념갈비 + 옛날 소불고기 + 소 양념갈비 · 총 <b>2.8kg</b>',
+   origin:'미국산(LA양념갈비 · 소 양념갈비) · 호주산(옛날 소불고기)',
+   summ:'LA갈비 + 소불고기 + 소갈비',
+   rows:[['LA 양념갈비','850g','미국산','소갈비 · 간장양념'],['옛날 소불고기','950g','호주산','소 알목심'],['소 양념갈비','1,000g','미국산','소갈비 · 찜용']],
+   cook:['gal','la','bul'],up:['s2','s1']}
+};
+const ORDER={A:['B0','B1','B2','B25','B3','B4','B5','B6','B7','B8','B9'],
+             B:['B0','B25','B5','B4','B1','B2','B3','B6','B7','B8','B9']};
+let plan='A',cur='s1';
+function build(){
+  const tpl=document.getElementById('tpl'),flow=document.getElementById('flow');
+  flow.innerHTML='';
+  ORDER[plan].forEach(c=>flow.appendChild(tpl.querySelector('[data-b="'+c+'"]').cloneNode(true)));
+  paint();
+}
+function paint(){
+  const s=SETS[cur],q=x=>document.getElementById('flow').querySelector(x);
+  q('#heroImg').src=s.hero; q('#heroCopy').innerHTML=s.copy; q('#heroSub').innerHTML=s.sub;
+  q('#cpComp').innerHTML=s.cp; q('#trayImg').src=s.tray;
+  let t='<thead><tr><th class="l">품목</th><th>중량</th><th>원산지</th><th class="l">부위</th></tr></thead><tbody>';
+  s.rows.forEach(r=>{t+='<tr><td class="l">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td class="l">'+r[3]+'</td></tr>';});
+  t+='</tbody><tfoot><tr><td class="l">합계</td><td>'+s.weight+'</td><td>—</td><td class="l">'+s.rows.length+'종</td></tr></tfoot>';
+  q('#compTable').innerHTML=t;
+  let ck='';
+  s.cook.forEach(k=>{const c=COOK[k];ck+='<div class="cookc"><div class="ph sq"><img src="'+c[0]+'"></div><div class="t"><b>'+c[1]+'</b><span>'+c[2]+'</span></div></div>';});
+  const cg=q('#cookGrid');
+  cg.style.gridTemplateColumns='repeat('+s.cook.length+',1fr)';
+  cg.innerHTML=ck;
+  q('#cta2s').textContent=s.price+' · 총 '+s.weight+' · 무료배송';
+  q('#cta4s').textContent=s.short+' · '+s.price;
+  let u='';s.up.forEach(k=>{const o=SETS[k];
+    u+='<div class="up"><div class="ph"><img src="'+o.thumb+'"></div><div class="i"><div class="n">'+o.short+'</div><div class="c">'+o.summ+'</div><div class="p">'+o.price+'</div></div></div>';});
+  q('#upsell').innerHTML=u;
+  q('#lgName').textContent=s.name; q('#lgOrigin').textContent=s.origin; q('#lgWeight').textContent=s.weight;
+  document.getElementById('fxName').textContent=s.short;
+  document.getElementById('fxPrice').textContent=s.price+' · 무료배송';
+}
+function setPlan(p){plan=p;document.querySelectorAll('[data-plan]').forEach(b=>b.classList.toggle('on',b.dataset.plan===p));build();window.scrollTo(0,0);}
+function setSet(k){cur=k;document.querySelectorAll('[data-set]').forEach(b=>b.classList.toggle('on',b.dataset.set===k));paint();}
+build();
+</script>
+</body>
+</html>

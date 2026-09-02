@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>온올림 랜딩페이지 시안 · 2026 추석</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+@font-face{font-family:'MaruBuri';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/MaruBuri-Regular.woff') format('woff');font-weight:400;font-display:swap}
+@font-face{font-family:'MaruBuri';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/MaruBuri-SemiBold.woff') format('woff');font-weight:600;font-display:swap}
+@font-face{font-family:'MaruBuri';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/MaruBuri-Bold.woff') format('woff');font-weight:700;font-display:swap}
+:root{
+  --paper:#EFEDE7; --paper2:#E6E2D9; --ink:#332A27; --sub:#6B5F58; --mute:#9A8F86;
+  --brown:#4E3C3F; --wine:#7A3B3E; --gold:#A98B52; --terra:#D0936C; --line:#DED8CC;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#2E2724;color:var(--ink);
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;
+  -webkit-font-smoothing:antialiased}
+.mb{font-family:'MaruBuri','Nanum Myeongjo','Apple SD Gothic Neo',serif}
+
+.bar{position:sticky;top:0;z-index:99;background:#1F1A18;color:#E7DFD2;padding:11px 16px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-bottom:1px solid #3E3631}
+.bar .lg{font-size:12px;letter-spacing:.14em;color:var(--gold);font-weight:800}
+.bar .lb{font-size:11px;color:#9A8F82}
+.bar button{background:#332B27;color:#CFC4B5;border:1px solid #4C423C;border-radius:99px;
+  padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.bar button.on{background:var(--gold);color:#1F1A18;border-color:var(--gold)}
+.bar .meta{margin-left:auto;font-size:11px;color:#867A6E}
+
+.stage{display:flex;justify-content:center;padding:20px 12px 60px}
+.page{width:860px;max-width:100%;background:var(--paper);box-shadow:0 8px 40px rgba(0,0,0,.4);position:relative}
+
+img{display:block;width:100%}
+.ph{overflow:hidden;position:relative;background:var(--paper2)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph.hero{aspect-ratio:4/3}
+.ph.w32{aspect-ratio:3/2}
+.ph.w43{aspect-ratio:4/3}
+.ph.sq{aspect-ratio:1/1}
+.ph.card{aspect-ratio:16/10}
+.ph.rd{border-radius:12px}
+.ph.fit{background:#F6F4EF}
+.ph.fit img{object-fit:contain}
+
+.pad{padding:46px}
+.pad.t{padding:32px 46px}
+.eyebrow{font-size:11.5px;letter-spacing:.22em;color:var(--gold);font-weight:800;text-align:center;margin-bottom:14px}
+h2.h{font-size:30px;line-height:1.5;letter-spacing:-.02em;text-align:center;margin:0;font-weight:700;color:var(--brown)}
+h2.h.sm{font-size:25px}
+p.sub{font-size:15px;color:var(--sub);text-align:center;margin:16px 0 0;line-height:1.85}
+.rule{width:30px;height:1px;background:var(--gold);margin:22px auto}
+.w{color:var(--wine);font-weight:700}
+.gd{color:var(--gold);font-weight:700}
+.gap{height:12px;background:var(--paper2)}
+
+/* 상단 고정 */
+.topbar{position:sticky;top:44px;z-index:60;background:var(--brown);color:#F2EADF;
+  display:flex;justify-content:space-between;align-items:center;padding:11px 18px;font-size:13px}
+.topbar .dd{background:rgba(255,255,255,.15);padding:3px 10px;border-radius:99px;font-size:12px;font-weight:800}
+.tabs{display:flex;background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:88px;z-index:59}
+.tabs a{flex:1;text-align:center;padding:13px 0;font-size:13.5px;color:var(--sub);text-decoration:none;font-weight:700}
+.tabs a.on{color:var(--brown);box-shadow:inset 0 -2px 0 var(--brown)}
+
+.hcap{padding:42px 46px 30px;text-align:center}
+.hcap .kk{font-size:11px;letter-spacing:.3em;color:var(--gold);font-weight:800}
+.hcap h1{font-size:34px;line-height:1.5;letter-spacing:-.03em;margin:16px 0 0;font-weight:700;color:var(--brown)}
+.hcap .sl{font-size:14px;color:var(--sub);margin-top:18px}
+
+.chks{display:flex;flex-direction:column;gap:8px;padding:0 46px}
+.chk{display:flex;gap:11px;align-items:center;background:#FFFDF8;border:1px solid var(--line);
+  border-radius:12px;padding:13px 16px;font-size:14.5px}
+.chk2 b{display:block;font-size:15.5px;letter-spacing:-.02em;color:var(--brown)}
+.chk2 span{display:block;font-size:12.5px;color:var(--sub);margin-top:4px;line-height:1.6}
+.chk i{width:20px;height:20px;border-radius:50%;background:var(--brown);color:#F2EADF;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-style:normal}
+
+.ctaWrap{padding:26px 46px 0}
+.cta{display:block;background:var(--brown);color:#F5EEE3;text-align:center;padding:19px;
+  border-radius:10px;font-size:17px;font-weight:800;text-decoration:none;letter-spacing:-.01em}
+.cta.line{background:transparent;border:1.5px solid var(--brown);color:var(--brown)}
+.cta.wine{background:var(--wine)}
+.cta .s{display:block;font-size:12px;font-weight:600;color:#D3BDB0;margin-top:5px;letter-spacing:0}
+.cta.line .s{color:var(--sub)}
+.ctaNote{text-align:center;font-size:12px;color:var(--mute);margin-top:10px}
+
+.p3{display:flex;flex-direction:column;gap:10px}
+.p3 .it{display:flex;gap:14px;align-items:flex-start;background:#FFFDF8;border:1px solid var(--line);
+  border-radius:12px;padding:18px}
+.p3 .it .n{flex:0 0 24px;height:24px;border-radius:50%;background:var(--paper2);color:var(--brown);
+  font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.p3 .it b{display:block;font-size:15.5px;letter-spacing:-.02em;margin-bottom:5px;color:var(--brown)}
+.p3 .it p{margin:0;font-size:13.5px;color:var(--sub);line-height:1.75}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;padding:20px 14px;text-align:center}
+.stat b{display:block;font-size:26px;letter-spacing:-.03em;color:var(--brown)}
+.stat span{display:block;font-size:12px;color:var(--sub);margin-top:6px}
+.rvw{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin-top:8px}
+.rvw .st{color:var(--gold);font-size:12px;letter-spacing:2px}
+.rvw p{margin:6px 0 0;font-size:13.5px;line-height:1.7}
+.rvw .who{font-size:11.5px;color:var(--mute);margin-top:7px}
+
+.sit{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.sitc{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;padding:18px 10px;text-align:center}
+.sitc .to{font-size:11.5px;color:var(--gold);font-weight:800;line-height:1.5;min-height:34px;display:flex;align-items:center;justify-content:center}
+.sitc .sh{font-family:'MaruBuri',serif;font-size:13.5px;color:var(--sub);margin-top:6px}
+.sitc .nm{font-size:15px;font-weight:700;margin:9px 0 5px;letter-spacing:-.02em;color:var(--brown)}
+.sitc .pr{font-size:13px;color:var(--sub)}
+
+.setc{background:#FFFDF8;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative}
+.setc.best{border:2px solid var(--brown)}
+.badge{position:absolute;top:13px;left:13px;z-index:3;background:var(--brown);color:#F2EADF;
+  font-size:11.5px;font-weight:800;padding:5px 12px;border-radius:99px;letter-spacing:.04em}
+.setc .ph{aspect-ratio:16/10}
+.setc .ph img{object-position:50% 40%}
+.setc .in{padding:20px}
+.setc .nm{font-size:20px;font-weight:700;letter-spacing:-.025em;color:var(--brown)}
+.setc .cp{font-size:13.5px;color:var(--sub);margin:8px 0 4px}
+.setc .wt{font-size:12.5px;color:var(--mute);line-height:1.6}
+.setc .pr{font-size:25px;font-weight:800;color:var(--wine);margin-top:12px;letter-spacing:-.03em}
+.setc .go{display:block;margin-top:14px;background:var(--paper2);border:1px solid var(--line);
+  border-radius:9px;text-align:center;padding:13px;font-size:14px;font-weight:700;color:var(--brown);text-decoration:none}
+.setc.best .go{background:var(--brown);color:#F5EEE3;border:none}
+
+table{width:100%;border-collapse:collapse;font-size:13px;background:#FFFDF8;
+  border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:12px 8px;text-align:center}
+th{background:var(--paper2);font-weight:700;font-size:12.5px;color:var(--brown)}
+td.l,th.l{text-align:left}
+tr:last-child td{border-bottom:none}
+th:last-child,td:last-child{border-right:none}
+.hi{background:#F4EFE4;font-weight:800}
+
+.cook{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cookc{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.cookc .t{padding:11px 12px 14px;text-align:center}
+.cookc .t b{display:block;font-size:13.5px;color:var(--brown);letter-spacing:-.02em}
+.cookc .t span{display:block;font-size:11.5px;color:var(--sub);margin-top:4px}
+
+.vals .val{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--line)}
+.vals .val:last-child{border-bottom:none}
+.vals .no{flex:0 0 34px;font-size:12.5px;font-weight:800;color:var(--gold);padding-top:3px}
+.vals .tx b{display:block;font-size:16px;margin-bottom:6px;letter-spacing:-.02em;color:var(--brown)}
+.vals .tx p{margin:0;font-size:13.5px;color:var(--sub);line-height:1.8}
+
+.cpn{background:#FFFDF8;border:1px dashed var(--gold);border-radius:12px;padding:18px;text-align:center;margin-bottom:8px}
+.cpn b{display:block;font-size:23px;color:var(--brown);letter-spacing:-.02em}
+.cpn span{display:block;font-size:12px;color:var(--sub);margin-top:5px}
+
+.cal{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;padding:18px;text-align:center}
+.cal table{border:none}.cal th,.cal td{border:none;padding:9px 2px;font-size:13px}
+.cal .day{width:36px;height:36px;line-height:36px;border-radius:50%;display:inline-block}
+.cal .mark{background:var(--brown);color:#F2EADF;font-weight:800}
+.cal .hol{color:var(--wine);font-weight:800}
+.cal .lb{font-size:10.5px;color:var(--sub);display:block;margin-top:4px}
+
+.cross{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crs{background:#FFFDF8;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.crs .t{padding:13px 14px}
+.crs .t b{display:block;font-size:14.5px;letter-spacing:-.02em;color:var(--brown)}
+.crs .t span{display:block;font-size:12px;color:var(--sub);margin-top:4px}
+
+.closing{background:var(--brown);color:#F2EADF;padding:48px;text-align:center}
+.closing .s{font-size:23px;letter-spacing:-.02em;line-height:1.7}
+.foot3{display:flex;gap:8px;margin-bottom:16px}
+.foot3 div{flex:1;background:#FFFDF8;border:1px solid var(--line);border-radius:10px;padding:14px 8px;text-align:center}
+.foot3 b{display:block;font-size:17px;color:var(--wine);letter-spacing:-.02em}
+.foot3 span{display:block;font-size:11.5px;color:var(--sub);margin-top:4px}
+
+.fixbar{position:sticky;bottom:0;z-index:70;background:rgba(51,42,39,.97);
+  display:flex;align-items:center;gap:10px;padding:11px 16px}
+.fixbar .i{flex:1;color:#EFE7DB}
+.fixbar .i b{display:block;font-size:14px}
+.fixbar .i span{font-size:12px;color:#B7A99B}
+.fixbar a{background:var(--gold);color:#1F1A18;text-decoration:none;padding:13px 20px;border-radius:9px;font-size:14.5px;font-weight:800}
+.fixbar a.gh{background:transparent;border:1px solid #6B6055;color:#CFC4B5;font-weight:700}
+
+@media(max-width:900px){.pad{padding:32px 22px}.hcap{padding:30px 22px 24px}.chks,.ctaWrap{padding-left:22px;padding-right:22px}
+  .hcap h1{font-size:27px}h2.h{font-size:25px}.sit,.cross,.cook{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="lg">ON·OLLIM 랜딩페이지</span>
+  <span class="lb">구성</span>
+  <button class="on" data-plan="A" onclick="setPlan('A')">A안 · 공감 먼저</button>
+  <button data-plan="B" onclick="setPlan('B')">B안 · 상품 먼저</button>
+  <span class="meta">Pretendard + MaruBuri · CTA 5회</span>
+</div>
+
+<div class="stage"><div class="page">
+  <div class="topbar"><b>추석 배송 마감 9/24(목) 도착</b><span class="dd">D-27</span></div>
+  <div class="tabs">
+    <a href="#s-set" class="on">세트 3종</a><a href="#s-cmp">비교</a><a href="#s-pkg">포장</a><a href="#s-dlv">배송</a>
+  </div>
+  <div id="flow"></div>
+  <div class="fixbar">
+    <div class="i"><b>온올림 소갈비 프리미엄</b><span>99,800원 · 무료배송</span></div>
+    <a class="gh" href="#s-cmp">비교표</a><a href="#s-set">세트 고르기</a>
+  </div>
+</div></div>
+
+<div id="tpl" style="display:none">
+
+  <!-- L1 히어로 -->
+  <section data-b="L1">
+    <div class="ph hero"><img src="img2/bag04.jpg" alt="온올림 선물세트 3종"></div>
+    <div class="hcap">
+      <div class="kk">ON &middot; OLLIM</div>
+      <h1 class="mb">마음을 담아 올리면<br>받는 분이 먼저 웃습니다</h1>
+      <div class="sl">2026 추석 &middot; 온올림 선물세트 3종</div>
+    </div>
+    <div class="chks">
+      <div class="chk chk2"><i>&check;</i><div><b>열면 바로 선물입니다</b><span>전용 선물가방과 슬리브가 기본 포함됩니다</span></div></div>
+      <div class="chk chk2"><i>&check;</i><div><b>데우면 바로 한 상입니다</b><span>해동 후 굽거나 끓이기만 하면 됩니다</span></div></div>
+      <div class="chk chk2"><i>&check;</i><div><b>처음이어도 실패하지 않습니다</b><span>집반찬연구소 누적 후기 201,381건이 검증한 맛</span></div></div>
+    </div>
+    <div class="ctaWrap">
+      <a class="cta line" href="#s-set">세트 3종 먼저 보기<span class="s">69,800원부터 · 자리에 맞게 고르실 수 있어요</span></a>
+    </div>
+    <div style="height:34px"></div>
+  </section>
+
+  <!-- L2 문제 -->
+  <section data-b="L2">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">WHY IT'S HARD</div>
+      <h2 class="h mb sm">올해 추석 선물,<br>이 <span class="w">세 가지</span>가 어렵습니다</h2>
+      <p class="sub" style="margin-bottom:26px">한 번쯤 해보신 고민이시죠</p>
+      <div class="p3">
+        <div class="it"><div class="n">1</div><div><b>무엇을 보낼지</b>
+          <p>매년 같은 걸 보내기도 그렇고, 새로 고르자니 실패할까 봐 망설이게 됩니다.</p></div></div>
+        <div class="it"><div class="n">2</div><div><b>격에 맞는지</b>
+          <p>받는 분이 어떻게 보실지 알 수 없습니다. 선물은 값보다 격이 먼저 읽힙니다.</p></div></div>
+        <div class="it"><div class="n">3</div><div><b>제때 갈지</b>
+          <p>냉동 선물은 받는 분 댁에 사람이 없으면 어쩌나부터 걱정됩니다.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- L3 해결 -->
+  <section data-b="L3">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">OUR ANSWER</div>
+      <h2 class="h mb sm">온올림은<br>이렇게 답했습니다</h2>
+      <div class="rule"></div>
+      <div class="vals" style="margin-top:8px">
+        <div class="val"><div class="no">01</div><div class="tx"><b>보내는 자리별로 세 가지 구성</b>
+          <p>부모님께, 시댁·처가에, 거래처에. 자리에 맞는 구성을 미리 나눠 두었습니다.</p></div></div>
+        <div class="val"><div class="no">02</div><div class="tx"><b>열기 전부터 이미 선물인 포장</b>
+          <p>전용 선물가방과 제품별 슬리브가 전 세트 기본입니다. 따로 포장하실 필요가 없습니다.</p></div></div>
+        <div class="val"><div class="no">03</div><div class="tx"><b>받는 날짜를 정할 수 있습니다</b>
+          <p>주문서에서 희망일을 지정하시면 그날 도착합니다. 추석 전 도착도 보장합니다.</p></div></div>
+      </div>
+    </div>
+    <div class="ph w32"><img src="img2/scene05b.jpg" alt="온올림 선물세트"></div>
+    <div class="ctaWrap" style="padding-top:30px;padding-bottom:8px">
+      <a class="cta" href="#s-set">우리 자리에 맞는 세트 찾기<span class="s">부모님 · 시댁 · 거래처 · 세 가지로 나눠 두었습니다</span></a>
+    </div>
+    <div style="height:26px"></div>
+  </section>
+
+  <!-- L4 신뢰 -->
+  <section data-b="L4">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">2026 추석 첫 출시</div>
+      <h2 class="h mb sm">처음 만드는 선물세트,<br>처음 만드는 곳은 아닙니다</h2>
+      <p class="sub" style="margin-bottom:24px">후기는 아직 없습니다.<br>대신 <span class="w">20만 명</span>이 확인한 집반찬연구소의 맛을 그대로 담았어요.</p>
+      <div class="stats">
+        <div class="stat"><b>201,381</b><span>자사몰 누적 후기</span></div>
+        <div class="stat"><b>4.83</b><span>평균 평점</span></div>
+        <div class="stat"><b>35년</b><span>한식 노하우</span></div>
+        <div class="stat"><b>HACCP</b><span>인증 시설 &middot; 당일 조리</span></div>
+      </div>
+      <div class="rvw"><div class="st">&#9679;&#9679;&#9679;&#9679;&#9679;</div>
+        <p>명절마다 시켜 먹는데 한 번도 실패한 적이 없어요. 부모님이 특히 좋아하십니다.</p>
+        <div class="who">집반찬연구소 구매 고객</div></div>
+      <div class="rvw"><div class="st">&#9679;&#9679;&#9679;&#9679;&#9679;</div>
+        <p>포장이 꼼꼼해서 선물로 보내도 민망하지 않았어요.</p>
+        <div class="who">집반찬연구소 구매 고객</div></div>
+    </div>
+  </section>
+
+  <!-- L5 상황 -->
+  <section data-b="L5">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">HOW TO CHOOSE</div>
+      <h2 class="h mb sm">어떤 상을<br>올려드릴까요</h2>
+      <p class="sub" style="margin-bottom:26px">보내는 마음의 모양에 따라 구성이 달라집니다</p>
+      <div class="sit">
+        <div class="sitc"><div class="to">무엇을 좋아하실지 모를 때</div><div class="sh">골고루 챙긴 정성</div><div class="nm">3종 실속</div><div class="pr">69,800원</div></div>
+        <div class="sitc"><div class="to">좋아하시는 걸 아실 때</div><div class="sh">넉넉히 담은 정성</div><div class="nm">LA갈비 두배</div><div class="pr">84,800원</div></div>
+        <div class="sitc"><div class="to">가장 귀한 자리에</div><div class="sh">귀하게 갖춘 정성</div><div class="nm">소갈비 프리미엄</div><div class="pr">99,800원</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- L6 세트 -->
+  <section data-b="L6" id="s-set">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">SETS</div>
+      <h2 class="h mb sm">우리 자리에 맞는<br>한 상을 골라보세요</h2>
+      <p class="sub" style="margin-bottom:26px">세 가지 모두 선물가방과 무료배송이 포함됩니다</p>
+
+      <div class="setc best"><span class="badge">추천</span>
+        <div class="ph w32"><img src="img2/setC_tray.jpg" alt="소갈비 프리미엄"></div>
+        <div class="in">
+          <div class="nm mb">온올림 소갈비 프리미엄</div>
+          <div class="cp">이 자리만큼은, 가장 좋은 것으로</div>
+          <div class="wt">LA양념갈비 850g &middot; 옛날 소불고기 950g &middot; 소 양념갈비 1kg<br>총 2.8kg</div>
+          <div class="pr">99,800원</div>
+          <a class="go" href="#">소갈비 프리미엄 보러가기</a>
+        </div>
+      </div>
+
+      <div class="setc">
+        <div class="ph w32"><img src="img2/setB_tray.jpg" alt="LA갈비 두배"></div>
+        <div class="in">
+          <div class="nm mb">온올림 LA갈비 두배</div>
+          <div class="cp">맛있는 건 더 드리고 싶어서, 두 팩</div>
+          <div class="wt">LA양념갈비 850g &times; 2 &middot; 전통 갈비탕 1kg<br>총 2.7kg</div>
+          <div class="pr">84,800원</div>
+          <a class="go" href="#">LA갈비 두배 보러가기</a>
+        </div>
+      </div>
+
+      <div class="setc">
+        <div class="ph w32"><img src="img2/setA_tray.jpg" alt="3종 실속"></div>
+        <div class="in">
+          <div class="nm mb">온올림 3종 실속</div>
+          <div class="cp">무엇을 좋아하실지 몰라, 골고루</div>
+          <div class="wt">LA양념갈비 850g &middot; 옛날 소불고기 950g &middot; 전통 갈비탕 1kg<br>총 2.8kg</div>
+          <div class="pr">69,800원</div>
+          <a class="go" href="#">3종 실속 보러가기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- L7 비교 -->
+  <section data-b="L7" id="s-cmp">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">COMPARE</div>
+      <h2 class="h mb sm">3종 한눈에 비교</h2>
+      <p class="sub" style="margin-bottom:22px">구성이 다르면 담기는 정성의 모양도 달라집니다</p>
+      <table>
+        <thead><tr><th class="l">품목</th><th>3종 실속</th><th>LA갈비 두배</th><th class="hi">소갈비 프리미엄</th></tr></thead>
+        <tr><td class="l">소 양념갈비 1kg</td><td>&mdash;</td><td>&mdash;</td><td class="hi">1</td></tr>
+        <tr><td class="l">LA 양념갈비 850g</td><td>1</td><td>2</td><td class="hi">1</td></tr>
+        <tr><td class="l">옛날 소불고기 950g</td><td>1</td><td>&mdash;</td><td class="hi">1</td></tr>
+        <tr><td class="l">전통 갈비탕 1kg</td><td>1</td><td>1</td><td class="hi">&mdash;</td></tr>
+        <tr><td class="l">총 중량</td><td>2,800g</td><td>2,700g</td><td class="hi">2,800g</td></tr>
+        <tr><td class="l">정성의 모양</td><td class="mb">골고루 챙긴</td><td class="mb">넉넉히 담은</td><td class="hi mb">귀하게 갖춘</td></tr>
+        <tr><td class="l">이럴 때</td><td>무엇을 좋아하실지<br>모를 때</td><td>좋아하시는 걸<br>아실 때</td><td class="hi">가장 귀한 자리에</td></tr>
+        <tr><td class="l">가격</td><td>69,800</td><td>84,800</td><td class="hi">99,800</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- L8 맛 -->
+  <section data-b="L8">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">TASTE</div>
+      <h2 class="h mb">정성은 눈에 보이지 않아서,<br>맛으로만 남습니다</h2>
+      <div class="rule"></div>
+      <p class="sub" style="margin-bottom:26px">해동 후 굽거나 끓이면, 상 위에는 이렇게 오릅니다</p>
+      <div class="cook">
+        <div class="cookc"><div class="ph sq"><img src="img2/cook_la1.jpg"></div><div class="t"><b>LA 양념갈비</b><span>달군 팬에 그대로 굽기</span></div></div>
+        <div class="cookc"><div class="ph sq"><img src="img2/cook_gal1.jpg"></div><div class="t"><b>소 양념갈비</b><span>부드럽게 찜 조리</span></div></div>
+        <div class="cookc"><div class="ph sq"><img src="img2/cook_bul1.jpg"></div><div class="t"><b>옛날 소불고기</b><span>야채 넣고 자작하게 끓이기</span></div></div>
+        <div class="cookc"><div class="ph sq"><img src="img2/cook_tang1.jpg"></div><div class="t"><b>전통 갈비탕</b><span>봉지째 데우기</span></div></div>
+      </div>
+      <div class="vals" style="margin-top:28px">
+        <div class="val"><div class="no">01</div><div class="tx"><b>과일로 낸 자연스러운 단맛</b>
+          <p>배와 양파, 마늘을 갈아 넣어 단맛을 냈습니다.</p></div></div>
+        <div class="val"><div class="no">02</div><div class="tx"><b>재우는 시간을 지켰습니다</b>
+          <p>양념이 고기 속까지 배어들 때까지 두었습니다.</p></div></div>
+        <div class="val"><div class="no">03</div><div class="tx"><b>35년 한식 노하우</b>
+          <p>20만 건의 후기로 검증해 온 간을 그대로 옮겼습니다.</p></div></div>
+      </div>
+      <div class="ctaWrap" style="padding:30px 0 0">
+        <a class="cta wine" href="#s-set">이 맛 그대로 보내기<span class="s">해동 후 굽거나 끓이기만 하면 됩니다</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- L9 포장 -->
+  <section data-b="L9" id="s-pkg">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">PACKAGE</div>
+      <h2 class="h mb">열기 전부터<br>이미 선물입니다</h2>
+      <div class="rule"></div>
+      <p class="sub">전용 선물가방과 슬리브가 전 세트에 기본 포함됩니다</p>
+    </div>
+    <div class="ph w32"><img src="img2/bag03.jpg" alt="선물가방"></div>
+    <div class="pad t">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="ph sq rd"><img src="img2/scene07.jpg" alt="포장 연출"></div>
+        <div class="ph sq rd fit"><img src="img2/card.jpg" alt="온올림 간지"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- L10 선물 서비스 -->
+  <section data-b="L10">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">GIFT SERVICE</div>
+      <h2 class="h mb sm">보내는 일까지<br>도와드립니다</h2>
+      <div class="rule"></div>
+      <div class="vals" style="margin-top:8px">
+        <div class="val"><div class="no">01</div><div class="tx"><b>받는 날짜 지정</b><p>주문서에서 희망일을 고르시면 그날 도착합니다.</p></div></div>
+        <div class="val"><div class="no">02</div><div class="tx"><b>여러 곳에 나눠 보내기</b><p>주문을 나누시면 각각 다른 주소로 발송됩니다.</p></div></div>
+        <div class="val"><div class="no">03</div><div class="tx"><b>기업 &middot; 단체 문의</b><p>수량이 많으시면 별도로 상담해 드립니다.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- L11 쿠폰 -->
+  <section data-b="L11">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">WELCOME</div>
+      <h2 class="h mb sm">집반찬연구소가<br>처음이신가요</h2>
+      <p class="sub" style="margin-bottom:24px">신규 회원 혜택을 받아보세요</p>
+      <div class="cpn"><b>10,000원</b><span>가입 후 24시간 이내 사용</span></div>
+      <div class="cpn"><b>7,000원</b><span>가입 후 7일 이내 사용</span></div>
+      <div class="cpn"><b>10% 할인</b><span>가입 후 14일 이내 사용</span></div>
+      <div class="ctaWrap" style="padding:18px 0 0"><a class="cta line" href="#">쿠폰 모두 받기</a></div>
+    </div>
+  </section>
+
+  <!-- L12 배송 -->
+  <section data-b="L12" id="s-dlv">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">DELIVERY</div>
+      <h2 class="h mb sm">추석 배송 안내</h2>
+      <p class="sub" style="margin-bottom:22px">추석 전 도착 주문 마감은 <span class="w">9월 23일(수)</span>입니다</p>
+      <div class="cal">
+        <table>
+          <tr><th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th></tr>
+          <tr>
+            <td style="color:#BEB4A6">20</td><td style="color:#BEB4A6">21</td><td style="color:#BEB4A6">22</td>
+            <td><span class="day mark">23</span><span class="lb">주문 마감</span></td>
+            <td><span class="day mark">24</span><span class="lb">배송 마감</span></td>
+            <td class="hol">25<span class="lb">추석</span></td><td class="hol">26</td>
+          </tr>
+        </table>
+      </div>
+      <table style="margin-top:16px">
+        <tr><th class="l" style="width:34%">배송 방식</th><td class="l">냉동 택배 &middot; 아이스팩 동봉</td></tr>
+        <tr><th class="l">배송비</th><td class="l">전 세트 무료</td></tr>
+        <tr><th class="l">희망일 지정</th><td class="l">주문서에서 선택 가능</td></tr>
+        <tr><th class="l">연휴</th><td class="l">9/24(목) ~ 9/26(토)</td></tr>
+      </table>
+      <div class="ctaWrap" style="padding:26px 0 0">
+        <a class="cta" href="#s-set">추석 전 도착으로 주문하기<span class="s">9월 23일(수) 마감 · 조기 마감될 수 있습니다</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- L13 크로스셀 -->
+  <section data-b="L13">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="eyebrow">MORE</div>
+      <h2 class="h mb sm">명절 준비,<br>여기서 끝내세요</h2>
+      <p class="sub" style="margin-bottom:22px">선물세트부터 차례상까지 한 번에</p>
+      <div class="cross">
+        <div class="crs"><div class="ph sq"><img src="img2/scene01.jpg" alt="추석 세트"></div>
+          <div class="t"><b>집반찬 추석 세트</b><span>실속 &middot; 알찬 &middot; 보름달 3종</span></div></div>
+        <div class="crs"><div class="ph sq"><img src="img2/scene03.jpg" alt="차례상"></div>
+          <div class="t"><b>추석 차례상</b><span>정갈함을 담은 정성 상차림</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- L14 최종 -->
+  <section data-b="L14">
+    <div class="gap"></div>
+    <div class="pad">
+      <div class="foot3">
+        <div><b>69,800</b><span>3종 실속</span></div>
+        <div><b>84,800</b><span>LA갈비 두배</span></div>
+        <div><b>99,800</b><span>소갈비 프리미엄</span></div>
+      </div>
+      <a class="cta" href="#s-set">올 추석, 마음을 담아 보내기<span class="s">전 세트 무료배송 · 받는 날짜 지정 가능</span></a>
+      <div class="ctaNote">추석 배송은 조기 마감될 수 있습니다</div>
+    </div>
+    <div class="closing"><div class="s mb">온 마음을 담아,<br>정성껏 올립니다</div></div>
+  </section>
+</div>
+
+<script>
+const ORDER={A:['L1','L2','L3','L4','L5','L6','L7','L8','L9','L10','L11','L12','L13','L14'],
+             B:['L1','L6','L7','L8','L4','L2','L3','L5','L9','L10','L11','L12','L13','L14']};
+let plan='A';
+function build(){const t=document.getElementById('tpl'),f=document.getElementById('flow');f.innerHTML='';
+  ORDER[plan].forEach(c=>f.appendChild(t.querySelector('[data-b="'+c+'"]').cloneNode(true)));}
+function setPlan(p){plan=p;document.querySelectorAll('[data-plan]').forEach(b=>b.classList.toggle('on',b.dataset.plan===p));build();window.scrollTo(0,0);}
+build();
+</script>
+</body>
+</html>
