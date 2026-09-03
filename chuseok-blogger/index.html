@@ -1,0 +1,401 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026 추석 블로그 체험단 · 키워드 &amp; 블로거 리스트</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{--ink:#17212b;--sub:#5b6b7c;--line:#e3e8ee;--bg:#f6f8fa;--pri:#1f5c3d;--pri2:#2e8b57;--warn:#c0392b;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1420px;margin:0 auto;padding:28px 20px 80px}
+header.top{background:linear-gradient(135deg,#1f5c3d,#2e8b57);color:#fff;border-radius:16px;padding:26px 28px;margin-bottom:22px}
+header.top h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+header.top p{opacity:.9;margin-top:6px;font-size:14px}
+.dday{display:inline-flex;align-items:baseline;gap:8px;background:rgba(255,255,255,.16);padding:8px 16px;border-radius:999px;margin-top:14px;font-weight:700}
+.dday b{font-size:26px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin:18px 0 26px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+.kpi .l{font-size:12px;color:var(--sub);font-weight:600}
+.kpi .v{font-size:24px;font-weight:800;margin-top:3px}
+.kpi .s{font-size:12px;color:var(--sub);margin-top:2px}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:20px}
+h2{font-size:19px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:9px}
+h2 .n{background:var(--pri);color:#fff;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-size:13px}
+.lead{color:var(--sub);font-size:13.5px;margin:6px 0 18px}
+.alert{border-left:4px solid var(--warn);background:#fdf3f2;padding:13px 16px;border-radius:0 8px 8px 0;margin:14px 0;font-size:14px}
+.alert b{color:var(--warn)}
+.ok{border-left:4px solid var(--pri2);background:#f1f8f4}
+.ok b{color:var(--pri)}
+.flow{display:flex;flex-wrap:wrap;margin:18px 0 6px}
+.step{flex:1 1 150px;min-width:150px;position:relative;background:#fff;border:2px solid var(--line);border-radius:10px;padding:12px 13px;margin-right:22px;margin-bottom:14px}
+.step:last-child{margin-right:0}
+.step:after{content:"";position:absolute;right:-19px;top:50%;transform:translateY(-50%);border:8px solid transparent;border-left-color:#cbd5e1}
+.step:last-child:after{display:none}
+.step .d{font-size:11px;font-weight:800;color:#fff;background:var(--sub);display:inline-block;padding:2px 8px;border-radius:5px;margin-bottom:6px}
+.step .t{font-weight:700;font-size:14px}
+.step .m{font-size:12px;color:var(--sub);margin-top:4px}
+.step.hot{border-color:var(--warn)} .step.hot .d{background:var(--warn)}
+.step.go{border-color:var(--pri2)} .step.go .d{background:var(--pri2)}
+.lane{margin:22px 0 6px}
+.lane h4{font-size:14px;font-weight:800;margin-bottom:10px;padding-left:9px;border-left:4px solid var(--pri)}
+.gantt{background:#f9fbfc;border:1px solid var(--line);border-radius:10px;padding:14px 12px 8px}
+.grow{display:grid;grid-template-columns:130px 1fr;align-items:center;gap:10px;margin-bottom:9px}
+.glabel{font-size:12.5px;font-weight:600;text-align:right;color:var(--sub)}
+.gbar{position:relative;height:26px;background:#eef2f6;border-radius:6px;overflow:hidden}
+.gfill{position:absolute;top:0;bottom:0;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11.5px;font-weight:700;color:#fff;white-space:nowrap}
+.gaxis{display:grid;grid-template-columns:130px 1fr;gap:10px;font-size:11px;color:var(--sub);margin-top:4px}
+.gaxis .ticks{display:flex;justify-content:space-between}
+table{width:100%;border-collapse:collapse;font-size:13.2px}
+th{background:#eef3f7;border:1px solid var(--line);padding:9px 8px;text-align:left;font-weight:700;font-size:12.5px;color:#2c3e50}
+td{border:1px solid var(--line);padding:8px;vertical-align:top}
+tr:nth-child(even) td{background:#fbfcfd}
+th.s{cursor:pointer;user-select:none;position:relative;padding-right:18px}
+th.s:hover{background:#dfe9f1}
+th.s:after{content:"⇅";position:absolute;right:5px;opacity:.35;font-size:11px}
+th.s.asc:after{content:"▲";opacity:1;color:var(--pri)}
+th.s.desc:after{content:"▼";opacity:1;color:var(--pri)}
+.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:800;color:#fff}
+.t1{background:#c0392b}.t2{background:#2e8b57}.t3{background:#8898a8}
+.tA{background:#1f5c3d}.tB{background:#2e8b57}.tC{background:#7fa88f}
+.g1{background:#c0392b}.g2{background:#d68910}.g3{background:#8898a8}
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;background:#eef3f7;color:#3d5568;margin:1px 2px 1px 0;font-weight:600}
+.tag.inf{background:#fff3cd;color:#8a6d00}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+a{color:#1f5c3d}
+.ctrl{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:8px}
+.ctrl .grp{display:flex;gap:5px;align-items:center;padding:4px 8px;background:#f4f7f9;border-radius:9px}
+.ctrl .grp>span{font-size:11.5px;color:var(--sub);font-weight:700}
+.ctrl input[type=text]{border:1px solid var(--line);border-radius:8px;padding:7px 11px;font-size:13px;min-width:190px;font-family:inherit}
+.ctrl button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:5px 11px;font-size:12.5px;cursor:pointer;font-weight:600;font-family:inherit}
+.ctrl button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.memo{width:100%;border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;min-height:30px;resize:vertical}
+.chk{width:16px;height:16px;cursor:pointer;accent-color:#1f5c3d}
+.stat{display:flex;gap:5px;justify-content:center}
+.mini{font-size:11.5px;color:var(--sub)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--sub);margin-top:10px}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+.src{font-size:12px;color:var(--sub);background:#f9fbfc;border:1px dashed var(--line);border-radius:8px;padding:11px 14px;margin-top:14px}
+.src b{color:var(--ink)}
+.todo{background:#fffbea;border:1px solid #f0dfa0;border-radius:10px;padding:14px 16px;font-size:13.5px}
+.todo b{color:#8a6d00}
+.sc{display:flex;gap:2px;align-items:center}
+.sc i{display:block;height:16px;border-radius:2px}
+.sc .r{background:#1f5c3d}.sc .f{background:#2e8b57}.sc .c{background:#d68910}.sc .e{background:#8fbfa4}
+.scT{font-weight:800;font-size:14px;margin-right:5px}
+.tblwrap{overflow-x:auto}
+@media print{body{background:#fff}section{break-inside:avoid;border:none;padding:0;margin-bottom:16px}.ctrl{display:none}}
+@media (max-width:820px){.grow,.gaxis{grid-template-columns:80px 1fr}.step{margin-right:0}.step:after{display:none}}
+</style></head><body><div class="wrap">
+
+<header class="top">
+<h1>2026 추석 블로그 체험단 · 키워드 &amp; 블로거 리스트업</h1>
+<p>집반찬연구소 온라인본부 · 대상 상품: 추석 음식세트 / 차례상 세트 / 온올림 선물세트 · 판매채널: 네이버 스마트스토어 + 자사몰</p>
+<div class="dday">2026 추석 9월 25일 (금) 까지 <b id="dd">D-23</b></div>
+</header>
+
+<div class="kpis">
+<div class="kpi"><div class="l">수집 키워드 후보</div><div class="v">189<span style="font-size:14px">개</span></div><div class="s">네이버 자동완성 30개 시드 확장</div></div>
+<div class="kpi"><div class="l">우선순위 확정 키워드</div><div class="v">21<span style="font-size:14px">개</span></div><div class="s">1군 6 · 2군 10 · 3군 5</div></div>
+<div class="kpi"><div class="l">블로그 포스팅 수집</div><div class="v">840<span style="font-size:14px">건</span></div><div class="s">키워드 20개 × 상위 42건</div></div>
+<div class="kpi"><div class="l">블로거 후보 풀</div><div class="v">130<span style="font-size:14px">명</span></div><div class="s">622명 중 업체·경쟁사 제외</div></div>
+<div class="kpi"><div class="l">1순위 즉시 접촉</div><div class="v">12<span style="font-size:14px">명</span></div><div class="s">2순위 13 · 3순위(쪽지) 5</div></div>
+<div class="kpi"><div class="l">연락처 확보율</div><div class="v">83<span style="font-size:14px">%</span></div><div class="s">30명 중 25명 협찬 메일 공개</div></div>
+</div>
+
+<section>
+<h2><span class="n">1</span>먼저 알아야 할 결론</h2>
+<div class="alert"><b>늦은 것은 블로그가 아니라 "선물세트 키워드"다.</b><br>
+작년 실측(네이버 데이터랩, 2025-09-01~2026-09-01 일간)에서 <b>추석선물세트</b> 검색은 추석 14일 전에 정점을 찍는다. 2026 추석(9/25) 기준 피크는 <b>9월 11일</b>이고, 오늘 섭외를 시작하면 회신 3일 + 배송 3일 + 작성 5일 + 색인 3일 = 최소 14일이라 발행이 9월 12~15일에 걸린다. 선물세트 축만 피크를 지나서 도착한다.</div>
+<div class="alert ok"><b>차례상·제사·명절음식 축은 지금이 정확히 적기다.</b><br>
+이 축은 피크가 <b>추석 당일~3일 전(9/22~9/25)</b>이다. 9월 18일까지만 발행되면 피크를 그대로 탄다. 노션 시딩 운영 페이지의 발행 마감 9월 15일과도 맞는다. 이번 시즌 블로그는 이 축에 집중하고, 온올림 3종 배정분은 선물세트 키워드가 아니라 <b>갈비탕·LA갈비 같은 상품 키워드</b>로 가이드를 잡는 편이 효율적이다. 갈비탕은 네이버 쇼핑 냉동/간편조리식품 인기검색어 2위다. 놓친 선물세트 축을 메울 방법은 <b>6번 항목</b>에 정리했다.</div>
+
+<div class="lane">
+<h4>검색 수요 피크 캘린더 (작년 실측을 2026년 날짜로 환산)</h4>
+<div class="gantt" id="gantt"></div>
+<div class="legend">
+<span><i class="dot" style="background:#c0392b"></i>선물세트 축 (피크 9/11 · 이미 임박)</span>
+<span><i class="dot" style="background:#2e8b57"></i>차례상·음식 축 (피크 9/22~25 · 지금 적기)</span>
+<span><i class="dot" style="background:#8898a8"></i>발행 데드라인</span>
+</div>
+</div>
+</section>
+
+<section>
+<h2><span class="n">2</span>실행 역산 일정</h2>
+<p class="lead">차례상·제사·명절음식 축 기준. 각 단계는 앞 단계가 끝나야 시작된다.</p>
+<div class="flow">
+<div class="step hot"><div class="d">9/2 ~ 9/3 · D-23</div><div class="t">1순위 12명 발송</div><div class="m">점수 상위 + 메일 공개자. 회신 마감 9/4 명시</div></div>
+<div class="step hot"><div class="d">9/3 ~ 9/4 · D-22</div><div class="t">2순위 13명 발송</div><div class="m">1순위 회신율 보고 필요 인원만</div></div>
+<div class="step"><div class="d">9/4 · D-21</div><div class="t">3순위 5명 쪽지</div><div class="m">메일 미공개자. 네이버 로그인 후 쪽지</div></div>
+<div class="step"><div class="d">9/5 ~ 9/7 · D-20</div><div class="t">확정 · 제품 발송</div><div class="m">냉장·냉동이라 수요일까지 출고</div></div>
+<div class="step"><div class="d">9/8 ~ 9/15 · D-17</div><div class="t">작성 · 발행</div><div class="m">9/11 중간 리마인드 · 9/15 마감</div></div>
+<div class="step go"><div class="d">9/16 ~ 9/25 · D-9</div><div class="t">검수 · 피크 수확</div><div class="m">표기 확인 후 순위 모니터링</div></div>
+</div>
+<div class="todo" style="margin-top:16px"><b>지금 당장 지켜야 할 마감:</b> 9월 4일(금)까지 섭외 메일이 안 나가면 9/15 발행 마감을 못 맞춘다. 리스트는 끝났으니 인턴이 1순위 12명부터 바로 발송하면 된다.</div>
+</section>
+
+<section>
+<h2><span class="n">3</span>키워드 우선순위</h2>
+<p class="lead">
+"구매전환이 높은 키워드"는 각 사의 내부 데이터라 외부 공개가 없다. 대신 <b>네이버 쇼핑 클릭 기준 인기검색어 랭킹</b>(단순 검색이 아니라 상품 클릭까지 간 키워드)을 구매의도 대리지표로 썼고,
+<b>데이터랩 검색어트렌드</b>로 검색 수요 규모를, <b>블로그 상위 10개 글의 평균 발행 경과일</b>로 경쟁 강도를 계산했다. 열 제목을 클릭하면 정렬된다.
+</p>
+<div class="ctrl">
+<div class="grp"><span>군</span><button data-kf="all" class="on kf">전체</button><button data-kf="1" class="kf">1군</button><button data-kf="2" class="kf">2군</button><button data-kf="3" class="kf">3군</button></div>
+<div class="grp"><span>상품 축</span><button data-ka="all" class="on ka">전체</button><button data-ka="차례상 세트" class="ka">차례상</button><button data-ka="추석 음식세트" class="ka">음식세트</button><button data-ka="온올림 선물세트" class="ka">온올림</button></div>
+</div>
+<div class="tblwrap"><table><thead><tr>
+<th style="width:34px">군</th><th class="s" data-k="kw" style="width:120px">키워드</th><th style="width:88px">상품 축</th>
+<th class="s" data-k="demand" style="width:82px">검색 수요<br><span class="mini">추석선물세트=1</span></th>
+<th style="width:145px">쇼핑 클릭 랭킹<br><span class="mini">구매의도 증거</span></th>
+<th class="s" data-k="fresh" style="width:88px">경쟁 강도<br><span class="mini">상위10 발행경과</span></th>
+<th>해석</th></tr></thead><tbody id="kwbody"></tbody></table></div>
+<div class="src">
+<b>경쟁 강도 읽는 법</b> — 상위 10개 글의 발행 경과일 중앙값이다. 숫자가 <b>작을수록</b> 최근 글이 계속 상위를 갈아치우는 것이라 경쟁이 치열하고, <b>클수록</b> 오래된 글이 아직 1페이지에 남아 있어 새 글이 뚫고 들어가기 쉽다.
+</div>
+<div class="todo" style="margin-top:14px"><b>인턴 확인 항목:</b> 절대 월간검색수(PC/모바일)와 경쟁정도·CPC는 네이버 검색광고 키워드도구(로그인 필요)에서 이 21개 키워드를 넣어 채운다. 자사 실제 결제전환율은 스마트스토어센터 &gt; 통계 &gt; 검색채널에서 2025년 9~10월 구간으로 조회한다.</div>
+</section>
+
+<section>
+<h2><span class="n">4</span>접촉 우선순위를 정한 기준</h2>
+<p class="lead">추석까지 23일뿐이라 "누가 제일 유명한가"가 아니라 <b>"누가 마감 안에 실제로 글을 써줄 수 있는가"</b>를 기준으로 100점 만점 점수를 매겼다.</p>
+<table><thead><tr><th style="width:120px">배점</th><th style="width:220px">무엇을 보는가</th><th style="width:90px">색</th><th>왜 이 항목인가</th></tr></thead><tbody>
+<tr><td><b>노출력 35점</b></td><td>일평균 방문자수 (로그 스케일)<br><span class="mini">통계 비공개면 이웃수로 환산</span></td><td><span class="dot" style="background:#1f5c3d"></span> 진한 녹색</td><td>글이 실제로 몇 명에게 닿는지. 로그 스케일을 쓴 이유는 방문자 2만 명이 2천 명의 10배 효과를 내지는 않기 때문이다</td></tr>
+<tr><td><b>타깃 적합도 30점</b></td><td>우리 21개 키워드 중 몇 개에, 몇 위로 이미 노출 중인가</td><td><span class="dot" style="background:#2e8b57"></span> 녹색</td><td>이 블로거가 쓰면 그 키워드에서 실제로 먹힐 확률. 이미 상위에 올라 있는 블로그는 새 글도 올라갈 가능성이 높다</td></tr>
+<tr><td><b>접촉 가능성 20점</b></td><td>협찬 메일 공개(10) + 프로필에 협찬·협업 문구 명시(6) + 네이버 인플루언서(4)</td><td><span class="dot" style="background:#d68910"></span> 주황</td><td>23일밖에 없어서 "연락이 닿는가"가 실전에서 제일 큰 변수다. 프로필에 협찬 문의처를 써둔 사람은 협찬을 받을 의사가 명시된 것이다</td></tr>
+<tr><td><b>실행 확실성 15점</b></td><td>최근 14일 포스팅 수(10) + 푸드·리뷰 카테고리(5)</td><td><span class="dot" style="background:#8fbfa4"></span> 연녹색</td><td>9월 15일 마감을 지킬 사람인지. 최근에 글을 안 쓰는 블로그는 회신도 늦고 마감도 못 지킨다</td></tr>
+</tbody></table>
+<div class="src" style="margin-top:14px">
+<b>접촉 순위 그룹</b> — <span class="badge g1">1순위</span> 점수 상위 12명 중 메일 공개자로, <b>9월 2~3일에 바로 발송</b>한다.
+<span class="badge g2">2순위</span> 나머지 메일 공개자 13명으로, 1순위 회신율을 보고 필요한 만큼 <b>9월 3~4일에 발송</b>한다.
+<span class="badge g3">3순위</span> 프로필에 메일이 없는 5명으로, 네이버 로그인 후 <b>블로그 쪽지나 안부글</b>로 접촉한다. 회신율이 낮으니 보충용으로만 쓴다.<br><br>
+회신율은 통상 20~30%다. 1순위 12명을 보내면 3~4명 확정이 현실적이므로, <b>목표 인원이 15명이면 1·2순위 25명을 동시에 보내는 편이 안전하다.</b>
+</div>
+</section>
+
+<section>
+<h2><span class="n">5</span>섭외 대상 블로거 30명</h2>
+<p class="lead">
+열 제목을 클릭하면 오름차순·내림차순으로 정렬된다. 기본은 우선순위 점수 내림차순이다.
+진행상태 체크와 메모는 이 브라우저에 자동 저장되므로 인턴이 그대로 진행 관리에 쓸 수 있다. 단 다른 PC에서는 보이지 않는다.
+</p>
+<div class="ctrl">
+<input type="text" id="q" placeholder="블로그명 · 아이디 · 키워드 검색">
+<div class="grp"><span>접촉순위</span><button data-g="all" class="on gf">전체</button><button data-g="1순위" class="gf">1순위</button><button data-g="2순위" class="gf">2순위</button><button data-g="3순위" class="gf">3순위</button></div>
+<div class="grp"><span>체급</span><button data-t="all" class="on tf">전체</button><button data-t="A" class="tf">A 1만+</button><button data-t="B" class="tf">B 3천~1만</button><button data-t="C" class="tf">C 1천~3천</button></div>
+<div class="grp"><span>조건</span><button data-c="all" class="on cf">전체</button><button data-c="mail" class="cf">메일 보유</button><button data-c="inf" class="cf">인플루언서</button><button data-c="food" class="cf">푸드/리뷰</button><button data-c="todo" class="cf">미접촉</button></div>
+<span class="mini" id="cnt"></span>
+<button id="reset" style="margin-left:auto">체크 초기화</button>
+</div>
+<div class="tblwrap"><table><thead><tr>
+<th class="s desc" data-k="total" style="width:40px">순위</th>
+<th class="s" data-k="group" style="width:52px">접촉</th>
+<th class="s" data-k="tier" style="width:36px">급</th>
+<th class="s" data-k="name" style="width:175px">블로그</th>
+<th class="s" data-k="total" style="width:135px">우선순위 점수</th>
+<th class="s" data-k="v" style="width:66px">일방문자</th>
+<th class="s" data-k="buddy" style="width:56px">이웃</th>
+<th class="s" data-k="kw" style="width:58px">키워드</th>
+<th class="s" data-k="best" style="width:52px">최고<br>순위</th>
+<th class="s" data-k="post14" style="width:56px">14일<br>포스팅</th>
+<th style="width:175px">연락처</th>
+<th style="width:135px">노출 중인 키워드</th>
+<th style="width:110px">진행상태</th><th style="width:130px">메모</th>
+</tr></thead><tbody id="blbody"></tbody></table></div>
+<div class="src">
+<b>연락처가 비어 있는 5명</b>은 프로필에 메일을 공개하지 않은 경우다. 네이버 로그인 후 해당 블로그의 <b>쪽지</b> 또는 <b>안부글</b>로 접촉하면 된다. 블로그 이름을 클릭하면 열린다.<br>
+<b>원고료 참고치</b>는 업계 통용 산식(일평균 방문자 ÷ 1,000 × 20,000원)이다. 제품만 제공하는 조건이면 0원이지만, 2025년 5월부터 네이버 브랜드커넥트는 <b>무보상 캠페인을 금지</b>하고 있어 최소한 제품 제공은 필수다.
+</div>
+</section>
+
+<section>
+<h2><span class="n">6</span>선물세트 축을 메울 대안 채널</h2>
+<p class="lead">
+"블로그 말고 다른 방법"을 찾다 보면 채널을 바꾸는 쪽으로 가기 쉬운데, 실제 병목은 채널이 아니라 <b>블로그 글이 자연 검색 상단에 올라올 때까지 걸리는 색인·랭킹 대기 시간</b>이다.
+그 대기를 돈으로 건너뛰는 상품이 네이버에 이미 있다.
+</p>
+<div class="alert ok"><b>1순위 답 — 네이버 파워컨텐츠.</b><br>
+자사 블로그 글을 통합검색 상단 "브랜드콘텐츠" 구좌에 <b>광고로 직접 노출</b>시키는 검색광고 상품이다. 색인·랭킹 대기가 필요 없어 <b>검토 1~2영업일이면 노출이 시작</b>된다.
+네이버 공식 파워컨텐츠 지정 키워드 파일(2026년 7월 23일 갱신, 총 116,147개)을 직접 확인한 결과 <b>추석선물세트 · 추석차례상차림 · 명절음식 · 집반찬 · 반찬배달 등 우리 핵심 키워드가 전부 구매 가능</b> 상태였다. 식품/음료 카테고리 내 추석·명절·선물세트·반찬 관련 구매가능 키워드만 208개다.
+클릭당 70원부터이고 정액 최소 집행 의무가 없다.</div>
+<div class="alert"><b>단 함정이 두 개 있다.</b><br>
+① 소재로 쓸 글은 <b>발행일이 등록일 기준 6개월 이내</b>여야 한다. 오래된 글은 못 쓴다.<br>
+② 통합검색 노출 구좌가 <b>최대 3개뿐</b>이라 1~3위에 못 들면 예산만 소모된다. 그리고 랜딩이 네이버 블로그·카페로만 제한돼서 자사몰 전환을 직접 추적할 수 없다.</div>
+
+<div class="lane">
+<h4>9월 11일 선물세트 피크에 대응 가능한 채널 (리드타임 짧은 순)</h4>
+</div>
+<div class="tblwrap"><table><thead><tr>
+<th style="width:150px">채널</th><th style="width:120px">셋업~노출</th><th style="width:130px">최소 비용</th><th style="width:88px">9/11 대응</th><th>주의사항</th>
+</tr></thead><tbody>
+<tr><td><b>CRM 문자 / LMS</b><br><span class="mini">기존 고객 대상</span></td><td>당일 ~ 1일<br><span class="mini">발신번호 기등록 시</span></td><td>SMS 10원 · LMS 28원<br><span class="mini">1만명 = 10~28만원</span></td><td><span class="badge t2">여유</span></td><td>할인·프로모션 문구는 알림톡으로 못 보낸다. 문자 또는 카카오 친구톡으로 가야 한다. 발신번호가 미등록이면 3~5영업일이 먼저 붙는다</td></tr>
+<tr><td><b>CRM 알림톡</b><br><span class="mini">정보성만</span></td><td>당일<br><span class="mini">레시피 템플릿 사용 시</span></td><td>7원 / 건</td><td><span class="badge t2">여유</span></td><td>광고성 불가. "추석 배송 마감 안내" 같은 정보성 형태로 우회 설계해야 한다. 개인 템플릿은 검수 2~5영업일</td></tr>
+<tr><td><b>네이버 쇼핑검색광고</b><br><span class="mini">상품형</span></td><td>1영업일<br><span class="mini">이슈 시 최대 5영업일</span></td><td>클릭당 50원~<br><span class="mini">정액 최소 없음</span></td><td><span class="badge t2">9/3~4 노출</span></td><td>상세페이지를 추석용으로 고칠 계획이면 쇼핑 연동에 최대 1일이 더 붙는다. 수정을 먼저 끝내고 광고를 등록할 것</td></tr>
+<tr><td><b>네이버 파워컨텐츠</b><br><span class="mini">블로그 글을 광고로</span></td><td>1~2영업일<br><span class="mini">기존 글 재활용 시</span></td><td>클릭당 70원~<br><span class="mini">정액 최소 없음</span></td><td><span class="badge t2">9/3~5 노출</span></td><td>글 발행일 6개월 이내 필수. 구좌 3개뿐이라 1~3위 못 들면 예산 소모. 랜딩이 블로그·카페로 제한돼 자사몰 전환 추적 불가</td></tr>
+<tr><td><b>네이버 쇼핑라이브</b><br><span class="mini">자체 진행</span></td><td>1~2일<br><span class="mini">캘린더 노출은 +1영업일</span></td><td>광고비 0<br><span class="mini">매출연동 수수료</span></td><td><span class="badge t2">가능</span></td><td>스마트스토어 새싹 등급 이상이어야 한다(최근 3개월 100건·200만원). 검색 유입을 새로 만드는 채널이 아니라 모아둔 유입을 전환시키는 채널이다</td></tr>
+<tr><td><b>맘카페 바이럴</b></td><td>2~5일</td><td>카페별 상이<br><span class="mini">공개 정가 없음</span></td><td><span class="badge t3">예측 어려움</span></td><td>네이버가 관여하지 않아 카페마다 단가가 전부 다르다. 2026년 기준 효과를 뒷받침할 정량 자료를 찾지 못했다</td></tr>
+<tr><td><b>인스타 릴스 시딩</b><br><span class="mini">제품 발송형</span></td><td>7~10일</td><td>30만원~</td><td><span class="badge t1">턱걸이</span></td><td>택배 1~2일 포함. 촬영 동반형(2~3주)은 불가능하다. 성수기 단가가 20~30% 오른다. 노션 시딩 페이지에서 이미 인스타 미진행으로 결정된 사안</td></tr>
+<tr><td><b>레뷰 긴급체험단</b></td><td>영업일 7일<br><span class="mini">달력 9~11일</span></td><td>미공개 (상담)</td><td><span class="badge t1">턱걸이</span></td><td>오늘 즉시 계약해야 9/11~13 발행이다. 단가가 공개되지 않아 반드시 선견적을 받아야 한다</td></tr>
+<tr style="opacity:.6"><td><b>네이버 브랜드검색</b></td><td>1~3영업일</td><td>7일에 50만원~</td><td><span class="badge t3">부적합</span></td><td>브랜드 키워드만 구매 가능하고 일반명사는 불가하다. "추석선물세트" 같은 카테고리 키워드를 살 수 없어 피크 대응 용도로는 못 쓴다</td></tr>
+<tr style="opacity:.6"><td><b>카카오톡 선물하기</b></td><td>MD 회신만 2주 +&nbsp;α</td><td>협의</td><td><span class="badge t3">불가</span></td><td>MD 큐레이션 구조라 심사에 2주가 걸린다. 2026 추석은 포기하고 2027 설 대비로 지금 입점 제안을 넣어두는 편이 낫다</td></tr>
+</tbody></table></div>
+
+<div class="lane">
+<h4>권장 실행 순서</h4>
+</div>
+<div class="flow">
+<div class="step hot"><div class="d">9/2 오늘</div><div class="t">파워컨텐츠 + 쇼핑검색광고</div><div class="m">비즈머니 충전 → 비즈채널 확인 → 등록. 9/3~5 노출 시작</div></div>
+<div class="step hot"><div class="d">9/2 오늘 마감</div><div class="t">레뷰 긴급체험단 견적</div><div class="m">영업일 7일이라 오늘 계약해야 9/11 발행</div></div>
+<div class="step"><div class="d">9/2 ~ 9/3</div><div class="t">CRM 발송 설계</div><div class="m">발신번호 등록 상태부터 확인</div></div>
+<div class="step"><div class="d">9/3</div><div class="t">쇼핑라이브 예약</div><div class="m">등급 확인 후 9/8~10 방송 편성</div></div>
+<div class="step go"><div class="d">9/2 이후</div><div class="t">카카오 선물하기 신청</div><div class="m">2027 설 대비. 이번 추석은 못 맞춤</div></div>
+</div>
+<div class="src">
+<b>출처</b> — 네이버 파워컨텐츠 지정 키워드 파일(searchad.naver.com, 2026-07-23 갱신), 네이버 광고주센터 도움말(ads.naver.com/help/faq 675·672·476·1006·1127·1133), 파워컨텐츠 광고등록기준 PDF, 네이버 쇼핑라이브 고객센터(help.naver.com/service/21349), 카카오 비즈니스 선물하기 입점 안내(business.kakao.com/info/gift), 레뷰 비즈(biz.revu.net/product). 전부 2026-09-02 확인.<br>
+<b>추정으로 표시한 항목</b> — 맘카페 리드타임·비용, 인스타 릴스 시딩 총 소요일, 레뷰 긴급체험단 단가, ADVoost 최소 예산. 공개 자료가 없어 확정할 수 없었다.
+</div>
+</section>
+
+<section>
+<h2><span class="n">7</span>진행 방식 선택 (참고)</h2>
+<table><thead><tr><th style="width:130px">방식</th><th style="width:90px">비용</th><th style="width:110px">리드타임</th><th>특징</th></tr></thead><tbody>
+<tr><td><b>블로거 개별 연락</b></td><td>제품만 제공 시 0원</td><td>12~18일</td><td>이 문서의 30명 리스트를 그대로 쓴다. 회신율이 20~30%라 25명 보내면 6~8명 확정이 현실적이다.</td></tr>
+<tr><td><b>네이버 브랜드커넥트</b></td><td>플랫폼 이용료 0원<br>현금 리워드 시 3%</td><td>12~23일</td><td>노션 「2026 추석 세트 판매 촉진 시딩 운영」에 이미 30명 규모로 설계돼 있다. 스페이스가 2시즌 운영 이력으로 개설돼 있어 즉시 등록 가능하다. 단 모집 시작 후에는 공고 수정이 불가하다.</td></tr>
+<tr><td><b>레뷰 등 대행</b></td><td>건당 유료</td><td>긴급 7영업일</td><td>일정이 촉박할 때의 대안. 인원 확보는 확실하나 블로거 품질 선택권이 적다.</td></tr>
+</tbody></table>
+<div class="alert" style="margin-top:16px"><b>공정위 표기 규정 주의.</b> 공정거래위원회 「경제적 이해관계 표시 안내서」는 <b>"체험단", "체험 후기", "기자단", "서포터즈", "원고료 지급"</b> 같은 표현을 부적절 표시 예시로 명시한다. 무료 제공 시 적법한 표기는 <b>"광고" 또는 "상품 협찬"</b> 뿐이며, 블로그 게시물은 <b>제목 또는 본문 첫 부분</b>에 이 문구가 노출돼야 한다. 섭외 메일과 작성 가이드에 이 문구를 반드시 지정해서 보내야 한다.</div>
+</section>
+
+<section>
+<h2><span class="n">8</span>데이터 출처</h2>
+<table><thead><tr><th style="width:170px">항목</th><th style="width:225px">출처</th><th>수집 방법 / 기준</th></tr></thead><tbody>
+<tr><td>키워드 후보 189개</td><td>네이버 검색 자동완성</td><td>시드 30개를 1단계 확장. 2026-09-02 수집</td></tr>
+<tr><td>검색 수요 지수</td><td>네이버 데이터랩 검색어트렌드</td><td>2025-09-01~2026-09-01 일간. 5개 그룹 모두에 "추석선물세트"를 앵커로 넣어 그룹 간 비교 가능하게 정규화. 작년 추석 4주 전~당일(2025-09-08~10-06) 평균값</td></tr>
+<tr><td>쇼핑 클릭 랭킹</td><td>네이버 데이터랩 쇼핑인사이트</td><td>식품 &gt; 냉동/간편조리식품(cid 50000026), 식품 &gt; 반찬(cid 50000146). 작년 시즌(2025-09-01~10-06)과 현재(2026-08-01~09-01) 두 구간</td></tr>
+<tr><td>경쟁 강도</td><td>네이버 블로그 검색</td><td>키워드별 관련도순 상위 10건의 발행일 경과 중앙값 및 업체 블로그 비율</td></tr>
+<tr><td>블로거 방문자수</td><td>네이버 블로그 방문자 통계</td><td>최근 5일 일방문자 평균. 통계 비공개 블로그는 비공개로 표기</td></tr>
+<tr><td>블로거 이웃수·연락처</td><td>블로그 프로필 · 이웃커넥트</td><td>프로필 소개글에 공개된 협찬 문의 메일만 수록. 추정하지 않음</td></tr>
+<tr><td>포스팅 활동성</td><td>블로그 글 목록</td><td>최근 30건의 발행일 기준 14일 내 포스팅 수. 30건이면 상한에 걸린 것이라 실제로는 더 많을 수 있음</td></tr>
+<tr><td colspan="3" style="background:#fffbea"><b>미확인 항목</b> — 절대 월간검색수, CPC·경쟁정도(네이버 검색광고 키워드도구 로그인 필요), 자사 실제 결제전환율(스마트스토어 비즈어드바이저 로그인 필요). 이 두 가지는 로그인 후 채워야 한다.</td></tr>
+</tbody></table>
+</section>
+
+</div>
+<script>
+const DATA={"kw":[{"tier":"1","kw":"제사상차림","axis":"차례상 세트","demand":2.976,"shop":"간편조리 작년 24위 / 간편조리 현재 3위","fresh":15,"biz":10,"note":"쇼핑 클릭 랭킹이 작년 24위→현재 3위로 급등. 우리 카테고리에서 지금 가장 뜨거운 구매의도 키워드"},{"tier":"1","kw":"차례상차림","axis":"차례상 세트","demand":2.976,"shop":"간편조리 작년 34위","fresh":12,"biz":10,"note":"검색 수요 2.98(2위). 피크는 추석 당일. 상위10 평균 12일 → 진입 여지 있음"},{"tier":"1","kw":"추석 차례상","axis":"차례상 세트","demand":null,"shop":"간편조리 작년 39위","fresh":9,"biz":10,"note":"쇼핑 랭킹 39위. 차례상 축의 핵심 진입 키워드"},{"tier":"1","kw":"제사음식","axis":"차례상 세트","demand":0.469,"shop":"간편조리 작년 86위 / 간편조리 현재 34위","fresh":23,"biz":10,"note":"쇼핑 랭킹 86위→34위 상승. 상위10 평균 23일로 경쟁 가장 느슨 ★진입 최적"},{"tier":"1","kw":"추석 음식","axis":"추석 음식세트","demand":2.503,"shop":"","fresh":6,"biz":10,"note":"검색 수요 2.50(3위). 정보성 검색 비중 높지만 유입량이 큼"},{"tier":"1","kw":"갈비탕","axis":"추석 음식세트","demand":null,"shop":"간편조리 작년 2위","fresh":null,"biz":null,"note":"냉동/간편조리 쇼핑 랭킹 2위. 사미헌·압도적·박수홍 등 브랜드 키워드가 상위권을 잠식 → 우리 갈비탕 단품 리뷰로 진입 가능"},{"tier":"2","kw":"추석 상차림","axis":"차례상 세트","demand":1.176,"shop":"간편조리 작년 95위","fresh":6,"biz":0,"note":"수요 1.18. 상위10 6일로 경쟁은 있으나 세트 상품과 직결"},{"tier":"2","kw":"차례상","axis":"차례상 세트","demand":1.062,"shop":"","fresh":11,"biz":10,"note":"수요 1.06. 대표 키워드지만 정보성 글이 상위 장악"},{"tier":"2","kw":"제사상","axis":"차례상 세트","demand":0.747,"shop":"","fresh":11,"biz":0,"note":"수요 0.75. 연중 수요가 있어 시즌 후에도 자산으로 남음"},{"tier":"2","kw":"모둠전 / 명절전","axis":"추석 음식세트","demand":0.112,"shop":"간편조리 작년 29위 / 간편조리 작년 84위","fresh":11,"biz":10,"note":"전 세트 상품 직결. 사옹원모듬전이 17위로 브랜드 선점 중"},{"tier":"2","kw":"제사음식 주문","axis":"차례상 세트","demand":0.067,"shop":"","fresh":14,"biz":20,"note":"검색량은 작지만 구매의도 최상. 상위10 14일로 진입 쉬움"},{"tier":"2","kw":"차례상 주문","axis":"차례상 세트","demand":0.067,"shop":"","fresh":9,"biz":40,"note":"구매의도 최상. 단 상위10의 40%가 업체 블로그(경쟁사)"},{"tier":"2","kw":"추석 음식 주문","axis":"추석 음식세트","demand":0.072,"shop":"","fresh":5,"biz":30,"note":"구매의도 상. 상위10 30%가 업체"},{"tier":"2","kw":"명절음식세트","axis":"추석 음식세트","demand":0.003,"shop":"","fresh":4,"biz":10,"note":"검색량 극소지만 상품명과 정확히 일치 → 상세페이지 유입 직결"},{"tier":"2","kw":"차례음식 배달","axis":"차례상 세트","demand":null,"shop":"","fresh":49,"biz":40,"note":"상위10 평균 49일 = 오래된 글이 아직 상위 ★가장 쉬운 진입로"},{"tier":"2","kw":"나물세트","axis":"추석 음식세트","demand":null,"shop":"","fresh":42,"biz":0,"note":"상위10 평균 42일. 경쟁 거의 없음"},{"tier":"3","kw":"추석선물세트","axis":"온올림 선물세트","demand":9.734,"shop":"식품 전체 2위","fresh":11,"biz":0,"note":"수요 압도적 1위지만 한우·과일·정관장이 지배. 피크가 D-14(9/11)라 이번 시즌 체험단으로는 타이밍 초과"},{"tier":"3","kw":"명절 선물세트","axis":"온올림 선물세트","demand":2.308,"shop":"","fresh":7,"biz":0,"note":"수요 2.31. 설날에도 재사용되는 연중 키워드 → 자산 축적용"},{"tier":"3","kw":"부모님 추석 선물","axis":"온올림 선물세트","demand":0.593,"shop":"","fresh":2,"biz":0,"note":"수요 0.59. 상위10이 2일마다 갈아치워짐 = 경쟁 극심"},{"tier":"3","kw":"반찬 선물세트","axis":"온올림 선물세트","demand":0,"shop":"반찬 현재 1위","fresh":8,"biz":0,"note":"검색량 사실상 0. 단 반찬 카테고리 쇼핑 1위 키워드가 \"반찬\"이라 상품명 최적화용으로만 사용"},{"tier":"3","kw":"거래처 추석 선물","axis":"온올림 선물세트","demand":0.085,"shop":"","fresh":8,"biz":0,"note":"B2B 축. 검색량 작지만 온올림 B2B 문의와 직결"}],"bl":[{"rank":1,"group":"1순위","tier":"A","id":"danakim1222","name":"danalog : 모든요일의 기록","url":"https://blog.naver.com/danakim1222","v":15918,"buddy":0,"kw":5,"best":6,"type":"푸드/리뷰","influencer":true,"email":"danakim1222@naver.com","intro":"▫️네이버 상위 2% 최적 3 인플루언서     ▫️danakim1222@naver.com.","kws":"추석 음식 주문, 명절 음식 주문, 제사음식 주문, 명절 전 주문, 반찬 선물세트","post14":30,"total":91,"reach":34,"fit":28,"contact":14,"exec":15,"fee":320000},{"rank":2,"group":"1순위","tier":"B","id":"sindongmam","name":"푸드인플루언서 신동맘","url":"https://blog.naver.com/sindongmam","v":3606,"buddy":9172,"kw":4,"best":6,"type":"푸드/리뷰","influencer":true,"email":"sindongmam@naver.com","intro":"푸드 인플루언서 신동맘 / 협찬 = 메일 쪽지 / sindongmam@naver.com","kws":"추석 상차림 세트, 명절음식세트, 추석 밀키트, 명절 선물세트 추천","post14":30,"total":89,"reach":29,"fit":25,"contact":20,"exec":15,"fee":80000},{"rank":3,"group":"1순위","tier":"B","id":"gh676800","name":"Beauty Review","url":"https://blog.naver.com/gh676800","v":6436,"buddy":0,"kw":2,"best":2,"type":"푸드/리뷰","influencer":true,"email":"gh676800@naver.com","intro":"&quot;솔직한 뷰티블로그&quot; / 네이버상위2%뷰스타 / 뷰티인플루언서입니다! / 비지니스 문의는 / gh676800@naver.com / E-Mail로 보내주세요! / 메이크업아티스트 &amp; / 메이크업 강사","kws":"추석 선물세트 추천, 거래처 추석 선물","post14":25,"total":87,"reach":31,"fit":21,"contact":20,"exec":15,"fee":120000},{"rank":4,"group":"1순위","tier":"A","id":"morningstar7","name":"고양이집사 채연맘","url":"https://blog.naver.com/morningstar7","v":15693,"buddy":4612,"kw":1,"best":3,"type":"푸드/리뷰","influencer":true,"email":"morningstar7@naver.com","intro":"네이버 인플루언서/ 디지털.리빙.인테리어.고양이용품 감성 리뷰 전문/ 4묘 반려중/ 일일방문자 15,000명/ 블로그지수_최적4/ 협찬 문의: morningstar7@naver.com / 카톡ID: morningpig","kws":"부모님 추석 선물","post14":9,"total":85,"reach":34,"fit":17,"contact":20,"exec":14,"fee":320000},{"rank":5,"group":"1순위","tier":"B","id":"magazinesell","name":"슬아랑의 EAT, LIVE, LOVE","url":"https://blog.naver.com/magazinesell","v":6079,"buddy":0,"kw":2,"best":7,"type":"푸드/리뷰","influencer":true,"email":"magazinesell@naver.com","intro":"✨네이버 리빙인플루언서  ✌️키워드챌린지 상위노출 전문  ❣️초등학교 3학년 따님을 엄마표로 가르치고 있는 &zwj;전직 영어교사 엄마 협업문의 : magazinesell@naver.com","kws":"추석 선물세트 추천, 명절 선물세트 추천","post14":14,"total":84,"reach":31,"fit":18,"contact":20,"exec":15,"fee":120000},{"rank":6,"group":"1순위","tier":"B","id":"0419hanna","name":"젬마의 여자놀이","url":"https://blog.naver.com/0419hanna","v":6530,"buddy":0,"kw":2,"best":12,"type":"푸드/리뷰","influencer":true,"email":"0419hanna@naver.com","intro":"✔️ 협업 문의 0419hanna@naver.com ｜네이버 푸드 인플루언서｜ 최적화 블로그 +4 &amp; 2026 클립크리에이터 &amp; 2026 피드메이커 4기｜간단하고 건강한 레시피 &amp; 실용적인 주방가전 &amp; 감","kws":"추석 음식 주문, 명절 선물세트 추천","post14":30,"total":82,"reach":31,"fit":16,"contact":20,"exec":15,"fee":140000},{"rank":7,"group":"1순위","tier":"B","id":"happyday4918","name":"로로네테이블","url":"https://blog.naver.com/happyday4918","v":9654,"buddy":0,"kw":2,"best":5,"type":"푸드/리뷰","influencer":true,"email":"happyday4918@naver.com","intro":"☀️육아 인플루언서 로로네테이블☀️ / ✅3세, 6세 로로자매의 유아식 레시피 / ✅아이반찬 &middot; 한그릇요리 &middot; 육아정보 / ✅아이랑 가볼만한 곳 &middot; 육아템 리뷰 / 엄마의 시선으로 쉽고 현실적인 ","kws":"추석 선물세트 추천, 반찬 선물세트","post14":30,"total":80,"reach":32,"fit":19,"contact":14,"exec":15,"fee":200000},{"rank":8,"group":"1순위","tier":"C","id":"sulhahaha","name":"ici et maintenant @설설","url":"https://blog.naver.com/sulhahaha","v":1656,"buddy":5764,"kw":2,"best":8,"type":"푸드/리뷰","influencer":true,"email":"sulhahaha@naver.com","intro":"ici et maintenant 지금 이 순간, 바로 여기 / ☑️네이버여행인플루언서 / ☑️2026클립크리에이터/노른자클럽(야놀자)4기 / ☑️협업문의: sulhahaha@naver.com","kws":"차례상 주문, 차례음식 배달","post14":23,"total":79,"reach":26,"fit":18,"contact":20,"exec":15,"fee":40000},{"rank":9,"group":"1순위","tier":"C","id":"yuyeon91","name":"유뚱이's HOUSE","url":"https://blog.naver.com/yuyeon91","v":1456,"buddy":0,"kw":3,"best":2,"type":"혼합","influencer":false,"email":"yuyeon91@naver.com","intro":"최적블로그, 상위노출 잘하는 / 초보 주부의 / 실생활 살림 꿀팁 정보 / ▼ 협찬 / 협업 문의 ▼ / yuyeon91@naver.com","kws":"추석 차례상 세트, 차례상차림 가격, 부모님 추석 선물","post14":30,"total":79,"reach":26,"fit":24,"contact":16,"exec":13,"fee":20000},{"rank":10,"group":"1순위","tier":"B","id":"redmilkb","name":"소소한 살림","url":"https://blog.naver.com/redmilkb","v":6445,"buddy":0,"kw":1,"best":5,"type":"푸드/리뷰","influencer":false,"email":"redmilkb@naver.com","intro":"클립크리에이터4기@메리민스홈의살림과 리빙정보   협업제안 : redmilkb@naver.com","kws":"명절 선물세트 추천","post14":29,"total":78,"reach":31,"fit":16,"contact":16,"exec":15,"fee":120000},{"rank":11,"group":"1순위","tier":"C","id":"ha7ai1010","name":"엄마어디가","url":"https://blog.naver.com/ha7ai1010","v":2750,"buddy":12453,"kw":2,"best":9,"type":"혼합","influencer":true,"email":"ha7ai1010@naver.com","intro":"✈️ 엄마어디가 | 국내&middot;해외 방방곡곡을 누비는 여행 인플루언서 7개 국어 가능한 국제부부 엄마와 함께하는 한달살기부터 알짜 여행 꿀팁까지 육아와 여행을 병행하며,아이와 함께하는 리얼 가족여행 콘텐츠체험형 여행, 맛집, ","kws":"추석 선물세트 추천, 부모님 추석 선물","post14":21,"total":78,"reach":28,"fit":17,"contact":20,"exec":13,"fee":60000},{"rank":12,"group":"1순위","tier":"A","id":"anarche69","name":"생활건강 인플루언서 비타민아재","url":"https://blog.naver.com/anarche69","v":19224,"buddy":0,"kw":2,"best":19,"type":"정보성","influencer":true,"email":"anarche69@naver.com","intro":"협업 메일 anarche69@naver.com / 카톡 anarch69 / 리펀드에이전시 계약 및 협업중. / 비타민처럼 활력 팡팡 터지는 생활건강 정보를 풍성하게 담은 블로그입니다. / 건강한 삶, 건강한 라이프! / 생활건강 인플","kws":"명절 음식 주문, 차례상 주문","post14":30,"total":77,"reach":35,"fit":12,"contact":20,"exec":10,"fee":380000},{"rank":13,"group":"2순위","tier":"A","id":"yuniworld777","name":"유니의 건강한 라이프","url":"https://blog.naver.com/yuniworld777","v":18926,"buddy":2797,"kw":1,"best":5,"type":"정보성","influencer":false,"email":"soyoon0318@naver.com","intro":"협업문의&darr; / soyoon0318@naver.com","kws":"부모님 추석 선물","post14":30,"total":77,"reach":35,"fit":16,"contact":16,"exec":10,"fee":380000},{"rank":14,"group":"2순위","tier":"C","id":"rosettela","name":"로제텔라의 인생창고","url":"https://blog.naver.com/rosettela","v":2871,"buddy":4002,"kw":1,"best":2,"type":"푸드/리뷰","influencer":false,"email":"rosettela@naver.com","intro":"삶을 기록하고픈 로제텔라의 공간입니다. / 여행 볼거리 먹거리 정성껏 소개해요 :D / ▶협업 문의 / rosettela@naver.com / ▶블로그 링크 공유⭕ / 이미지 콘텐츠 사용 및 2차가공❌","kws":"성묘 음식 세트","post14":13,"total":77,"reach":28,"fit":18,"contact":16,"exec":15,"fee":60000},{"rank":15,"group":"2순위","tier":"C","id":"kate0812","name":"향기나는 집♡","url":"https://blog.naver.com/kate0812","v":977,"buddy":0,"kw":1,"best":3,"type":"푸드/리뷰","influencer":true,"email":"kate0812@naver.com","intro":"삼형제를 키우는 엄마이자, 5인 가족의 집밥을 책임지는 푸드 인플루언서 태형제맘입니다. 누구나 쉽게 따라할 수 있는 가정식 요리와 반찬 레시피를 소개합니다.협업문의 kate0812@naver.com 인플루언서홈 https://in.n","kws":"반찬 선물세트","post14":14,"total":76,"reach":24,"fit":17,"contact":20,"exec":15,"fee":20000},{"rank":16,"group":"2순위","tier":"B","id":"3022652","name":"iReNe's LiFe","url":"https://blog.naver.com/3022652","v":6309,"buddy":0,"kw":4,"best":29,"type":"푸드/리뷰","influencer":false,"email":"3022652@naver.com","intro":"워킹맘의 간편요리&hearts; / 오늘은 / 뭐먹지에서 / 해방되기. / 협업문의: / 3022652@naver.com","kws":"차례음식 배달, 추석 반찬 배달, 추석 음식 배달, 명절 선물세트 추천","post14":15,"total":75,"reach":31,"fit":13,"contact":16,"exec":15,"fee":120000},{"rank":17,"group":"2순위","tier":"B","id":"happy4305","name":"행복한 집밥이야기","url":"https://blog.naver.com/happy4305","v":8695,"buddy":0,"kw":2,"best":30,"type":"푸드/리뷰","influencer":true,"email":"happy4305@naver.com","intro":"맛있는 집밥 요리에 정성을 더하다❤                                                     ✅네이버 푸드인플루언서 ✅푸드메이커 2기/4기                                 ","kws":"명절 선물세트 추천, 부모님 추석 선물","post14":30,"total":74,"reach":32,"fit":7,"contact":20,"exec":15,"fee":180000},{"rank":18,"group":"2순위","tier":"C","id":"thdus1853","name":"달이 질때마다 쓰는 일기","url":"https://blog.naver.com/thdus1853","v":2754,"buddy":2330,"kw":2,"best":13,"type":"푸드/리뷰","influencer":false,"email":"thdus1853@naver.com","intro":"서로 이웃 환영 (*&acute;˘`*)♡ + 기자단, 체험단 협업 문의 thdus1853@naver.com 메일 주세요","kws":"추석 밀키트, 명절 선물세트 추천","post14":11,"total":74,"reach":28,"fit":15,"contact":16,"exec":15,"fee":60000},{"rank":19,"group":"2순위","tier":"C","id":"blueumio3","name":"아윌리치 F","url":"https://blog.naver.com/blueumio3","v":1570,"buddy":0,"kw":3,"best":18,"type":"푸드/리뷰","influencer":false,"email":"blueumio3@naver.com","intro":"협업문의 blueumio3@naver.com","kws":"차례상 주문, 제사음식 주문, 차례음식 배달","post14":30,"total":73,"reach":26,"fit":16,"contact":16,"exec":15,"fee":40000},{"rank":20,"group":"2순위","tier":"C","id":"foodongolf","name":"필드 위 미식가","url":"https://blog.naver.com/foodongolf","v":950,"buddy":0,"kw":1,"best":2,"type":"푸드/리뷰","influencer":false,"email":"foodongolf@naver.com","intro":"협업문의 : foodongolf@naver.com / 골프 + 맛집 + &zwj;요리 + 육아 - 잘 먹고 잘 사는 필미의 일상","kws":"반찬 선물세트","post14":30,"total":73,"reach":24,"fit":18,"contact":16,"exec":15,"fee":20000},{"rank":21,"group":"2순위","tier":"C","id":"sallim100dan","name":"조이맘의 힐링 레시피","url":"https://blog.naver.com/sallim100dan","v":2048,"buddy":449,"kw":1,"best":4,"type":"푸드/리뷰","influencer":true,"email":"sallim100dan@naver.com","intro":"호텔조리전공, 양식조리기능사자격증, 실기교사교원자격증을 보유. 텃밭에서 키운 제철 음식으로 요리하는 조이맘쿡입니다. 푸드 인플루언서&amp; 피드메이커 sallim100dan@naver.com","kws":"추석 선물세트 추천","post14":9,"total":72,"reach":27,"fit":17,"contact":14,"exec":14,"fee":40000},{"rank":22,"group":"2순위","tier":"C","id":"ssu514","name":"솔직담백 리빙 치트키","url":"https://blog.naver.com/ssu514","v":1296,"buddy":1002,"kw":2,"best":2,"type":"정보성","influencer":false,"email":"ssu514@naver.com","intro":"✨ 결혼 3년차 신혼생활 / ✨ 6&middot;7월 네이버 메이트 / ✔ 다이소 신상 리뷰 / ✔ 생활꿀팁 &amp; 리빙정보 / ✔ 실사용 후기 / 문의 : ssu514@naver.com","kws":"추석 상차림 세트, 명절음식세트","post14":11,"total":72,"reach":25,"fit":21,"contact":16,"exec":10,"fee":20000},{"rank":23,"group":"2순위","tier":"B","id":"kaze_92","name":"찬란한우아의 맛있는 집밥 이야기","url":"https://blog.naver.com/kaze_92","v":3723,"buddy":0,"kw":2,"best":31,"type":"푸드/리뷰","influencer":true,"email":"kaze_92@naver.com","intro":"네이버 푸드인플루언서 '찬란한우아' ♪ 유튜브/틱톡/인스타 '먹베팅' ♪ 협업 문의 kaze_92@naver.com","kws":"명절 음식 주문, 명절음식세트","post14":30,"total":70,"reach":29,"fit":6,"contact":20,"exec":15,"fee":80000},{"rank":24,"group":"3순위","tier":"A","id":"r040415","name":"이슈의레시피","url":"https://blog.naver.com/r040415","v":19369,"buddy":0,"kw":2,"best":7,"type":"푸드/리뷰","influencer":false,"email":"","intro":"MBN생생정보마당360회 2019.4.3.목 방송출연/ sbs 모닝와이드6468회2017.1.3.화 방송출연/ 린나이 라면레시피대회 1등 수상/일렉트로룩스 최현석 셰프 레시피공모전 4위/2018토종닭레시피 요리영상공모전 맛있계상/ 한","kws":"성묘 음식 세트, 명절 선물세트 추천","post14":10,"total":68,"reach":35,"fit":18,"contact":0,"exec":15,"fee":380000},{"rank":25,"group":"3순위","tier":"B","id":"qhanfdbfla","name":"♡ 꿈틀꿈틀 세상나들이 ♡","url":"https://blog.naver.com/qhanfdbfla","v":9484,"buddy":264,"kw":4,"best":16,"type":"푸드/리뷰","influencer":false,"email":"","intro":"당신의 모든 기록을 담는 공간","kws":"추석 음식 주문, 명절 음식 주문, 차례상 주문, 반찬 선물세트","post14":26,"total":67,"reach":32,"fit":20,"contact":0,"exec":15,"fee":180000},{"rank":26,"group":"2순위","tier":"C","id":"donghee1721","name":"하루야의 먹고 사는 블로그","url":"https://blog.naver.com/donghee1721","v":1416,"buddy":0,"kw":3,"best":23,"type":"푸드/리뷰","influencer":true,"email":"donghee1721@naver.com","intro":"푸드 인플루언서 @하루야 / donghee1721@naver.com","kws":"명절 음식 주문, 명절음식세트, 명절 전 주문","post14":9,"total":67,"reach":26,"fit":13,"contact":14,"exec":14,"fee":20000},{"rank":27,"group":"2순위","tier":"C","id":"014785236963","name":"토볼 블로그 : 요리 맛집 ₍ᐢ.ˬ.ᐢ₎❤️","url":"https://blog.naver.com/014785236963","v":918,"buddy":3756,"kw":2,"best":19,"type":"푸드/리뷰","influencer":false,"email":"014785236963@naver.com","intro":"안녕하세요. 토끼 볼따구 '토볼' 입니다. / 맛집 블로그 4년차. / 평범한 직장인 토대리는 / 퇴근후, 맛집으로 출근해요. / (1) 블로그 1:1 교육 합니다. / (2) 주말은 웨딩 촬영해요. / @loveand.snap / ","kws":"추석 반찬 배달, 추석 음식 배달","post14":15,"total":67,"reach":24,"fit":12,"contact":16,"exec":15,"fee":20000},{"rank":28,"group":"3순위","tier":"C","id":"sjdprp2242","name":"DDOLS World.","url":"https://blog.naver.com/sjdprp2242","v":1529,"buddy":0,"kw":3,"best":2,"type":"푸드/리뷰","influencer":false,"email":"","intro":"인생도 음식도 날로 먹는 게 최고인 테토녀주부 / (업체 계정은 서로이웃 받지 않아요ㅠ)","kws":"추석 차례상 세트, 추석 상차림 세트, 명절음식세트","post14":22,"total":65,"reach":26,"fit":24,"contact":0,"exec":15,"fee":40000},{"rank":29,"group":"3순위","tier":"C","id":"moogstar1004","name":"여행 일기장","url":"https://blog.naver.com/moogstar1004","v":1842,"buddy":0,"kw":2,"best":9,"type":"푸드/리뷰","influencer":true,"email":"","intro":"[여행인플루언서] / - 파워J ♡ / - 여행꿀팁♡ / - 여행코스♡ / - 핫플♡ / - 맛집투어 ♡","kws":"명절 전 주문, 부모님 추석 선물","post14":22,"total":63,"reach":27,"fit":17,"contact":4,"exec":15,"fee":40000},{"rank":30,"group":"3순위","tier":"C","id":"wkthdo","name":"드리의 공간","url":"https://blog.naver.com/wkthdo","v":2921,"buddy":0,"kw":2,"best":7,"type":"푸드/리뷰","influencer":false,"email":"","intro":"감사한 마음으로 즐겁고 행복하게^^ / 마음에서 마음으로~ /","kws":"명절 선물세트 추천, 반찬 선물세트","post14":5,"total":56,"reach":28,"fit":18,"contact":0,"exec":10,"fee":60000}]};
+const el=(s)=>document.querySelector(s);
+(function(){const t=new Date(2026,8,25);const d=Math.ceil((t-new Date())/864e5);el('#dd').textContent='D-'+d;})();
+(function(){
+ const S=new Date(2026,8,1), E=new Date(2026,8,28), span=(E-S)/864e5;
+ const bars=[
+  {n:'추석선물세트',c:'#c0392b',a:'2026-09-05',b:'2026-09-17',pk:'피크 9/11'},
+  {n:'명절 선물세트',c:'#c0392b',a:'2026-09-06',b:'2026-09-20',pk:'피크 9/13'},
+  {n:'차례상차림',c:'#2e8b57',a:'2026-09-16',b:'2026-09-26',pk:'피크 9/25'},
+  {n:'추석 음식',c:'#2e8b57',a:'2026-09-15',b:'2026-09-26',pk:'피크 9/22'},
+  {n:'제사음식/제사상',c:'#2e8b57',a:'2026-09-17',b:'2026-09-26',pk:'피크 9/24'},
+  {n:'모둠전·명절전',c:'#2e8b57',a:'2026-09-18',b:'2026-09-26',pk:'피크 9/24'},
+  {n:'발행 데드라인',c:'#8898a8',a:'2026-09-16',b:'2026-09-19',pk:'9/18'}
+ ];
+ let h='';
+ for(const x of bars){const a=(new Date(x.a)-S)/864e5,b=(new Date(x.b)-S)/864e5;
+  h+='<div class="grow"><div class="glabel">'+x.n+'</div><div class="gbar"><div class="gfill" style="left:'+(a/span*100)+'%;width:'+((b-a)/span*100)+'%;background:'+x.c+'">'+x.pk+'</div></div></div>';}
+ h+='<div class="gaxis"><div></div><div class="ticks"><span>9/1</span><span>9/7</span><span>9/14</span><span>9/21</span><span>9/25 추석</span></div></div>';
+ el('#gantt').innerHTML=h;
+})();
+
+/* ---------- keyword table ---------- */
+let kwSort={k:null,dir:-1}, kwF='all', kwA='all';
+function renderKW(){
+ let list=DATA.kw.filter(k=>(kwF==='all'||k.tier===kwF)&&(kwA==='all'||k.axis===kwA));
+ if(kwSort.k){const k=kwSort.k;list=[...list].sort((a,b)=>{const x=a[k],y=b[k];
+  if(x==null)return 1; if(y==null)return -1;
+  return (typeof x==='number'? x-y : String(x).localeCompare(String(y),'ko'))*kwSort.dir;});}
+ el('#kwbody').innerHTML=list.map(k=>{
+  const fr=k.fresh==null?'-':(k.fresh+'일'+(k.biz?' <span class="mini">/업체'+k.biz+'%</span>':''));
+  return '<tr><td><span class="badge t'+k.tier+'">'+k.tier+'</span></td><td><b>'+k.kw+'</b></td><td class="mini">'+k.axis+'</td><td class="num">'+(k.demand==null?'-':k.demand.toFixed(2))+'</td><td class="mini">'+(k.shop||'-')+'</td><td class="num mini">'+fr+'</td><td class="mini">'+k.note+'</td></tr>';
+ }).join('');
+}
+document.querySelectorAll('#kwbody').length;
+document.querySelectorAll('th.s[data-k]').forEach(th=>{
+ if(!th.closest('table').querySelector('#kwbody')) return;
+ th.onclick=()=>{const k=th.dataset.k;
+  if(kwSort.k===k){kwSort.dir*=-1;}else{kwSort={k,dir:-1};}
+  th.closest('tr').querySelectorAll('th.s').forEach(x=>x.classList.remove('asc','desc'));
+  th.classList.add(kwSort.dir===1?'asc':'desc'); renderKW();};
+});
+document.querySelectorAll('.kf').forEach(b=>b.onclick=()=>{document.querySelectorAll('.kf').forEach(x=>x.classList.remove('on'));b.classList.add('on');kwF=b.dataset.kf;renderKW();});
+document.querySelectorAll('.ka').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ka').forEach(x=>x.classList.remove('on'));b.classList.add('on');kwA=b.dataset.ka;renderKW();});
+
+/* ---------- blogger table ---------- */
+const KEY='chuseok2026_blogger_v1';
+let ST=JSON.parse(localStorage.getItem(KEY)||'{}');
+const save=()=>localStorage.setItem(KEY,JSON.stringify(ST));
+const STAGES=['발송','회신','확정','발행'];
+let blSort={k:'total',dir:-1}, gF='all', tF='all', cF='all';
+function renderBL(){
+ const q=(el('#q').value||'').toLowerCase();
+ let list=DATA.bl.filter(b=>{
+  if(q && !((b.name+b.id+b.kws).toLowerCase().includes(q))) return false;
+  if(gF!=='all' && b.group!==gF) return false;
+  if(tF!=='all' && b.tier!==tF) return false;
+  if(cF==='mail' && !b.email) return false;
+  if(cF==='inf' && !b.influencer) return false;
+  if(cF==='food' && b.type!=='푸드/리뷰') return false;
+  if(cF==='todo' && (ST[b.id]&&ST[b.id].s&&ST[b.id].s.length)) return false;
+  return true;
+ });
+ const k=blSort.k;
+ list.sort((a,b)=>{let x=a[k],y=b[k];
+  if(k==='group'){x=+String(x)[0];y=+String(y)[0];}
+  if(typeof x==='string'||typeof y==='string') return String(x).localeCompare(String(y),'ko')*blSort.dir;
+  return ((x??-1)-(y??-1))*blSort.dir;});
+ el('#blbody').innerHTML=list.map(b=>{
+  const st=ST[b.id]||{s:[],m:''};
+  const chk=STAGES.map(s=>'<label title="'+s+'" style="display:flex;flex-direction:column;align-items:center;font-size:9px;color:#5b6b7c;gap:1px"><input type="checkbox" class="chk" data-id="'+b.id+'" data-s="'+s+'"'+(st.s.includes(s)?' checked':'')+'>'+s+'</label>').join('');
+  const contact=b.email?'<a href="mailto:'+b.email+'">'+b.email+'</a>':'<span style="color:#c0392b;font-weight:700">메일 미공개 → 쪽지</span>';
+  const gnum=String(b.group)[0];
+  const bar='<div class="sc"><span class="scT">'+b.total+'</span>'
+   +'<i class="r" style="width:'+(b.reach*1.5)+'px" title="노출력 '+b.reach+'/35"></i>'
+   +'<i class="f" style="width:'+(b.fit*1.5)+'px" title="적합도 '+b.fit+'/30"></i>'
+   +'<i class="c" style="width:'+(b.contact*1.5)+'px" title="접촉 '+b.contact+'/20"></i>'
+   +'<i class="e" style="width:'+(b.exec*1.5)+'px" title="실행 '+b.exec+'/15"></i></div>'
+   +'<div class="mini">'+b.reach+' / '+b.fit+' / '+b.contact+' / '+b.exec+'</div>';
+  return '<tr>'
+   +'<td class="num"><b>'+b.rank+'</b></td>'
+   +'<td><span class="badge g'+gnum+'">'+b.group+'</span></td>'
+   +'<td><span class="badge t'+b.tier+'">'+b.tier+'</span></td>'
+   +'<td><a href="'+b.url+'" target="_blank"><b>'+b.name+'</b></a><div class="mini">'+b.id+(b.influencer?' <span class="tag inf">인플</span>':'')+' <span class="tag">'+b.type+'</span></div></td>'
+   +'<td>'+bar+'</td>'
+   +'<td class="num">'+(b.v?b.v.toLocaleString():'<span class="mini">비공개</span>')+'</td>'
+   +'<td class="num">'+(b.buddy?b.buddy.toLocaleString():'-')+'</td>'
+   +'<td class="num">'+b.kw+'개</td>'
+   +'<td class="num">'+b.best+'위</td>'
+   +'<td class="num">'+b.post14+'건</td>'
+   +'<td class="mini">'+contact+'<div style="margin-top:3px;color:#8898a8">'+(b.intro||'').replace(/</g,'&lt;')+'</div></td>'
+   +'<td class="mini">'+b.kws+'</td>'
+   +'<td><div class="stat">'+chk+'</div></td>'
+   +'<td><textarea class="memo" data-id="'+b.id+'" placeholder="회신 · 조건">'+(st.m||'')+'</textarea></td></tr>';
+ }).join('');
+ const done=DATA.bl.filter(b=>ST[b.id]&&ST[b.id].s&&ST[b.id].s.includes('확정')).length;
+ const sent=DATA.bl.filter(b=>ST[b.id]&&ST[b.id].s&&ST[b.id].s.includes('발송')).length;
+ el('#cnt').textContent=list.length+'명 표시 · 발송 '+sent+' · 확정 '+done;
+ document.querySelectorAll('.chk').forEach(c=>c.onchange=e=>{
+  const id=e.target.dataset.id,s=e.target.dataset.s;
+  ST[id]=ST[id]||{s:[],m:''};
+  ST[id].s=e.target.checked?[...new Set([...ST[id].s,s])]:ST[id].s.filter(x=>x!==s);
+  save(); renderBL();});
+ document.querySelectorAll('.memo').forEach(t=>t.onchange=e=>{const id=e.target.dataset.id;ST[id]=ST[id]||{s:[],m:''};ST[id].m=e.target.value;save();});
+}
+document.querySelectorAll('th.s[data-k]').forEach(th=>{
+ if(!th.closest('table').querySelector('#blbody')) return;
+ th.onclick=()=>{const k=th.dataset.k;
+  if(blSort.k===k){blSort.dir*=-1;}else{blSort={k,dir:(k==='rank'||k==='best'||k==='group'||k==='name'||k==='tier')?1:-1};}
+  th.closest('tr').querySelectorAll('th.s').forEach(x=>x.classList.remove('asc','desc'));
+  th.classList.add(blSort.dir===1?'asc':'desc'); renderBL();};
+});
+document.querySelectorAll('.gf').forEach(b=>b.onclick=()=>{document.querySelectorAll('.gf').forEach(x=>x.classList.remove('on'));b.classList.add('on');gF=b.dataset.g;renderBL();});
+document.querySelectorAll('.tf').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tf').forEach(x=>x.classList.remove('on'));b.classList.add('on');tF=b.dataset.t;renderBL();});
+document.querySelectorAll('.cf').forEach(b=>b.onclick=()=>{document.querySelectorAll('.cf').forEach(x=>x.classList.remove('on'));b.classList.add('on');cF=b.dataset.c;renderBL();});
+el('#q').oninput=renderBL;
+el('#reset').onclick=()=>{if(confirm('체크와 메모를 모두 지울까요?')){ST={};save();renderBL();}};
+renderKW(); renderBL();
+</script></body></html>
