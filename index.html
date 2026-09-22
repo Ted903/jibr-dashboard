@@ -6,9 +6,139 @@
 <title>집반찬연구소 · 온라인팀 OKR</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+// ══════════════════════════════════════
+// 저장 구조 v2 — 순수 함수 (DOM/Firebase 없음, 단위 테스트 대상)
+//  - dashboard/shared      : standups 를 뺀 메타(activeQ, quarters[q].teamName/members/tasks…, dailies, repeatDone)
+//  - standups/{문서ID}      : 하루치 standup 1건. {q, date, data: JSON 문자열, updatedAt, by}
+//  - 병합은 base(마지막으로 본 서버본) / local / remote 3-way.
+//    · id 가진 배열(todos, keyTasks[mid], members, okrs…)은 id 기준 합집합
+//    · 로컬에서 지운 항목은 지우고, 다른 사람이 새로 추가한 항목(base에 없던 것)은 살린다
+//    · 같은 값을 양쪽이 다르게 고쳤으면 로컬 우선
+// ══════════════════════════════════════
+window.SUMerge=(function(){
+  const J=JSON.stringify;
+  const has=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
+  function isObj(x){return x!==null&&typeof x==='object'&&!Array.isArray(x);}
+  function eq(a,b){return J(a)===J(b);}
+  function idKey(x){return String(x.id);}
+  // 모든 원소가 id 를 가진 객체인 배열인가 (빈 배열은 판단 보류)
+  function isIdArrays(){
+    let any=false;
+    for(const a of arguments){
+      if(a===undefined||a===null)continue;
+      if(!Array.isArray(a))return false;
+      for(const x of a){if(!isObj(x)||x.id===undefined||x.id===null)return false;any=true;}
+    }
+    return any;
+  }
+  // b === undefined 는 "기준본 없음"(처음 보는 값) → 합집합, 충돌 시 로컬 우선
+  function mergeVal(b,l,r){
+    if(eq(l,r))return l;
+    if(b!==undefined&&eq(b,l))return r;   // 원격만 바뀜
+    if(b!==undefined&&eq(b,r))return l;   // 로컬만 바뀜
+    if(Array.isArray(l)&&Array.isArray(r)&&isIdArrays(b,l,r))return mergeIdArray(Array.isArray(b)?b:[],l,r);
+    if(isObj(l)&&isObj(r))return mergeObj(isObj(b)?b:undefined,l,r);
+    return l;
+  }
+  function mergeObj(b,l,r){
+    const out={};
+    const keys=Object.keys(l).concat(Object.keys(r).filter(k=>!has(l,k)));
+    keys.forEach(k=>{
+      const inL=has(l,k),inR=has(r,k),inB=!!b&&has(b,k);
+      if(inL&&inR)out[k]=mergeVal(inB?b[k]:undefined,l[k],r[k]);
+      else if(inL){if(inB&&eq(b[k],l[k]))return;out[k]=l[k];}   // 원격이 지웠고 로컬은 안 건드림 → 삭제
+      else{if(inB)return;out[k]=r[k];}                          // 로컬이 지움 → 삭제 / 원격이 새로 추가 → 유지
+    });
+    return out;
+  }
+  function carriedKey(x){return x&&x._carried?(x.mid+'||'+x.text):null;}
+  function mergeIdArray(b,l,r){
+    const bm=new Map(b.map(x=>[idKey(x),x])),rm=new Map(r.map(x=>[idKey(x),x])),lm=new Map(l.map(x=>[idKey(x),x]));
+    const out=[];
+    l.forEach(x=>{
+      const k=idKey(x);
+      if(rm.has(k))out.push(mergeVal(bm.get(k),x,rm.get(k)));
+      else if(bm.has(k)&&eq(bm.get(k),x))return;               // 원격이 지웠고 로컬은 안 건드림 → 삭제
+      else out.push(x);                                          // 로컬 신규(또는 로컬이 수정한 항목)
+    });
+    // 원격에만 있는 항목: base에 있었으면 로컬이 지운 것 → 버림 / 없었으면 다른 사람이 방금 추가한 것 → 살림
+    // 이월(_carried) 항목은 두 사람이 동시에 첫 로드하면 id만 다르게 중복 생성되므로 담당자+문구로 한 번 더 거른다
+    const localCarried=new Map();l.forEach(x=>{const ck=carriedKey(x);if(ck&&!localCarried.has(ck))localCarried.set(ck,idKey(x));});
+    let prev=null;
+    r.forEach(x=>{
+      const k=idKey(x);
+      if(lm.has(k)){prev=k;return;}
+      if(bm.has(k))return;
+      const ck=carriedKey(x);if(ck&&localCarried.has(ck)){prev=localCarried.get(ck);return;}
+      const at=prev===null?0:out.findIndex(o=>idKey(o)===prev)+1;
+      if(prev!==null&&at===0)out.push(x);else out.splice(at,0,x);
+      prev=k;
+    });
+    return out;
+  }
+  function merge3(b,l,r){
+    if(l===undefined||l===null)return r;
+    if(r===undefined||r===null)return l;
+    return mergeVal(b===null?undefined:b,l,r);
+  }
+  // STORE → standups 를 뺀 메타 (키 순서 유지)
+  function metaOf(store){
+    const m={};
+    Object.keys(store||{}).forEach(k=>{
+      if(k!=='quarters'){m[k]=store[k];return;}
+      m.quarters={};
+      Object.keys(store.quarters||{}).forEach(q=>{
+        const qd=store.quarters[q]||{},o={};
+        Object.keys(qd).forEach(f=>{if(f!=='standups')o[f]=qd[f];});
+        m.quarters[q]=o;
+      });
+    });
+    return m;
+  }
+  // shared 에 남아 있는 standups 를 꺼내고 메모리 구조는 빈 {} 로 둔다
+  function extractEmbedded(store){
+    const out={};
+    Object.keys((store&&store.quarters)||{}).forEach(q=>{
+      const sd=store.quarters[q].standups;
+      if(sd&&Object.keys(sd).length)out[q]=sd;
+      store.quarters[q].standups={};
+    });
+    return out;
+  }
+  // 메타 + (서버 shared 에 남아 있던 standups 를 그대로 보존)
+  function reattachEmbedded(meta,remoteFull){
+    const out=JSON.parse(J(meta));
+    const rq=(remoteFull&&remoteFull.quarters)||{};
+    Object.keys(out.quarters||{}).forEach(q=>{
+      const sd=rq[q]&&rq[q].standups;
+      if(sd&&Object.keys(sd).length)out.quarters[q].standups=sd;
+    });
+    return out;
+  }
+  function docId(q,date){
+    const s=v=>String(v).trim().replace(/[^0-9A-Za-z가-힣_-]+/g,'-');
+    return s(q)+'__'+s(date);
+  }
+  function emptyDeep(v){
+    if(v===undefined||v===null||v===false||v==='')return true;
+    if(Array.isArray(v))return v.length===0;
+    if(isObj(v))return Object.keys(v).every(k=>emptyDeep(v[k]));
+    return false;
+  }
+  // getStandup() 이 화면 표시용으로 만든 빈 껍데기인가 (서버에 쓸 필요 없음)
+  function isEmptyStub(sd){
+    if(!sd)return true;
+    return Object.keys(sd).every(k=>k==='_carryDone'||emptyDeep(sd[k]));
+  }
+  function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function addDays(ds,n){const d=new Date(ds+'T00:00:00');d.setDate(d.getDate()+n);return ymd(d);}
+  return {merge3,metaOf,extractEmbedded,reattachEmbedded,docId,isEmptyStub,addDays,ymd,eq};
+})();
+</script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, getDocs, onSnapshot, collection, query, where, runTransaction, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // ★ 여기에 Firebase config 값을 붙여넣으세요 ★
   const firebaseConfig = {
@@ -22,65 +152,500 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const DOC_REF = doc(db, "dashboard", "shared");
+  const M = window.SUMerge;
 
-  // Firebase 저장
-  window._fbSave = async function(storeData) {
-    try {
-      await setDoc(DOC_REF, { data: JSON.stringify(storeData) });
-    } catch(e) {
-      console.error("Firebase 저장 오류:", e);
+  // ── 저장 경로. ?env=dev 이면 개발 경로만 읽고 쓴다 (운영 경로 쓰기는 코드에서 차단)
+  const URLP = new URLSearchParams(location.search);
+  const ENV = URLP.get('env') === 'dev' ? 'dev' : 'prod';
+  const P = ENV === 'dev'
+    ? { shared: 'shared_dev', archive: 'archive_standups_dev', col: 'standups_dev' }
+    : { shared: 'shared',     archive: 'archive_standups',     col: 'standups' };
+  const SHARED_REF = doc(db, 'dashboard', P.shared);
+  const ARCH_REF = doc(db, 'dashboard', P.archive);
+  const COL = collection(db, P.col);
+  const DEV_WRITABLE = ['dashboard/shared_dev', 'dashboard/archive_standups_dev'];
+  function w(ref) {
+    if (ENV === 'dev' && !(DEV_WRITABLE.includes(ref.path) || ref.path.startsWith('standups_dev/')))
+      throw new Error('[dev] 운영 경로 쓰기 차단: ' + ref.path);
+    return ref;
+  }
+  window._suEnv = { ENV, shared: SHARED_REF.path, archive: ARCH_REF.path, col: P.col, guard: (p) => w({ path: p }) };
+
+  const DOC_LIMIT = 1000000;                              // Firestore 한도 1,048,487 bytes 보다 여유 있게
+  const SAVE_TIMEOUT = Number(URLP.get('saveTimeout')) || 20000;
+  const RECENT_DAYS = 60;
+  const CLIENT = Math.random().toString(36).slice(2, 10);
+  const bytes = (s) => new TextEncoder().encode(s).length;
+  const S = () => window._getStore && window._getStore();
+  const K = (q, d) => q + '\u0000' + d;
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  const errMsg = (e) => (e && (e.code ? e.code + ': ' : '') + (e.message || e)) || String(e);
+
+  // ── 동기화 상태
+  let ready = false;            // 서버 데이터를 정상적으로 불러온 뒤에만 저장 허용
+  const base = new Map();       // 날짜별 "마지막으로 본 서버본" JSON 문자열
+  let metaBase = null;          // shared 메타의 마지막 서버본 JSON 문자열
+  const fullQ = new Set();      // 분기 전체 standup 을 불러온 분기
+  const qLoading = new Map();
+
+  // ══════════════ 배너 ══════════════
+  function banner(id, html, color) {
+    let el = document.getElementById(id);
+    if (!html) { if (el) el.remove(); return; }
+    if (!el) {
+      el = document.createElement('div'); el.id = id;
+      el.style.cssText = 'position:fixed;left:0;right:0;z-index:99999;padding:10px 16px;font-size:13px;line-height:1.5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 2px 8px rgba(0,0,0,.2);';
+      document.body.appendChild(el);
     }
-  };
+    el.style.background = color === 'red' ? '#c5221f' : '#f9e27d';
+    el.style.color = color === 'red' ? '#fff' : '#3c2f00';
+    el.innerHTML = html;
+    layoutBanners();
+  }
+  function layoutBanners() {
+    let top = 0;
+    ['su-fail-banner', 'su-warn-banner'].forEach(id => { const el = document.getElementById(id); if (el) { el.style.top = top + 'px'; top += el.offsetHeight; } });
+  }
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let failing = false;
+  function showFail(reasons) {
+    failing = true;
+    const list = reasons.map(r => '<div style="font-family:monospace;font-size:12px;opacity:.9;">' + esc(r) + '</div>').join('');
+    banner('su-fail-banner',
+      '<strong style="font-size:14px;">⚠ 저장 실패 - 새로고침하지 마세요</strong>' +
+      '<div style="flex:1;min-width:240px;">' + list + '</div>' +
+      '<button id="su-retry" style="background:#fff;color:#c5221f;border:0;border-radius:6px;padding:6px 14px;font-weight:700;cursor:pointer;">재시도</button>', 'red');
+    document.getElementById('su-retry').onclick = () => { document.getElementById('su-retry').textContent = '재시도 중...'; flush(); };
+    const fb = document.getElementById('fb-status'); if (fb) { fb.textContent = '⚠ 저장 실패 — 재시도 필요'; fb.style.color = '#ff8a80'; }
+  }
+  function hideFail() {
+    failing = false; banner('su-fail-banner', null);
+    const fb = document.getElementById('fb-status'); if (fb) fb.style.color = '';
+  }
+  const warns = new Map();
+  function setWarn(key, html) {
+    if (html) warns.set(key, html); else warns.delete(key);
+    banner('su-warn-banner', warns.size ? [...warns.values()].join('<br>') : null, 'yellow');
+  }
+  window.addEventListener('resize', layoutBanners);
+  if (ENV === 'dev') addEventListener('DOMContentLoaded', () => setWarn('dev', '🧪 <strong>DEV 모드</strong> — ' + SHARED_REF.path + ' / ' + P.col + ' 만 사용합니다 (운영 데이터 아님)'));
 
-  // Firebase 불러오기 (최초 1회)
-  window._fbLoad = async function() {
-    try {
-      const snap = await getDoc(DOC_REF);
-      if (snap.exists()) {
-        return JSON.parse(snap.data().data);
-      }
-    } catch(e) {
-      console.error("Firebase 불러오기 오류:", e);
-    }
-    return null;
-  };
-
-  // 실시간 동기화 (다른 팀원이 수정하면 자동 반영)
-  window._fbListen = function(callback) {
-    return onSnapshot(DOC_REF, (snap) => {
-      if (snap.exists()) {
-        try {
-          const data = JSON.parse(snap.data().data);
-          callback(data);
-        } catch(e) {}
-      }
+  // ══════════════ 메모리 반영 ══════════════
+  // 같은 객체를 유지한 채 내용만 교체 (화면 코드가 잡고 있는 참조가 끊기지 않게)
+  function replaceInPlace(target, src) {
+    const copy = clone(src);
+    Object.keys(target).forEach(k => delete target[k]);
+    Object.assign(target, copy);
+  }
+  function dayObj(st, q, date) { return st && st.quarters[q] && st.quarters[q].standups ? st.quarters[q].standups[date] : undefined; }
+  function setDay(st, q, date, obj) {
+    const qd = st.quarters[q]; if (!qd) return false;
+    if (!qd.standups) qd.standups = {};
+    if (qd.standups[date]) replaceInPlace(qd.standups[date], obj); else qd.standups[date] = clone(obj);
+    return true;
+  }
+  function applyMeta(st, meta) {
+    Object.keys(st).forEach(k => { if (k !== 'quarters' && !(k in meta)) delete st[k]; });
+    Object.keys(meta).forEach(k => { if (k !== 'quarters') st[k] = clone(meta[k]); });
+    const oldQ = st.quarters || {}, nq = {};
+    Object.keys(meta.quarters || {}).forEach(q => {
+      nq[q] = Object.assign(clone(meta.quarters[q]), { standups: (oldQ[q] && oldQ[q].standups) || {} });
     });
+    st.quarters = nq;
+  }
+
+  let renderT = null;
+  function rerender() { clearTimeout(renderT); renderT = setTimeout(() => window._suRerender && window._suRerender(), 50); }
+
+  // 서버에서 온 날짜 문서 1건을 메모리에 반영 (3-way). 반환: 메모리가 바뀌었는가
+  function applyRemoteDay(q, date, remoteStr, { lazy } = {}) {
+    const st = S(); if (!st || !st.quarters[q]) return false;   // 삭제된 분기의 문서는 무시(문서는 백업으로 남음)
+    const k = K(q, date), b = base.get(k);
+    if (lazy && b !== undefined) return false;                     // 이미 최근분 리스너가 관리 중
+    if (remoteStr === b) return false;
+    const cur = dayObj(st, q, date);
+    const remote = JSON.parse(remoteStr);
+    base.set(k, remoteStr);
+    if (!cur || (b === undefined && M.isEmptyStub(cur)) || JSON.stringify(cur) === b) { setDay(st, q, date, remote); return true; }
+    const merged = M.merge3(b === undefined ? null : JSON.parse(b), cur, remote);
+    const mergedStr = JSON.stringify(merged);
+    if (mergedStr === JSON.stringify(cur)) { if (mergedStr !== remoteStr) scheduleSave(); return false; }
+    setDay(st, q, date, merged);
+    if (mergedStr !== remoteStr) scheduleSave();                   // 아직 안 올라간 로컬 변경이 남아 있음
+    return true;
+  }
+
+  // ══════════════ 불러오기 ══════════════
+  async function loadAll() {
+    const cutoff = M.addDays(M.ymd(new Date()), -RECENT_DAYS);
+    const [ss, rs] = await Promise.all([getDoc(SHARED_REF), getDocs(query(COL, where('date', '>=', cutoff)))]);
+    if (!ss.exists()) return { store: null, cutoff };
+    const store = JSON.parse(ss.data().data);
+    const embedded = M.extractEmbedded(store);
+    metaBase = JSON.stringify(M.metaOf(store));
+    rs.forEach(d => {
+      const v = d.data(); if (!store.quarters[v.q]) return;
+      store.quarters[v.q].standups[v.date] = JSON.parse(v.data);
+      base.set(K(v.q, v.date), v.data);
+    });
+    // 마이그레이션 전(또는 구버전 탭이 다시 써 넣은) shared 안의 standups: 날짜 문서가 없는 날짜만 보여준다
+    let n = 0;
+    Object.keys(embedded).forEach(q => {
+      if (!store.quarters[q]) return;
+      Object.keys(embedded[q]).forEach(date => {
+        n++;
+        if (store.quarters[q].standups[date]) return;
+        store.quarters[q].standups[date] = embedded[q][date];
+        base.set(K(q, date), JSON.stringify(embedded[q][date]));
+      });
+    });
+    noteEmbedded(n);
+    return { store, cutoff };
+  }
+  let lastEmb = 0;
+  function noteEmbedded(n) {
+    lastEmb = n;
+    setWarn('embedded', n ? '⚠ ' + esc(SHARED_REF.path) + ' 안에 날짜별 회의 기록 <strong>' + n + '일치</strong>가 남아 있습니다. ' +
+      '마이그레이션 전이거나 구버전 탭이 저장한 것입니다. 모든 팀원이 새로고침한 뒤 <a href="?' + (ENV === 'dev' ? 'env=dev&' : '') + 'migrate=1">마이그레이션 페이지</a>에서 정리하세요.' : null);
+  }
+
+  // 분기 전체 standup (60일보다 오래된 날짜 포함) — 회의 로그/분기 히스토리/분기 전환 시 호출
+  function ensureQ(q) {
+    if (!ready || !q || fullQ.has(q)) return Promise.resolve(false);
+    if (qLoading.has(q)) return qLoading.get(q);
+    const p = getDocs(query(COL, where('q', '==', q))).then(rs => {
+      let changed = false;
+      rs.forEach(d => { const v = d.data(); if (applyRemoteDay(v.q, v.date, v.data, { lazy: true })) changed = true; });
+      fullQ.add(q); qLoading.delete(q); setWarn('lazy-' + q, null);
+      if (changed) {
+        const st = S();
+        if (st && st.activeQ === q && window.backfillSince) window.backfillSince();   // 이월 경과일은 분기 전체 기준
+        rerender();
+      }
+      return changed;
+    }).catch(e => {
+      qLoading.delete(q); console.error('과거 회의 기록 불러오기 오류:', e);
+      setWarn('lazy-' + q, '⚠ ' + esc(q) + ' 과거 회의 기록을 불러오지 못했습니다(' + esc(errMsg(e)) + '). 화면을 다시 열면 재시도합니다.');
+      return false;
+    });
+    qLoading.set(q, p);
+    return p;
+  }
+  window._suEnsureFor = function (view) {
+    const st = S(); if (!ready || !st) return;
+    if (view === 'history') Object.keys(st.quarters).forEach(ensureQ); else ensureQ(st.activeQ);
   };
 
-  // DOM 로드 후 Firebase 초기화 실행
+  // ══════════════ 저장 ══════════════
+  let saveT = null, flushing = false, again = false;
+  function scheduleSave() { clearTimeout(saveT); saveT = setTimeout(flush, 250); }
+  window._fbSave = function () {
+    if (!ready) { showFail(['서버 데이터를 아직 불러오지 못해 저장하지 않았습니다. 네트워크를 확인한 뒤 재시도하세요.']); return; }
+    scheduleSave();
+  };
+  window._fbRetry = () => flush();
+  function withTimeout(p, ms) {
+    let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('서버 응답 없음 ' + (ms / 1000) + '초 (네트워크 확인)')), ms); })]).finally(() => clearTimeout(t));
+  }
+
+  async function saveDay(q, date, sentStr) {
+    const ref = w(doc(db, P.col, M.docId(q, date)));
+    const k = K(q, date), b = base.get(k);
+    let out = null;
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
+      const remoteStr = snap.exists() ? snap.data().data : null;
+      out = (remoteStr === null || remoteStr === b || remoteStr === sentStr)
+        ? sentStr
+        : JSON.stringify(M.merge3(b === undefined ? null : JSON.parse(b), JSON.parse(sentStr), JSON.parse(remoteStr)));
+      const n = bytes(out);
+      if (n > DOC_LIMIT) throw new Error(date + ' 문서 크기 초과 (' + n + ' bytes)');
+      if (out !== remoteStr) tx.set(ref, { q, date, data: out, updatedAt: serverTimestamp(), by: CLIENT });
+    });
+    // 서버본(out) 기준으로 메모리 정리 — 저장하는 동안 새로 입력한 내용은 유지
+    base.set(k, out);
+    const st = S(), cur = dayObj(st, q, date); if (!cur) return;
+    const curStr = JSON.stringify(cur);
+    if (curStr === out) return;
+    if (curStr === sentStr) { setDay(st, q, date, JSON.parse(out)); rerender(); return; }
+    setDay(st, q, date, M.merge3(JSON.parse(sentStr), cur, JSON.parse(out)));
+    again = true; rerender();
+  }
+
+  async function saveMeta(sentStr) {
+    const ref = w(SHARED_REF);
+    let outMetaStr = null;
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(ref);
+      const remoteFull = snap.exists() ? JSON.parse(snap.data().data) : null;
+      const remoteMetaStr = remoteFull ? JSON.stringify(M.metaOf(remoteFull)) : null;
+      const meta = (remoteMetaStr === null || remoteMetaStr === metaBase || remoteMetaStr === sentStr)
+        ? JSON.parse(sentStr)
+        : M.merge3(metaBase === null ? null : JSON.parse(metaBase), JSON.parse(sentStr), JSON.parse(remoteMetaStr));
+      const full = M.reattachEmbedded(meta, remoteFull);   // 서버 shared 에 남은 standups 는 건드리지 않음
+      const outStr = JSON.stringify(full);
+      const n = bytes(outStr);
+      if (n > DOC_LIMIT) throw new Error('shared 문서 크기 초과 (' + n + ' bytes)');
+      outMetaStr = JSON.stringify(M.metaOf(full));
+      tx.set(ref, { data: outStr, updatedAt: serverTimestamp(), by: CLIENT });
+    });
+    metaBase = outMetaStr;
+    const st = S(); if (!st) return;
+    const curStr = JSON.stringify(M.metaOf(st));
+    if (curStr === outMetaStr) return;
+    if (curStr === sentStr) { applyMeta(st, JSON.parse(outMetaStr)); rerender(); return; }
+    applyMeta(st, M.merge3(JSON.parse(sentStr), JSON.parse(curStr), JSON.parse(outMetaStr)));
+    again = true; rerender();
+  }
+
+  // 바뀐 날짜 문서 + (바뀐 경우) shared 만 쓴다
+  function collectJobs(st) {
+    const jobs = [];
+    Object.keys(st.quarters || {}).forEach(q => {
+      const sds = st.quarters[q].standups || {};
+      Object.keys(sds).forEach(date => {
+        const str = JSON.stringify(sds[date]), b = base.get(K(q, date));
+        if (b === str) return;
+        if (b === undefined && M.isEmptyStub(sds[date])) return;
+        jobs.push({ label: q + ' ' + date, run: () => saveDay(q, date, str) });
+      });
+    });
+    const ms = JSON.stringify(M.metaOf(st));
+    if (ms !== metaBase) jobs.push({ label: '메타(shared)', run: () => saveMeta(ms) });
+    return jobs;
+  }
+  async function flush() {
+    clearTimeout(saveT);
+    if (flushing) { again = true; return; }
+    flushing = true;
+    const errors = [];
+    try {
+      let rounds = 0;
+      do {
+        again = false;
+        const st = S(); if (!st) break;
+        const jobs = collectJobs(st);
+        const res = await Promise.allSettled(jobs.map(j => withTimeout(j.run(), SAVE_TIMEOUT).catch(e => { throw new Error(j.label + ' — ' + errMsg(e)); })));
+        res.forEach(r => { if (r.status === 'rejected') errors.push(r.reason.message); });
+      } while (!errors.length && again && ++rounds < 5);
+    } catch (e) { errors.push(errMsg(e)); }
+    flushing = false;
+    if (errors.length) { errors.forEach(e => console.error('Firebase 저장 오류:', e)); showFail(errors); window._suLastSave = { ok: false, errors }; return; }
+    window._suLastSave = { ok: true, at: Date.now() };
+    hideFail();
+    if (window.saveTs) window.saveTs();              // "마지막 저장" 은 성공했을 때만 갱신
+    if (again) scheduleSave();
+  }
+  window.addEventListener('beforeunload', (e) => {
+    const st = S();
+    if (ready && st && (failing || flushing || collectJobs(st).length)) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  // ══════════════ 실시간 동기화 ══════════════
+  function listen(cutoff) {
+    onSnapshot(SHARED_REF, (snap) => {
+      if (!snap.exists() || snap.metadata.hasPendingWrites) return;
+      let full; try { full = JSON.parse(snap.data().data); } catch (e) { return; }
+      const emb = M.extractEmbedded(clone(full));
+      const nEmb = Object.values(emb).reduce((s, x) => s + Object.keys(x).length, 0);
+      const prevEmb = lastEmb;
+      noteEmbedded(nEmb);
+      // 마이그레이션 3단계가 방금 끝남 → 열려 있던 탭도 분기 전체 기록을 날짜 문서에서 다시 읽는다
+      if (prevEmb > 0 && nEmb === 0) { fullQ.clear(); const st0 = S(); if (st0) ensureQ(st0.activeQ); }
+      const remoteStr = JSON.stringify(M.metaOf(full));
+      if (remoteStr === metaBase) return;
+      const st = S(); if (!st) return;
+      const curStr = JSON.stringify(M.metaOf(st));
+      const b = metaBase; metaBase = remoteStr;
+      if (curStr === remoteStr) return;
+      if (curStr === b) applyMeta(st, JSON.parse(remoteStr));
+      else {
+        const merged = M.merge3(b === null ? null : JSON.parse(b), JSON.parse(curStr), JSON.parse(remoteStr));
+        applyMeta(st, merged);
+        if (JSON.stringify(M.metaOf(st)) !== remoteStr) scheduleSave();
+      }
+      rerender();
+    }, (e) => setWarn('listen', '⚠ 실시간 동기화 끊김: ' + esc(errMsg(e)) + ' — 다른 팀원 입력이 자동 반영되지 않습니다.'));
+    onSnapshot(query(COL, where('date', '>=', cutoff)), (qs) => {
+      let changed = false;
+      qs.docChanges().forEach(ch => {
+        if (ch.type === 'removed' || ch.doc.metadata.hasPendingWrites) return;
+        const v = ch.doc.data();
+        if (applyRemoteDay(v.q, v.date, v.data)) changed = true;
+      });
+      if (changed) rerender();
+    }, (e) => setWarn('listen', '⚠ 실시간 동기화 끊김: ' + esc(errMsg(e)) + ' — 다른 팀원 입력이 자동 반영되지 않습니다.'));
+  }
+
+  // ══════════════ 시작 ══════════════
   window.addEventListener('load', async () => {
-    const saved = await window._fbLoad();
-    if (saved) {
-      window.STORE = saved;
-      // Firebase 데이터 준비 완료 이벤트 발생
+    if (URLP.get('migrate') === '1') { runMigrationUI(); return; }   // 마이그레이션 화면에서는 앱 저장/동기화를 켜지 않는다
+    let r;
+    try { r = await loadAll(); }
+    catch (e) {
+      console.error('Firebase 불러오기 오류:', e);
+      banner('su-fail-banner', '<strong>⚠ 서버에서 데이터를 불러오지 못했습니다 — 지금 입력하면 저장되지 않습니다.</strong><span style="font-family:monospace;font-size:12px;">' + esc(errMsg(e)) + '</span><button onclick="location.reload()" style="background:#fff;color:#c5221f;border:0;border-radius:6px;padding:6px 14px;font-weight:700;cursor:pointer;">새로고침</button>', 'red');
+      const fb = document.getElementById('fb-status'); if (fb) fb.textContent = '⚠ Firebase 연결 실패';
+      return;
+    }
+    ready = true;
+    if (r.store) {
+      window.STORE = r.store;
       window.dispatchEvent(new Event('firebase-ready'));
     }
-    let isLocalUpdate = false;
-    window._fbListen((data) => {
-      if (isLocalUpdate) return;
-      window.STORE = data;
-      try {
-        if (window.STORE && window.buildQSelect) {
-          STORE = window.STORE;
-          buildQSelect();
-          archiveBannerUpdate();
-          renderDash();
-        }
-      } catch(e) {}
-    });
-    window._isLocalUpdate = (val) => { isLocalUpdate = val; };
+    listen(r.cutoff);
+    const st = S(); if (st) ensureQ(st.activeQ);
   });
+
+  // ══════════════ 1회성 마이그레이션 (?migrate=1, dev 는 ?env=dev&migrate=1) ══════════════
+  function runMigrationUI() {
+    const box = document.createElement('div');
+    box.id = 'su-migrate';
+    box.style.cssText = 'position:fixed;inset:0;z-index:100000;background:#fff;color:#171b21;overflow:auto;padding:24px;font-size:13px;';
+    box.innerHTML =
+      '<h2 style="font-size:18px;margin-bottom:6px;">회의 기록(standups) 날짜별 문서 분리 — 마이그레이션</h2>' +
+      '<div style="margin-bottom:12px;color:#39414b;">환경: <strong style="color:' + (ENV === 'dev' ? '#137333' : '#c5221f') + '">' + ENV.toUpperCase() + '</strong> · 원본: <code>' + ARCH_REF.path + '</code>, <code>' + SHARED_REF.path + '</code> → 대상: <code>' + P.col + '/{분기}__{날짜}</code></div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">' +
+      (ENV === 'dev' ? '<button data-a="seed">0. 운영 데이터 → dev 복사 (운영은 읽기만)</button><button data-a="wipe">dev standups_dev 비우기</button>' : '') +
+      '<button data-a="copy">1. 날짜별 문서로 복사</button><button data-a="verify">2. 검증</button>' +
+      '<button data-a="strip" disabled>3. shared 에서 standups 제거</button>' +
+      '<a href="?' + (ENV === 'dev' ? 'env=dev' : '') + '" style="margin-left:auto;align-self:center;">앱으로 돌아가기</a></div>' +
+      '<div style="color:#69727e;margin-bottom:8px;">1·2 는 여러 번 실행해도 안전합니다(이미 있는 문서는 덮어쓰지 않음). 3 은 2 검증을 통과해야 켜집니다. 3 전까지 원본은 바뀌지 않습니다. archive_standups 는 백업으로 그대로 남깁니다.</div>' +
+      '<div id="su-verify"></div><pre id="su-log" style="background:#0f1115;color:#d7dde5;padding:12px;border-radius:8px;white-space:pre-wrap;min-height:200px;font-size:12px;"></pre>';
+    document.body.appendChild(box);
+    box.querySelectorAll('button').forEach(b => { b.style.cssText = 'padding:8px 14px;border-radius:6px;border:1px solid #1f3a5f;background:#1f3a5f;color:#fff;cursor:pointer;font-weight:600;'; });
+    const stripBtn = box.querySelector('[data-a="strip"]');
+    stripBtn.style.opacity = .4;
+    const logEl = box.querySelector('#su-log');
+    const log = (s) => { const t = new Date().toTimeString().slice(0, 8); logEl.textContent += '[' + t + '] ' + s + '\n'; logEl.scrollTop = logEl.scrollHeight; console.log('[migrate]', s); };
+    let busy = false, verified = null;
+    const act = {
+      seed: async () => {
+        if (!confirm('운영 shared / archive_standups 를 읽어서 dev 경로(shared_dev, archive_standups_dev)에 덮어씁니다. 진행할까요?')) return;
+        const [s, a] = await Promise.all([getDoc(doc(db, 'dashboard', 'shared')), getDoc(doc(db, 'dashboard', 'archive_standups'))]);
+        const batch = writeBatch(db);
+        if (s.exists()) batch.set(w(doc(db, 'dashboard', 'shared_dev')), { data: s.data().data, seededFrom: 'dashboard/shared', seededAt: serverTimestamp() });
+        if (a.exists()) batch.set(w(doc(db, 'dashboard', 'archive_standups_dev')), Object.assign({}, a.data(), { seededFrom: 'dashboard/archive_standups', seededAt: serverTimestamp() }));
+        await batch.commit();
+        log('dev 시드 완료: shared ' + (s.exists() ? bytes(s.data().data) : 0) + ' bytes, archive ' + (a.exists() ? bytes(a.data().data) : 0) + ' bytes');
+      },
+      wipe: async () => {
+        if (ENV !== 'dev') throw new Error('dev 에서만 가능');
+        if (!confirm(P.col + ' 컬렉션 문서를 모두 삭제합니다. 진행할까요?')) return;
+        const rs = await getDocs(COL); const refs = rs.docs.map(d => d.ref);
+        for (let i = 0; i < refs.length; i += 200) { const b = writeBatch(db); refs.slice(i, i + 200).forEach(r => b.delete(w(r))); await b.commit(); }
+        log(P.col + ' ' + refs.length + '건 삭제'); verified = null; setStrip();
+      },
+      copy: async () => {
+        const { src, existing } = await readSources();
+        const todo = [], same = [], conflict = [];
+        src.forEach((v, id) => {
+          const ex = existing.get(id);
+          if (!ex) todo.push([id, v]); else if (ex.data === v.str) same.push(id); else conflict.push(id);
+        });
+        log('복사 계획: 신규 ' + todo.length + ' / 이미 동일 ' + same.length + ' / 이미 다른 내용 있음(유지) ' + conflict.length);
+        conflict.forEach(id => log('  · 유지(덮어쓰지 않음): ' + id + ' — 앱에서 이미 수정된 문서일 수 있음'));
+        if (!todo.length) { log('쓸 문서가 없습니다.'); return; }
+        const big = todo.filter(([, v]) => bytes(v.str) > DOC_LIMIT);
+        if (big.length) throw new Error('1MB 초과 문서: ' + big.map(x => x[0]).join(', '));
+        if (!confirm(P.col + ' 에 ' + todo.length + '건을 새로 씁니다. 진행할까요?')) return;
+        for (let i = 0; i < todo.length; i += 20) {
+          const b = writeBatch(db);
+          todo.slice(i, i + 20).forEach(([id, v]) => b.set(w(doc(db, P.col, id)), { q: v.q, date: v.date, data: v.str, updatedAt: serverTimestamp(), by: 'migration', migratedFrom: v.from }));
+          await b.commit();
+          log('  쓰기 ' + Math.min(i + 20, todo.length) + '/' + todo.length);
+        }
+        log('복사 완료. 이어서 2. 검증을 실행하세요.');
+      },
+      verify: async () => {
+        const { src, existing, embeddedIds } = await readSources();
+        const byQ = {}, missing = [], diff = [], extra = [];
+        src.forEach((v, id) => {
+          (byQ[v.q] = byQ[v.q] || { src: 0, ok: 0, dates: [] }).src++;
+          const ex = existing.get(id);
+          if (!ex) { missing.push(id); return; }
+          if (ex.q !== v.q || ex.date !== v.date) { diff.push(id + ' (q/date 필드 불일치)'); return; }
+          if (ex.data !== v.str) diff.push(id);
+          byQ[v.q].ok++; byQ[v.q].dates.push(v.date);
+        });
+        existing.forEach((ex, id) => { if (!src.has(id)) { extra.push(id); (byQ[ex.q] = byQ[ex.q] || { src: 0, ok: 0, dates: [] }).dates.push(ex.date + '*'); } });
+        let h = '<table style="border-collapse:collapse;margin-bottom:10px;font-size:12px;"><tr style="background:#eef1f5;"><th style="padding:4px 8px;text-align:left;">분기</th><th style="padding:4px 8px;">원본 날짜 수</th><th style="padding:4px 8px;">문서 확인</th><th style="padding:4px 8px;text-align:left;">날짜 목록 (* = 원본에 없는 신규 문서)</th></tr>';
+        Object.keys(byQ).sort().forEach(q => {
+          const x = byQ[q]; x.dates.sort();
+          h += '<tr style="border-top:1px solid #ddd;vertical-align:top;"><td style="padding:4px 8px;white-space:nowrap;">' + esc(q) + '</td><td style="padding:4px 8px;text-align:center;">' + x.src + '</td><td style="padding:4px 8px;text-align:center;color:' + (x.ok === x.src ? '#137333' : '#c5221f') + '">' + x.ok + '</td><td style="padding:4px 8px;font-family:monospace;">' + x.dates.map(esc).join(' ') + '</td></tr>';
+        });
+        h += '</table>';
+        const ok = missing.length === 0;
+        h += '<div style="font-weight:700;color:' + (ok ? '#137333' : '#c5221f') + '">' +
+          (ok ? '✅ 원본 ' + src.size + '일치 모두 날짜 문서로 존재' : '❌ 누락 ' + missing.length + '건 — 1. 복사를 다시 실행하세요') +
+          ' · 컬렉션 전체 ' + existing.size + '건 · 내용 다름 ' + diff.length + '건 · 원본에 없는 신규 ' + extra.length + '건</div>';
+        box.querySelector('#su-verify').innerHTML = h;
+        log('검증: 원본 ' + src.size + ' / 문서 ' + existing.size + ' / 누락 ' + missing.length + ' / 내용 다름 ' + diff.length + ' / 신규 ' + extra.length);
+        missing.forEach(id => log('  ✗ 누락: ' + id));
+        diff.forEach(id => log('  △ 내용 다름(문서 쪽 유지): ' + id));
+        log('shared 안에 남은 날짜: ' + embeddedIds.length + '건');
+        verified = ok ? { src, existing, diff } : null;
+        setStrip(embeddedIds.length);
+      },
+      strip: async () => {
+        if (!verified) throw new Error('먼저 2. 검증을 통과해야 합니다');
+        if (!confirm(SHARED_REF.path + ' 에서 standups 를 제거합니다.' + (verified.diff.length ? '\n(내용이 다른 ' + verified.diff.length + '건은 날짜 문서 쪽 내용이 유지됩니다)' : '') + '\n모든 팀원이 새 버전으로 새로고침한 상태여야 합니다. 진행할까요?')) return;
+        let before = 0, after = 0, removed = 0;
+        await runTransaction(db, async (tx) => {
+          const snap = await tx.get(w(SHARED_REF));
+          const raw = snap.data().data; before = bytes(raw);
+          const full = JSON.parse(raw);
+          removed = 0;
+          Object.keys(full.quarters || {}).forEach(q => {
+            const sd = full.quarters[q].standups || {};
+            Object.keys(sd).forEach(date => {
+              const id = M.docId(q, date), v = verified.src.get(id);
+              if (!verified.existing.has(id) || !v || v.str !== JSON.stringify(sd[date])) throw new Error('검증 이후 shared 의 ' + id + ' 가 바뀌었습니다. 1·2 를 다시 실행하세요.');
+              removed++;
+            });
+            delete full.quarters[q].standups;
+          });
+          full._standupsSplit = M.ymd(new Date());
+          const out = JSON.stringify(full); after = bytes(out);
+          tx.set(SHARED_REF, { data: out, updatedAt: serverTimestamp(), by: 'migration' });
+        });
+        log('shared 정리 완료: ' + removed + '일치 제거, ' + before + ' → ' + after + ' bytes');
+        verified = null; setStrip(0);
+      }
+    };
+    function setStrip(n) {
+      const on = !!verified && n > 0;
+      stripBtn.disabled = !on; stripBtn.style.opacity = on ? 1 : .4;
+      if (verified && !n) log('shared 에 남은 standups 가 없어 3 단계는 필요 없습니다.');
+    }
+    // 원본(archive + shared 안의 standups)과 현재 컬렉션을 읽는다
+    async function readSources() {
+      log('원본 읽는 중: ' + ARCH_REF.path + ', ' + SHARED_REF.path + ', ' + P.col);
+      const [a, s, rs] = await Promise.all([getDoc(ARCH_REF), getDoc(SHARED_REF), getDocs(COL)]);
+      const src = new Map();
+      const add = (q, date, sd, from) => {
+        const id = M.docId(q, date), str = JSON.stringify(sd), prev = src.get(id);
+        if (prev && prev.str !== str) log('  · ' + id + ' archive/shared 양쪽에 있고 내용 다름 → shared 쪽 사용');
+        src.set(id, { q, date, str, from });
+      };
+      let na = 0, ns = 0;
+      const embeddedIds = [];
+      if (a.exists()) { const ad = JSON.parse(a.data().data); Object.keys(ad).forEach(q => Object.keys(ad[q]).forEach(d => { add(q, d, ad[q][d], 'archive'); na++; })); }
+      else log('  (archive 문서 없음)');
+      if (s.exists()) { const sd = JSON.parse(s.data().data); Object.keys(sd.quarters || {}).forEach(q => Object.keys(sd.quarters[q].standups || {}).forEach(d => { add(q, d, sd.quarters[q].standups[d], 'shared'); ns++; embeddedIds.push(M.docId(q, d)); })); }
+      const existing = new Map(); rs.forEach(d => existing.set(d.id, d.data()));
+      log('  archive ' + na + '일치, shared ' + ns + '일치 → 원본 ' + src.size + '일치 / 컬렉션 현재 ' + existing.size + '건');
+      return { src, existing, embeddedIds };
+    }
+    box.addEventListener('click', async (e) => {
+      const a = e.target.closest('button[data-a]'); if (!a || busy || a.disabled) return;
+      busy = true; box.querySelectorAll('button').forEach(b => b.style.cursor = 'wait');
+      log('▶ ' + a.textContent);
+      try { await act[a.dataset.a](); } catch (err) { log('❌ 오류: ' + errMsg(err)); console.error(err); }
+      busy = false; box.querySelectorAll('button').forEach(b => b.style.cursor = 'pointer');
+    });
+    log('준비됨. 환경=' + ENV + (ENV === 'prod' ? ' (운영 데이터에 씁니다)' : ''));
+  }
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -1267,16 +1832,24 @@ function updateKeyTaskProgress(date,mid,kid,val){
   const k=ks.find(x=>x.id===kid);if(k){k._progress=val;if(val===100)k.done=true;else if(val<100&&k.done)k.done=false;}
 }
 function saveStore(){
-  // localStorage 백업 + Firebase 저장
-  localStorage.setItem('jibr-okr-v3',JSON.stringify(STORE));
-  saveTs();
-  if(window._fbSave){
-    if(window._isLocalUpdate) window._isLocalUpdate(true);
-    window._fbSave(STORE).then(()=>{
-      setTimeout(()=>{if(window._isLocalUpdate)window._isLocalUpdate(false);},1000);
-    });
-  }
+  // localStorage 백업(용량 초과로 실패해도 서버 저장은 계속) + Firebase 저장
+  // 서버에는 바뀐 날짜의 standups 문서와 (바뀐 경우) shared 메타만 쓴다. "마지막 저장"은 성공 후에만 갱신(saveTs).
+  try{localStorage.setItem('jibr-okr-v3',JSON.stringify(STORE));}catch(e){console.warn('localStorage 백업 실패',e);}
+  if(window._fbSave)window._fbSave();
+  else{const fb=document.getElementById('fb-status');if(fb)fb.textContent='⚠ Firebase 모듈 로드 실패 — 저장 안 됨';}
 }
+window._getStore=()=>STORE;
+// 다른 팀원 변경이 병합돼 들어오면 다시 그림. 입력 중이거나 모달이 열려 있으면 끝난 뒤로 미룬다.
+let _suPendingRender=false;
+window._suRerender=function(){
+  const ae=document.activeElement;
+  const editing=ae&&ae!==document.body&&(ae.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName));
+  if(editing||document.querySelector('.mo.open')){_suPendingRender=true;return;}
+  _suPendingRender=false;
+  try{buildQSelect();archiveBannerUpdate();renderV(curView);}catch(e){console.warn('rerender',e);}
+};
+document.addEventListener('focusout',()=>setTimeout(()=>{if(_suPendingRender)window._suRerender();},300));
+setInterval(()=>{if(_suPendingRender)window._suRerender();},2000);
 function CQ(){return STORE.quarters[STORE.activeQ];}
 function isCurrentQ(){return STORE.activeQ===getCurrentQuarterLabel();}
 // tasks 초기화 보장
@@ -1453,6 +2026,7 @@ function reloadBriefing(){
 }
 
 function renderV(v){
+  if(window._suEnsureFor)window._suEnsureFor(v); // 60일보다 오래된 회의 기록은 화면을 열 때 분기 단위로 불러옴
   if(v==='briefing')renderBriefing();
   if(v==='dashboard')renderDash();
   if(v==='standup')renderStandup();
