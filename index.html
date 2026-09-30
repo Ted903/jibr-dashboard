@@ -2271,8 +2271,7 @@ function switchStandupDate(d){curStandupDate=d;renderStandup();}
 // ══════════════════════════════════════
 // v3: 우선순위 조작 · 이월 관리
 // ══════════════════════════════════════
-var OLD_D=7;                 // 며칠 이상 이월이면 "오래된 이월"
-var OLDOPEN={};              // 팀원별 오래된 이월 펼침 상태
+var OLD_D=7;                 // D+n 칩 경고색 기준(일)
 var HOLDOPEN={};             // 팀원별 보류함 펼침 상태
 var PLAB={high:'높음',mid:'중간',low:'낮음'};
 var PORDER=['high','mid','low'];
@@ -2313,7 +2312,6 @@ function toggleHold(date,tid){
   t.st=(t.st==='hold')?'':'hold'; if(t.st==='hold')t.focus=false;
   saveStore();renderStandup();
 }
-function toggleOld(mid){OLDOPEN[mid]=!OLDOPEN[mid];renderStandup();}
 function toggleHoldBox(mid){HOLDOPEN[mid]=!HOLDOPEN[mid];renderStandup();}
 
 // ── 드래그 앤 드롭 ──
@@ -2380,10 +2378,6 @@ function buildTodoHtml(m,sd,date){
   const live=all.filter(t=>t.st!=='hold');
   const focus=live.filter(t=>t.focus);
   const rest=live.filter(t=>!t.focus);
-  const old=rest.filter(t=>todoAge(t)>=OLD_D);
-  const fresh=rest.filter(t=>todoAge(t)<OLD_D);
-  const openOld=OLDOPEN[m.id]||fresh.length===0;
-  const vis=openOld?rest:fresh;
 
   let h='';
   const highN=live.filter(t=>t.prio==='high'&&!t.done).length;
@@ -2397,16 +2391,13 @@ function buildTodoHtml(m,sd,date){
 
   // 긴급도 존
   PORDER.forEach(p=>{
-    const pt=vis.filter(t=>t.prio===p);
+    const pt=rest.filter(t=>t.prio===p);
     const pn={high:'🔴 높음',mid:'🟡 중간',low:'🟢 낮음'};
     h+=`<div class="zone-h" style="${pt.length?'':'opacity:.4;'}">${pn[p]}<span style="font-family:var(--mono);color:var(--ink3);">${pt.length||''}</span></div>`;
     h+=`<div class="prio-zone" data-zone="prio" data-prio="${p}" data-mid="${m.id}">`;
     h+= pt.length? pt.map(t=>todoRow(t,date)).join('') : '<div style="height:10px;"></div>';
     h+='</div>';
   });
-
-  if(old.length&&!openOld)h+=`<button class="morebtn" onclick="toggleOld(${m.id})">+ ${OLD_D}일 이상 이월된 ${old.length}건 보기</button>`;
-  else if(old.length&&OLDOPEN[m.id])h+=`<button class="morebtn" onclick="toggleOld(${m.id})">− 오래된 이월 ${old.length}건 접기</button>`;
 
   // 보류함
   h+=`<div class="hold-wrap"><button class="morebtn" style="margin-top:0;" onclick="toggleHoldBox(${m.id})">${HOLDOPEN[m.id]?'−':'+'} 보류함 ${holds.length}건</button>`;
