@@ -122,18 +122,6 @@ nav.toc{display:none!important}
 .c-s2 #ch_chan table td,.c-s2 #ch_chan table th{padding:5px 5px;font-size:12.5px}
 .c-s2 #tb_lineup{table-layout:auto}
 .c-s2 #tb_lineup td span[style*='white-space:normal']{display:inline-block;min-width:118px;max-width:150px;text-align:right}
-.c-s3 section{display:grid;grid-template-columns:1fr 1.25fr;gap:16px}
-.c-s3 section>h2{grid-column:1/3}
-.c-s3 section>.grid{grid-column:1;grid-template-columns:1fr}
-.c-s3 section>.card{grid-column:2;grid-row:2;margin-top:0!important}
-.c-s3 #tb_sets td,.c-s3 #tb_sets th{padding:12px 8px;font-size:14.5px}
-.c-s4 section{display:grid;grid-template-columns:520px max-content;gap:16px}
-.canvas.c-s4{width:max-content!important}
-.c-s4 section>h2{grid-column:1/3}
-.c-s4 section>.grid{grid-column:1;grid-template-columns:1fr}
-.c-s4 section>.card{grid-column:2;grid-row:2;margin-top:0!important}
-.c-s4 #tb_items td,.c-s4 #tb_items th{padding:3px 7px;font-size:13px}
-.c-s4 #tb_items svg{height:18px}
 .c-s6 .plat .rank li{padding:3px 0}
 .c-s6 .plat .stat{padding:4px 0}
 .c-s6 section>.card table td,.c-s6 section>.card table th{padding:6px 8px}
@@ -147,6 +135,46 @@ nav.toc{display:none!important}
 #dots i{width:8px;height:8px;border-radius:50%;background:#6B7280;cursor:pointer}
 #dots i.on{background:#D9822B}
 #prog{position:fixed;left:0;top:0;height:4px;background:#D9822B;z-index:10;transition:width .25s}
+</style>
+
+<style id="deck-css2">
+.canvas h2 .no{width:auto;min-width:40px;padding:0 10px}
+.canvas h2 .subt{font-size:18px;color:#8A929C;font-weight:700;margin-left:4px}
+.canvas h3 .h3s{font-size:12.5px;color:#8A929C;font-weight:600;margin-left:6px}
+.famcards{margin-top:14px}
+.fam .fh{display:flex;justify-content:space-between;align-items:baseline;font-size:18px}
+.fam .fh span{font-size:14px;font-weight:800;color:#5B6470}
+.fam .fm{font-size:12.5px;color:#5B6470;margin:4px 0 10px;padding-bottom:8px;border-bottom:1px solid #EEF0F2}
+.sku{margin-bottom:12px}
+.sku .sn{font-size:14px;font-weight:800;margin-bottom:4px}
+.sku .sbw{display:grid;grid-template-columns:1fr 92px;gap:8px;align-items:center}
+.sku .sv{font-size:13px;text-align:right;white-space:nowrap}
+.sku .sb{position:relative;height:22px;background:#F1F3F5;border-radius:5px}
+.sku .sb span{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.sku .sb i{position:absolute;top:-3px;bottom:-3px;width:3px;background:#1F2328;border-radius:2px}
+.sku .sb em{position:absolute;right:6px;top:2px;font-style:normal;font-size:12.5px;font-weight:800;color:#1F2328}
+.sku .sm{display:flex;gap:10px;font-size:12px;color:#5B6470;margin-top:4px;flex-wrap:wrap}
+.sku .sm b{color:#1F2328}
+.catl .ck .lb{font-size:14px;color:#5B6470;font-weight:700}
+.catl .ck .v{font-size:36px;font-weight:800}
+.catl .ck .v small{font-size:16px;color:#5B6470;margin-left:2px}
+.catl .ck .cmp{display:flex;flex-direction:column;gap:2px;font-size:14px;color:#5B6470}
+.hb{display:grid;grid-template-columns:52px 1fr 56px;align-items:center;gap:8px;font-size:13px;margin:5px 0}
+.hb .hl{color:#5B6470;font-weight:700}.hb b{text-align:right}
+.hbar{height:16px;background:#F1F3F5;border-radius:4px;overflow:hidden}.hbar span{display:block;height:100%;border-radius:4px}
+.chbar{display:flex;height:26px;border-radius:6px;overflow:hidden}
+.chbar span{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800}
+table.cat td,table.cat th{padding:7px 8px;font-size:14px}
+table.cat td b{font-weight:700}
+.dvw{display:grid;grid-template-columns:1fr 50px;gap:6px;align-items:center}
+.dvw em{font-style:normal;font-size:13px;font-weight:800;text-align:right}
+.dv{position:relative;height:16px;background:#F1F3F5;border-radius:4px}
+table.cat{table-layout:fixed}
+table.cat td:first-child{white-space:normal;line-height:1.25}
+.dv i{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#8A929C}
+.dv span{position:absolute;top:3px;bottom:3px;border-radius:3px;opacity:.85}
+.mini{display:flex;height:12px;border-radius:3px;overflow:hidden;width:110px}
+.mini span{display:block;height:100%}
 </style>
 </head>
 <body>
@@ -541,6 +569,88 @@ const GOAL = {'표준 차례상':176,'정성 차례상':29,'실속 추석 세트
 })();
 </script>
 
+
+<script>
+(function(){
+  const S=DATA.SETS['26추석'], tc=Object.fromEntries(TYPES);
+  const typeQ=(h,tys)=>DATA.SETS[h].filter(x=>tys.includes(x.type)).reduce((s,x)=>s+x.q,0);
+  const FAM=[
+    {n:'차례상',c:tc['차례상'],types:['차례상'],list:['표준 차례상','정성 차례상'],memo:'세트 1위 표준 차례상 · 2종 모두 목표 초과'},
+    {n:'음식세트',c:tc['음식세트'],types:['음식세트','쿠팡세트'],list:['실속 추석 세트','알찬 추석 세트','보름달 추석 세트','로켓 명절음식세트'],memo:'실속 세트가 목표의 3배 · 쿠팡 로켓세트 유지'},
+    {n:'나물·전 세트',c:tc['나물세트'],types:['나물세트','전세트'],list:['모둠 전 세트','모둠 나물세트','건나물세트 5종'],memo:'모둠 전 세트 신규 성공 · 모둠 나물세트 예상의 58%'},
+    {n:'온올림 (선물)',c:tc['온올림'],types:['온올림'],list:['온올림 #6 3종 실속','온올림 #7 소갈비','온올림 #3 LA갈비'],memo:'신규 3종 163개 · 목표 500개 대비 33%'},
+  ];
+  FAM.forEach(f=>{ f.items=f.list.map(n=>S.find(x=>x.nm===n)).filter(Boolean); f.q=f.items.reduce((s,x)=>s+x.q,0); f.a=f.items.reduce((s,x)=>s+x.a,0); f.g=f.n.startsWith('온올림')?500:f.items.reduce((s,x)=>s+(GOAL[x.nm]||0),0); f.gq=f.n.startsWith('온올림')?f.q:f.items.filter(x=>GOAL[x.nm]).reduce((s,x)=>s+x.q,0); f.p26=typeQ('26설',f.types); f.p25=typeQ('25추석',f.types); });
+  const TQ=FAM.reduce((s,f)=>s+f.q,0), TA=FAM.reduce((s,f)=>s+f.a,0);
+  const mk=(id,no,title)=>{ const s=document.createElement('section'); s.id=id; s.innerHTML='<h2><span class="no">'+no+'</span>'+title+'</h2>'; return s; };
+
+  /* ---------- 3-2 ---------- */
+  const s3b=mk('s3b','3-2','2026 추석 세트 성과 <span class="subt">제품군별 상세</span>');
+  // scatter
+  let sc='<div class="card"><h3>가격대별 판매량 <span class="h3s">객단가 기준 · 색 = 제품군</span></h3><div class="legend">'+FAM.map(f=>'<span><i style="background:'+f.c+'"></i>'+f.n+'</span>').join('')+'</div><div id="ch_scatter"></div></div>';
+  // share bars + family table
+  let fam='<div class="card"><h3>제품군 비중</h3><div id="ch_famshare"></div><table style="margin-top:10px"><tr><th>제품군</th><th>판매량</th><th>매출(만원)</th><th>객단가</th><th>예상 대비</th><th>vs 26설</th><th>vs 25추석</th></tr>'+
+    FAM.map(f=>'<tr><td class="l"><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:'+f.c+';margin-right:6px"></i><b>'+f.n+'</b></td><td><b>'+f0(f.q)+'</b></td><td>'+man(f.a)+'</td><td>'+f0(f.a/f.q)+'</td><td><span class="'+(f.gq>=f.g?'up':'down')+'">'+(f.gq/f.g*100).toFixed(0)+'%</span></td><td>'+(f.p26?pctS(f.q,f.p26):'<span class="tag new">신규</span>')+'</td><td>'+(f.p25?pctS(f.q,f.p25):'<span class="tag new">신규</span>')+'</td></tr>').join('')+
+    '<tr class="tot"><td class="l">합계 12종</td><td>'+f0(TQ)+'</td><td>'+man(TA)+'</td><td>'+f0(TA/TQ)+'</td><td></td><td>'+pctS(TQ,DATA.setsTot['26설'].q)+'</td><td>'+pctS(TQ,DATA.setsTot['25추석'].q)+'</td></tr></table></div>';
+  // family cards
+  const maxQ=Math.max(...S.map(x=>Math.max(x.q,GOAL[x.nm]||0)));
+  const NEWT={'모둠 전 세트':1,'온올림 #6 3종 실속':1,'온올림 #3 LA갈비':1,'온올림 #7 소갈비':1};
+  let cards='<div class="grid g4 famcards">'+FAM.map(f=>'<div class="card fam" style="border-top:5px solid '+f.c+'"><div class="fh"><b>'+f.n+'</b><span>'+f0(f.q)+'개 · '+man(f.a)+'만</span></div><div class="fm">'+f.memo+'</div>'+
+    f.items.map(x=>{ const g=GOAL[x.nm], own=x.ch['자사']||0, w=x.q/maxQ*100; return '<div class="sku"><div class="sn">'+x.nm+(NEWT[x.nm]?' <span class="tag new">NEW</span>':'')+'</div>'+
+      '<div class="sbw"><div class="sb"><span style="width:'+w+'%;background:'+f.c+'"></span>'+(g?'<i style="left:'+(g/maxQ*100)+'%"></i>':'')+'</div><div class="sv"><b>'+f0(x.q)+'개</b>'+(g?' <span class="'+(x.q>=g?'up':'down')+'">'+(x.q/g*100).toFixed(0)+'%</span>':'')+'</div></div>'+
+      '<div class="sm"><span>객단가 <b>'+f0(x.asp)+'</b></span><span>매출 <b>'+man(x.a)+'만</b></span><span>'+(own===x.q?'자사 100%':'자사 '+f0(own)+' · 외부 '+f0(x.q-own))+'</span></div></div>'; }).join('')+'</div>').join('')+'</div>';
+  s3b.innerHTML+='<div class="grid" style="grid-template-columns:1fr 1.15fr">'+sc+fam+'</div>'+cards+'<div class="note">막대 = 판매량 · 검은 세로선 = 노션 예상판매량 · % = 예상 대비 달성률</div>';
+  document.getElementById('s3').after(s3b);
+  // price band render
+  (function(){ const B=[['5만원 미만',0,50000],['5~10만원',50000,100000],['10~20만원',100000,200000],['20만원 이상',200000,1e9]];
+    const rows=B.map(([lb,a,b])=>({lb, items:S.filter(x=>x.asp>=a&&x.asp<b).sort((p,q)=>q.q-p.q)}));
+    const mx=Math.max(...rows.map(r=>r.items.reduce((s,x)=>s+x.q,0)));
+    const s=svg('ch_scatter',640,rows.length*76+8), x0=96, x1=560;
+    rows.forEach((r,i)=>{ const y=i*76+6, tot=r.items.reduce((s,x)=>s+x.q,0); let x=x0; const small=[];
+      el('text',{x:x0-10,y:y+26,'text-anchor':'end','font-size':13.5,'font-weight':800,fill:'#1F2328'},s,r.lb);
+      el('text',{x:x0-10,y:y+42,'text-anchor':'end','font-size':11.5,fill:'#8A929C'},s,r.items.length+'종');
+      r.items.forEach(it=>{ const f=FAM.find(f=>f.list.includes(it.nm)); const w=(x1-x0)*it.q/mx; el('rect',{x,y,width:Math.max(w-2,0),height:44,rx:4,fill:f.c},s);
+        const nm=it.nm.replace(' 추석 세트','').replace('온올림 ','').replace(' 3종 실속','').replace('로켓 명절음식세트','로켓세트').replace('건나물세트 5종','건나물').replace('모둠 나물세트','모둠나물').replace('모둠 전 세트','모둠전').replace(' 차례상','차례상');
+        if(w<=44) small.push(nm+' '+it.q); if(w>44){ el('text',{x:x+w/2-1,y:y+19,'text-anchor':'middle','font-size':11.5,'font-weight':800,fill:'#fff'},s,nm); el('text',{x:x+w/2-1,y:y+35,'text-anchor':'middle','font-size':12,'font-weight':800,fill:'#fff'},s,it.q); }
+        x+=w; });
+      el('text',{x:x+8,y:y+28,'font-size':15,'font-weight':800,fill:'#1F2328'},s,f0(tot)+'개');
+      el('text',{x:x+8,y:y+43,'font-size':11.5,fill:'#8A929C'},s,(tot/TQ*100).toFixed(0)+'%'); if(small.length) el('text',{x:x0,y:y+62,'font-size':12,'font-weight':700,fill:'#5B6470'},s,small.join('  ·  ')); });
+  })();
+  // family share bars
+  (function(){ const s=svg('ch_famshare',640,86), x0=64,x1=630; [['판매량',f=>f.q,TQ],['매출',f=>f.a,TA]].forEach(([lb,fn,T],i)=>{ const y=i*40+4; let x=x0; el('text',{x:x0-8,y:y+20,'text-anchor':'end','font-size':13,'font-weight':700,fill:'#1F2328'},s,lb); FAM.forEach(f=>{ const w=(x1-x0)*fn(f)/T; el('rect',{x,y,width:Math.max(w-1.5,0),height:30,rx:3,fill:f.c},s); if(w>40) el('text',{x:x+w/2,y:y+20,'text-anchor':'middle','font-size':12,'font-weight':800,fill:'#fff'},s,(fn(f)/T*100).toFixed(0)+'%'); x+=w; }); }); })();
+
+  /* ---------- 4-x category slides ---------- */
+  const spark=(vals)=>{ const m=Math.max(...vals,1); const w=84,h=24; const px=i=>4+i*(w-8)/3, py=v=>h-3-(h-6)*v/m; return '<svg width="'+w+'" height="'+h+'" style="vertical-align:middle"><polyline points="'+vals.map((v,i)=>px(i)+','+py(v)).join(' ')+'" fill="none" stroke="#9DB0C4" stroke-width="2"/>'+vals.map((v,i)=>'<circle cx="'+px(i)+'" cy="'+py(v)+'" r="'+(i===3?3.5:2)+'" fill="'+(i===3?'#D9822B':'#9DB0C4')+'"/>').join('')+'</svg>'; };
+  const grade=l=> l===null?'<span class="tag c">-</span>': l>=4?'<span class="tag s">명절 핵심</span>': l>=1.5?'<span class="tag a">명절 강화</span>':'<span class="tag c">상시</span>';
+  const CH=[['자사','#D9822B'],['쿠팡','#E52528'],['컬리','#5F0080'],['SSG','#F2B705'],['B2B/기타','#C9CFD8']];
+  const CATC={'전류':'#C8892B','나물류':'#7FA653','고기·잡채':'#8B5E3C','국·탕':'#6E8FA3'};
+  const nmFix=n=>n.replace('모둠전3종_','모둠전3종 ').replace(/,/g,'·');
+  function catBlock(c){
+    const list=Object.values(DATA.ITEMS).filter(x=>x.cat===c && (x.q['26추석']>0||x.q['26설']>0)).sort((a,b)=>b.q['26추석']-a.q['26추석']);
+    const ct=DATA.CATS[c]; const ch={}; list.forEach(x=>{ for(const [k,v] of Object.entries(x.ch['26추석'])) ch[k]=(ch[k]||0)+v; }); const cht=Object.values(ch).reduce((a,b)=>a+b,0)||1;
+    const mx=Math.max(...HS.map(h=>ct[h].q));
+    const left='<div class="card catl" style="border-top:5px solid '+CATC[c]+'"><div class="ck"><div class="lb">'+c+' · 26 추석</div><div class="v">'+f0(ct['26추석'].q)+'<small>개</small></div><div class="cmp"><span>vs 26설 '+pctS(ct['26추석'].q,ct['26설'].q)+'</span><span>vs 25추석 '+pctS(ct['26추석'].q,ct['25추석'].q)+'</span><span>매출 <b>'+man(ct['26추석'].a)+'만원</b></span></div></div>'+
+      '<h3 style="margin-top:14px">4개 명절 판매량</h3>'+HS.map(h=>'<div class="hb"><span class="hl">'+HL[h]+'</span><div class="hbar"><span style="width:'+(ct[h].q/mx*100)+'%;background:'+(h==='26추석'?CATC[c]:HC[h])+'"></span></div><b>'+f0(ct[h].q)+'</b></div>').join('')+
+      '<h3 style="margin-top:14px">26 추석 채널</h3><div class="chbar">'+CH.filter(([k])=>ch[k]).map(([k,col])=>'<span style="width:'+(ch[k]/cht*100)+'%;background:'+col+'" title="'+k+'">'+(ch[k]/cht>=0.08?(ch[k]/cht*100).toFixed(0)+'%':'')+'</span>').join('')+'</div><div class="legend" style="margin-top:6px">'+CH.filter(([k])=>ch[k]).map(([k,col])=>'<span><i style="background:'+col+'"></i>'+k+' '+f0(ch[k])+'</span>').join('')+'</div></div>';
+    const maxAbs=100;
+    const rows=list.map(x=>{ const p=x.q['26설']?(x.q['26추석']/x.q['26설']-1)*100:null; const cx=x.ch['26추석']; const t=(cx['자사']||0)+(cx['쿠팡']||0)+(cx['컬리']||0)+(cx['SSG']||0)+(cx['B2B/기타']||0)||1;
+      const div= p===null?'<span class="tag new">신규</span>':'<div class="dvw"><div class="dv"><i></i><span style="'+(p>=0?'left:50%;width:'+Math.min(p,maxAbs)/maxAbs*50+'%;background:#1E8E5A':'right:50%;width:'+Math.min(-p,maxAbs)/maxAbs*50+'%;background:#D1453B')+'"></span></div><em class="'+(p>=0?'up':'down')+'">'+(p>=0?'+':'')+p.toFixed(0)+'%</em></div>';
+      const chb='<div class="mini">'+CH.filter(([k])=>cx[k]).map(([k,col])=>'<span style="width:'+(cx[k]/t*100)+'%;background:'+col+'"></span>').join('')+'</div>';
+      return '<tr><td class="l"><b>'+nmFix(x.nm)+'</b></td>'+HS.map(h=>'<td style="'+(h==='26추석'?'font-weight:800;background:#FFF6EC':'color:#5B6470')+'">'+(x.q[h]?f0(x.q[h]):'-')+'</td>').join('')+'<td>'+spark(HS.map(h=>x.q[h]))+'</td><td style="width:150px">'+div+'</td><td>'+(x.q['25추석']?pctS(x.q['26추석'],x.q['25추석']):'-')+'</td><td>'+(x.lift===null?'-':x.lift.toFixed(1)+'배')+'</td><td>'+grade(x.lift)+'</td><td style="width:120px">'+(x.q['26추석']?chb:'-')+'</td></tr>'; }).join('');
+    const right='<div class="card"><table class="cat"><colgroup><col style="width:200px"><col style="width:62px"><col style="width:66px"><col style="width:62px"><col style="width:70px"><col style="width:96px"><col style="width:166px"><col style="width:84px"><col style="width:58px"><col style="width:86px"><col style="width:124px"></colgroup><tr><th>품목</th><th>25 설</th><th>25 추석</th><th>26 설</th><th style="color:#B8621A">26 추석</th><th>추이</th><th style="text-align:center">vs 26설</th><th>vs 25추석</th><th>배수</th><th>구분</th><th style="text-align:left">채널</th></tr>'+rows+'</table></div>';
+    return {left,right,n:list.length};
+  }
+  const catSlides=[['s4b','4-2',['전류']],['s4c','4-3',['나물류']],['s4d','4-4',['고기·잡채','국·탕']]];
+  let prev=document.getElementById('s4');
+  catSlides.forEach(([id,no,cats])=>{ const s=mk(id,no,'명절 단품 성과 <span class="subt">'+cats.join(' · ')+'</span>');
+    s.innerHTML+=cats.map(c=>{ const b=catBlock(c); return '<div class="grid catrow" style="grid-template-columns:360px 1fr;margin-bottom:14px">'+b.left+b.right+'</div>'; }).join('')+'<div class="note">vs 26설 막대 = 증감률(±100% 기준) · 채널 막대 = <span style="color:#D9822B">자사</span> · <span style="color:#E52528">쿠팡</span> · <span style="color:#5F0080">컬리</span> · <span style="color:#B08500">SSG</span> · 기타 · 배수 = 평상시 대비</div>';
+    prev.after(s); prev=s; });
+
+  /* trim original slides */
+  const s3=document.getElementById('s3'); s3.querySelector('h2 .no').textContent='3-1'; s3.querySelector('h2').insertAdjacentHTML('beforeend',' <span class="subt">목표 달성 · 채널</span>'); document.getElementById('tb_sets').closest('.card').remove();
+  const s4=document.getElementById('s4'); s4.querySelector('h2 .no').textContent='4-1'; s4.querySelector('h2').insertAdjacentHTML('beforeend',' <span class="subt">명절 특수도 · 목표 달성</span>'); document.getElementById('tb_items').closest('.card').remove();
+})();
+</script>
 <div id="prog"></div>
 <div id="ctrl"><button id="bPrev" title="이전 (←)">◀</button><div id="dots"></div><span id="cnt"></span><button id="bNext" title="다음 (→)">▶</button><button id="bFs" title="전체화면 (F)">⛶</button></div>
 <script>
@@ -548,12 +658,12 @@ const GOAL = {'표준 차례상':176,'정성 차례상':29,'실속 추석 세트
   const wrap=document.querySelector('.wrap');
   const deck=document.createElement('div'); deck.id='deck';
   const s1=document.getElementById('s1'); s1.prepend(document.querySelector('header.top'));
-  const ids=['s1','s2','s3','s4','s5','s6','s7','s8'];
+  const ids=['s1','s2','s3','s3b','s4','s4b','s4c','s4d','s5','s6','s7','s8'];
   const slides=ids.map(id=>{ const el=document.getElementById(id); const sl=document.createElement('div'); sl.className='slide'; const cv=document.createElement('div'); cv.className='canvas c-'+id; cv.appendChild(el); sl.appendChild(cv); deck.appendChild(sl); return sl; });
   document.body.insertBefore(deck, wrap); wrap.style.display='none';
   const dots=document.getElementById('dots'); ids.forEach((_,i)=>{ const d=document.createElement('i'); d.title=(i+1)+''; d.onclick=()=>go(i); dots.appendChild(d); });
   let cur=0;
-  function fit(){ const W=innerWidth-24, H=innerHeight-56; slides.forEach(sl=>{ const cv=sl.firstChild; cv.style.transform='none'; if(cv.classList.contains('c-s4')){ const s=Math.min(W/cv.offsetWidth,H/cv.offsetHeight); cv.dataset.s=s.toFixed(3); cv.style.transform='translate(-50%,-50%) scale('+s+')'; return; } let best={s:0,w:1840}; for(let w=1150; w<=2300; w+=40){ cv.style.width=w+'px'; const over=cv.scrollWidth>w+1 || [...cv.querySelectorAll('.card')].some(c=>c.scrollWidth>c.clientWidth+1); if(over) continue; const h=cv.offsetHeight; const s=Math.min(W/w,H/h); if(s>best.s) best={s,w}; } cv.style.width=best.w+'px'; const s=Math.min(W/Math.max(cv.offsetWidth,cv.scrollWidth),H/cv.offsetHeight); cv.dataset.s=s.toFixed(3); cv.style.transform='translate(-50%,-50%) scale('+s+')'; }); }
+  function fit(){ const W=innerWidth-24, H=innerHeight-56; slides.forEach(sl=>{ const cv=sl.firstChild; cv.style.transform='none'; let best={s:0,w:1840}; for(let w=1150; w<=2300; w+=40){ cv.style.width=w+'px'; const over=cv.scrollWidth>w+1 || [...cv.querySelectorAll('.card')].some(c=>c.scrollWidth>c.clientWidth+1); if(over) continue; const h=cv.offsetHeight; const s=Math.min(W/w,H/h); if(s>best.s) best={s,w}; } cv.style.width=best.w+'px'; const s=Math.min(W/Math.max(cv.offsetWidth,cv.scrollWidth),H/cv.offsetHeight); cv.dataset.s=s.toFixed(3); cv.style.transform='translate(-50%,-50%) scale('+s+')'; }); }
   function go(i){ cur=Math.max(0,Math.min(slides.length-1,i)); slides.forEach((s,j)=>s.classList.toggle('on',j===cur)); [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur)); document.getElementById('cnt').textContent=(cur+1)+' / '+slides.length; document.getElementById('prog').style.width=((cur+1)/slides.length*100)+'%'; history.replaceState(null,'','#'+(cur+1)); }
   addEventListener('keydown',e=>{ if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(cur+1);} else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(cur-1);} else if(e.key==='Home')go(0); else if(e.key==='End')go(slides.length-1); else if(e.key==='f'||e.key==='F'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); } });
   document.getElementById('bPrev').onclick=()=>go(cur-1); document.getElementById('bNext').onclick=()=>go(cur+1);
