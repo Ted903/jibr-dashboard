@@ -133,7 +133,72 @@ window.SUMerge=(function(){
   }
   function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
   function addDays(ds,n){const d=new Date(ds+'T00:00:00');d.setDate(d.getDate()+n);return ymd(d);}
-  return {merge3,metaOf,extractEmbedded,reattachEmbedded,docId,isEmptyStub,addDays,ymd,eq};
+
+  // ── 고유 id 생성기: 정수 = ms × 1000 + 탭 번호(0~999, 탭마다 난수 1개)
+  //  · 예전 Date.now()+Math.random() 은 같은 ms 안에서 4,097가지 값밖에 안 나와 한 번에 여럿 만들면 겹쳤다
+  //  · 같은 ms 에 여러 개를 만들면 ms 부분을 1씩 앞당긴다(끝 3자리는 항상 탭 번호) → 탭 안에서는 절대 안 겹침
+  //  · 다른 탭과는 탭 번호가 같고(1/1000) 시각 구간까지 겹칠 때만 충돌
+  //  · 2^53 이하(2255년까지), id/1000 ≈ 생성 시각(ms)
+  const TAB=Math.floor(Math.random()*1000);
+  let lastMs=0;
+  function newId(){
+    let ms=Date.now();
+    if(ms<=lastMs)ms=lastMs+1;
+    lastMs=ms;
+    return ms*1000+TAB;
+  }
+  // ── 같은 날짜 문서 안 중복 id 자가 교정 (todos, keyTasks[mid])
+  //  · 첫 항목은 그대로, 뒤 항목만 바꾼다. 내용까지 똑같은 완전 중복은 지운다.
+  //  · 새 id 는 (날짜·담당자·원래 id·문구·몇 번째 중복) 해시로 정한다 → 여러 탭이 동시에 고쳐도 같은 id 가 나와서
+  //    3-way 병합에서 한 항목으로 합쳐진다. 범위 2^52~2^53 은 newId 가 2112년까지 쓰지 않는 구간.
+  function hash52(s){
+    let h1=0x811c9dc5,h2=0x01000193^s.length;
+    for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,0x01000193);h2=Math.imul(h2^c,0x5bd1e995);h2^=h2>>>13;}
+    return (h1>>>0)%0x100000*0x100000000+(h2>>>0);   // 20bit × 2^32 + 32bit = 52bit
+  }
+  function dedupeList(list,date,kind,mid,out){
+    if(!Array.isArray(list))return list;
+    const seen=new Map(),ids=new Set(list.map(x=>x&&String(x.id))),dupN=new Map(),res=[];
+    list.forEach(x=>{
+      if(!isObj(x)||x.id===undefined||x.id===null){res.push(x);return;}
+      const k=String(x.id);
+      if(!seen.has(k)){seen.set(k,[x]);res.push(x);return;}
+      if(seen.get(k).some(y=>eq(y,x))){out.removed++;return;}         // 완전 중복 → 제거
+      const n=(dupN.get(k)||0)+1;dupN.set(k,n);
+      const owner=kind==='todo'?x.mid:mid;
+      let nid=0x10000000000000+hash52([date,kind,owner,k,x.text,n].join('\u0001'));
+      while(ids.has(String(nid)))nid++;
+      ids.add(String(nid));
+      out.renames.push({kind,mid:owner,oldId:x.id,newId:nid,text:x.text});
+      const y=Object.assign({},x,{id:nid});
+      seen.get(k).push(y);res.push(y);
+    });
+    return res;
+  }
+  // 반환: {renames:[{kind,mid,oldId,newId,text}], removed:n}. day 를 직접 고친다.
+  function dedupeDay(day,date){
+    const out={renames:[],removed:0};
+    if(!isObj(day))return out;
+    if(Array.isArray(day.todos))day.todos=dedupeList(day.todos,date,'todo',null,out);
+    if(isObj(day.keyTasks))Object.keys(day.keyTasks).forEach(m=>{day.keyTasks[m]=dedupeList(day.keyTasks[m],date,'key',m,out);});
+    return out;
+  }
+  // 바뀐 id 를 _origin 으로 참조하던 이월 사본(다른 날짜 문서)도 따라 바꾼다. 같은 담당자 + 같은 문구일 때만.
+  function remapOrigins(days,renames){
+    let n=0;
+    renames.forEach(r=>{
+      const o=String(r.oldId);
+      days.forEach(d=>{
+        if(!isObj(d))return;
+        const lists=r.kind==='todo'?[d.todos]:[d.keyTasks&&d.keyTasks[r.mid]];
+        lists.forEach(l=>(l||[]).forEach(x=>{
+          if(x&&x._origin!==undefined&&String(x._origin)===o&&x.text===r.text&&(r.kind!=='todo'||x.mid===r.mid)){x._origin=r.newId;n++;}
+        }));
+      });
+    });
+    return n;
+  }
+  return {merge3,metaOf,extractEmbedded,reattachEmbedded,docId,isEmptyStub,addDays,ymd,eq,newId,dedupeDay,remapOrigins};
 })();
 </script>
 <script type="module">
@@ -257,6 +322,34 @@ window.SUMerge=(function(){
   let renderT = null;
   function rerender() { clearTimeout(renderT); renderT = setTimeout(() => window._suRerender && window._suRerender(), 50); }
 
+  // ══════════════ 중복 id 자가 교정 ══════════════
+  // 같은 날짜 문서 안 todos / keyTasks[mid] 의 중복 id 를 SUMerge.dedupeDay 규칙(결정적)으로 고친다.
+  // 바뀐 게 있을 때만 true → 호출한 쪽이 저장 예약. 구버전 탭이 다시 중복을 써 넣으면 서로 고쳐 쓰며
+  // 끝없이 저장할 수 있어서, 한 문서는 한 세션에서 HEAL_MAX 번까지만 고친다(넘으면 경고만).
+  const HEAL_MAX = 3;
+  const healN = new Map();
+  const canHeal = (k) => (healN.get(k) || 0) < HEAL_MAX;
+  function allDays(st) {
+    const out = [];
+    Object.keys(st.quarters || {}).forEach(q => { const sd = st.quarters[q].standups || {}; Object.keys(sd).forEach(d => out.push(sd[d])); });
+    return out;
+  }
+  function heal(st, q, date, obj) {
+    if (!obj) return false;
+    const k = K(q, date);
+    if (!canHeal(k)) {
+      if (healN.get(k) === HEAL_MAX) { const r = M.dedupeDay(clone(obj), date); if (r.renames.length || r.removed) { healN.set(k, HEAL_MAX + 1); console.warn('[id 자가 교정] ' + q + ' ' + date + ' 에 중복 id 가 계속 다시 생깁니다(구버전 탭?). 이번 세션에서는 더 고치지 않습니다.'); } }
+      return false;
+    }
+    const r = M.dedupeDay(obj, date);
+    if (!r.renames.length && !r.removed) return false;
+    healN.set(k, (healN.get(k) || 0) + 1);
+    const remapped = r.renames.length ? M.remapOrigins(allDays(st), r.renames) : 0;
+    console.info('[id 자가 교정] ' + q + ' ' + date + ': 새 id ' + r.renames.length + '건, 완전 중복 제거 ' + r.removed + '건, 이월 사본 _origin 갱신 ' + remapped + '건');
+    return true;
+  }
+  const healedCopy = (str, date) => { const o = JSON.parse(str); M.dedupeDay(o, date); return o; };   // 병합 기준본용(저장과 무관한 순수 계산)
+
   // 서버에서 온 날짜 문서 1건을 메모리에 반영 (3-way). 반환: 메모리가 바뀌었는가
   function applyRemoteDay(q, date, remoteStr, { lazy } = {}) {
     const st = S(); if (!st || !st.quarters[q]) return false;   // 삭제된 분기의 문서는 무시(문서는 백업으로 남음)
@@ -266,12 +359,19 @@ window.SUMerge=(function(){
     const cur = dayObj(st, q, date);
     const remote = JSON.parse(remoteStr);
     base.set(k, remoteStr);
-    if (!cur || (b === undefined && M.isEmptyStub(cur)) || JSON.stringify(cur) === b) { setDay(st, q, date, remote); return true; }
-    const merged = M.merge3(b === undefined ? null : JSON.parse(b), cur, remote);
+    // 원격본에 중복 id 가 있으면 병합 전에 먼저 고친다 (id 기준 병합에서 서로 다른 항목이 섞이지 않게)
+    const healed = heal(st, q, date, remote);
+    if (!cur || (b === undefined && M.isEmptyStub(cur)) || JSON.stringify(cur) === b) {
+      setDay(st, q, date, remote);
+      if (healed) scheduleSave();
+      return true;
+    }
+    const bObj = b === undefined ? null : (canHeal(k) ? healedCopy(b, date) : JSON.parse(b));
+    const merged = M.merge3(bObj, cur, remote);
     const mergedStr = JSON.stringify(merged);
     if (mergedStr === JSON.stringify(cur)) { if (mergedStr !== remoteStr) scheduleSave(); return false; }
     setDay(st, q, date, merged);
-    if (mergedStr !== remoteStr) scheduleSave();                   // 아직 안 올라간 로컬 변경이 남아 있음
+    if (heal(st, q, date, dayObj(st, q, date)) || mergedStr !== remoteStr) scheduleSave();   // 아직 안 올라간 로컬 변경(또는 교정)이 남아 있음
     return true;
   }
 
@@ -300,8 +400,13 @@ window.SUMerge=(function(){
       });
     });
     noteEmbedded(n);
+    // 불러온 날짜 문서의 중복 id 교정 — 실제로 바뀐 문서만 저장된다(collectJobs 가 서버본과 비교)
+    Object.keys(store.quarters).forEach(q => Object.keys(store.quarters[q].standups).forEach(date => {
+      if (heal(store, q, date, store.quarters[q].standups[date])) healedAtLoad = true;
+    }));
     return { store, cutoff };
   }
+  let healedAtLoad = false;
   let lastEmb = 0;
   function noteEmbedded(n) {
     lastEmb = n;
@@ -357,7 +462,9 @@ window.SUMerge=(function(){
       const remoteStr = snap.exists() ? snap.data().data : null;
       out = (remoteStr === null || remoteStr === b || remoteStr === sentStr)
         ? sentStr
-        : JSON.stringify(M.merge3(b === undefined ? null : JSON.parse(b), JSON.parse(sentStr), JSON.parse(remoteStr)));
+        : JSON.stringify(canHeal(k)
+          ? M.merge3(b === undefined ? null : healedCopy(b, date), JSON.parse(sentStr), healedCopy(remoteStr, date))
+          : M.merge3(b === undefined ? null : JSON.parse(b), JSON.parse(sentStr), JSON.parse(remoteStr)));
       const n = bytes(out);
       if (n > DOC_LIMIT) throw new Error(date + ' 문서 크기 초과 (' + n + ' bytes)');
       if (out !== remoteStr) tx.set(ref, { q, date, data: out, updatedAt: serverTimestamp(), by: CLIENT });
@@ -494,6 +601,7 @@ window.SUMerge=(function(){
       window.dispatchEvent(new Event('firebase-ready'));
     }
     listen(r.cutoff);
+    if (healedAtLoad) scheduleSave();
     const st = S(); if (st) ensureQ(st.activeQ);
   });
 
@@ -1217,6 +1325,7 @@ select.fi{cursor:pointer;}
     </div>
     <div class="ca">
       <div id="standup-roll-banner"></div>
+      <div id="standup-past-banner"></div>
       <div id="standup-date-tabs" class="date-tabs"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
         <div>
@@ -1575,6 +1684,8 @@ function ini(n){const clean=n.replace(/\s*\(.*?\)\s*/g,'').replace(/\s/g,'').tri
 function sl(s){return{on_track:'정상',delayed:'지연',completed:'완료',at_risk:'주의'}[s]||s;}
 function pl(s){return{high:'높음',mid:'중간',low:'낮음'}[s]||s;}
 function partLabel(p){return{md:'MD 파트',tl:'팀장'}[p]||p;}
+// 할 일·중요 업무·반복 업무·멤버·OKR 등 새 항목 id 는 전부 여기서 (정수, 같은 ms·여러 탭에도 고유 — SUMerge.newId 참고)
+function newId(){return SUMerge.newId();}
 function todayStr(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
 function formatDate(ds){if(!ds)return'';const[y,m,d]=ds.split('-');const days=['일','월','화','수','목','금','토'];const day=new Date(ds).getDay();return`${y}년 ${parseInt(m)}월 ${parseInt(d)}일 (${days[day]})`;}
 function weekday(ds){const days=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];return days[new Date(ds).getDay()];}
@@ -1687,8 +1798,7 @@ function saveDaily(){
   const list=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   if(!list.length)return alert('내용을 입력해주세요');
   const arr=getDailies(mid);
-  const base=Date.now();
-  list.forEach((text,i)=>{arr.push({id:base+i,text,cycle:dlCycle});});
+  list.forEach(text=>{arr.push({id:newId(),text,cycle:dlCycle});});
   rpSel[mid]=dlCycle;
   saveStore();cm('mo-daily');renderStandup();renderDashStandupWidget();
 }
@@ -1728,6 +1838,11 @@ function moveDaily(mid,did,dir){
   saveStore();renderStandup();
 }
 
+// 이월 사본. _origin = 맨 처음 항목의 id (이월이 여러 번 이어져도 그대로 유지) → 원본과 사본을 잇는 기준
+function carriedTodoCopy(t,fromDate){
+  return {id:newId(),mid:t.mid,text:t.text,prio:t.prio,okr:t.okr||'',done:false,_carried:true,_since:t._since||fromDate,_origin:t._origin||t.id,st:t.st||'',focus:!!t.focus};
+}
+function carriedKeyCopy(k){return {id:newId(),text:k.text,done:false,_carried:true,_origin:k._origin||k.id};}
 // Firebase 로드 완료 후 오늘 미완료 항목 이월 실행
 function runCarryOver(){
   const today=todayStr();
@@ -1747,7 +1862,7 @@ function runCarryOver(){
       unfinished.forEach(t=>{
         if(!existTexts.includes(t.text)){
           if(!CQ().standups[today].todos)CQ().standups[today].todos=[];
-          CQ().standups[today].todos.push({id:Date.now()+Math.random(),mid:t.mid,text:t.text,prio:t.prio,okr:t.okr||'',done:false,_carried:true,_since:t._since||yd,st:t.st||'',focus:!!t.focus});
+          CQ().standups[today].todos.push(carriedTodoCopy(t,yd));
         }
       });
     }
@@ -1760,7 +1875,7 @@ function runCarryOver(){
         const existTexts=CQ().standups[today].keyTasks[mid].map(k=>k.text);
         unfinished.forEach(k=>{
           if(!existTexts.includes(k.text)){
-            CQ().standups[today].keyTasks[mid].push({id:Date.now()+Math.random(),text:k.text,done:false,_carried:true});
+            CQ().standups[today].keyTasks[mid].push(carriedKeyCopy(k));
           }
         });
       });
@@ -1771,6 +1886,86 @@ function runCarryOver(){
   CQ().standups[today]._carryDone=today;
   saveStore();
 }
+
+// ── 과거 날짜에서 바꾼 내용을 "이미 이월이 끝난 오늘 문서"에도 반영 ──
+// 오늘 이월은 그날 처음 연 사람의 화면에서 한 번만 돈다. 그 뒤에 어제(이월 원본) 날짜에서
+// 체크하거나 새로 추가한 것은 오늘 문서에 안 들어가므로 여기서 따라가 맞춘다.
+// 매칭: 이월 사본의 _origin(원본 id) → 없으면(기존 데이터) 같은 담당자 + 같은 문구의 이월 항목
+function carryTargetDay(date){
+  const today=todayStr(); if(!date||date>=today)return null;
+  for(const q of Object.keys(STORE.quarters||{})){
+    const sd=(STORE.quarters[q].standups||{})[today];
+    if(sd&&sd._carryDone===today)return sd;
+  }
+  return null;
+}
+// 이 날짜가 오늘 이월의 원본(오늘 이전 가장 최근 기록)인가 → 추가/체크 해제는 이때만 오늘로 넘긴다
+function isCarrySource(date){const f=findLastStandup(todayStr());return !!f&&f.date===date;}
+function findCarried(list,src,sameOwner){
+  const o=String(src._origin||src.id);
+  return list.find(x=>x._origin!==undefined&&String(x._origin)===o)
+      || list.find(x=>x._carried&&sameOwner(x)&&x.text===src.text);
+}
+function carryNote(n){if(n)rpToast(`오늘(${formatDate(todayStr()).replace(/^\d+년 /,'')}) 목록에도 반영했습니다`);}
+// 할 일: done 이 바뀌었거나(kind='toggle') 새로 추가됐을 때(kind='add')
+function syncTodoToToday(date,t,kind){
+  const td=carryTargetDay(date); if(!td||!t)return 0;
+  if(!td.todos)td.todos=[];
+  const c=findCarried(td.todos,t,x=>x.mid===t.mid);
+  if(kind==='toggle'&&t.done){
+    if(!c||c.done)return 0;
+    td.todos=td.todos.filter(x=>x!==c);        // 어제 끝낸 일 → 오늘 목록에서 뺀다 (정상 이월과 같은 결과)
+    return 1;
+  }
+  // 체크 해제 / 신규 추가 → 오늘에 아직 없으면 이월 사본을 넣는다
+  if(c||t.done||t.st==='drop'||!isCarrySource(date))return 0;
+  if(td.todos.some(x=>x.mid===t.mid&&x.text===t.text))return 0;
+  td.todos.push(carriedTodoCopy(t,date));
+  return 1;
+}
+function syncKeyTaskToToday(date,mid,k,kind){
+  const td=carryTargetDay(date); if(!td||!k)return 0;
+  if(!td.keyTasks)td.keyTasks={};
+  const list=td.keyTasks[mid]||[];
+  const c=findCarried(list,k,()=>true);
+  if(kind==='toggle'&&k.done){
+    if(!c||c.done)return 0;
+    td.keyTasks[mid]=list.filter(x=>x!==c);
+    return 1;
+  }
+  if(c||k.done||!isCarrySource(date))return 0;
+  if(list.some(x=>x.text===k.text))return 0;
+  td.keyTasks[mid]=list.concat([carriedKeyCopy(k)]);
+  return 1;
+}
+
+// ── 날짜 변경 감지: 탭을 밤새 열어둬도 자정이 지나면 오늘로 넘어가고 이월을 돌린다 ──
+let _suDay=todayStr(), _suLoaded=false, _suRollT=null;
+function checkDayRollover(){
+  const t=todayStr(); if(t===_suDay)return false;
+  const prev=_suDay; _suDay=t;
+  document.getElementById('sb-today-date').textContent=formatDate(t);
+  document.getElementById('standup-ph-sub').textContent=`${formatDate(t)} · To-do · 우선순위 · 반복 업무`;
+  if(!_suLoaded)return false;                   // 서버 데이터 전에는 이월하지 않는다
+  if(curStandupDate===prev)curStandupDate=t;     // "오늘"을 보고 있었으면 새 오늘로. 일부러 과거를 보던 중이면 그대로(경고 배너)
+  if(ttSelDate===prev)ttSelDate=t;
+  if(window._suRerender)window._suRerender();
+  // 잠자기에서 깬 직후엔 다른 사람이 만든 오늘 문서가 아직 안 들어왔을 수 있어 잠깐 기다렸다 이월 (이미 됐으면 runCarryOver 가 건너뜀)
+  clearTimeout(_suRollT);
+  _suRollT=setTimeout(()=>{
+    if(todayStr()!==t)return;
+    backfillSince();
+    const r=autoQuarterRoll(); if(r)window._qRoll=r;
+    runCarryOver();
+    if(window._suEnsureFor)window._suEnsureFor(curView);
+    if(window._suRerender)window._suRerender();
+  },window._suRollDelay!==undefined?window._suRollDelay:3000);
+  rpToast(`날짜가 바뀌어 ${formatDate(t)}로 넘어갔습니다`);
+  return true;
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayRollover();});
+window.addEventListener('focus',checkDayRollover);
+setInterval(checkDayRollover,30000);
 function saveTs(){const n=new Date();document.getElementById('last-saved').textContent=`${n.getHours().toString().padStart(2,'0')}:${n.getMinutes().toString().padStart(2,'0')}`;const fb=document.getElementById('fb-status');if(fb)fb.textContent='☁ Firebase 동기화됨';}
 
 // ══════════════════════════════════════
@@ -2178,6 +2373,15 @@ function renderStandup(){
     th+=`<div class="date-tab ${isAct?'active':''} ${isTd&&!isAct?'today-tab':''}" onclick="switchStandupDate('${dt}')">${isTd?'오늘 ':''}${saved}${label}</div>`;
   });
   document.getElementById('standup-date-tabs').innerHTML=th;
+  // 과거 날짜를 보고 있으면 눈에 띄게 경고 (어제 열어둔 탭에서 오늘 체크하는 실수 방지)
+  const isPast=curStandupDate!==today;
+  document.getElementById('standup-past-banner').innerHTML=isPast?
+    `<div style="position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#c5221f;color:#fff;padding:12px 16px;border-radius:8px;margin-bottom:14px;font-size:14px;line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+      <span style="font-size:18px;">⚠</span>
+      <span style="flex:1;min-width:220px;"><strong>지금 보고 있는 날은 오늘이 아닙니다 — ${formatDate(curStandupDate)}</strong><br>
+      <span style="opacity:.9;font-size:12px;">여기서 체크·추가하면 이 날짜 기록에 저장됩니다. 오늘 할 일은 오늘 화면에서 관리하세요.</span></span>
+      <button class="btn bxs" style="background:#fff;color:#c5221f;border:0;font-weight:700;" onclick="switchStandupDate('${today}')">오늘로 이동 →</button>
+    </div>`:'';
   document.getElementById('sd-title').textContent=formatDate(curStandupDate);
   document.getElementById('sd-meta').textContent=curStandupDate===today?`${weekday(curStandupDate)} · 오늘의 아침 회의`:`${weekday(curStandupDate)} · 과거 기록`;
   const badge=document.getElementById('sd-saved-badge');badge.style.display=sd.saved?'inline-flex':'none';
@@ -2449,7 +2653,7 @@ function cancelEditKeyTask(kid, orig){
   const textEl=document.getElementById('keytask-text-'+kid);if(!textEl)return;
   textEl.innerHTML=orig;
 }
-function toggleTodo(date,tid){const sd=getStandup(date);const t=sd.todos.find(x=>x.id===tid);if(t){t.done=!t.done;saveStore();renderStandup();renderDashStandupWidget();}}
+function toggleTodo(date,tid){const sd=getStandup(date);const t=sd.todos.find(x=>x.id===tid);if(t){t.done=!t.done;const n=syncTodoToToday(date,t,'toggle');saveStore();renderStandup();renderDashStandupWidget();carryNote(n);}}
 function delTodo(date,tid){const sd=getStandup(date);sd.todos=sd.todos.filter(t=>t.id!==tid);saveStore();renderStandup();}
 
 
@@ -2548,15 +2752,16 @@ function saveTodos(){
   const okr=document.getElementById('td-okr').value.trim();
   if(!lines.length)return alert('할 일을 입력해주세요');
   const sd=getStandup(curStandupDate);
-  lines.forEach(text=>{sd.todos.push({id:Date.now()+Math.random(),mid,text,prio,okr,done:false,_since:curStandupDate,st:'',focus:false});});
-  saveStore();cm('mo-todo');renderStandup();
+  let n=0;
+  lines.forEach(text=>{const t={id:newId(),mid,text,prio,okr,done:false,_since:curStandupDate,st:'',focus:false};sd.todos.push(t);n+=syncTodoToToday(curStandupDate,t,'add');});
+  saveStore();cm('mo-todo');renderStandup();carryNote(n);
 }
 
 
 // 중요 업무
 function openAddKeyTask(mid){document.getElementById('kt-mid').value=mid;const m=CQ().members.find(x=>x.id===mid);document.getElementById('mo-keytask-title').textContent=`중요 업무 추가 — ${m?m.name:''}`;document.getElementById('kt-text').value='';om('mo-keytask');setTimeout(()=>document.getElementById('kt-text').focus(),100);}
-function saveKeyTask(){const mid=parseInt(document.getElementById('kt-mid').value);const raw=document.getElementById('kt-text').value;const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);if(!lines.length)return alert('내용을 입력해주세요');const sd=getStandup(curStandupDate);if(!sd.keyTasks)sd.keyTasks={};if(!sd.keyTasks[mid])sd.keyTasks[mid]=[];lines.forEach(text=>{sd.keyTasks[mid].push({id:Date.now()+Math.random(),text,done:false});});saveStore();cm('mo-keytask');renderStandup();}
-function toggleKeyTask(date,mid,kid){const sd=getStandup(date);const k=(sd.keyTasks&&sd.keyTasks[mid])||[];const t=k.find(x=>x.id===kid);if(t){t.done=!t.done;saveStore();renderStandup();}}
+function saveKeyTask(){const mid=parseInt(document.getElementById('kt-mid').value);const raw=document.getElementById('kt-text').value;const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);if(!lines.length)return alert('내용을 입력해주세요');const sd=getStandup(curStandupDate);if(!sd.keyTasks)sd.keyTasks={};if(!sd.keyTasks[mid])sd.keyTasks[mid]=[];let n=0;lines.forEach(text=>{const k={id:newId(),text,done:false};sd.keyTasks[mid].push(k);n+=syncKeyTaskToToday(curStandupDate,mid,k,'add');});saveStore();cm('mo-keytask');renderStandup();carryNote(n);}
+function toggleKeyTask(date,mid,kid){const sd=getStandup(date);const k=(sd.keyTasks&&sd.keyTasks[mid])||[];const t=k.find(x=>x.id===kid);if(t){t.done=!t.done;const n=syncKeyTaskToToday(date,mid,t,'toggle');saveStore();renderStandup();carryNote(n);}}
 function delKeyTask(date,mid,kid){const sd=getStandup(date);if(sd.keyTasks&&sd.keyTasks[mid])sd.keyTasks[mid]=sd.keyTasks[mid].filter(k=>k.id!==kid);saveStore();renderStandup();}
 
 // ══════════════════════════════════════
@@ -3121,7 +3326,7 @@ function saveTask(){
     if(t){t.text=lines[0];t.okr=okr;t.weekKey=weekKey;t.date=date;t.type=type;}
   } else {
     lines.forEach(text=>{
-      CQ().tasks.push({id:Date.now()+Math.floor(Math.random()*1000),mid,type,weekKey,date,text,okr,rate:0,lastNote:'',history:[]});
+      CQ().tasks.push({id:newId(),mid,type,weekKey,date,text,okr,rate:0,lastNote:'',history:[]});
     });
     if(!ttMid)ttMid=mid;
   }
@@ -3501,20 +3706,20 @@ function saveSettings(){CQ().teamName=document.getElementById('s-team').value.tr
 
 function openAddMember(){document.getElementById('mo-member-title').textContent='팀원 추가';document.getElementById('me-id').value='';document.getElementById('me-name').value='';document.getElementById('me-role').value='';document.getElementById('me-part').value='md';document.getElementById('me-isme').checked=false;om('mo-member');}
 function openEditMember(id){const m=CQ().members.find(x=>x.id===id);if(!m)return;document.getElementById('mo-member-title').textContent='팀원 편집';document.getElementById('me-id').value=id;document.getElementById('me-name').value=m.name;document.getElementById('me-role').value=m.role;document.getElementById('me-part').value=m.part;document.getElementById('me-isme').checked=m.isMe;om('mo-member');}
-function saveMember(){const eid=parseInt(document.getElementById('me-id').value);const name=document.getElementById('me-name').value.trim();const role=document.getElementById('me-role').value.trim();const part=document.getElementById('me-part').value;const isMe=document.getElementById('me-isme').checked;if(!name)return alert('이름을 입력해주세요');if(eid){const m=CQ().members.find(x=>x.id===eid);if(m){m.name=name;m.role=role;m.part=part;m.isMe=isMe;}}else{const nid=Date.now();CQ().members.push({id:nid,name,role,part,isMe,okrs:[],checkins:[]});selMid=nid;}saveStore();cm('mo-member');renderMembers();}
+function saveMember(){const eid=parseInt(document.getElementById('me-id').value);const name=document.getElementById('me-name').value.trim();const role=document.getElementById('me-role').value.trim();const part=document.getElementById('me-part').value;const isMe=document.getElementById('me-isme').checked;if(!name)return alert('이름을 입력해주세요');if(eid){const m=CQ().members.find(x=>x.id===eid);if(m){m.name=name;m.role=role;m.part=part;m.isMe=isMe;}}else{const nid=newId();CQ().members.push({id:nid,name,role,part,isMe,okrs:[],checkins:[]});selMid=nid;}saveStore();cm('mo-member');renderMembers();}
 function delMember(id){if(!confirm('삭제하시겠습니까?'))return;CQ().members=CQ().members.filter(m=>m.id!==id);if(selMid===id){selMid=null;document.getElementById('m-detail').innerHTML='<div class="es"><div class="ei">←</div><div>팀원을 선택하세요</div></div>';}saveStore();renderMembers();}
 
 function openAddOkr(mid){document.getElementById('mo-okr-title').textContent='OKR 추가';document.getElementById('oe-mid').value=mid;document.getElementById('oe-id').value='';document.getElementById('oe-title').value='';document.getElementById('oe-prog').value=0;document.getElementById('oe-pdis').textContent='0';document.getElementById('oe-status').value='on_track';document.getElementById('oe-note').value='';document.getElementById('oe-del').style.display='none';om('mo-okr');}
 function openEditOkr(mid,oid){const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);if(!o)return;document.getElementById('mo-okr-title').textContent='OKR 편집';document.getElementById('oe-mid').value=mid;document.getElementById('oe-id').value=oid;document.getElementById('oe-title').value=o.title;document.getElementById('oe-prog').value=o.progress;document.getElementById('oe-pdis').textContent=o.progress;document.getElementById('oe-status').value=o.status;document.getElementById('oe-note').value=o.note||'';document.getElementById('oe-del').style.display='inline-flex';om('mo-okr');}
-function saveOkr(){const mid=parseInt(document.getElementById('oe-mid').value);const eid=parseInt(document.getElementById('oe-id').value);const title=document.getElementById('oe-title').value.trim();const progress=parseInt(document.getElementById('oe-prog').value);const status=document.getElementById('oe-status').value;const note=document.getElementById('oe-note').value.trim();if(!title)return alert('OKR 제목을 입력해주세요');const m=CQ().members.find(x=>x.id===mid);if(!m)return;if(eid){const o=m.okrs.find(x=>x.id===eid);if(o){o.title=title;o.progress=progress;o.status=status;o.note=note;}}else m.okrs.push({id:Date.now(),title,progress,status,note,subOkrs:[]});saveStore();cm('mo-okr');renderMDetail(mid);}
+function saveOkr(){const mid=parseInt(document.getElementById('oe-mid').value);const eid=parseInt(document.getElementById('oe-id').value);const title=document.getElementById('oe-title').value.trim();const progress=parseInt(document.getElementById('oe-prog').value);const status=document.getElementById('oe-status').value;const note=document.getElementById('oe-note').value.trim();if(!title)return alert('OKR 제목을 입력해주세요');const m=CQ().members.find(x=>x.id===mid);if(!m)return;if(eid){const o=m.okrs.find(x=>x.id===eid);if(o){o.title=title;o.progress=progress;o.status=status;o.note=note;}}else m.okrs.push({id:newId(),title,progress,status,note,subOkrs:[]});saveStore();cm('mo-okr');renderMDetail(mid);}
 function delOkr(){const mid=parseInt(document.getElementById('oe-mid').value);const eid=parseInt(document.getElementById('oe-id').value);if(!confirm('삭제하시겠습니까?'))return;const m=CQ().members.find(x=>x.id===mid);if(m)m.okrs=m.okrs.filter(o=>o.id!==eid);saveStore();cm('mo-okr');renderMDetail(mid);}
 function openAddSokr(mid,oid){document.getElementById('mo-sokr-title').textContent='Key Result 추가';document.getElementById('se-mid').value=mid;document.getElementById('se-pid').value=oid;document.getElementById('se-id').value='';document.getElementById('se-title').value='';document.getElementById('se-prog').value=0;document.getElementById('se-pdis').textContent='0';document.getElementById('se-status').value='on_track';document.getElementById('se-note').value='';document.getElementById('se-del').style.display='none';om('mo-sokr');}
 function openEditSokr(mid,oid,sid){const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);const s=o?.subOkrs?.find(x=>x.id===sid);if(!s)return;document.getElementById('mo-sokr-title').textContent='Key Result 편집';document.getElementById('se-mid').value=mid;document.getElementById('se-pid').value=oid;document.getElementById('se-id').value=sid;document.getElementById('se-title').value=s.title;document.getElementById('se-prog').value=s.progress;document.getElementById('se-pdis').textContent=s.progress;document.getElementById('se-status').value=s.status;document.getElementById('se-note').value=s.note||'';document.getElementById('se-del').style.display='inline-flex';om('mo-sokr');}
-function saveSubOkr(){const mid=parseInt(document.getElementById('se-mid').value);const oid=parseInt(document.getElementById('se-pid').value);const eid=parseInt(document.getElementById('se-id').value);const title=document.getElementById('se-title').value.trim();const progress=parseInt(document.getElementById('se-prog').value);const status=document.getElementById('se-status').value;const note=document.getElementById('se-note').value.trim();if(!title)return alert('하위 OKR 제목을 입력해주세요');const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);if(!o)return;if(!o.subOkrs)o.subOkrs=[];if(eid){const s=o.subOkrs.find(x=>x.id===eid);if(s){s.title=title;s.progress=progress;s.status=status;s.note=note;}}else o.subOkrs.push({id:Date.now(),title,progress,status,note});saveStore();cm('mo-sokr');renderMDetail(mid);}
+function saveSubOkr(){const mid=parseInt(document.getElementById('se-mid').value);const oid=parseInt(document.getElementById('se-pid').value);const eid=parseInt(document.getElementById('se-id').value);const title=document.getElementById('se-title').value.trim();const progress=parseInt(document.getElementById('se-prog').value);const status=document.getElementById('se-status').value;const note=document.getElementById('se-note').value.trim();if(!title)return alert('하위 OKR 제목을 입력해주세요');const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);if(!o)return;if(!o.subOkrs)o.subOkrs=[];if(eid){const s=o.subOkrs.find(x=>x.id===eid);if(s){s.title=title;s.progress=progress;s.status=status;s.note=note;}}else o.subOkrs.push({id:newId(),title,progress,status,note});saveStore();cm('mo-sokr');renderMDetail(mid);}
 function delSubOkr(){const mid=parseInt(document.getElementById('se-mid').value);const oid=parseInt(document.getElementById('se-pid').value);const eid=parseInt(document.getElementById('se-id').value);if(!confirm('삭제하시겠습니까?'))return;const m=CQ().members.find(x=>x.id===mid);const o=m?.okrs.find(x=>x.id===oid);if(o)o.subOkrs=o.subOkrs.filter(s=>s.id!==eid);saveStore();cm('mo-sokr');renderMDetail(mid);}
 
 function openCiModal(mid){document.getElementById('ci-mid').value=mid;document.getElementById('ci-date').value=new Date().toISOString().slice(0,10);document.getElementById('ci-type').value='feedback';document.getElementById('ci-note').value='';om('mo-ci');}
-function saveCi(){const mid=parseInt(document.getElementById('ci-mid').value);const date=document.getElementById('ci-date').value;const type=document.getElementById('ci-type').value;const note=document.getElementById('ci-note').value.trim();if(!note)return alert('내용을 입력해주세요');const m=CQ().members.find(x=>x.id===mid);if(!m)return;if(!m.checkins)m.checkins=[];m.checkins.push({id:Date.now(),date,type,note});saveStore();cm('mo-ci');renderCiDetail(mid);renderCi();}
+function saveCi(){const mid=parseInt(document.getElementById('ci-mid').value);const date=document.getElementById('ci-date').value;const type=document.getElementById('ci-type').value;const note=document.getElementById('ci-note').value.trim();if(!note)return alert('내용을 입력해주세요');const m=CQ().members.find(x=>x.id===mid);if(!m)return;if(!m.checkins)m.checkins=[];m.checkins.push({id:newId(),date,type,note});saveStore();cm('mo-ci');renderCiDetail(mid);renderCi();}
 function delCi(mid,cid){if(!confirm('기록을 삭제하시겠습니까?'))return;const m=CQ().members.find(x=>x.id===mid);if(m)m.checkins=m.checkins.filter(c=>c.id!==cid);saveStore();renderCiDetail(mid);renderCi();}
 
 // ══════════════════════════════════════
@@ -3539,6 +3744,7 @@ function initRender(){
 // Firebase 데이터 준비 완료 이벤트 대기
 window.addEventListener('firebase-ready', ()=>{
   STORE = window.STORE;
+  _suLoaded=true; _suDay=todayStr();
   backfillSince(); // 이월 경과일(D+n) 산출용 최초 등록일 채우기 (이월보다 먼저!)
   window._qRoll = autoQuarterRoll(); // 새 분기 시작 시 자동 생성 + 전환
   runCarryOver(); // Firebase 로드 후 미완료 항목 이월 (분기 경계도 넘어감)
