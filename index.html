@@ -2,8 +2,16 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>집반찬연구소 · 온라인팀 OKR</title>
+<!-- 홈 화면 앱(PWA). service worker 는 쓰지 않는다 — 옛 화면이 캐시에 남지 않게 (아래 appVersionWatch 참고) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f3a5f" media="(max-width:768px)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="아침회의">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
@@ -269,7 +277,11 @@ window.SUMerge=(function(){
   }
   function layoutBanners() {
     let top = 0;
-    ['su-fail-banner', 'su-warn-banner'].forEach(id => { const el = document.getElementById(id); if (el) { el.style.top = top + 'px'; top += el.offsetHeight; } });
+    ['su-fail-banner', 'su-warn-banner'].forEach(id => { const el = document.getElementById(id); if (el) {
+      el.style.paddingTop = top ? '10px' : 'calc(10px + env(safe-area-inset-top, 0px))';   // 노치 아래로 (PC 는 0 이라 그대로 10px)
+      el.style.top = top + 'px'; top += el.offsetHeight; } });
+    document.documentElement.style.setProperty('--bn-h', top + 'px');   // 모바일 상단 바가 배너 아래로 내려가게
+    document.documentElement.classList.toggle('has-bn', top > 0);
   }
   const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   let failing = false;
@@ -547,6 +559,8 @@ window.SUMerge=(function(){
     const st = S();
     if (ready && st && (failing || flushing || collectJobs(st).length)) { e.preventDefault(); e.returnValue = ''; }
   });
+  // 저장 안 끝난 변경이 있는지 (새 버전 자동 새로고침 전에 확인)
+  window._suDirty = () => { const st = S(); return !!(ready && st && (failing || flushing || collectJobs(st).length)); };
 
   // ══════════════ 실시간 동기화 ══════════════
   function listen(cutoff) {
@@ -1202,9 +1216,126 @@ select.fi{cursor:pointer;}
 .tt-day-cell .dc-dot{width:5px;height:5px;border-radius:50%;background:var(--olive);margin:3px auto 0;}
 .tt-day-cell.active .dc-dow,.tt-day-cell.active .dc-d{color:var(--gold);}
 .tt-day-cell.active .dc-dot{background:var(--gold);}
+
+/* ══ 모바일 전용 요소 — PC 에서는 항상 숨김 ══ */
+.m-topbar,.m-scrim,.m-fab,.m-more,.m-chev,.m-me-tag{display:none;}
+#app-update{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:99998;display:flex;align-items:center;gap:12px;background:#171b21;color:#fff;font-size:13px;font-weight:600;padding:8px 8px 8px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(23,27,33,.3);white-space:nowrap;}
+#app-update button{background:#fff;color:#171b21;border:0;border-radius:999px;padding:7px 14px;font-weight:700;font-size:13px;cursor:pointer;font-family:var(--sans);}
+/* 할 일 액션 시트 · "나" 선택 */
+.as-title{font-size:16px;font-weight:700;line-height:1.45;word-break:break-word;}
+.as-meta{font-size:12px;color:var(--ink3);margin-top:4px;}
+.as-meta .past{color:#c5221f;font-weight:700;}
+.as-sec{margin-top:16px;}
+.as-lbl{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.04em;margin-bottom:6px;}
+.as-row{display:flex;gap:8px;flex-wrap:wrap;}
+.as-btn{flex:1;min-height:46px;padding:8px 10px;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--ink);font-size:15px;font-weight:600;font-family:var(--sans);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.as-btn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.as-btn.p-high.on{background:#9b2a20;border-color:#9b2a20;}
+.as-btn.p-mid.on{background:#2f6fb5;border-color:#2f6fb5;}
+.as-btn.p-low.on{background:#137333;border-color:#137333;}
+.as-btn.danger{color:#c5221f;border-color:rgba(197,34,31,.35);}
+.as-btn.mem{flex:0 0 calc(50% - 4px);font-size:14px;}
+.as-edit{width:100%;font-size:16px;font-family:var(--sans);padding:10px 12px;border:1px solid var(--accent);border-radius:12px;min-height:90px;resize:vertical;outline:none;}
+
+@media (max-width:768px){
+  :root{--m-tb:52px;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);}
+  body{display:block;-webkit-tap-highlight-color:transparent;}
+  /* 상단 바 + 드로어 */
+  .m-topbar{display:flex;align-items:center;gap:4px;position:fixed;left:0;right:0;top:var(--bn-h,0px);z-index:900;height:calc(var(--m-tb) + var(--sat));padding:var(--sat) calc(8px + var(--sar)) 0 calc(4px + var(--sal));background:var(--accent);color:#fff;box-shadow:0 1px 6px rgba(0,0,0,.18);}
+  html.has-bn .m-topbar{height:var(--m-tb);padding-top:0;}
+  .m-tb-btn{width:44px;height:44px;flex-shrink:0;border:0;background:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;}
+  .m-tb-title{flex:1;min-width:0;line-height:1.2;}
+  .m-tb-view{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .m-tb-sub{font-size:11.5px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .m-tb-sub.past{opacity:1;color:#ffd0cc;font-weight:700;}
+  .m-me-btn{flex-shrink:0;max-width:42vw;height:36px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:600;font-family:var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+  .sidebar{width:min(84vw,300px);min-height:0;height:100%;transform:translateX(-102%);transition:transform .22s ease;z-index:1001;padding-top:var(--sat);padding-bottom:var(--sab);padding-left:var(--sal);}
+  html.has-bn .sidebar{top:var(--bn-h,0px);padding-top:0;height:auto;}
+  body.m-drawer .sidebar{transform:none;box-shadow:4px 0 24px rgba(0,0,0,.3);}
+  body.m-drawer .m-scrim{display:block;position:fixed;inset:0;z-index:1000;background:rgba(23,27,33,.5);}
+  body.m-drawer{overflow:hidden;}
+  .nav-item{padding:13px 12px;font-size:15px;}
+  .qs-select,.qs-new-input{font-size:16px;}
+  /* 본문 */
+  .main{margin-left:0;min-width:0;padding-top:calc(var(--m-tb) + var(--sat) + var(--bn-h,0px));padding-bottom:calc(96px + var(--sab));padding-left:var(--sal);padding-right:var(--sar);}
+  html.has-bn .main{padding-top:calc(var(--m-tb) + var(--bn-h,0px));}
+  .ph{position:static;padding:12px 16px;flex-wrap:wrap;gap:8px;}
+  .ph-title{font-size:18px;}
+  .ca{padding:14px 12px;}
+  .archive-banner{flex-wrap:wrap;font-size:12.5px;padding:10px 12px;}
+  #rp-toast{bottom:calc(84px + var(--sab));max-width:calc(100% - 32px);white-space:normal;text-align:center;}
+  #app-update{bottom:calc(84px + var(--sab));max-width:calc(100% - 24px);}
+  /* 아침회의 */
+  #view-standup .ph{padding:10px 12px 0;border-bottom:0;justify-content:flex-end;}
+  #view-standup .ph > div:first-child,#view-standup .ph .btn.bg{display:none;}
+  #view-standup .ph .btn.bp{min-height:38px;}
+  #standup-past-banner > div{top:calc(var(--m-tb) + var(--sat) + var(--bn-h,0px)) !important;font-size:13px !important;padding:10px 12px !important;}
+  html.has-bn #standup-past-banner > div{top:calc(var(--m-tb) + var(--bn-h,0px)) !important;}
+  #standup-past-banner > div > span:nth-child(2){min-width:0 !important;}
+  #standup-past-banner .btn{min-height:40px;font-size:13px;}
+  .date-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -12px 14px;padding:0 12px 2px;}
+  .date-tabs::-webkit-scrollbar{display:none;}
+  .date-tab{flex-shrink:0;padding:10px 14px;font-size:13px;}
+  #view-standup .ca > div[style*="space-between"]{margin-bottom:14px !important;}
+  .sm-date-big{font-size:19px;}
+  .standup-grid{grid-template-columns:1fr;gap:12px;}
+  .standup-card.m-me{order:-1;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);}
+  .standup-card .me-tag{display:none;}
+  .m-me-tag{display:inline-block;font-size:10px;font-weight:700;color:#fff;background:var(--accent);padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:2px;}
+  .sc-header{padding:12px 14px;min-height:60px;cursor:pointer;}
+  .m-chev{display:block;width:10px;height:10px;flex-shrink:0;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);margin:-4px 4px 0 2px;transition:transform .15s;}
+  .standup-card.m-fold .m-chev{transform:rotate(-45deg);margin-top:0;}
+  .standup-card.m-fold .sc-body{display:none;}
+  .standup-card.m-fold .sc-header{border-bottom:0;}
+  .sc-body{padding:8px 14px 14px;}
+  .pc-hint{display:none !important;}
+  .todo-section-title .btn.bxs{min-height:36px;padding:6px 12px;font-size:12.5px;}
+  .rp-chip{padding:8px 13px;font-size:12px;}
+  .todo-item{min-height:44px;align-items:center;gap:10px;padding:6px 0;}
+  .todo-cb{width:22px;height:22px;margin-top:0;position:relative;}
+  .todo-cb::before{content:'';position:absolute;inset:-11px;}
+  .todo-cb.done::after{font-size:13px;}
+  .todo-text{font-size:15px;line-height:1.45;min-width:0;word-break:break-word;}
+  .pchip{font-size:11px;padding:3px 8px;margin-top:0;}
+  .dchip{font-size:10.5px;}
+  .rp-bd{font-size:11px;padding:4px 8px;}
+  .todo-edit-input{font-size:16px;}
+  .todo-edit-actions .btn{min-height:36px;}
+  .focus-zone{padding:2px 10px 4px;}
+  .morebtn{min-height:36px;padding:6px 14px;font-size:12px;}
+  /* 모달 → 전체 폭 바텀시트 */
+  .mo{align-items:flex-end;}
+  .modal{width:100% !important;max-width:100%;max-height:calc(100dvh - 16px - var(--sat) - var(--bn-h,0px));border-radius:16px 16px 0 0;border-bottom:0;padding-bottom:var(--sab);}
+  .moh{padding:14px 16px;position:sticky;top:0;background:var(--paper);z-index:1;}
+  .mob{padding:16px;}
+  .mof{padding:12px 16px;position:sticky;bottom:0;background:var(--paper);}
+  .mof .btn{min-height:46px;flex:1;justify-content:center;font-size:15px;}
+  .fi{font-size:16px;}
+  .moh .btn{min-width:40px;min-height:40px;justify-content:center;}
+  /* 할 일 추가 버튼 (아침회의 화면에서만) */
+  body[data-view="standup"] .m-fab{display:flex;align-items:center;gap:6px;position:fixed;right:calc(16px + var(--sar));bottom:calc(16px + var(--sab));z-index:800;height:54px;padding:0 22px;border:0;border-radius:999px;background:var(--accent);color:#fff;font-size:16px;font-weight:700;font-family:var(--sans);box-shadow:0 6px 18px rgba(31,58,95,.4);cursor:pointer;}
+  body.m-drawer .m-fab{display:none;}
+}
+/* 터치 기기: hover 로만 보이던 조작을 항상 보이게, 할 일 줄은 탭 → 액션 시트 */
+@media (max-width:768px), (hover:none) and (pointer:coarse){
+  .todo-item[data-tid]{-webkit-user-drag:none;cursor:pointer;}
+  .todo-item[data-tid] .drag-h,.todo-item[data-tid] .todo-del,.todo-item[data-tid] .pin-b:not(.on){display:none;}
+  .todo-item[data-tid] .pin-b.on{opacity:1;}
+  .m-more{display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin:-4px -6px -4px 0;flex-shrink:0;border:0;background:none;color:var(--ink3);font-size:18px;letter-spacing:1px;cursor:pointer;}
+  .todo-item:not([data-tid]) .todo-del{opacity:.6;min-width:32px;min-height:36px;font-size:14px;}
+}
 </style>
 </head>
-<body>
+<body data-view="standup">
+
+<!-- ══ 모바일 상단 바 (≤768px 에서만 보임) ══ -->
+<header class="m-topbar">
+  <button class="m-tb-btn" onclick="mDrawer(true)" aria-label="메뉴 열기"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h16M3 11h16M3 16h16"/></svg></button>
+  <div class="m-tb-title"><div class="m-tb-view" id="m-tb-view">아침 회의</div><div class="m-tb-sub" id="m-tb-sub"></div></div>
+  <button class="m-me-btn" id="m-me-btn" onclick="openMePicker()">나 선택 ▾</button>
+</header>
+<div class="m-scrim" onclick="mDrawer(false)"></div>
+<button class="m-fab" onclick="mAddTodo()">＋ 할 일</button>
 
 <!-- ══ Sidebar ══ -->
 <nav class="sidebar">
@@ -1655,6 +1786,25 @@ select.fi{cursor:pointer;}
       <div class="fg" style="margin-bottom:0;"><label class="fl">메모 (선택)</label><textarea class="fi" id="tr-note" rows="2" placeholder="진척 상황 간단 메모"></textarea></div>
     </div>
     <div class="mof"><button class="btn" onclick="cm('mo-task-rate')">취소</button><button class="btn bp" onclick="saveRate()">저장</button></div>
+  </div>
+</div>
+
+<!-- 모바일: 할 일 액션 시트 (드래그 대체) -->
+<div class="mo" id="mo-act">
+  <div class="modal">
+    <div class="moh"><div class="mot">할 일</div><button class="btn bs" onclick="cm('mo-act')">✕</button></div>
+    <div class="mob" id="act-body"></div>
+  </div>
+</div>
+
+<!-- 모바일: "나" 선택 -->
+<div class="mo" id="mo-me">
+  <div class="modal">
+    <div class="moh"><div class="mot">나는 누구인가요?</div><button class="btn bs" onclick="cm('mo-me')">✕</button></div>
+    <div class="mob">
+      <div style="font-size:13px;color:var(--ink3);line-height:1.6;margin-bottom:14px;">선택한 사람의 카드를 맨 위에 펼쳐 두고, 다른 팀원은 접어서 보여줍니다. 이 휴대폰에만 저장되며 상단의 이름 버튼으로 언제든 바꿀 수 있습니다.</div>
+      <div class="as-row" id="me-list"></div>
+    </div>
   </div>
 </div>
 
@@ -2198,7 +2348,7 @@ function nav(v){
   const _vw=document.getElementById('view-'+v);if(!_vw)return;
   _vw.classList.add('active');
   const _ni=document.querySelector('.nav-item[data-v="'+v+'"]');if(_ni)_ni.classList.add('active');
-  curView=v;renderV(v);
+  curView=v;document.body.dataset.view=v;renderV(v);mUpdateTopbar();
 }
 // ══════════════════════════════════════
 // DAILY BRIEFING (Apps Script 웹앱 임베드)
@@ -2387,6 +2537,7 @@ function renderStandup(){
   const badge=document.getElementById('sd-saved-badge');badge.style.display=sd.saved?'inline-flex':'none';
 
   let grid='';
+  const meMid=getMeMid();   // 모바일 "나" (PC 는 클래스만 붙고 모양은 그대로)
   CQ().members.forEach(m=>{
     const pc2=PC[m.part]||PC.tl;
     const _tb=buildTodoHtml(m,sd,curStandupDate);
@@ -2437,18 +2588,19 @@ function renderStandup(){
     if(!dlHtml)dlHtml=`<div style="font-size:13px;color:var(--ink3);padding:10px 0;">${rpMeta(rpCur).full} 반복 업무가 없습니다</div>`;
     dlHtml=`<div class="rp-chips">${rpChips}</div>`+dlHtml;
 
-    grid+=`<div class="standup-card">
-      <div class="sc-header">
+    grid+=`<div class="standup-card${m.id===meMid?' m-me':''}${mCardOpen(m.id,meMid)?'':' m-fold'}" data-mid="${m.id}">
+      <div class="sc-header" onclick="mToggleCard(${m.id})">
         <span class="av av-ml style="${avStyle(m.part)}">${ini(m.name)}</span>
-        <div class="sc-info"><div class="sc-name">${m.name}${m.isMe?'<span class="me-tag">나</span>':''}</div><div class="sc-role">${m.role}</div></div>
+        <div class="sc-info"><div class="sc-name">${m.name}${m.isMe?'<span class="me-tag">나</span>':''}${m.id===meMid?'<span class="m-me-tag">나</span>':''}</div><div class="sc-role">${m.role}</div></div>
         <div style="text-align:right;">
           <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:${stCol};">${total?`${done}/${total} 완료`:'기록 없음'}</div>
           <div style="font-size:10px;font-family:var(--mono);font-weight:600;padding:2px 8px;border-radius:4px;background:${pc2.bg};color:${pc2.col};margin-top:4px;display:inline-block;">${partLabel(m.part)}</div>
         </div>
+        <span class="m-chev"></span>
       </div>
       <div class="sc-body">
         <div class="todo-section">
-          <div class="todo-section-title">할 일 <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);font-size:11px;">· 칩 클릭=긴급도 변경 · 드래그=이동</span>
+          <div class="todo-section-title">할 일 <span class="pc-hint" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);font-size:11px;">· 칩 클릭=긴급도 변경 · 드래그=이동</span>
             <button class="btn bxs" onclick="openAddTodoForMember(${m.id})">+ 추가</button>
           </div>${todoHtml}
         </div>
@@ -2459,7 +2611,7 @@ function renderStandup(){
         </div>
         <div class="todo-section" style="margin-bottom:0;border-top:1px solid var(--border-soft);padding-top:14px;">
           <div class="todo-section-title">🔁 반복 업무<span class="daily-count" style="color:${dailies.length&&dailyDoneN===dailies.length?'var(--olive)':'var(--ink3)'};">${dailyDoneN}/${dailies.length}</span>
-            <span class="daily-hint">· 배지 클릭=주기 변경</span>
+            <span class="daily-hint pc-hint">· 배지 클릭=주기 변경</span>
             <button class="btn bxs" onclick="openAddDaily(${m.id})">+ 추가</button>
           </div>${dlHtml}
         </div>
@@ -2467,6 +2619,7 @@ function renderStandup(){
     </div>`;
   });
   document.getElementById('standup-grid').innerHTML=grid;
+  mUpdateTopbar();
 }
 
 function switchStandupDate(d){curStandupDate=d;renderStandup();}
@@ -2572,6 +2725,7 @@ function todoRow(t,date){
     <button class="todo-del" onclick="startEditTodo('${date}',${t.id})" title="수정">✎</button>
     <button class="todo-del" onclick="toggleHold('${date}',${t.id})" title="${t.st==='hold'?'보류 해제':'보류함으로'}">${t.st==='hold'?'↩':'⏸'}</button>
     <button class="todo-del" onclick="delTodo('${date}',${t.id})" title="삭제">✕</button>
+    <button class="m-more" aria-label="더보기">⋯</button>
   </div>`;
 }
 
@@ -3723,6 +3877,153 @@ function saveCi(){const mid=parseInt(document.getElementById('ci-mid').value);co
 function delCi(mid,cid){if(!confirm('기록을 삭제하시겠습니까?'))return;const m=CQ().members.find(x=>x.id===mid);if(m)m.checkins=m.checkins.filter(c=>c.id!==cid);saveStore();renderCiDetail(mid);renderCi();}
 
 // ══════════════════════════════════════
+// 모바일 (≤768px): 상단 바·드로어·"나" 선택·할 일 액션 시트·추가 버튼
+// 화면 모양은 전부 @media 안에서만 바뀐다. 저장은 기존 함수(toggleTodo/toggleFocus/toggleHold/delTodo …)를 그대로 타서
+// saveStore → 3-way 병합 저장 → 이월 동기화(syncTodoToToday) 경로가 PC 와 같다.
+// ══════════════════════════════════════
+var MQ_M=window.matchMedia('(max-width:768px)');
+var MQ_T=window.matchMedia('(max-width:768px), (hover:none) and (pointer:coarse)');   // 터치 UI (탭 → 액션 시트)
+var ME_KEY='jibr-me-mid';
+var MOPEN={};                 // 모바일 카드 펼침 상태 (팀원별, 이 탭에서만)
+function isMobile(){return MQ_M.matches;}
+function getMeRaw(){try{return localStorage.getItem(ME_KEY);}catch(e){return null;}}
+function getMeMid(){ const v=getMeRaw(); if(v===null||v==='none')return null; const n=Number(v); return (STORE&&CQ()&&CQ().members.some(m=>m.id===n))?n:null; }
+function mCardOpen(mid,meMid){ if(mid in MOPEN)return MOPEN[mid]; return meMid===null||mid===meMid; }
+function mToggleCard(mid){
+  if(!isMobile())return;
+  const el=document.querySelector(`.standup-card[data-mid="${mid}"]`); if(!el)return;
+  MOPEN[mid]=el.classList.contains('m-fold'); el.classList.toggle('m-fold',!MOPEN[mid]);
+}
+function mDrawer(open){document.body.classList.toggle('m-drawer',!!open);}
+document.querySelector('.sidebar').addEventListener('click',e=>{if(e.target.closest('.nav-item'))mDrawer(false);});
+function mUpdateTopbar(){
+  const vEl=document.getElementById('m-tb-view'); if(!vEl)return;
+  const ni=document.querySelector(`.nav-item[data-v="${curView}"]`);
+  vEl.textContent=ni?ni.textContent.trim():'';
+  const sub=document.getElementById('m-tb-sub');
+  if(curView==='standup'){ const past=curStandupDate!==todayStr(); sub.textContent=formatDate(curStandupDate).replace(/^\d+년 /,'')+(past?' · 오늘 아님':' · 오늘'); sub.classList.toggle('past',past); }
+  else { sub.textContent=STORE&&STORE.activeQ?STORE.activeQ:''; sub.classList.remove('past'); }
+  const me=getMeMid(), m=me!==null&&CQ().members.find(x=>x.id===me);
+  document.getElementById('m-me-btn').textContent=m?`나: ${m.name} ▾`:'나 선택 ▾';
+}
+function openMePicker(){
+  const cur=getMeRaw();
+  document.getElementById('me-list').innerHTML=CQ().members.map(m=>
+    `<button class="as-btn mem${String(m.id)===cur?' on':''}" onclick="setMe('${m.id}')">${escHtml(m.name)}</button>`).join('')+
+    `<button class="as-btn${cur==='none'?' on':''}" style="flex-basis:100%;font-size:14px;" onclick="setMe('none')">선택 안 함 — 모든 카드 펼쳐 보기</button>`;
+  om('mo-me');
+}
+function setMe(v){ try{localStorage.setItem(ME_KEY,v);}catch(e){} MOPEN={}; cm('mo-me'); renderStandup(); }
+function mAddTodo(){ openAddTodoForMember(getMeMid()); }
+// 처음 여는 휴대폰이면 "나" 를 고르게 한다 (데이터가 실제로 로드된 뒤 한 번)
+function mMaybeAskMe(){ if(isMobile()&&getMeRaw()===null&&_suLoaded&&CQ().members.length&&!document.querySelector('.mo.open'))openMePicker(); }
+MQ_M.addEventListener('change',()=>{ mDrawer(false); if(curView==='standup')renderStandup(); mMaybeAskMe(); });
+
+// ── 할 일 액션 시트 ──
+var ACT=null;   // {date, tid}
+document.addEventListener('click',function(e){
+  if(!MQ_T.matches)return;
+  const row=e.target.closest&&e.target.closest('#standup-grid .todo-item[data-tid]'); if(!row)return;
+  if(e.target.closest('.todo-cb,.todo-edit-input,.todo-edit-actions'))return;   // 체크박스는 바로 체크
+  e.preventDefault(); e.stopPropagation();   // 칩·★ 등 PC 용 onclick 대신 시트를 연다
+  openTodoSheet(curStandupDate,row.getAttribute('data-tid'));
+},true);
+function openTodoSheet(date,tid){ const t=findTodo(date,tid); if(!t)return; ACT={date,tid:t.id}; renderTodoSheet(false); om('mo-act'); }
+function renderTodoSheet(edit){
+  const t=ACT&&findTodo(ACT.date,ACT.tid); if(!t){cm('mo-act');return;}
+  const owner=CQ().members.find(x=>x.id===t.mid), age=todoAge(t), past=ACT.date!==todayStr();
+  let h=`<div class="as-title">${escHtml(t.text)}</div>
+    <div class="as-meta">${owner?escHtml(owner.name):'담당 없음'} · ${past?`<span class="past">${formatDate(ACT.date)} (오늘 아님)</span>`:'오늘'}${age?` · D+${age}`:''}${t.st==='hold'?' · 보류 중':''}</div>`;
+  if(edit){
+    h+=`<div class="as-sec"><textarea class="as-edit" id="act-edit">${escHtml(t.text).replace(/<br>/g,'\n')}</textarea></div>
+      <div class="as-sec as-row"><button class="as-btn" onclick="renderTodoSheet(false)">취소</button><button class="as-btn on" onclick="actDo('text')">저장</button></div>`;
+    document.getElementById('act-body').innerHTML=h;
+    const ta=document.getElementById('act-edit'); ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length);
+    return;
+  }
+  h+=`<div class="as-sec as-row"><button class="as-btn${t.done?'':' on'}" onclick="actDo('done')">${t.done?'↺ 완료 취소':'✓ 완료'}</button></div>
+    <div class="as-sec"><div class="as-lbl">긴급도</div><div class="as-row">${PORDER.map(p=>`<button class="as-btn p-${p}${t.prio===p?' on':''}" onclick="actDo('prio','${p}')">${PLAB[p]}</button>`).join('')}</div></div>
+    <div class="as-sec as-row">
+      <button class="as-btn${t.focus?' on':''}" onclick="actDo('focus')">★ 오늘 집중${t.focus?' 해제':''}</button>
+      <button class="as-btn" onclick="actDo('hold')">${t.st==='hold'?'↩ 보류함에서 꺼내기':'⏸ 보류함으로'}</button>
+    </div>
+    <div class="as-sec"><div class="as-lbl">담당자</div><div class="as-row">${CQ().members.map(m=>`<button class="as-btn mem${m.id===t.mid?' on':''}" onclick="actDo('owner',${m.id})">${escHtml(m.name)}</button>`).join('')}</div></div>
+    <div class="as-sec as-row"><button class="as-btn" onclick="renderTodoSheet(true)">✎ 문구 수정</button><button class="as-btn danger" onclick="actDo('del')">✕ 삭제</button></div>`;
+  document.getElementById('act-body').innerHTML=h;
+}
+function actDo(kind,arg){
+  const date=ACT&&ACT.date, t=ACT&&findTodo(date,ACT.tid); if(!t){cm('mo-act');return;}
+  if(kind==='text'){ const v=document.getElementById('act-edit').value.replace(/\s*\n\s*/g,' ').trim(); if(!v)return; cm('mo-act'); setTodoText(date,t.id,v); return; }
+  if(kind==='del'&&!confirm('이 할 일을 삭제할까요?\n\n'+t.text))return;
+  cm('mo-act');
+  if(kind==='done')toggleTodo(date,t.id);
+  else if(kind==='prio')setTodoPrio(date,t.id,arg);
+  else if(kind==='focus')toggleFocus(date,t.id);
+  else if(kind==='hold')toggleHold(date,t.id);
+  else if(kind==='owner')setTodoOwner(date,t.id,arg);
+  else if(kind==='del')delTodo(date,t.id);
+}
+// 드래그 대체 동작 — cyclePrio / dropTodo / saveEditTodo 와 같은 필드만 바꾸고 같은 저장 경로를 탄다
+function setTodoPrio(date,tid,p){ const t=findTodo(date,tid); if(!t||t.prio===p)return; t.prio=p; saveStore();renderStandup(); }
+function setTodoOwner(date,tid,mid){ const t=findTodo(date,tid); const nm=parseInt(mid); if(!t||isNaN(nm)||nm===t.mid)return; t.mid=nm; saveStore();renderStandup(); }
+function setTodoText(date,tid,text){ const t=findTodo(date,tid); if(!t||t.text===text)return; t.text=text;t._carried=false; saveStore();renderStandup(); }
+
+// ══════════════════════════════════════
+// 배포 버전 확인 — 새로고침 안 한 옛 화면이 계속 쓰이는 것 방지 (service worker 없음, index.html 은 항상 네트워크)
+// 이 페이지 파일을 no-store 로 다시 받아 내용 해시를 비교한다. 배포할 때 버전 번호를 따로 올릴 필요 없음.
+// 바뀌었으면: 앱으로 돌아온 순간(visibilitychange/pageshow) 또는 5분 이상 손대지 않았을 때, 편집·저장 중이 아니면 자동 새로고침.
+//            그 외에는 "새 버전이 있습니다 [새로고침]" 배너.
+// ══════════════════════════════════════
+(function appVersionWatch(){
+  if(!/^https?:$/.test(location.protocol))return;
+  const CHECK_MS=5*60*1000, IDLE_MS=5*60*1000;
+  let baseSig=null, pending=false, lastCheck=0, lastAct=Date.now(), busy=false;
+  const hash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return s.length+':'+(h>>>0);};
+  async function sig(){ const r=await fetch(location.pathname+'?_vc='+Date.now(),{cache:'no-store'}); if(!r.ok)throw new Error(r.status); return hash(await r.text()); }
+  function editing(){
+    const ae=document.activeElement;
+    if(ae&&ae!==document.body&&(ae.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)))return true;
+    if(document.querySelector('.mo.open,.todo-edit-input'))return true;
+    return !!(window._suDirty&&window._suDirty());
+  }
+  function banner(){
+    if(document.getElementById('app-update'))return;
+    const el=document.createElement('div'); el.id='app-update';
+    el.innerHTML='새 버전이 있습니다 <button type="button">새로고침</button>';
+    el.querySelector('button').onclick=reloadSafely;
+    document.body.appendChild(el);
+  }
+  async function reloadSafely(){
+    if(window._suDirty&&window._suDirty()){
+      if(window._fbRetry)window._fbRetry();
+      for(let i=0;i<30&&window._suDirty();i++)await new Promise(r=>setTimeout(r,500));
+      if(window._suDirty()){alert('아직 저장되지 않은 변경이 있어 새로고침하지 않았습니다. 저장이 끝난 뒤 다시 눌러주세요.');return;}
+    }
+    location.reload();
+  }
+  async function check(why){
+    if(busy||document.hidden)return;
+    if(pending){ if((why==='return'||why==='idle')&&!editing())location.reload(); return; }
+    if(Date.now()-lastCheck<(why==='timer'?CHECK_MS:why==='init'?0:60000))return;   // 복귀 시엔 1분, 평소엔 5분 간격
+    busy=true; lastCheck=Date.now();
+    try{
+      const s=await sig();
+      if(baseSig===null){baseSig=s;return;}
+      if(s===baseSig)return;
+      pending=true; window._appUpdatePending=true;
+      if(why==='return'&&!editing())return location.reload();
+      banner();
+    }catch(e){}finally{busy=false;}
+  }
+  window._appVersionCheck=check;   // 테스트용
+  ['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{lastAct=Date.now();},{passive:true,capture:true}));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)check('return');});
+  addEventListener('pageshow',e=>{if(e.persisted)check('return');});
+  setInterval(()=>check(pending&&Date.now()-lastAct>IDLE_MS?'idle':'timer'),60000);
+  setTimeout(()=>check('init'),4000);
+})();
+
+// ══════════════════════════════════════
 // Init
 // ══════════════════════════════════════
 loadStore();
@@ -3733,7 +4034,7 @@ document.getElementById('standup-ph-sub').textContent=`${formatDate(todayStr())}
 function initRender(){
   buildQSelect();
   archiveBannerUpdate();
-  curView='standup';
+  curView='standup';document.body.dataset.view='standup';
   const _n=document.querySelector('.nav-item[data-v="standup"]');
   if(_n){document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));_n.classList.add('active');}
   renderStandup();
@@ -3749,6 +4050,7 @@ window.addEventListener('firebase-ready', ()=>{
   window._qRoll = autoQuarterRoll(); // 새 분기 시작 시 자동 생성 + 전환
   runCarryOver(); // Firebase 로드 후 미완료 항목 이월 (분기 경계도 넘어감)
   initRender();
+  mMaybeAskMe();  // 휴대폰에서 처음 열면 "나" 선택
 });
 
 // 3초 안에 Firebase 안 오면 기본값으로라도 렌더
