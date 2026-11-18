@@ -452,6 +452,11 @@ window.SUMerge=(function(){
     const st = S(); if (!ready || !st) return;
     if (view === 'history') Object.keys(st.quarters).forEach(ensureQ); else ensureQ(st.activeQ);
   };
+  // 원래 날짜 반영: 체인 원본이 60일보다 오래된(아직 안 불러온) 과거 분기 문서에 있을 때 모든 분기를 불러온다
+  window._suEnsureAll = function () {
+    const st = S(); if (!ready || !st) return Promise.resolve(false);
+    return Promise.all(Object.keys(st.quarters).map(ensureQ)).then(r => r.some(Boolean));
+  };
 
   // ══════════════ 저장 ══════════════
   let saveT = null, flushing = false, again = false;
@@ -959,6 +964,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 .dchip{display:inline-block;font-size:9.5px;font-family:var(--mono);padding:1px 6px;border-radius:999px;margin-left:5px;background:var(--paper2);color:var(--ink3);vertical-align:1px;}
 .dchip.warn{background:rgba(212,146,20,.16);color:#8a5b00;}
 .dchip.bad{background:rgba(155,42,32,.12);color:#9b2a20;font-weight:700;}
+/* 원래 날짜 반영: 이 날짜엔 못 끝냈고 나중에 끝낸 항목 (inline-block 이라 부모의 취소선이 안 걸림) */
+.late-done{display:inline-block;font-size:9.5px;font-family:var(--mono);padding:1px 6px;border-radius:999px;margin-left:5px;background:rgba(19,115,51,.1);color:var(--olive);vertical-align:1px;white-space:nowrap;text-decoration:none;line-height:1.5;}
+.late-sum{font-family:var(--mono);font-size:10px;color:var(--ink3);margin-top:2px;}
+.late-sum-i{font-weight:400;}
 .pin-b{background:none;border:none;cursor:pointer;font-size:12px;padding:0 2px;opacity:0;transition:opacity .15s;flex-shrink:0;margin-top:1px;color:var(--ink3);}
 .todo-item:hover .pin-b{opacity:.45;}
 .pin-b.on{opacity:1;color:var(--gold);}
@@ -1298,6 +1307,7 @@ select.fi{cursor:pointer;}
   .todo-text{font-size:15px;line-height:1.45;min-width:0;word-break:break-word;}
   .pchip{font-size:11px;padding:3px 8px;margin-top:0;}
   .dchip{font-size:10.5px;}
+  .late-done{font-size:10.5px;}
   .rp-bd{font-size:11px;padding:4px 8px;}
   .todo-edit-input{font-size:16px;}
   .todo-edit-actions .btn{min-height:36px;}
@@ -2089,6 +2099,106 @@ function syncKeyTaskToToday(date,mid,k,kind){
   return 1;
 }
 
+// ── 원래 날짜 반영 (업무 대시보드와 같은 약속 「원래 날짜 반영」) ──
+// 체인(같은 일의 이월 사슬)의 가장 최근 항목을 체크하면 이전 날짜 항목에도
+//   done:true, doneOn:'<체크한 항목의 날짜>', _doneVia:'chain'
+// 을 기록한다. 체크를 풀면 _doneVia==='chain' 인 이전 항목만 되돌린다(그날 직접 체크한 항목은 그대로).
+// 체인 = 같은 _origin(또는 원본 id). _origin 이 없는 옛 데이터는 같은 담당자 + 같은 문구의 이월(_carried) 항목을
+// 바로 앞 기록일로 따라간다(최대 30일, carry 규칙과 같음).
+// ※ 사용자 조작(toggleTodo / toggleKeyTask / 진행률 100%)에서만 부른다. 다른 기기에서 onSnapshot 으로 받은
+//   변경은 applyRemoteDay 로만 반영되고 여기를 타지 않으므로 전파가 되풀이되지 않는다(루프 없음).
+function chainDayList(){
+  const out=[];
+  Object.keys(STORE.quarters||{}).forEach(q=>{const sds=STORE.quarters[q].standups||{};Object.keys(sds).forEach(d=>out.push({date:d,sd:sds[d]}));});
+  return out.sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+}
+function chainList(sd,kind,mid){return kind==='todo'?((sd&&sd.todos)||[]):((sd&&sd.keyTasks&&sd.keyTasks[mid])||[]);}
+function chainHasData(sd){return !!sd&&((sd.todos&&sd.todos.length>0)||(sd.keyTasks&&Object.keys(sd.keyTasks).length>0));}
+function chainKey(x){return String(x._origin!=null?x._origin:x.id);}   // null 도 '없음' (findCarried 의 || 와 같은 기준)
+// 옛 데이터(_origin 없음)에서 x 가 cur 의 앞/뒤 이월 고리인가
+function chainOldLink(kind,cur,x){return x._origin==null&&x.text===cur.text&&(kind!=='todo'||x.mid===cur.mid);}
+// 같은 체인에서 date 보다 뒤 날짜 항목이 있는가 (없으면 이 항목이 "가장 최근")
+function chainHasLater(date,item,kind,mid){
+  const key=chainKey(item);
+  const later=chainDayList().filter(d=>d.date>date);
+  if(later.some(d=>chainList(d.sd,kind,mid).some(x=>x!==item&&x._origin!=null&&String(x._origin)===key)))return true;
+  // 옛 데이터: 30일 안 뒤 날짜에 같은 담당자+문구의 이월 항목 (중간에 기록이 끼어 있어도 건너뛴다)
+  if(item._origin==null&&later.some(d=>dayDiff(date,d.date)<=30&&chainList(d.sd,kind,mid).some(x=>x._carried&&chainOldLink(kind,item,x))))return true;
+  return false;
+}
+// 같은 체인의 이전 날짜 항목들. incomplete=true 면 맨 앞 고리가 아직 이월 사본(원본이 안 불러와졌을 수 있음)
+function chainBefore(date,item,kind,mid){
+  const days=chainDayList().filter(d=>d.date<date).reverse();   // 최근 → 과거
+  const key=chainKey(item), out=[], seen=new Set([item]);
+  let cur=item, curDate=date;
+  days.forEach(d=>chainList(d.sd,kind,mid).forEach(x=>{
+    if(seen.has(x))return;
+    if(String(x.id)===key||(x._origin!=null&&String(x._origin)===key)){seen.add(x);out.push({date:d.date,x});cur=x;curDate=d.date;}
+  }));
+  // 옛 데이터: _origin 없는 이월 항목이면 바로 앞 기록일에서 같은 담당자+문구를 따라간다
+  // (그 사이에 나중에 만든 기록일이 끼어 있어도 끊기지 않게 30일 안에서 가장 가까운 짝을 찾는다)
+  while(cur._carried&&cur._origin==null){
+    let hit=null;
+    for(const d of days){
+      if(d.date>=curDate)continue;
+      if(dayDiff(d.date,curDate)>30)break;
+      const x=chainList(d.sd,kind,mid).find(y=>!seen.has(y)&&chainOldLink(kind,cur,y));
+      if(x){hit={date:d.date,x};break;}
+    }
+    if(!hit)break;
+    seen.add(hit.x);out.push(hit);cur=hit.x;curDate=hit.date;
+  }
+  return {items:out,incomplete:!!cur._carried};
+}
+// mode: 'done' = 이전 항목을 완료로 / 'undo' = chain 으로 완료된 이전 항목만 되돌림. 반환: 바뀐 개수
+function chainApply(date,item,kind,mid,mode){
+  if(!item||(kind==='todo'&&item.st==='drop'))return {n:0,incomplete:false};
+  const r=chainBefore(date,item,kind,mid);
+  let n=0;
+  r.items.forEach(({x})=>{
+    if(kind==='todo'&&x.st==='drop')return;                                  // 버린 항목은 연동 제외
+    if(mode==='done'){
+      if(x.done)return;                                                     // 그날 이미 끝낸 항목은 그대로
+      x.done=true;x.doneOn=date;x._doneVia='chain';n++;
+    }else{
+      if(x._doneVia!=='chain')return;                                       // 그날 직접 체크한 항목은 안 건드림
+      x.done=false;delete x.doneOn;delete x._doneVia;n++;
+    }
+  });
+  return {n,incomplete:r.incomplete};
+}
+// 사용자 조작 직후 부른다. wasLatest = 조작 전에 이 항목이 체인의 가장 최근이었는가 (해제 판단용)
+// 반환: 바뀐 개수. 원본이 아직 안 불러와진 과거 분기에 있으면 분기 전체를 불러온 뒤 한 번 더 적용하고 저장한다.
+function chainOnToggle(date,item,kind,mid,wasLatest){
+  if(!item)return 0;
+  const mode=item.done?'done':'undo';
+  if(mode==='done'?chainHasLater(date,item,kind,mid):!wasLatest)return 0;   // 가장 최근 항목에서만 전파
+  const r=chainApply(date,item,kind,mid,mode);
+  if(r.incomplete&&window._suEnsureAll){
+    const id=item.id;
+    window._suEnsureAll().then(()=>{
+      const sd=getStandupIfAny(date); if(!sd)return;
+      const it=chainList(sd,kind,mid).find(x=>String(x.id)===String(id));
+      if(!it||(mode==='done')!==!!it.done)return;                           // 그 사이 다시 바뀌었으면 그만
+      const r2=chainApply(date,it,kind,mid,mode);
+      if(r2.n){saveStore();if(window._suRerender)window._suRerender();chainNote(mode,r2.n);}
+    });
+  }
+  return r.n;
+}
+function getStandupIfAny(date){for(const q of Object.keys(STORE.quarters||{})){const sd=(STORE.quarters[q].standups||{})[date];if(sd&&(sd.todos||sd.keyTasks))return sd;}return null;}
+function chainNote(mode,n){if(n)rpToast(mode==='done'?`이전 날짜 ${n}건에도 완료로 표시했습니다`:`이전 날짜 완료 표시 ${n}건을 되돌렸습니다`);}
+
+// ── 표시: 이 날짜엔 못 끝냈고 나중에 끝낸 항목 (doneOn ≠ 그 날짜). 업무 대시보드가 써 넣은 값도 같은 규칙 ──
+function validYmd(s){if(typeof s!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;const d=new Date(s+'T00:00:00');return !isNaN(d)&&ymdOf(d)===s;}
+function ymdOf(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function lateDoneOn(x,date){return x&&x.done&&validYmd(x.doneOn)&&x.doneOn!==date?x.doneOn:null;}
+function mdLabel(ds){const p=ds.split('-');return `${+p[1]}/${+p[2]}`;}
+function lateTag(x,date){const on=lateDoneOn(x,date);return on?`<span class="late-done" title="${formatDate(on)}에 끝냄 (이 날짜엔 미완료)">완료 · ${mdLabel(on)}에 끝냄</span>`:'';}
+// 완료 수 = 기존 정의(done===true) 그대로. 그중 나중에 끝낸 것만 따로 센다(표시용)
+function lateCount(list,date){return (list||[]).filter(x=>lateDoneOn(x,date)).length;}
+function lateSplit(list,date){const late=lateCount(list,date);if(!late)return '';const done=(list||[]).filter(x=>x.done).length;return `그날 ${done-late} · 나중 ${late}`;}
+
 // ── 날짜 변경 감지: 탭을 밤새 열어둬도 자정이 지나면 오늘로 넘어가고 이월을 돌린다 ──
 let _suDay=todayStr(), _suLoaded=false, _suRollT=null;
 function checkDayRollover(){
@@ -2169,12 +2279,14 @@ function loadStore(){
 }
 function updateStandupProgress(date,tid,val){
   const sd=getStandup(date);if(!sd)return;
-  const t=(sd.todos||[]).find(x=>x.id===tid);if(t){t._progress=val;if(val===100)t.done=true;else if(val<100&&t.done)t.done=false;}
+  const t=(sd.todos||[]).find(x=>x.id===tid);if(t){const was=!!t.done,wl=!chainHasLater(date,t,'todo');t._progress=val;if(val===100)t.done=true;else if(val<100&&t.done)t.done=false;
+    if(was!==!!t.done){delete t.doneOn;delete t._doneVia;chainOnToggle(date,t,'todo',null,wl);}}   // 100% = 완료 → 원래 날짜 반영(저장은 onchange)
 }
 function updateKeyTaskProgress(date,mid,kid,val){
   const sd=getStandup(date);if(!sd)return;
   const ks=(sd.keyTasks&&sd.keyTasks[mid])||[];
-  const k=ks.find(x=>x.id===kid);if(k){k._progress=val;if(val===100)k.done=true;else if(val<100&&k.done)k.done=false;}
+  const k=ks.find(x=>x.id===kid);if(k){const was=!!k.done,wl=!chainHasLater(date,k,'key',mid);k._progress=val;if(val===100)k.done=true;else if(val<100&&k.done)k.done=false;
+    if(was!==!!k.done){delete k.doneOn;delete k._doneVia;chainOnToggle(date,k,'key',mid,wl);}}
 }
 function saveStore(){
   // localStorage 백업(용량 초과로 실패해도 서버 저장은 계속) + Firebase 저장
@@ -2556,7 +2668,7 @@ function renderStandup(){
       const carriedTag=k._carried?`<span style="font-size:10px;background:var(--paper2);color:var(--ink3);padding:1px 5px;border-radius:999px;margin-left:5px;font-family:var(--mono);">이월</span>`:'';
       keyTaskHtml+=`<div class="todo-item" id="keytask-item-${k.id}">
         <div class="todo-cb ${k.done?'done':''}" onclick="toggleKeyTask('${curStandupDate}',${m.id},${k.id})"></div>
-        <div class="todo-text ${k.done?'done-text':''}" id="keytask-text-${k.id}">${k.text}${carriedTag}</div>
+        <div class="todo-text ${k.done?'done-text':''}" id="keytask-text-${k.id}">${k.text}${lateTag(k,curStandupDate)}${carriedTag}</div>
         <button class="todo-del" onclick="startEditKeyTask('${curStandupDate}',${m.id},${k.id})" title="수정">✎</button>
         <button class="todo-del" onclick="delKeyTask('${curStandupDate}',${m.id},${k.id})">✕</button>
       </div>`;
@@ -2593,7 +2705,7 @@ function renderStandup(){
         <span class="av av-ml style="${avStyle(m.part)}">${ini(m.name)}</span>
         <div class="sc-info"><div class="sc-name">${m.name}${m.isMe?'<span class="me-tag">나</span>':''}${m.id===meMid?'<span class="m-me-tag">나</span>':''}</div><div class="sc-role">${m.role}</div></div>
         <div style="text-align:right;">
-          <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:${stCol};">${total?`${done}/${total} 완료`:'기록 없음'}</div>
+          <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:${stCol};">${total?`${done}/${total} 완료`:'기록 없음'}</div>${lateSplit(todos,curStandupDate)?`<div class="late-sum">${lateSplit(todos,curStandupDate)}</div>`:''}
           <div style="font-size:10px;font-family:var(--mono);font-weight:600;padding:2px 8px;border-radius:4px;background:${pc2.bg};color:${pc2.col};margin-top:4px;display:inline-block;">${partLabel(m.part)}</div>
         </div>
         <span class="m-chev"></span>
@@ -2720,7 +2832,7 @@ function todoRow(t,date){
     <span class="drag-h" title="드래그해서 긴급도·담당자 이동">⠿</span>
     <div class="todo-cb ${t.done?'done':''}" onclick="toggleTodo('${date}',${t.id})"></div>
     <span class="pchip p-${t.prio}" onclick="cyclePrio('${date}',${t.id})" title="클릭하면 높음→중간→낮음">${PLAB[t.prio]||'중간'}</span>
-    <div class="todo-text ${t.done?'done-text':''}" id="todo-text-${t.id}">${t.text}${ageChip}${t.okr?`<div style="font-size:11px;color:var(--ink3);margin-top:2px;">↳ ${t.okr}</div>`:''}</div>
+    <div class="todo-text ${t.done?'done-text':''}" id="todo-text-${t.id}">${t.text}${lateTag(t,date)}${ageChip}${t.okr?`<div style="font-size:11px;color:var(--ink3);margin-top:2px;">↳ ${t.okr}</div>`:''}</div>
     <button class="pin-b ${t.focus?'on':''}" onclick="toggleFocus('${date}',${t.id})" title="오늘 집중">★</button>
     <button class="todo-del" onclick="startEditTodo('${date}',${t.id})" title="수정">✎</button>
     <button class="todo-del" onclick="toggleHold('${date}',${t.id})" title="${t.st==='hold'?'보류 해제':'보류함으로'}">${t.st==='hold'?'↩':'⏸'}</button>
@@ -2807,7 +2919,12 @@ function cancelEditKeyTask(kid, orig){
   const textEl=document.getElementById('keytask-text-'+kid);if(!textEl)return;
   textEl.innerHTML=orig;
 }
-function toggleTodo(date,tid){const sd=getStandup(date);const t=sd.todos.find(x=>x.id===tid);if(t){t.done=!t.done;const n=syncTodoToToday(date,t,'toggle');saveStore();renderStandup();renderDashStandupWidget();carryNote(n);}}
+function toggleTodo(date,tid){const sd=getStandup(date);const t=sd.todos.find(x=>x.id===tid);if(t){
+  const wasLatest=!chainHasLater(date,t,'todo');
+  t.done=!t.done;delete t.doneOn;delete t._doneVia;          // 이 날짜에서 직접 체크/해제 → 그날 기록
+  const n=syncTodoToToday(date,t,'toggle');
+  const c=chainOnToggle(date,t,'todo',null,wasLatest);      // 원래 날짜 반영(이전 날짜 항목)
+  saveStore();renderStandup();renderDashStandupWidget();carryNote(n);chainNote(t.done?'done':'undo',c);}}
 function delTodo(date,tid){const sd=getStandup(date);sd.todos=sd.todos.filter(t=>t.id!==tid);saveStore();renderStandup();}
 
 
@@ -2915,7 +3032,12 @@ function saveTodos(){
 // 중요 업무
 function openAddKeyTask(mid){document.getElementById('kt-mid').value=mid;const m=CQ().members.find(x=>x.id===mid);document.getElementById('mo-keytask-title').textContent=`중요 업무 추가 — ${m?m.name:''}`;document.getElementById('kt-text').value='';om('mo-keytask');setTimeout(()=>document.getElementById('kt-text').focus(),100);}
 function saveKeyTask(){const mid=parseInt(document.getElementById('kt-mid').value);const raw=document.getElementById('kt-text').value;const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);if(!lines.length)return alert('내용을 입력해주세요');const sd=getStandup(curStandupDate);if(!sd.keyTasks)sd.keyTasks={};if(!sd.keyTasks[mid])sd.keyTasks[mid]=[];let n=0;lines.forEach(text=>{const k={id:newId(),text,done:false};sd.keyTasks[mid].push(k);n+=syncKeyTaskToToday(curStandupDate,mid,k,'add');});saveStore();cm('mo-keytask');renderStandup();carryNote(n);}
-function toggleKeyTask(date,mid,kid){const sd=getStandup(date);const k=(sd.keyTasks&&sd.keyTasks[mid])||[];const t=k.find(x=>x.id===kid);if(t){t.done=!t.done;const n=syncKeyTaskToToday(date,mid,t,'toggle');saveStore();renderStandup();carryNote(n);}}
+function toggleKeyTask(date,mid,kid){const sd=getStandup(date);const k=(sd.keyTasks&&sd.keyTasks[mid])||[];const t=k.find(x=>x.id===kid);if(t){
+  const wasLatest=!chainHasLater(date,t,'key',mid);
+  t.done=!t.done;delete t.doneOn;delete t._doneVia;
+  const n=syncKeyTaskToToday(date,mid,t,'toggle');
+  const c=chainOnToggle(date,t,'key',mid,wasLatest);
+  saveStore();renderStandup();carryNote(n);chainNote(t.done?'done':'undo',c);}}
 function delKeyTask(date,mid,kid){const sd=getStandup(date);if(sd.keyTasks&&sd.keyTasks[mid])sd.keyTasks[mid]=sd.keyTasks[mid].filter(k=>k.id!==kid);saveStore();renderStandup();}
 
 // ══════════════════════════════════════
@@ -2926,9 +3048,9 @@ function renderLog(){
   let lh='';
   if(!dates.length)lh='<div class="es" style="padding:30px 0;"><div>저장된 회의 기록 없음</div></div>';
   else dates.forEach(dt=>{
-    const sd=CQ().standups[dt];const cnt=sd.todos?sd.todos.length:0;const done=sd.todos?sd.todos.filter(t=>t.done).length:0;const isTd=dt===todayStr();
+    const sd=CQ().standups[dt];const cnt=sd.todos?sd.todos.length:0;const done=sd.todos?sd.todos.filter(t=>t.done).length:0;const isTd=dt===todayStr();const ls=lateSplit(sd.todos,dt);
     lh+=`<div class="log-date-item ${logSelDate===dt?'active':''} ${isTd?'today-item':''}" onclick="selLogDate('${dt}')">
-      <div><div class="log-date-label">${formatDate(dt)}</div><div class="log-date-meta">${cnt}개 할 일 · ${done}완료${sd.saved?' · ✓':''}</div></div>
+      <div><div class="log-date-label">${formatDate(dt)}</div><div class="log-date-meta">${cnt}개 할 일 · ${done}완료${ls?` (${ls})`:''}${sd.saved?' · ✓':''}</div></div>
     </div>`;
   });
   document.getElementById('log-date-list').innerHTML=lh||'<div class="es"><div>기록 없음</div></div>';
@@ -2954,15 +3076,15 @@ function renderLogDetail(dt){
         <span class="av av-sm style="${avStyle(m.part)}">${ini(m.name)}</span>
         <div style="font-size:14px;font-weight:700;">${m.name}</div>
         <div style="font-family:var(--mono);font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:${pc2.bg};color:${pc2.col};">${partLabel(m.part)}</div>
-        <div style="margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink3);">${todos.filter(t=>t.done).length}/${todos.length} 완료</div>
+        <div style="margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink3);">${todos.filter(t=>t.done).length}/${todos.length} 완료${lateSplit(todos,dt)?` <span class="late-sum-i">(${lateSplit(todos,dt)})</span>`:''}</div>
       </div>`;
     if(todos.length){['high','mid','low'].forEach(p=>{const pt=todos.filter(t=>t.prio===p);if(!pt.length)return;
       h+=`<div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin:8px 0 5px;">${pn[p]}</div>`;
       pt.forEach(t=>{h+=`<div style="display:flex;gap:9px;padding:5px 0;font-size:13px;">
         <span style="color:${t.done?'var(--olive)':'var(--ink3)'};font-weight:700;flex-shrink:0;">${t.done?'✓':'○'}</span>
-        <span style="${t.done?'text-decoration:line-through;color:var(--ink3);':''}">${t.text}${t.okr?`<span style="color:var(--ink3);font-size:11px;"> ↳ ${t.okr}</span>`:''}</span>
+        <span style="${t.done?'text-decoration:line-through;color:var(--ink3);':''}">${t.text}${lateTag(t,dt)}${t.okr?`<span style="color:var(--ink3);font-size:11px;"> ↳ ${t.okr}</span>`:''}</span>
       </div>`;});});}
-    if(keyTasks.length){h+=`<div style="font-size:11px;font-weight:700;color:var(--md-col);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">⭐ 중요 업무</div>`;keyTasks.forEach(k=>{h+=`<div style="display:flex;gap:9px;padding:5px 0;font-size:13px;"><span style="color:${k.done?'var(--olive)':'var(--md-col)'};font-weight:700;flex-shrink:0;">${k.done?'✓':'◆'}</span><span style="${k.done?'text-decoration:line-through;color:var(--ink3);':''}">${k.text}</span></div>`;});}
+    if(keyTasks.length){h+=`<div style="font-size:11px;font-weight:700;color:var(--md-col);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">⭐ 중요 업무</div>`;keyTasks.forEach(k=>{h+=`<div style="display:flex;gap:9px;padding:5px 0;font-size:13px;"><span style="color:${k.done?'var(--olive)':'var(--md-col)'};font-weight:700;flex-shrink:0;">${k.done?'✓':'◆'}</span><span style="${k.done?'text-decoration:line-through;color:var(--ink3);':''}">${k.text}${lateTag(k,dt)}</span></div>`;});}
     if(dailies.length){RP_CYCLES.forEach(c=>{const lst=dailies.filter(d=>rpCycleOf(d)===c.k);if(!lst.length)return;const dn=lst.filter(d=>dailyChecked(dt,m.id,d.id)).length;h+=`<div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin:10px 0 5px;">🔁 ${c.full} ${dn}/${lst.length}</div>`;lst.forEach(d=>{const ck=dailyChecked(dt,m.id,d.id);h+=`<div style="display:flex;gap:9px;font-size:13px;padding:4px 0;"><span style="color:${ck?'var(--olive)':'var(--ink3)'};font-weight:700;flex-shrink:0;">${ck?'✓':'○'}</span><span style="${ck?'text-decoration:line-through;color:var(--ink3);':''}">${d.text}</span></div>`;});});}
 
     h+='</div>';
@@ -3794,7 +3916,7 @@ function renderHistoryStandupTab(q){
         <div style="font-family:var(--mono);font-size:13px;font-weight:700;">${formatDate(dt)}</div>
         <div style="display:flex;align-items:center;gap:10px;">
           ${sd.saved?'<span style="font-size:10px;font-weight:700;color:var(--olive);font-family:var(--mono);">✓ 저장됨</span>':''}
-          <span style="font-size:11px;font-family:var(--mono);color:var(--ink3);">${done}/${todos.length} 완료</span>
+          <span style="font-size:11px;font-family:var(--mono);color:var(--ink3);">${done}/${todos.length} 완료${lateSplit(todos,dt)?` (${lateSplit(todos,dt)})`:''}</span>
         </div>
       </div>
       <div style="padding:12px 16px;">`;
@@ -3803,7 +3925,7 @@ function renderHistoryStandupTab(q){
       h+=`<div style="margin-bottom:10px;"><div style="font-size:12px;font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:7px;">
         <span class="av av-sm style="${avStyle(m.part)}">${ini(m.name)}</span>${m.name}</div>`;
       mt.forEach(t=>{h+=`<div style="display:flex;align-items:flex-start;gap:7px;padding:3px 0 3px 10px;font-size:12px;color:${t.done?'var(--ink3)':'var(--ink2)'};">
-        <span>${t.done?'✓':'○'}</span><span style="${t.done?'text-decoration:line-through;':''}">${t.text}</span>
+        <span>${t.done?'✓':'○'}</span><span style="${t.done?'text-decoration:line-through;':''}">${t.text}${lateTag(t,dt)}</span>
       </div>`;});
       h+='</div>';
     });
@@ -3838,7 +3960,7 @@ function genReport(){
   let r=`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n ${CQ().teamName}  OKR 현황 리포트\n ${STORE.activeQ}  ·  생성: ${ds}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
   if(opts.s){const avg=ms.length?Math.round(ms.reduce((s,m)=>s+avgP(m),0)/ms.length):0;const del=delayed(ms);const mdA=byPart(ms,'md').length?Math.round(byPart(ms,'md').reduce((s,m)=>s+avgP(m),0)/byPart(ms,'md').length):0;
     r+=`[전체 요약]\n  팀 평균 진척도  : ${avg}% ${avg>=70?'(✓ 목표 달성권)':'(주의 필요)'}\n  MD 파트 평균   : ${mdA}%\n  주목 필요 항목  : ${del.length}개\n\n`;}
-  if(opts.sd){const sd=CQ().standups[ds];r+=`[오늘 아침 회의 · ${formatDate(ds)}]\n`;if(!sd||!sd.todos||!sd.todos.length)r+='  기록 없음\n';else{ms.forEach(m=>{const todos=sd.todos.filter(t=>t.mid===m.id);if(!todos.length)return;r+=`\n  ${m.name}\n`;todos.forEach(t=>{r+=`    ${t.done?'✓':'○'} [${pl(t.prio)}] ${t.text}\n`;});const dls=getDailies(m.id);if(dls.length){RP_CYCLES.forEach(c=>{const lst=dls.filter(d=>rpCycleOf(d)===c.k);if(!lst.length)return;const dn=lst.filter(d=>dailyChecked(ds,m.id,d.id)).length;r+=`    🔁 ${c.full} ${dn}/${lst.length}\n`;});}});}r+='\n';}
+  if(opts.sd){const sd=CQ().standups[ds];r+=`[오늘 아침 회의 · ${formatDate(ds)}]\n`;if(!sd||!sd.todos||!sd.todos.length)r+='  기록 없음\n';else{ms.forEach(m=>{const todos=sd.todos.filter(t=>t.mid===m.id);if(!todos.length)return;r+=`\n  ${m.name}\n`;todos.forEach(t=>{const on=lateDoneOn(t,ds);r+=`    ${t.done?'✓':'○'} [${pl(t.prio)}] ${t.text}${on?` (완료 · ${mdLabel(on)}에 끝냄)`:''}\n`;});const dls=getDailies(m.id);if(dls.length){RP_CYCLES.forEach(c=>{const lst=dls.filter(d=>rpCycleOf(d)===c.k);if(!lst.length)return;const dn=lst.filter(d=>dailyChecked(ds,m.id,d.id)).length;r+=`    🔁 ${c.full} ${dn}/${lst.length}\n`;});}});}r+='\n';}
   if(opts.pt){r+='[파트별 현황]\n';[{part:'md',label:'MD 파트'},{part:'tl',label:'팀장'}].forEach(s=>{const pm=byPart(ms,s.part);if(!pm.length)return;const a=Math.round(pm.reduce((x,m)=>x+avgP(m),0)/pm.length);r+=`\n  ▶ ${s.label} — 파트 평균 ${a}%\n`;pm.forEach(m=>{r+=`    · ${m.name} (${m.role}) — ${avgP(m)}%\n`;});});r+='\n';}
   if(opts.m){r+='[팀원별 OKR 상세]\n';ms.forEach(m=>{r+=`\n  ■ ${m.name} (${m.role}) — 평균 ${avgP(m)}%\n`;m.okrs.forEach(o=>{r+=`    • ${o.title}\n      ${o.progress}% · [${sl(o.status)}]\n`;if(o.note)r+=`      메모: ${o.note}\n`;(o.subOkrs||[]).forEach(s=>{r+=`        └ ${s.title} — ${s.progress}% [${sl(s.status)}]${s.note?' / '+s.note:''}\n`;});});});r+='\n';}
   if(opts.d){const del=delayed(ms);r+=`[주목 필요 항목 (${del.length}개)]\n`;if(!del.length)r+='  ✓ 없음\n';else del.forEach(d=>{r+=`  ${d.status==='delayed'?'⚠ 지연':'△ 주의'} [${d.member} · ${partLabel(d.part)}]\n  ${d.title} — ${d.progress}%\n`;if(d.note)r+=`  → ${d.note}\n`;});r+='\n';}
@@ -3933,7 +4055,7 @@ function renderTodoSheet(edit){
   const t=ACT&&findTodo(ACT.date,ACT.tid); if(!t){cm('mo-act');return;}
   const owner=CQ().members.find(x=>x.id===t.mid), age=todoAge(t), past=ACT.date!==todayStr();
   let h=`<div class="as-title">${escHtml(t.text)}</div>
-    <div class="as-meta">${owner?escHtml(owner.name):'담당 없음'} · ${past?`<span class="past">${formatDate(ACT.date)} (오늘 아님)</span>`:'오늘'}${age?` · D+${age}`:''}${t.st==='hold'?' · 보류 중':''}</div>`;
+    <div class="as-meta">${owner?escHtml(owner.name):'담당 없음'} · ${past?`<span class="past">${formatDate(ACT.date)} (오늘 아님)</span>`:'오늘'}${age?` · D+${age}`:''}${t.st==='hold'?' · 보류 중':''}${lateDoneOn(t,ACT.date)?` · 완료 · ${mdLabel(lateDoneOn(t,ACT.date))}에 끝냄`:''}</div>`;
   if(edit){
     h+=`<div class="as-sec"><textarea class="as-edit" id="act-edit">${escHtml(t.text).replace(/<br>/g,'\n')}</textarea></div>
       <div class="as-sec as-row"><button class="as-btn" onclick="renderTodoSheet(false)">취소</button><button class="as-btn on" onclick="actDo('text')">저장</button></div>`;
