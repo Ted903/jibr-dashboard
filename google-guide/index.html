@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>구글 업무 도구 사용 설명서 · 집반찬연구소</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1c1b1a; --ink2:#4a4744; --ink3:#8a857f;
+  --line:#e6e3df; --line2:#f0eeeb;
+  --bg:#fffefc; --panel:#faf9f7;
+  --accent:#2f6f4e; --accent-l:#eaf3ee;
+  --warn:#b4552d; --warn-l:#fdf1eb;
+  --blue:#2b6cb0; --blue-l:#ebf3fb;
+  --radius:10px;
+  --nav:290px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;
+  color:var(--ink); background:var(--bg); line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+
+/* ---------- layout ---------- */
+.wrap{display:flex;align-items:flex-start;max-width:1400px;margin:0 auto}
+nav.toc{
+  width:var(--nav);flex:0 0 var(--nav);position:sticky;top:0;height:100vh;
+  overflow-y:auto;padding:34px 20px 60px 28px;border-right:1px solid var(--line);
+  background:var(--panel);
+}
+nav.toc .brand{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:6px}
+nav.toc h1{font-size:19px;line-height:1.45;font-weight:900;margin-bottom:4px}
+nav.toc .sub{font-size:12.5px;color:var(--ink3);margin-bottom:22px;line-height:1.6}
+nav.toc a{
+  display:block;font-size:13.5px;color:var(--ink2);text-decoration:none;
+  padding:7px 10px;border-radius:7px;margin-bottom:1px;transition:.15s;
+}
+nav.toc a:hover{background:#efece8;color:var(--ink)}
+nav.toc a.active{background:var(--accent);color:#fff;font-weight:700}
+nav.toc a .n{display:inline-block;width:26px;color:var(--ink3);font-weight:700;font-size:11.5px}
+nav.toc a.active .n{color:#cfe3d8}
+main{flex:1;min-width:0;padding:56px 60px 140px;max-width:900px}
+
+/* ---------- hero ---------- */
+.hero{border:1px solid var(--line);border-radius:14px;padding:34px 34px 30px;background:#fff;margin-bottom:54px}
+.hero .tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.1em;color:var(--accent);background:var(--accent-l);padding:5px 11px;border-radius:20px;margin-bottom:16px}
+.hero h2{font-size:31px;line-height:1.35;font-weight:900;letter-spacing:-.02em;margin-bottom:14px}
+.hero p{font-size:15px;color:var(--ink2);margin-bottom:10px}
+.hero .meta{margin-top:22px;padding-top:20px;border-top:1px solid var(--line2);display:flex;gap:34px;flex-wrap:wrap}
+.hero .meta div{font-size:12.5px;color:var(--ink3)}
+.hero .meta b{display:block;color:var(--ink);font-size:13.5px;font-weight:700;margin-top:3px}
+
+/* ---------- sections ---------- */
+section{margin-bottom:76px;scroll-margin-top:24px}
+.sec-head{display:flex;align-items:baseline;gap:14px;padding-bottom:14px;border-bottom:2px solid var(--ink);margin-bottom:26px}
+.sec-head .num{font-size:12px;font-weight:900;letter-spacing:.12em;color:var(--accent)}
+.sec-head h3{font-size:25px;font-weight:900;letter-spacing:-.02em}
+.lead{font-size:15.5px;color:var(--ink2);margin-bottom:26px}
+
+h4{font-size:17px;font-weight:700;margin:38px 0 12px;letter-spacing:-.01em}
+h4:first-of-type{margin-top:0}
+h5{font-size:14.5px;font-weight:700;margin:24px 0 8px;color:var(--ink2)}
+p{margin-bottom:12px;font-size:14.8px}
+ul,ol{margin:0 0 14px 20px}
+li{margin-bottom:6px;font-size:14.8px}
+code{background:var(--line2);padding:1.5px 6px;border-radius:4px;font-size:.9em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#a33}
+strong{font-weight:700}
+
+/* ---------- figure ---------- */
+figure{margin:20px 0 26px}
+figure img{border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+figure figcaption{font-size:12.5px;color:var(--ink3);margin-top:9px;padding-left:2px}
+figure figcaption b{color:var(--ink2)}
+figure img{width:auto;height:auto}
+figure.sm img{max-width:420px}
+figure.md img{max-width:620px}
+
+/* ---------- table ---------- */
+table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:13.8px}
+th{background:var(--panel);text-align:left;font-weight:700;padding:10px 12px;border:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border:1px solid var(--line);vertical-align:top}
+td code{white-space:nowrap}
+tbody tr:nth-child(even){background:#fdfcfb}
+
+/* ---------- callouts ---------- */
+.note,.warn,.tip{border-radius:var(--radius);padding:15px 18px;margin:18px 0;font-size:14.2px;border:1px solid}
+.note{background:var(--blue-l);border-color:#cfe1f2}
+.warn{background:var(--warn-l);border-color:#f3d9c9}
+.tip{background:var(--accent-l);border-color:#cfe3d8}
+.note>b:first-child,.warn>b:first-child,.tip>b:first-child{display:block;margin-bottom:5px;font-size:13px;letter-spacing:.02em}
+.note>b:first-child{color:var(--blue)} .warn>b:first-child{color:var(--warn)} .tip>b:first-child{color:var(--accent)}
+.note p:last-child,.warn p:last-child,.tip p:last-child{margin-bottom:0}
+.note ul,.warn ul,.tip ul{margin-bottom:0}
+
+/* company context chip */
+.ctx{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px dashed #d6cfc4;border-radius:8px;padding:11px 14px;margin:14px 0;font-size:13.5px;color:var(--ink2)}
+.ctx .lb{flex:0 0 auto;font-size:11px;font-weight:700;color:#8a6d3b;background:#fdf6e5;border-radius:5px;padding:3px 8px;letter-spacing:.02em}
+
+/* ---------- flow diagram (pure CSS) ---------- */
+.flow{display:flex;align-items:stretch;flex-wrap:wrap;gap:0;margin:22px 0 26px}
+.flow .step{
+  flex:1 1 0;min-width:118px;border:1.5px solid var(--line);border-radius:9px;background:#fff;
+  padding:13px 12px;text-align:center;position:relative;
+}
+.flow .step .t{font-size:13.2px;font-weight:700;line-height:1.45}
+.flow .step .d{font-size:11.8px;color:var(--ink3);margin-top:5px;line-height:1.5}
+.flow .arrow{flex:0 0 30px;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:17px}
+.flow .step.hi{border-color:var(--accent);background:var(--accent-l)}
+.flow .step.hi .t{color:var(--accent)}
+.flow.v{flex-direction:column;gap:0}
+.flow.v .arrow{flex:0 0 26px;width:100%}
+
+/* state diagram */
+.states{display:flex;flex-wrap:wrap;align-items:center;gap:0;margin:20px 0 24px}
+.states .s{border:1.5px solid var(--line);border-radius:22px;padding:8px 17px;font-size:13.2px;font-weight:700;background:#fff}
+.states .s.a{border-color:#d9a441;background:#fdf6e5;color:#8a6d3b}
+.states .s.b{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.states .s.c{border-color:var(--accent);background:var(--accent-l);color:var(--accent)}
+.states .ar{flex:0 0 44px;text-align:center;color:var(--ink3);font-size:12px;line-height:1.3}
+
+/* two column cards */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 24px}
+.card{border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:#fff}
+.card h6{font-size:14px;font-weight:700;margin-bottom:7px}
+.card p{font-size:13.4px;color:var(--ink2);margin-bottom:0}
+.card ul{margin:6px 0 0 17px}
+.card li{font-size:13.4px}
+
+/* key badge */
+kbd{
+  display:inline-block;border:1px solid #d5d1cb;border-bottom-width:2px;border-radius:5px;
+  background:#fff;padding:1px 7px;font-size:12.2px;font-family:inherit;font-weight:500;
+  color:var(--ink);white-space:nowrap;min-width:22px;text-align:center
+}
+kbd.mod,kbd.sft,kbd.alt{border-color:#c3d8cb;background:#f4faf6;color:var(--accent);font-weight:700}
+
+/* OS switch */
+.osbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--line2)}
+.osbar .lbl{font-size:12.5px;color:var(--ink3);font-weight:500}
+.osbar .grp{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.osbar button{
+  appearance:none;border:0;background:#fff;cursor:pointer;font-family:inherit;
+  font-size:13px;font-weight:700;color:var(--ink2);padding:7px 16px;transition:.15s;
+}
+.osbar button + button{border-left:1px solid var(--line)}
+.osbar button.on{background:var(--accent);color:#fff}
+.osbar .hint{font-size:12px;color:var(--ink3)}
+.osonly{display:none}
+body[data-os="win"] .win-only{display:revert}
+body[data-os="mac"] .mac-only{display:revert}
+
+/* QA */
+.qa{border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;background:#fff}
+.qa summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:14.5px;list-style:none;display:flex;gap:10px;align-items:flex-start}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::before{content:"Q";flex:0 0 auto;color:var(--accent);font-weight:900;font-size:13px;margin-top:1px}
+.qa[open] summary{border-bottom:1px solid var(--line2);background:var(--panel)}
+.qa .body{padding:15px 18px 17px}
+.qa .body p{font-size:14.2px}
+.qa .body p:last-child{margin-bottom:0}
+
+main a{color:var(--accent);text-underline-offset:2px}
+footer{border-top:1px solid var(--line);padding-top:24px;font-size:12.5px;color:var(--ink3)}
+footer b{color:var(--ink2)}
+
+/* mobile nav toggle */
+.mobtop{display:none}
+@media (max-width:1080px){
+  main{padding:40px 34px 120px}
+  nav.toc{--nav:250px}
+}
+@media (max-width:860px){
+  .wrap{display:block}
+  nav.toc{position:static;width:auto;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:20px 22px}
+  nav.toc .links{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+  main{padding:30px 22px 90px;max-width:none}
+  .hero{padding:24px 22px}
+  .hero h2{font-size:24px}
+  .cards{grid-template-columns:1fr}
+  .flow{flex-direction:column}
+  .flow .arrow{flex:0 0 24px;transform:rotate(90deg)}
+  .sec-head h3{font-size:21px}
+  table{font-size:13px}
+  th,td{padding:8px 9px}
+  .states .ar{flex-basis:100%;transform:rotate(90deg);margin:2px 0}
+}
+
+/* ---------- google guide additions ---------- */
+:root{ --g-blue:#1a73e8; --g-red:#d93025; --g-yellow:#f9ab00; --g-green:#188038; }
+figure img{width:auto;height:auto;max-width:100%}
+nav.toc a .lv{float:right;font-size:10.5px;font-weight:700;border-radius:4px;padding:0 5px;margin-top:3px;line-height:17px}
+nav.toc a .lv.b{background:#eaf3ee;color:#2f6f4e}
+nav.toc a .lv.u{background:#ebf3fb;color:#2b6cb0}
+nav.toc a .lv.c{background:#fdf6e5;color:#8a6d3b}
+nav.toc a.active .lv{background:rgba(255,255,255,.22);color:#fff}
+nav.toc .grp-t{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.08em;margin:14px 10px 4px}
+.lvchip{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:2px 8px;margin-left:8px;vertical-align:middle;letter-spacing:.02em}
+.lvchip.b{background:#eaf3ee;color:#2f6f4e}
+.lvchip.u{background:#ebf3fb;color:#2b6cb0}
+.lvchip.c{background:#fdf6e5;color:#8a6d3b}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:12.5px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:6px}
+
+/* app cards */
+.apps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 26px}
+.app{border:1px solid var(--line);border-radius:12px;padding:16px 14px;background:#fff}
+.app .ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;margin-bottom:10px}
+.app h6{font-size:14.5px;font-weight:900;margin-bottom:4px}
+.app p{font-size:12.8px;color:var(--ink2);margin:0;line-height:1.6}
+.app .use{margin-top:8px;font-size:12px;font-weight:700;color:var(--accent)}
+
+/* step blocks */
+.stepbox{border:1.5px solid var(--line);border-radius:14px;padding:20px 22px 8px;margin:22px 0 26px;background:#fff}
+.stepbox .sh{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.stepbox .sn{flex:0 0 auto;background:var(--accent);color:#fff;font-weight:900;font-size:12.5px;border-radius:7px;padding:4px 10px;letter-spacing:.04em}
+.stepbox .st{font-size:17px;font-weight:900;letter-spacing:-.01em}
+.stepbox ol{margin-left:22px}
+.stepbox figure{margin:14px 0 18px}
+
+/* calendar color swatches */
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:6px}
+
+/* checklist */
+.chk{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:#fff;cursor:pointer;font-size:14.2px}
+.chk input{margin-top:5px;width:16px;height:16px;accent-color:var(--accent);flex:0 0 auto}
+.chk.done{background:var(--accent-l);border-color:#cfe3d8;color:var(--ink2)}
+.chk.done .tx{text-decoration:line-through;text-decoration-color:#9bbfaa}
+.chk .tx b{font-weight:700}
+.chk .hint{display:block;font-size:12.3px;color:var(--ink3);margin-top:2px}
+.progress{display:flex;align-items:center;gap:12px;margin:10px 0 14px;font-size:13px;color:var(--ink2)}
+.progress .bar{flex:1;height:8px;background:var(--line2);border-radius:5px;overflow:hidden}
+.progress .bar i{display:block;height:100%;background:var(--accent);width:0;transition:.3s}
+.resetbtn{appearance:none;border:1px solid var(--line);background:#fff;border-radius:7px;padding:4px 10px;font-size:12px;color:var(--ink3);cursor:pointer;font-family:inherit}
+
+/* space map */
+.smap{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0 24px}
+.sgrp{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.sgrp .hd{padding:10px 14px;font-weight:900;font-size:13.5px;display:flex;justify-content:space-between;align-items:center}
+.sgrp .hd small{font-weight:500;font-size:11.5px;opacity:.85}
+.sgrp.g0 .hd{background:#fdecea;color:#a3271b}
+.sgrp.g2 .hd{background:#e8f0fe;color:#1a56b8}
+.sgrp.g3 .hd{background:#fef7e0;color:#8a6100}
+.sgrp.g5 .hd{background:#e6f4ea;color:#11683a}
+.sgrp.g6 .hd{background:#f3e8fd;color:#6b2fb3}
+.sgrp ul{list-style:none;margin:0;padding:6px 14px 10px}
+.sgrp li{font-size:13px;padding:6px 0;border-bottom:1px dashed var(--line2);margin:0;display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:baseline}
+.sgrp.g6 li{grid-template-columns:290px 1fr}
+.sgrp li:last-child{border-bottom:0}
+.sgrp li b{font-weight:700;color:var(--ink)}
+.sgrp li span{color:var(--ink2)}
+
+/* message sample (chat bubble) */
+.msg{border:1px solid var(--line);border-radius:12px;background:#f8f9fb;padding:14px 16px;margin:14px 0 20px;font-size:13.8px;line-height:1.75;white-space:pre-line;font-family:inherit}
+.msg .tag{display:inline-block;background:#d3e3fd;color:#0b57d0;border-radius:5px;padding:0 6px;font-weight:700}
+.msg-h{font-size:12px;font-weight:700;color:var(--ink3);margin-bottom:-8px;letter-spacing:.02em}
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 22px}
+.do-dont > div{border-radius:10px;padding:14px 16px;font-size:13.5px}
+.do-dont .do{background:var(--accent-l);border:1px solid #cfe3d8}
+.do-dont .dont{background:var(--warn-l);border:1px solid #f3d9c9}
+.do-dont b.t{display:block;margin-bottom:6px;font-size:13px}
+.do-dont .do b.t{color:var(--accent)} .do-dont .dont b.t{color:var(--warn)}
+.do-dont ul{margin:0 0 0 18px}
+.do-dont li{font-size:13.3px;margin-bottom:4px}
+
+@media (max-width:860px){
+  .apps{grid-template-columns:1fr 1fr}
+  .smap,.do-dont{grid-template-columns:1fr}
+  .sgrp li,.sgrp.g6 li{grid-template-columns:1fr;gap:2px}
+}
+@media print{
+  nav.toc{display:none}
+  main{max-width:none;padding:20px}
+  section{page-break-inside:auto}
+  .stepbox,figure,table{page-break-inside:avoid}
+}
+
+@media (max-width:860px){ table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch} th{white-space:normal} td code{white-space:normal;word-break:break-all} .msg{font-size:13px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="toc">
+  <div class="brand">집반찬연구소 · 산너머남촌</div>
+  <h1>구글 업무 도구 사용 설명서</h1>
+  <div class="sub">지메일 · 캘린더 · 드라이브 · 구글챗<br>처음 쓰는 분을 위한 기초부터 우리 회사 방식까지</div>
+  <div class="links">
+<div class="grp-t">시작</div><a href="#p0"><span class="n">00</span>한눈에 보기<span class="lv b">기초</span></a>
+<div class="grp-t">지메일</div><a href="#p1"><span class="n">01</span>지메일 기초<span class="lv b">기초</span></a>
+<a href="#p2"><span class="n">02</span>지메일 더 잘 쓰기<span class="lv u">범용</span></a>
+<a href="#p3"><span class="n">03</span>우리 회사 메일 방식<span class="lv c">회사</span></a>
+<div class="grp-t">캘린더</div><a href="#p4"><span class="n">04</span>캘린더 기초<span class="lv b">기초</span></a>
+<a href="#p5"><span class="n">05</span>입사 첫날 캘린더 세팅<span class="lv c">회사</span></a>
+<a href="#p6"><span class="n">06</span>우리 회사 캘린더 운영<span class="lv c">회사</span></a>
+<div class="grp-t">드라이브</div><a href="#p7"><span class="n">07</span>드라이브 기초와 공유<span class="lv b">기초</span></a>
+<a href="#p8"><span class="n">08</span>우리 회사 드라이브 방식<span class="lv c">회사</span></a>
+<div class="grp-t">구글챗</div><a href="#p9"><span class="n">09</span>구글챗 기초<span class="lv b">기초</span></a>
+<a href="#p10"><span class="n">10</span>우리 회사 챗 업무 방식<span class="lv c">회사</span></a>
+<div class="grp-t">찾아보기</div><a href="#p11"><span class="n">11</span>단축키 치트시트<span class="lv u">범용</span></a>
+<a href="#p12"><span class="n">12</span>막혔을 때 Q&amp;A<span class="lv u">범용</span></a>
+<a href="#p13"><span class="n">13</span>직접 해보기<span class="lv b">기초</span></a>
+  </div>
+</nav>
+<main>
+<div class="hero">
+  <span class="tag">신규 입사자용</span>
+  <h2>지메일 · 캘린더 · 드라이브 · 구글챗,<br>이것만 알면 업무에 막힘이 없습니다</h2>
+  <p>우리 회사는 회사 구글 계정 하나로 <b>메일, 일정, 파일, 사내 메신저</b>를 모두 씁니다. 이 문서는 구글 도구를 한 번도 안 써본 분이 <b>기초부터</b> 익히고, <b>우리 회사가 실제로 쓰는 방식</b>까지 따라 할 수 있도록 만든 설명서입니다.</p>
+  <p>화면 캡처는 전부 실제 우리 회사 계정 화면입니다. 개인정보와 업무 내용은 흐리게 처리했습니다. 본인 화면을 옆에 띄워두고 따라 해 보세요.</p>
+  <div class="meta">
+    <div>읽는 데 걸리는 시간<b>약 40분</b></div>
+    <div>따라 하며 익히는 시간<b>약 1시간</b></div>
+    <div>기준 화면<b>크롬 브라우저 · 한글 화면</b></div>
+  </div>
+  <div class="tip" style="margin:20px 0 0">
+    <b>처음이라면 이 순서로 읽으세요 (기초 버전)</b>
+    <p><a href="#p0">00</a> → <a href="#p1">01 지메일 기초</a> → <a href="#p4">04 캘린더 기초</a> → <a href="#p5"><b>05 입사 첫날 캘린더 세팅</b></a> → <a href="#p7">07 드라이브 기초</a> → <a href="#p9">09 구글챗 기초</a> → <a href="#p10"><b>10 우리 회사 구글챗 업무 방식</b></a>. 나머지는 손에 익은 뒤 필요할 때 찾아보는 범용 사용법입니다.</p>
+  </div>
+  <div class="legend">
+    <span><span class="lvchip b" style="margin:0">기초</span> 처음 쓰는 분 필수</span>
+    <span><span class="lvchip u" style="margin:0">범용</span> 더 잘 쓰는 법</span>
+    <span><span class="lvchip c" style="margin:0">회사</span> 우리 회사 방식</span>
+  </div>
+  <div class="osbar">
+    <span class="lbl">쓰고 계신 컴퓨터를 골라주세요</span>
+    <span class="grp">
+      <button type="button" id="os-win">Windows</button>
+      <button type="button" id="os-mac">Mac</button>
+    </span>
+    <span class="hint">문서 안의 단축키 표기가 전부 바뀝니다</span>
+  </div>
+</div>
+
+<!-- ============ PART 0 ============ -->
+<section id="p0">
+  <div class="sec-head"><span class="num">PART 00</span><h3>구글 업무 도구 한눈에</h3><span class="lvchip b">기초</span></div>
+  <p class="lead">입사하면 <b>이름@sannamchon.co.kr</b> 형태의 회사 구글 계정을 받습니다. 이 계정 하나로 아래 네 가지 도구를 모두 씁니다. 따로 가입할 필요는 없습니다.</p>
+
+  <div class="apps">
+    <div class="app"><div class="ic" style="background:#d93025">M</div><h6>지메일</h6><p>회사 메일함. 거래처·협력사 등 바깥과 주고받는 공식 연락</p><div class="use">외부 소통</div></div>
+    <div class="app"><div class="ic" style="background:#1a73e8">31</div><h6>캘린더</h6><p>내 일정, 회의, 회의실 예약, 휴가, 동료 일정 확인</p><div class="use">시간 관리</div></div>
+    <div class="app"><div class="ic" style="background:#f9ab00">▲</div><h6>드라이브</h6><p>파일 보관과 공유. 구글 문서·시트·슬라이드도 여기 저장</p><div class="use">파일 관리</div></div>
+    <div class="app"><div class="ic" style="background:#188038">챗</div><h6>구글챗</h6><p>사내 메신저. 1:1 대화와 부서·협업 방(스페이스)</p><div class="use">내부 소통</div></div>
+  </div>
+
+  <h4>무엇을 어디에 쓰나</h4>
+  <p>도구마다 역할이 정해져 있습니다. 헷갈리면 이 표를 기준으로 고르세요.</p>
+  <table>
+    <thead><tr><th style="width:230px">이런 일을 할 때</th><th style="width:130px">쓰는 도구</th><th>예시</th></tr></thead>
+    <tbody>
+      <tr><td>거래처·외부 업체에 공식 연락</td><td><b>지메일</b></td><td>견적 요청, 서류 요청, 발주·입고 관련 회신</td></tr>
+      <tr><td>동료에게 빠른 요청·보고·확인</td><td><b>구글챗</b></td><td>「확인 부탁드립니다」, 처리 완료 보고, 생산 수량 문의</td></tr>
+      <tr><td>업무 기록, 업무전달, 회의록</td><td><b>노션</b></td><td>할 일·업무전달 DB, 주간회의록 (노션 사용 설명서 참고)</td></tr>
+      <tr><td>회의 잡기, 회의실·휴가 등록</td><td><b>캘린더</b></td><td>미팅 초대, 대회의실 예약, 연차 등록</td></tr>
+      <tr><td>파일 보관·공동 작업</td><td><b>드라이브</b></td><td>공유 드라이브의 부서 폴더, 구글 시트 공동 편집</td></tr>
+    </tbody>
+  </table>
+  <div class="ctx"><span class="lb">우리 회사</span><span>회사 원칙: <b>내부 소통은 구글챗·노션, 외부 소통은 메일</b>. 단, 민감한 내용은 사내라도 메일이나 1:1 대화로 보냅니다. (회사 문서 「임직원이 꼭 알아야 하는 집반찬연구소의 일하는 방법」) 사내 메신저는 2024년 10월에 슬랙에서 구글챗으로 바뀌었습니다.</span></div>
+
+  <h4>처음 로그인할 때 할 일</h4>
+  <div class="flow">
+    <div class="step hi"><div class="t">크롬 설치</div><div class="d">구글 도구는 크롬에서 가장 잘 동작합니다</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">회사 계정 로그인</div><div class="d">받은 초기 비밀번호로 로그인</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">비밀번호 바로 변경</div><div class="d">처음 받은 비밀번호는 즉시 바꾸기</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">휴대폰 앱 설치</div><div class="d">Gmail · Calendar · Chat · Drive</div></div>
+  </div>
+  <div class="tip"><b>개인 지메일과 섞이지 않게</b><p>개인 구글 계정을 이미 쓰고 있다면 크롬 오른쪽 위 프로필 아이콘 → <b>추가</b>로 회사 계정 전용 크롬 프로필을 만드세요. 창이 아예 분리되어 메일을 잘못 보낼 일이 줄어듭니다. 화면 오른쪽 위 프로필에 <b>집반찬연구소</b> 표시가 보이면 회사 계정입니다.</p></div>
+  <div class="note"><b>도구 사이 이동</b><p>어느 구글 화면이든 오른쪽 위 <b>점 9개(⋮⋮⋮) 앱 버튼</b>을 누르면 메일·캘린더·드라이브·챗으로 바로 이동합니다.</p></div>
+
+  <h4>출근 후, 퇴근 전 확인 루틴</h4>
+  <table>
+    <thead><tr><th style="width:120px">시점</th><th>확인할 것</th></tr></thead>
+    <tbody>
+      <tr><td><b>출근 후</b></td><td>① 캘린더 오늘 일정 ② 구글챗 멘션·안 읽은 방 ③ 메일 받은편지함 ④ 노션 My Home</td></tr>
+      <tr><td><b>퇴근 전</b></td><td>① 내일 일정 ② 답하지 않은 챗·메일 ③ 오늘 처리한 일 노션 정리</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ PART 1 ============ -->
+<section id="p1">
+  <div class="sec-head"><span class="num">PART 01</span><h3>지메일 기초</h3><span class="lvchip b">기초</span></div>
+  <p class="lead">지메일은 회사 메일함입니다. <b>mail.google.com</b> 또는 앱 버튼 → Gmail로 들어갑니다. 받은 메일은 <b>대화(스레드)</b> 단위로 묶여서, 같은 제목으로 오간 메일이 한 줄에 모입니다.</p>
+
+  <figure><img src="img/g_inbox.png" width="780" alt="" loading="lazy"><figcaption><b>지메일 첫 화면</b> · 메일 목록은 흐리게 처리했습니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:50px">#</th><th style="width:150px">이름</th><th>하는 일</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>편지쓰기</b></td><td>새 메일 쓰기. 오른쪽 아래에 작은 창이 열립니다</td></tr>
+      <tr><td>2</td><td><b>메일함</b></td><td>받은편지함·별표·보낸편지함·임시보관함 등. <b>더보기</b>를 누르면 전체보관함·스팸·휴지통이 나옵니다</td></tr>
+      <tr><td>3</td><td><b>Mail / Chat / Meet</b></td><td>메일 화면 안에서 구글챗, 화상회의로 바로 전환</td></tr>
+      <tr><td>4</td><td><b>검색</b></td><td>보낸 사람, 제목, 내용으로 메일 찾기. 오른쪽 아이콘은 고급검색</td></tr>
+      <tr><td>5</td><td><b>상태</b></td><td>구글챗 상태(활성·방해 금지·부재중) 표시</td></tr>
+      <tr><td>6</td><td><b>설정(톱니바퀴)</b></td><td>빠른 설정 → <b>모든 설정 보기</b>에서 서명·부재중 응답·필터</td></tr>
+      <tr><td>7</td><td><b>메일 목록</b></td><td>굵은 글씨 = 안 읽은 메일. 클릭하면 열립니다</td></tr>
+      <tr><td>8</td><td><b>사이드 패널</b></td><td>캘린더·Keep(메모)·Tasks(할 일)·주소록을 메일 옆에 띄우기</td></tr>
+    </tbody>
+  </table>
+
+  <h4>메일함 종류</h4>
+  <table>
+    <thead><tr><th style="width:150px">메일함</th><th>뜻</th></tr></thead>
+    <tbody>
+      <tr><td>받은편지함</td><td>새로 온 메일. 처리한 메일은 <b>보관</b>해서 비워두면 할 일만 남습니다</td></tr>
+      <tr><td>별표편지함</td><td>별(☆)을 눌러둔 메일. 다시 봐야 할 메일 표시용</td></tr>
+      <tr><td>다시 알림 항목</td><td>「내일 아침에 다시 보여줘」처럼 잠시 숨겨둔 메일</td></tr>
+      <tr><td>보낸편지함</td><td>내가 보낸 메일</td></tr>
+      <tr><td>임시보관함</td><td>쓰다가 닫은 메일. 자동 저장됩니다</td></tr>
+      <tr><td>전체보관함</td><td>보관한 메일까지 모든 메일. 지운 메일은 여기에도 없습니다</td></tr>
+      <tr><td>휴지통</td><td>삭제한 메일. <b>30일</b>이 지나면 완전히 지워집니다</td></tr>
+    </tbody>
+  </table>
+
+  <h4>메일 쓰기</h4>
+  <figure><img src="img/g_compose.png" width="640" alt="" loading="lazy"><figcaption><b>편지쓰기 창</b> · 본문 아래 서명은 설정해두면 자동으로 붙습니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:50px">#</th><th style="width:150px">이름</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>받는사람</b></td><td>메일을 처리해야 하는 사람. 이름이나 주소 일부를 치면 자동완성됩니다</td></tr>
+      <tr><td>2</td><td><b>참조 · 숨은참조</b></td><td>참조(CC): 알고 있어야 하는 사람. 숨은참조(BCC): 다른 수신자에게 안 보이게 넣을 사람</td></tr>
+      <tr><td>3</td><td><b>제목</b></td><td>제목만 보고 용건을 알 수 있게 (PART 03 제목 규칙)</td></tr>
+      <tr><td>4</td><td><b>본문</b></td><td>인사 → 용건 → 요청과 기한 → 감사합니다</td></tr>
+      <tr><td>5</td><td><b>서명</b></td><td>설정한 서명이 자동으로 붙는 자리</td></tr>
+      <tr><td>6</td><td><b>보내기 · ▼</b></td><td>▼를 누르면 <b>보내기 예약</b>(원하는 시간에 발송)</td></tr>
+      <tr><td>7</td><td><b>파일 첨부</b></td><td>내 컴퓨터 파일 첨부. 25MB가 넘으면 자동으로 드라이브 링크로 바뀝니다</td></tr>
+      <tr><td>8</td><td><b>드라이브</b></td><td>드라이브 파일을 링크로 넣기. 받는 사람의 열람 권한을 함께 확인합니다</td></tr>
+      <tr><td>9</td><td><b>휴지통</b></td><td>쓰던 메일(임시보관) 버리기</td></tr>
+    </tbody>
+  </table>
+
+  <h4>답장 · 전체답장 · 전달</h4>
+  <p>받은 메일을 열면 아래쪽에 세 버튼이 있습니다.</p>
+  <div class="cards">
+    <div class="card"><h6>답장</h6><p>보낸 사람 한 명에게만 회신. 참조에 있던 사람은 빠집니다.</p></div>
+    <div class="card"><h6>전체답장</h6><p>받는사람·참조 전원에게 회신. <b>여러 명이 함께 보는 거래처 메일은 기본으로 전체답장</b>을 쓰세요.</p></div>
+    <div class="card"><h6>전달</h6><p>받은 메일을 다른 사람에게 그대로 넘기기. 첨부도 같이 갑니다.</p></div>
+    <div class="card"><h6>같은 건은 같은 스레드에</h6><p>이미 오가던 건이면 새 메일을 쓰지 말고 그 메일에 답장하세요. 이력이 한 줄로 이어집니다.</p></div>
+  </div>
+</section>
+
+<!-- ============ PART 2 ============ -->
+<section id="p2">
+  <div class="sec-head"><span class="num">PART 02</span><h3>지메일 더 잘 쓰기</h3><span class="lvchip u">범용</span></div>
+  <p class="lead">메일이 쌓이기 시작하면 <b>검색 · 정리 · 자동화</b> 세 가지를 알면 훨씬 편해집니다.</p>
+
+  <h4>검색 명령어</h4>
+  <p>검색창에 아래 명령어를 섞어 쓰면 원하는 메일만 정확히 걸러집니다.</p>
+  <table>
+    <thead><tr><th style="width:220px">입력</th><th>뜻</th></tr></thead>
+    <tbody>
+      <tr><td><code>from:coupang.com</code></td><td>쿠팡 도메인에서 온 메일</td></tr>
+      <tr><td><code>to:이름</code></td><td>특정 사람에게 보낸 메일</td></tr>
+      <tr><td><code>subject:견적</code></td><td>제목에 「견적」이 들어간 메일</td></tr>
+      <tr><td><code>has:attachment</code></td><td>첨부파일이 있는 메일</td></tr>
+      <tr><td><code>filename:xlsx</code></td><td>엑셀 첨부가 있는 메일</td></tr>
+      <tr><td><code>after:2026/11/01</code></td><td>11월 1일 이후 메일 (<code>before:</code>는 이전)</td></tr>
+      <tr><td><code>is:unread</code></td><td>안 읽은 메일만</td></tr>
+      <tr><td><code>"발주서 전달"</code></td><td>따옴표 안 문구가 정확히 들어간 메일</td></tr>
+      <tr><td><code>-광고</code></td><td>「광고」가 들어간 메일 빼기</td></tr>
+    </tbody>
+  </table>
+  <div class="tip"><b>예시</b><p><code>from:kurly.com has:attachment after:2026/11/01</code> → 11월 이후 컬리에서 온 첨부 메일만</p></div>
+
+  <h4>고급검색과 필터(자동 분류)</h4>
+  <p>검색창 오른쪽 아이콘을 누르면 칸을 채워 검색할 수 있습니다. 같은 조건으로 <b>필터 만들기</b>를 누르면 앞으로 오는 메일에 라벨 붙이기, 별표, 보관 등을 자동으로 해줍니다.</p>
+  <figure><img src="img/g_search_opt.png" width="740" alt="" loading="lazy"><figcaption><b>고급검색</b> · 조건을 넣고 「필터 만들기」를 누르면 자동 분류 규칙이 됩니다</figcaption></figure>
+
+  <h4>정리하는 방법</h4>
+  <table>
+    <thead><tr><th style="width:140px">기능</th><th>설명</th><th style="width:200px">쓰면 좋은 때</th></tr></thead>
+    <tbody>
+      <tr><td><b>라벨</b></td><td>폴더 대신 붙이는 꼬리표. 한 메일에 여러 개 붙일 수 있습니다. 왼쪽 <b>라벨 +</b>로 만듭니다</td><td>거래처별, 채널별 분류</td></tr>
+      <tr><td><b>보관</b></td><td>받은편지함에서만 치우기. 삭제가 아니라 검색하면 다시 나옵니다</td><td>처리 끝난 메일</td></tr>
+      <tr><td><b>별표</b></td><td>나중에 다시 볼 메일 표시</td><td>답장 대기 중인 메일</td></tr>
+      <tr><td><b>다시 알림</b></td><td>지정한 시간에 받은편지함 맨 위로 다시 올라옵니다</td><td>「다음 주 월요일에 확인」</td></tr>
+      <tr><td><b>읽지 않음 표시</b></td><td>읽었지만 다시 굵게 표시</td><td>아직 처리 안 한 메일</td></tr>
+    </tbody>
+  </table>
+
+  <h4>보내기 예약 · 보내기 취소</h4>
+  <figure><img src="img/g_schedule.png" width="330" alt="" loading="lazy"><figcaption>보내기 옆 <b>▼ → 보내기 예약</b></figcaption></figure>
+  <ul>
+    <li><b>보내기 예약</b>: 밤에 쓴 메일을 다음 날 오전 9시에 보내는 식으로 씁니다.</li>
+    <li><b>보내기 취소</b>: 보낸 직후 왼쪽 아래 <b>실행취소</b>를 누르면 회수됩니다. 기본 5초이고, 설정 → 기본설정 → <b>보내기 취소</b>에서 최대 30초까지 늘릴 수 있습니다. 30초로 바꿔두는 것을 권합니다.</li>
+  </ul>
+
+  <h4>부재중 자동응답</h4>
+  <p>휴가처럼 며칠 메일을 못 볼 때 자동으로 회신이 나가게 합니다. 설정 → 모든 설정 보기 → <b>기본설정</b> 맨 아래.</p>
+  <figure><img src="img/g_ooo.png" width="780" alt="" loading="lazy"><figcaption><b>부재중 자동응답</b> · 켜기 → 시작일·종료일·제목·메시지 입력 → 맨 아래 「변경사항 저장」</figcaption></figure>
+  <div class="warn"><b>꼭 종료일을 넣으세요</b><p>종료일을 안 넣으면 복귀 후에도 계속 자동응답이 나갑니다. 메시지에는 복귀일과 급한 건을 대신 처리할 동료를 적습니다.</p></div>
+</section>
+
+<!-- ============ PART 3 ============ -->
+<section id="p3">
+  <div class="sec-head"><span class="num">PART 03</span><h3>우리 회사 메일 방식</h3><span class="lvchip c">회사</span></div>
+  <p class="lead">메일은 <b>회사의 얼굴로 바깥에 나가는 공식 문서</b>입니다. 쿠팡·컬리 같은 판매 채널, 협력사, 물류사, 관공서와의 연락은 메일로 남깁니다. 사내 동료끼리의 요청은 메일보다 구글챗과 노션을 씁니다.</p>
+
+  <h4>첫날 할 일: 서명 등록</h4>
+  <div class="stepbox">
+    <div class="sh"><span class="sn">HOW TO</span><span class="st">메일 서명 만들기</span></div>
+    <ol>
+      <li>지메일 오른쪽 위 <b>설정(톱니바퀴)</b> → <b>모든 설정 보기</b></li>
+      <li><b>기본설정</b> 탭에서 아래로 내려 <b>서명</b> 찾기 → <b>새로 만들기</b> → 이름에 본인 이름 입력</li>
+      <li>오른쪽 칸에 아래 양식을 붙여넣고 본인 정보로 바꾸기</li>
+      <li><b>서명 기본값</b>에서 「새로운 이메일」과 「답장/전달」 모두 방금 만든 서명 선택</li>
+      <li>페이지 맨 아래 <b>변경사항 저장</b></li>
+    </ol>
+    <figure><img src="img/g_signature.png" width="780" alt="" loading="lazy"><figcaption><b>서명 설정</b> · 답장/전달에도 서명을 선택해야 회신 메일에도 붙습니다</figcaption></figure>
+  </div>
+  <div class="msg-h">서명 양식 (회사 노션 「신규입사자 첫 주 가이드」 기준)</div>
+<pre class="msg">-------------------------------------------------------------
+온라인 프리미엄 반찬 쇼핑몰  /  (주) 산너머남촌
+
+부서 / 직책
+이름
+✉️ 이메일
+📞 연락처
+🏠 인천 서구 가석로 26 집반찬연구소
+-------------------------------------------------------------
+본 메일은 상기 표기된 특정인에게만 전달될 목적으로 발송 되었으며, 법으로 보호되는 중요한 영업비밀 또는 비밀유지서약서에 따라 보호되는 비밀정보를 담고 있습니다. (이하 회사 양식 문구 그대로)</pre>
+
+  <h4>제목 쓰는 법</h4>
+  <p>우리 회사 보낸 메일은 대부분 <b>[집반찬연구소] + 용건 + 「~의 건」</b> 형태입니다. 상대 회사가 정한 제목 양식이 있으면 그 양식을 따릅니다.</p>
+  <table>
+    <thead><tr><th style="width:170px">경우</th><th>제목 예시</th></tr></thead>
+    <tbody>
+      <tr><td>우리가 먼저 보낼 때</td><td><code>[집반찬연구소] 11월 샘플 발송 요청의 건</code></td></tr>
+      <tr><td>자료·회신 요청</td><td><code>[집반찬연구소] 표시사항 추가 확인 요청의 건</code></td></tr>
+      <tr><td>급한 건</td><td><code>[긴급][집반찬연구소] 입차 지연 요청의 건</code></td></tr>
+      <tr><td>회신 기한이 있을 때</td><td><code>[거래처명] ○○ 서류 요청의 건_(주)산너머남촌_(~10/22 회신필요)</code></td></tr>
+      <tr><td>받은 메일에 회신</td><td>제목을 바꾸지 않고 그대로 <b>답장</b> (RE: 자동 표시)</td></tr>
+    </tbody>
+  </table>
+
+  <h4>본문 구조</h4>
+  <div class="flow">
+    <div class="step"><div class="t">인사와 소개</div><div class="d">「안녕하세요, 집반찬연구소 온라인본부 ○○○입니다.」</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">용건 한두 줄</div><div class="d">무슨 일로 연락했는지 먼저</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">세부 내용</div><div class="d">품목·수량·일정은 줄을 나눠서</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">요청과 기한</div><div class="d">「○일까지 회신 부탁드립니다」</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">감사합니다.</div><div class="d">이름은 서명에 있으니 생략 가능</div></div>
+  </div>
+
+  <div class="do-dont">
+    <div class="do"><b class="t">이렇게 하세요</b><ul>
+      <li>여러 명이 보는 거래처 메일은 <b>전체답장</b></li>
+      <li>관련 담당자나 팀장을 <b>참조</b>에 넣어 진행 상황 공유</li>
+      <li>같은 건은 <b>같은 스레드</b>에서 이어가기</li>
+      <li>사내에서 꼭 알아야 할 외부 메일은 <b>전달</b>하거나 챗·노션에 요약 공유</li>
+    </ul></div>
+    <div class="dont"><b class="t">이건 피하세요</b><ul>
+      <li>개인 메일 계정으로 업무 메일 보내기</li>
+      <li>고객 개인정보·계좌·비밀번호를 본문에 그대로 적기</li>
+      <li>회사 파일을 「링크가 있는 모든 사용자」로 열어서 외부에 보내기 (PART 08)</li>
+      <li>받는사람 확인 없이 자동완성으로 바로 보내기</li>
+    </ul></div>
+  </div>
+</section>
+<!-- ============ PART 4 ============ -->
+<section id="p4">
+  <div class="sec-head"><span class="num">PART 04</span><h3>캘린더 기초</h3><span class="lvchip b">기초</span></div>
+  <p class="lead">구글 캘린더는 내 일정표이자 <b>회사 전체가 서로의 일정을 확인하는 곳</b>입니다. <b>calendar.google.com</b> 또는 앱 버튼 → Calendar로 들어갑니다.</p>
+
+  <figure><img src="img/c_main.png" width="780" alt="" loading="lazy"><figcaption><b>캘린더 첫 화면 (주 보기)</b> · 일정 내용은 흐리게 처리했습니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:50px">#</th><th style="width:150px">이름</th><th>하는 일</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>만들기</b></td><td>새 일정 만들기. 일정 칸의 빈 곳을 클릭해도 됩니다</td></tr>
+      <tr><td>2</td><td><b>오늘 · ‹ ›</b></td><td>오늘로 돌아가기, 이전·다음 주로 이동</td></tr>
+      <tr><td>3</td><td><b>검색 · 도움말 · 설정</b></td><td>일정 검색, 캘린더 설정(톱니바퀴)</td></tr>
+      <tr><td>4</td><td><b>보기 전환</b></td><td>일 · 주 · 월 · 일정 목록 보기</td></tr>
+      <tr><td>5</td><td><b>캘린더 / Tasks</b></td><td>일정 화면과 할 일(Tasks) 화면 전환</td></tr>
+      <tr><td>6</td><td><b>미니 달력</b></td><td>날짜를 누르면 그날로 이동</td></tr>
+      <tr><td>7</td><td><b>캘린더 목록</b></td><td>체크하면 보이고, 해제하면 숨겨집니다. 이름 옆 ⋮로 색상·설정</td></tr>
+    </tbody>
+  </table>
+
+  <h4>일정 만들기</h4>
+  <p>빈 칸을 클릭하면 작은 창이 뜨고, <b>옵션 더보기</b>를 누르면 아래처럼 자세한 화면이 열립니다.</p>
+  <figure><img src="img/c_event_edit.png" width="780" alt="" loading="lazy"><figcaption><b>일정 자세히 만들기</b> · 예시 일정이며 저장하지 않았습니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:50px">#</th><th style="width:150px">항목</th><th>설명</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>제목</b></td><td>무슨 일정인지 한눈에. 예) [미팅] 거래처명 미팅</td></tr>
+      <tr><td>2</td><td><b>날짜·시간</b></td><td>종일 체크, 반복(매주·매월) 설정 가능</td></tr>
+      <tr><td>3</td><td><b>참석자</b></td><td>이름을 넣으면 초대장이 메일과 캘린더로 갑니다</td></tr>
+      <tr><td>4</td><td><b>회의실</b></td><td>회사 회의실 예약 (PART 06)</td></tr>
+      <tr><td>5</td><td><b>Google Meet</b></td><td>화상회의 링크 자동 생성</td></tr>
+      <tr><td>6</td><td><b>캘린더 선택</b></td><td>이 일정을 어느 캘린더(분류)에 넣을지 (PART 05)</td></tr>
+      <tr><td>7</td><td><b>저장</b></td><td>참석자가 있으면 「초대 메일 보내기」를 묻습니다</td></tr>
+    </tbody>
+  </table>
+
+  <h4>초대받았을 때</h4>
+  <p>초대받은 일정은 메일과 캘린더에 동시에 옵니다. 일정을 눌러 <b>예 · 아니요 · 미정</b> 중 하나로 꼭 응답하세요. 응답하지 않으면 주최자는 참석 여부를 알 수 없습니다. 시간이 안 맞으면 <b>새 시간 제안</b>을 쓸 수 있습니다.</p>
+
+  <h4>동료 일정과 나란히 보기</h4>
+  <p>동료 캘린더를 구독해 두면(PART 05) <b>일 보기</b>에서 사람별로 칸이 나뉘어 보입니다. 회의 시간을 잡을 때 비어 있는 시간을 바로 찾을 수 있습니다.</p>
+  <figure><img src="img/c_dayview.png" width="780" alt="" loading="lazy"><figcaption><b>일 보기</b> · 구독한 동료 캘린더가 사람별 칸으로 표시됩니다</figcaption></figure>
+  <div class="tip"><b>회의 시간 찾기</b><p>일정 만들기 화면에서 참석자를 넣고 <b>시간 찾기</b> 탭을 누르면 참석자 전원의 빈 시간이 겹쳐서 보입니다.</p></div>
+</section>
+
+<!-- ============ PART 5 ============ -->
+<section id="p5">
+  <div class="sec-head"><span class="num">PART 05</span><h3>입사 첫날 캘린더 세팅</h3><span class="lvchip c">회사</span></div>
+  <p class="lead">우리 회사는 일정을 <b>성격별로 5개 캘린더에 나눠 담고 고유색</b>을 붙입니다. 색만 봐도 한 주를 무엇에 썼는지 보입니다. 여기에 회사 공통 캘린더, 동료 캘린더, 회의실 현황을 더하면 세팅이 끝납니다. 아래 STEP을 순서대로 따라 하세요.</p>
+
+  <h4>완성되면 이런 모습입니다</h4>
+  <figure><img src="img/c_list_done.png" width="520" alt="" loading="lazy"><figcaption><b>세팅 완료 예시 (온라인본부 팀장 화면)</b> · ① 업무 분류 캘린더 ② 회사 공통 캘린더 ③ 구독한 동료 캘린더. 「다른 캘린더」의 「1. 주업무」는 대표님 캘린더를 구독한 것입니다</figcaption></figure>
+
+  <h4>5개 업무 분류 캘린더</h4>
+  <p>회사 교육자료 「스케줄 및 업무 관리 마스터하기」의 3P 바인더 방식입니다. 이름 앞 숫자는 <b>목록 순서를 고정</b>하려고 붙입니다.</p>
+  <table>
+    <thead><tr><th style="width:150px">캘린더 이름</th><th>담는 일정 (예시)</th><th style="width:130px">색 (예시)</th></tr></thead>
+    <tbody>
+      <tr><td><b>내 이름</b> (기본)<br><span style="font-size:12px;color:var(--ink3)">= 1번 주업무</span></td><td>내 직무의 핵심 업무, 회의, 미팅. 초대받은 회의도 여기에 들어옵니다</td><td><span class="sw" style="background:#d50000"></span>빨강</td></tr>
+      <tr><td><b>2. 보조업무</b></td><td>메일 정리, 서류 작업, 다른 부서 지원 등 핵심 업무를 받치는 일</td><td><span class="sw" style="background:#f4511e"></span>주황</td></tr>
+      <tr><td><b>3. 개인</b></td><td>병원, 은행 등 근무 중 개인 용무</td><td><span class="sw" style="background:#7cb342"></span>연두</td></tr>
+      <tr><td><b>4. 자기계발</b></td><td>교육, 세미나, 학습조직, 공부</td><td><span class="sw" style="background:#039be5"></span>하늘</td></tr>
+      <tr><td><b>5. 휴먼네트워크</b></td><td>거래처·업계 사람과의 관계 약속, 네트워킹</td><td><span class="sw" style="background:#3f51b5"></span>남색</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>왜 「1. 주업무」를 따로 안 만드나요?</b><p>내 이름으로 된 <b>기본 캘린더</b>는 지울 수 없고, 회의 초대가 자동으로 들어오며, 동료가 내 이름으로 구독하면 보이는 캘린더입니다. 그래서 기본 캘린더를 1번 주업무로 쓰고 <b>2~5번만 새로 만듭니다</b>. 기본 캘린더 이름을 「1. 주업무」로 바꾸는 방법도 있지만, 동료 목록에 같은 이름이 여러 개 생겨 헷갈리므로 이름 그대로 두기를 권합니다.</p></div>
+
+  <div class="stepbox">
+    <div class="sh"><span class="sn">STEP 1</span><span class="st">회사 계정으로 캘린더 열기</span></div>
+    <ol>
+      <li>크롬에서 <b>calendar.google.com</b> 접속</li>
+      <li>오른쪽 위 프로필에 <b>집반찬연구소</b>가 보이는지 확인 (개인 계정이면 프로필을 눌러 회사 계정으로 전환)</li>
+      <li>왼쪽 아래 <b>내 캘린더</b>에 내 이름 캘린더 하나만 있으면 정상입니다</li>
+    </ol>
+  </div>
+
+  <div class="stepbox">
+    <div class="sh"><span class="sn">STEP 2</span><span class="st">업무 분류 캘린더 4개 만들기 (2~5번)</span></div>
+    <ol>
+      <li>왼쪽 <b>다른 캘린더</b> 옆 <b>＋</b> 클릭</li>
+    </ol>
+    <figure><img src="img/c_plus.png" width="520" alt="" loading="lazy"><figcaption>「다른 캘린더」 제목 오른쪽의 ＋</figcaption></figure>
+    <ol start="2">
+      <li>메뉴에서 <b>새 캘린더 만들기</b> 클릭 (아래 그림 A)</li>
+    </ol>
+    <figure><img src="img/c_add_menu.png" width="640" alt="" loading="lazy"><figcaption>＋ 메뉴 · A는 지금, B·C는 STEP 5·6에서 씁니다</figcaption></figure>
+    <ol start="3">
+      <li>이름에 <b>2. 보조업무</b> 입력 (숫자, 마침표, 띄어쓰기, 분류명 순서)</li>
+      <li><b>캘린더 만들기</b> 클릭</li>
+      <li>같은 방법으로 <b>3. 개인</b>, <b>4. 자기계발</b>, <b>5. 휴먼네트워크</b>를 만듭니다</li>
+    </ol>
+    <figure><img src="img/c_new_form.png" width="780" alt="" loading="lazy"><figcaption><b>새 캘린더 만들기</b> · 시간대는 서울, 소유자는 나, 조직은 sannamchon.co.kr이 자동 입력됩니다</figcaption></figure>
+  </div>
+
+  <div class="stepbox">
+    <div class="sh"><span class="sn">STEP 3</span><span class="st">캘린더마다 고유색 정하기</span></div>
+    <ol>
+      <li>왼쪽 캘린더 목록에서 캘린더 이름 위에 마우스를 올리면 오른쪽에 <b>⋮</b>가 나타납니다</li>
+      <li><b>⋮</b> 클릭 → 색상표에서 색 선택 (위 표의 예시 색 권장)</li>
+      <li>5개 모두 서로 다른 색으로 지정합니다</li>
+    </ol>
+    <figure><img src="img/c_color.png" width="560" alt="" loading="lazy"><figcaption>캘린더 이름 옆 ⋮ → <b>색상 고르기</b></figcaption></figure>
+  </div>
+
+  <div class="stepbox">
+    <div class="sh"><span class="sn">STEP 4</span><span class="st">회사 동료가 볼 수 있게 공유 설정 확인</span></div>
+    <ol>
+      <li>캘린더 이름 옆 <b>⋮ → 설정 및 공유</b> (또는 설정 → 왼쪽 「내 캘린더의 설정」에서 캘린더 선택)</li>
+      <li><b>일정의 액세스 권한</b>에서 「<b>집반찬연구소에서 사용할 수 있도록 설정</b>」 체크 + 「<b>일정 세부정보 보기</b>」 선택</li>
+      <li>「<b>공개 사용 설정</b>」은 켜지 않습니다 (인터넷 전체 공개)</li>
+      <li>기본 캘린더(내 이름)와 2~5번 모두 같은 방법으로 확인합니다</li>
+    </ol>
+    <figure><img src="img/c_settings_top.png" width="780" alt="" loading="lazy"><figcaption><b>캘린더 설정 화면</b> · ① 설정할 캘린더 ② 이름 바꾸기 ③ 특정 동료에게만 따로 공유할 때</figcaption></figure>
+    <figure><img src="img/c_access.png" width="780" alt="" loading="lazy"><figcaption><b>일정의 액세스 권한</b> · 회사 전체 공개는 켜고, 인터넷 공개는 끕니다</figcaption></figure>
+    <div class="tip"><b>개인 일정이 신경 쓰이면</b><p>「3. 개인」만 <b>한가함/바쁨 정보만 보기(세부정보는 숨김)</b>로 바꾸면 동료에게는 「바쁨」으로만 보입니다.</p></div>
+  </div>
+
+  <div class="stepbox">
+    <div class="sh"><span class="sn">STEP 5</span><span class="st">회사 공통 캘린더 받기 + 동료 캘린더 구독</span></div>
+    <p><b>① 공통 캘린더</b>: <b>6. 집반찬연구소_공용</b>, <b>7. 집반찬연구소_휴가</b>는 직접 만들지 않습니다. <b>경영지원HQ에 추가를 요청</b>하면 공유받아 「내 캘린더」 목록에 생깁니다.</p>
+    <table>
+      <thead><tr><th style="width:200px">공통 캘린더</th><th>들어 있는 일정</th></tr></thead>
+      <tbody>
+        <tr><td><b>6. 집반찬연구소_공용</b></td><td>전사 행사(월간집반찬, 창립 기념행사 등), 주말·단축 근무 같은 전사 공유 일정</td></tr>
+        <tr><td><b>7. 집반찬연구소_휴가</b></td><td>전 직원의 연차·반차·대휴 (PART 06)</td></tr>
+      </tbody>
+    </table>
+    <p><b>② 동료 캘린더 구독</b></p>
+    <ol>
+      <li>다른 캘린더 옆 <b>＋ → 캘린더 구독</b> (STEP 2 그림의 B)</li>
+      <li>「캘린더 추가」 칸에 동료 이름 입력 → <b>@sannamchon.co.kr</b> 주소인지 확인하고 클릭</li>
+      <li>같은 팀원, 사수, 팀장, 자주 협업하는 부서 담당자를 추가합니다</li>
+    </ol>
+    <figure><img src="img/c_subscribe.png" width="780" alt="" loading="lazy"><figcaption><b>캘린더 구독</b> · 이름이 같은 외부 연락처가 섞여 나올 수 있으니 회사 메일 주소를 꼭 확인</figcaption></figure>
+  </div>
+
+  <div class="stepbox">
+    <div class="sh"><span class="sn">STEP 6</span><span class="st">회의실 사용 현황 보이게 하기</span></div>
+    <ol>
+      <li>다른 캘린더 옆 <b>＋ → 리소스 찾아보기</b> (STEP 2 그림의 C)</li>
+      <li>회의실 3곳을 체크하면 각 회의실 예약 현황이 내 캘린더에 함께 보입니다</li>
+    </ol>
+    <figure><img src="img/c_rooms.png" width="780" alt="" loading="lazy"><figcaption><b>리소스 찾아보기</b> · MegaFactory 4층 대표이사 회의실(8인) · 대회의실(16인) · 연구개발실(6인)</figcaption></figure>
+  </div>
+
+  <div class="stepbox">
+    <div class="sh"><span class="sn">STEP 7</span><span class="st">휴대폰 앱 설치</span></div>
+    <ol>
+      <li>앱스토어·플레이스토어에서 <b>Google Calendar</b> 설치 후 회사 계정으로 로그인</li>
+      <li>앱 메뉴(☰)에서 회사 계정 아래 캘린더들이 체크되어 있는지 확인</li>
+      <li>할 일을 쓰는 분은 <b>Google Tasks</b> 앱도 함께 설치합니다 (캘린더와 별도 설치)</li>
+    </ol>
+  </div>
+
+  <h4>세팅 체크리스트</h4>
+  <p>체크하면 이 브라우저에 저장됩니다. 다른 컴퓨터에서는 다시 체크해야 합니다.</p>
+  <div class="checklist" data-list="cal">
+    <div class="progress"><span class="pg-t">0 / 9</span><span class="bar"><i></i></span><button type="button" class="resetbtn">초기화</button></div>
+    <label class="chk"><input type="checkbox" data-k="c1"><span class="tx">회사 계정으로 캘린더 접속 확인</span></label>
+    <label class="chk"><input type="checkbox" data-k="c2"><span class="tx"><b>2. 보조업무 · 3. 개인 · 4. 자기계발 · 5. 휴먼네트워크</b> 4개 만들기</span></label>
+    <label class="chk"><input type="checkbox" data-k="c3"><span class="tx">기본 캘린더 포함 5개에 서로 다른 고유색 지정</span></label>
+    <label class="chk"><input type="checkbox" data-k="c4"><span class="tx">5개 모두 「집반찬연구소에서 사용할 수 있도록 설정」 확인<span class="hint">공개 사용 설정은 꺼짐 상태</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="c5"><span class="tx">경영지원HQ에 <b>6. 공용 · 7. 휴가</b> 캘린더 추가 요청</span></label>
+    <label class="chk"><input type="checkbox" data-k="c6"><span class="tx">팀원 · 사수 · 팀장 캘린더 구독</span></label>
+    <label class="chk"><input type="checkbox" data-k="c7"><span class="tx">회의실 3곳 리소스 체크</span></label>
+    <label class="chk"><input type="checkbox" data-k="c8"><span class="tx">휴대폰에 Google Calendar 앱 설치·로그인</span></label>
+    <label class="chk"><input type="checkbox" data-k="c9"><span class="tx">테스트 일정 1개를 만들어 「2. 보조업무」에 넣어보고 색이 바뀌는지 확인</span></label>
+  </div>
+</section>
+
+<!-- ============ PART 6 ============ -->
+<section id="p6">
+  <div class="sec-head"><span class="num">PART 06</span><h3>우리 회사 캘린더 운영</h3><span class="lvchip c">회사</span></div>
+  <p class="lead">세팅한 캘린더는 이렇게 씁니다. 핵심은 세 가지입니다. <b>일정은 분류해서 넣고, 회의실은 캘린더로 예약하고, 휴가는 휴가 캘린더에 남긴다.</b></p>
+
+  <h4>일정을 넣을 때 캘린더(분류) 고르기</h4>
+  <p>일정 만들기 화면의 캘린더 선택에서 어느 분류인지 고릅니다. 공용·휴가 캘린더는 정해진 경우에만 씁니다.</p>
+  <figure><img src="img/c_event_calpick.png" width="640" alt="" loading="lazy"><figcaption>일정 만들기 → <b>캘린더 선택</b></figcaption></figure>
+
+  <h4>회의 잡기와 회의실 예약</h4>
+  <div class="flow">
+    <div class="step"><div class="t">일정 만들기</div><div class="d">제목·시간 입력</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">참석자 추가</div><div class="d">시간 찾기로 빈 시간 확인</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">회의실 탭</div><div class="d">비어 있는 회의실 클릭</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">저장</div><div class="d">초대 메일 보내기</div></div>
+  </div>
+  <figure><img src="img/c_event_room.png" width="700" alt="" loading="lazy"><figcaption>일정 만들기 → <b>회의실 탭</b> → MegaFactory 펼치기 → 회의실 선택</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:150px">회의실</th><th>사용 기준 (회사 노션 「회의실 캘린더 사용 안내」)</th></tr></thead>
+    <tbody>
+      <tr><td><b>대회의실</b> (16인)</td><td>일반 회의·미팅. <b>반드시 캘린더로 사전 예약</b></td></tr>
+      <tr><td><b>연구개발실</b> (6인)</td><td>연구개발 업무가 최우선. 급한 연구개발 업무가 생기면 양보를 부탁받을 수 있습니다</td></tr>
+      <tr><td><b>대표이사 회의실</b> (8인)</td><td>대표님 퇴근 이후에만 회의 공간으로 사용. 근무시간 중 예약 불가</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><b>캘린더에 등록된 일정이 우선입니다</b><p>회의실은 캘린더로 예약한 사람에게 사용 우선권이 있습니다. 예약 없이 쓰다가 예약자가 오면 비켜줘야 하고, 예약자가 눈치 보는 일이 없도록 예약제를 지킵니다. 문의는 회계파트로 합니다.</p></div>
+
+  <h4>휴가 등록</h4>
+  <div class="flow">
+    <div class="step"><div class="t">전자결재 신청</div><div class="d">이카운트 전자결재 「신청서(휴가/대휴)」</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">결재 승인</div><div class="d">결재라인 유형 1 · 참조 인사파트</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">휴가 캘린더 등록</div><div class="d">7. 집반찬연구소_휴가에 종일 일정</div></div>
+  </div>
+  <table>
+    <thead><tr><th style="width:170px">항목</th><th>입력</th></tr></thead>
+    <tbody>
+      <tr><td>캘린더</td><td><b>7. 집반찬연구소_휴가</b></td></tr>
+      <tr><td>시간</td><td><b>종일</b> 체크</td></tr>
+      <tr><td>제목 (현재 쓰는 형식)</td><td><code>🌴[이름] 연차</code> · <code>🌴[이름] 오전 반차</code> · <code>🌴[이름] 오후반차</code> · <code>🌴[이름] 생일반차</code> · <code>🌴[이름] 대휴</code></td></tr>
+    </tbody>
+  </table>
+  <div class="ctx"><span class="lb">우리 회사</span><span>남은 연차는 이카운트 [근태관리] → [휴가사용실적현황]에서 확인합니다. 휴가 중 메일은 PART 02의 부재중 자동응답을 켜두세요.</span></div>
+
+  <h4>매일 쓰는 습관</h4>
+  <ul>
+    <li><b>출근 후</b> 오늘 일정과 공용·휴가 캘린더를 보고 누가 자리에 없는지 확인합니다.</li>
+    <li>회의 초대는 미루지 말고 <b>바로 응답</b>합니다.</li>
+    <li>상사가 「이 일정 캘린더에 등록해 주세요」라고 하면 바로 등록하고 「등록했습니다」로 회신합니다.</li>
+    <li>Google Meet 회의는 회의가 끝나면 Gemini 회의록이 참석자 메일로 올 수 있습니다. 내용을 확인해 노션 회의록에 정리합니다.</li>
+  </ul>
+</section>
+<!-- ============ PART 7 ============ -->
+<section id="p7">
+  <div class="sec-head"><span class="num">PART 07</span><h3>드라이브 기초와 공유</h3><span class="lvchip b">기초</span><span class="lvchip u">범용</span></div>
+  <p class="lead">구글 드라이브는 <b>인터넷에 있는 회사 공용 하드디스크</b>입니다. 내 컴퓨터가 고장 나도 파일이 남고, 집이나 휴대폰에서도 열 수 있고, 여러 명이 한 파일을 동시에 고칠 수 있습니다. <b>drive.google.com</b>으로 들어갑니다.</p>
+
+  <figure><img src="img/d_main.png" width="780" alt="" loading="lazy"><figcaption><b>드라이브 첫 화면</b> · 파일 목록은 흐리게 처리했습니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:50px">#</th><th style="width:170px">이름</th><th>하는 일</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>신규</b></td><td>폴더 만들기, 파일 올리기, 구글 문서·시트·슬라이드 새로 만들기</td></tr>
+      <tr><td>2</td><td><b>내 드라이브 · 공유 드라이브</b></td><td>내 드라이브 = 나 혼자 소유. 공유 드라이브 = 부서가 함께 소유 (PART 08)</td></tr>
+      <tr><td>3</td><td><b>공유 문서함 · 최근 · 중요</b></td><td>남이 나에게 공유한 파일, 최근 연 파일, 별표한 파일</td></tr>
+      <tr><td>4</td><td><b>휴지통</b></td><td>지운 파일. <b>30일</b> 뒤 완전히 삭제됩니다</td></tr>
+      <tr><td>5</td><td><b>검색</b></td><td>파일 이름뿐 아니라 문서 안의 글자로도 찾습니다</td></tr>
+      <tr><td>6</td><td><b>필터</b></td><td>유형(시트·PDF 등), 사람, 수정 날짜로 좁히기</td></tr>
+      <tr><td>7</td><td><b>목록 · 바둑판 보기</b></td><td>보기 방식 전환</td></tr>
+    </tbody>
+  </table>
+
+  <h4>새로 만들기 · 올리기</h4>
+  <figure><img src="img/d_new_menu.png" width="700" alt="" loading="lazy"><figcaption><b>신규</b> 메뉴</figcaption></figure>
+  <div class="cards">
+    <div class="card"><h6>구글 문서 · 시트 · 슬라이드</h6><p>워드·엑셀·파워포인트와 같은 역할. <b>저장 버튼이 없고 입력 즉시 자동 저장</b>됩니다. 여러 명이 동시에 편집할 수 있습니다.</p></div>
+    <div class="card"><h6>파일 업로드</h6><p>엑셀·PDF·이미지를 그대로 올립니다. 화면으로 끌어다 놓아도 올라갑니다. 엑셀은 열어서 「Google 스프레드시트로 열기」를 누르면 시트로 바뀝니다.</p></div>
+  </div>
+
+  <h4>공유하기</h4>
+  <p>파일에서 오른쪽 클릭 → <b>공유</b> (또는 파일을 열고 오른쪽 위 <b>공유</b> 버튼).</p>
+  <figure><img src="img/d_share.png" width="780" alt="" loading="lazy"><figcaption><b>공유 창</b> · 공유받은 사람 목록은 흐리게 처리했습니다</figcaption></figure>
+  <figure><img src="img/d_general_access.png" width="780" alt="" loading="lazy"><figcaption><b>일반 액세스</b> · 링크를 받은 사람 중 누가 열 수 있는지 정합니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:150px">권한</th><th>할 수 있는 일</th></tr></thead>
+    <tbody>
+      <tr><td><b>뷰어</b></td><td>보기만</td></tr>
+      <tr><td><b>댓글 작성자</b></td><td>보기 + 댓글 (내용 수정은 불가)</td></tr>
+      <tr><td><b>편집자</b></td><td>수정, 다른 사람에게 공유까지</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>링크와 권한은 별개입니다</b><p>링크를 보냈는데 상대가 「액세스 권한 필요」 화면을 본다면 권한이 없는 것입니다. 공유 창에서 그 사람을 추가하거나 일반 액세스를 바꿔야 열립니다.</p></div>
+
+  <h4>알아두면 좋은 기능</h4>
+  <table>
+    <thead><tr><th style="width:170px">기능</th><th>방법</th></tr></thead>
+    <tbody>
+      <tr><td><b>버전 기록</b></td><td>구글 문서·시트에서 <b>파일 → 버전 기록 → 버전 기록 보기</b>. 누가 언제 무엇을 고쳤는지 보고, 예전 상태로 되돌릴 수 있습니다</td></tr>
+      <tr><td><b>댓글과 @멘션</b></td><td>셀이나 문장을 선택하고 <kbd class="mod">Ctrl</kbd>+<kbd class="alt">Alt</kbd>+<kbd>M</kbd> → 댓글에 <code>@이름</code>을 넣으면 그 사람에게 메일 알림이 갑니다</td></tr>
+      <tr><td><b>바로가기</b></td><td>파일 오른쪽 클릭 → 정리 → <b>바로가기 추가</b>. 파일을 복사하지 않고 내 폴더에서도 열 수 있게</td></tr>
+      <tr><td><b>데스크톱용 드라이브</b></td><td>PC에 설치하면 탐색기·Finder에서 드라이브가 일반 폴더처럼 보입니다. 「스트리밍」은 용량을 거의 안 쓰고, 「미러링」은 PC에도 사본을 둡니다. PC를 켤 때 드라이브가 실행 중인지 확인하세요</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ PART 8 ============ -->
+<section id="p8">
+  <div class="sec-head"><span class="num">PART 08</span><h3>우리 회사 드라이브 방식</h3><span class="lvchip c">회사</span></div>
+  <p class="lead">회사 업무 파일은 <b>공유 드라이브</b>에 둡니다. 내 드라이브에 있는 파일은 내 소유라서 퇴사하거나 계정이 바뀌면 함께 사라질 수 있지만, 공유 드라이브 파일은 부서 소유라 계속 남습니다.</p>
+
+  <figure><img src="img/d_shared.png" width="780" alt="" loading="lazy"><figcaption><b>공유 드라이브</b> · 내가 멤버로 들어가 있는 드라이브만 보입니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:170px">공유 드라이브</th><th>용도</th></tr></thead>
+    <tbody>
+      <tr><td><b>온라인본부</b></td><td>온라인본부 업무 파일 (브랜드·채널별 폴더)</td></tr>
+      <tr><td><b>디자인실</b></td><td>디자인 원본·작업 파일</td></tr>
+      <tr><td><b>사진첩</b></td><td>회사 행사·현장 사진</td></tr>
+      <tr><td><b>협력사 공유 드라이브</b></td><td>외부 협력사와 파일을 주고받는 전용 드라이브 (업체별로 따로 만듦)</td></tr>
+    </tbody>
+  </table>
+  <div class="ctx"><span class="lb">우리 회사</span><span>공유 드라이브 멤버는 부서 <b>그룹 메일</b> 단위로 들어가 있습니다. 공유 드라이브가 안 보이면 팀장에게 그룹 추가를 요청하세요. 이 표는 온라인본부 기준이며 소속에 따라 보이는 드라이브가 다릅니다.</span></div>
+
+  <h4>폴더 이름 규칙: 숫자로 순서 고정</h4>
+  <figure><img src="img/d_folders.png" width="780" alt="" loading="lazy"><figcaption><b>온라인본부 공유 드라이브</b> · 1. 집반찬연구소부터 7. 온올림까지 브랜드·채널별 폴더</figcaption></figure>
+  <p>캘린더와 마찬가지로 폴더 앞에 <b>숫자 + 마침표</b>를 붙여 순서를 고정합니다. 새 폴더를 만들기 전에 이미 있는 폴더 구조 안에 넣을 수 있는지 먼저 확인합니다.</p>
+
+  <h4>공유 드라이브 멤버 권한</h4>
+  <table>
+    <thead><tr><th style="width:150px">역할</th><th>할 수 있는 일</th></tr></thead>
+    <tbody>
+      <tr><td>뷰어</td><td>보기만</td></tr>
+      <tr><td>댓글 작성자</td><td>보기 + 댓글</td></tr>
+      <tr><td><b>참여자</b></td><td>파일 추가·수정·공유. <b>이동·삭제는 불가</b></td></tr>
+      <tr><td>콘텐츠 관리자</td><td>추가·수정·이동·삭제·공유 모두</td></tr>
+      <tr><td>관리자</td><td>위 전부 + 멤버 관리</td></tr>
+    </tbody>
+  </table>
+  <div class="tip"><b>「파일만 올려 주세요」가 필요할 때</b><p>동료나 협력사가 파일을 올리기만 하면 되는 경우 <b>참여자</b> 권한이면 충분합니다. 실수로 폴더를 옮기거나 지우는 일을 막을 수 있습니다.</p></div>
+
+  <h4>공유할 때 지킬 것</h4>
+  <div class="do-dont">
+    <div class="do"><b class="t">이렇게 하세요</b><ul>
+      <li>사내 공유는 일반 액세스 <b>「집반찬연구소」</b>로 (회사 계정만 열림)</li>
+      <li>사내에서는 메일 첨부 대신 <b>드라이브 링크</b> 보내기 (최신본 하나만 유지)</li>
+      <li>구글챗에 공유할 땐 폴더보다 <b>파일 링크</b> (폴더는 상대 권한이 없으면 경고가 뜹니다)</li>
+      <li>외부 업체와는 <b>협력사 공유 드라이브</b>나 특정 사람 추가로 공유</li>
+    </ul></div>
+    <div class="dont"><b class="t">이건 피하세요</b><ul>
+      <li>회사 파일을 「<b>링크가 있는 모든 사용자</b>」로 열어두기 (링크만 있으면 누구나 열람)</li>
+      <li>신분증·통장사본·카드 정보가 든 파일을 넓게 공유하기</li>
+      <li>업무 파일을 개인 드라이브나 개인 PC에만 두기</li>
+      <li>공유 드라이브의 다른 사람 폴더를 정리한다고 옮기거나 지우기</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- ============ PART 9 ============ -->
+<section id="p9">
+  <div class="sec-head"><span class="num">PART 09</span><h3>구글챗 기초</h3><span class="lvchip b">기초</span></div>
+  <p class="lead">구글챗은 회사 메신저입니다. <b>chat.google.com</b>, 지메일 왼쪽 <b>Chat</b>, 데스크톱 앱, 휴대폰 앱 어디서 써도 같은 대화가 보입니다. 용어만 익히면 카카오톡과 비슷합니다.</p>
+
+  <div class="cards">
+    <div class="card"><h6>채팅 메시지 (DM)</h6><p>1:1 대화. 몇 명을 골라 만든 소규모 그룹 대화도 여기 들어갑니다.</p></div>
+    <div class="card"><h6>스페이스</h6><p>이름이 있는 단체방. 부서방, 협업방, 공지방. 우리 회사 업무는 대부분 스페이스에서 이뤄집니다.</p></div>
+    <div class="card"><h6>대화목록 (스레드)</h6><p>메시지 하나에 달리는 답장 묶음. <b>한 건의 이야기는 한 스레드 안에서</b> 이어갑니다.</p></div>
+    <div class="card"><h6>멘션 (@)</h6><p><code>@이름</code>으로 특정 사람을 부르면 그 사람에게 알림이 갑니다.</p></div>
+  </div>
+
+  <h4>첫 화면</h4>
+  <figure><img src="img/ch_home.png" width="780" alt="" loading="lazy"><figcaption><b>구글챗 첫 화면</b> · 대화 내용과 1:1 대화 상대는 흐리게 처리했습니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:50px">#</th><th style="width:150px">이름</th><th>하는 일</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>새 채팅</b></td><td>1:1 대화 시작, 스페이스 만들기·찾기</td></tr>
+      <tr><td>2</td><td><b>홈 · 멘션 · 별표</b></td><td>홈 = 모든 방의 새 메시지 모아보기. 멘션 = 나를 부른 메시지만. 별표 = 표시해둔 메시지</td></tr>
+      <tr><td>3</td><td><b>채팅 메시지</b></td><td>1:1·그룹 대화 목록</td></tr>
+      <tr><td>4</td><td><b>스페이스</b></td><td>참여 중인 단체방 목록. 굵은 글씨 = 안 읽은 메시지 있음</td></tr>
+      <tr><td>5</td><td><b>검색</b></td><td>사람, 방, 메시지 내용 검색</td></tr>
+      <tr><td>6</td><td><b>상태</b></td><td>자동 · 방해 금지 · 부재중</td></tr>
+      <tr><td>7</td><td><b>설정</b></td><td>알림, 데스크톱 앱 등</td></tr>
+      <tr><td>8</td><td><b>읽지않음</b></td><td>켜면 안 읽은 대화만 보입니다</td></tr>
+    </tbody>
+  </table>
+
+  <h4>대화 시작하기</h4>
+  <figure><img src="img/ch_new.png" width="780" alt="" loading="lazy"><figcaption><b>새 채팅</b> · 이름을 넣으면 1:1 대화, 「스페이스 탐색」에서 참여 가능한 방을 찾습니다</figcaption></figure>
+
+  <h4>메시지 보내기</h4>
+  <figure><img src="img/ch_space.png" width="780" alt="" loading="lazy"><figcaption><b>스페이스 화면</b> (본인 메모용 스페이스) · 메시지 내용은 흐리게 처리했습니다</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:50px">#</th><th style="width:160px">이름</th><th>하는 일</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>방 이름</b></td><td>누르면 멤버 보기, 알림 설정, 방 나가기</td></tr>
+      <tr><td>2</td><td><b>상단 아이콘</b></td><td>멤버 · 공유된 파일 · 할 일 · 대화목록 · 고정 메시지</td></tr>
+      <tr><td>3</td><td><b>＋</b></td><td>드라이브 파일, 화상회의, 일정 등 넣기</td></tr>
+      <tr><td>4</td><td><b>입력창</b></td><td><kbd>Enter</kbd> = 보내기, <kbd class="sft">Shift</kbd>+<kbd>Enter</kbd> = 줄바꿈</td></tr>
+      <tr><td>5</td><td><b>서식 · 이모티콘</b></td><td>굵게·목록 등 서식, 이모티콘</td></tr>
+      <tr><td>6</td><td><b>파일 업로드</b></td><td>사진·파일 첨부 (끌어다 놓기도 가능)</td></tr>
+      <tr><td>7</td><td><b>보내기</b></td><td>옆 ▼로 예약 전송도 가능</td></tr>
+    </tbody>
+  </table>
+  <div class="tip"><b>빠른 서식</b><p><code>*굵게*</code> · <code>_기울임_</code> · <code>~취소선~</code> 처럼 기호로 감싸면 서식이 적용됩니다. 사진과 일반 파일은 한 메시지에 같이 보낼 수 없어서, 사진을 먼저 보내고 파일은 다음 메시지(또는 스레드 답장)로 보냅니다.</p></div>
+
+  <h4>@멘션</h4>
+  <figure><img src="img/ch_mention.png" width="780" alt="" loading="lazy"><figcaption>입력창에 <b>@</b>를 치면 방 멤버 목록이 뜹니다 · 사람 이름과 메일은 흐리게 처리했습니다</figcaption></figure>
+  <p><code>@모두</code>는 방 전원에게 알림이 가므로 공지처럼 모두가 꼭 봐야 할 때만 씁니다.</p>
+
+  <h4>메시지에 할 수 있는 것</h4>
+  <p>메시지에 마우스를 올리면 오른쪽 위에 버튼이 나타납니다.</p>
+  <figure><img src="img/ch_actions.png" width="740" alt="" loading="lazy"><figcaption>메시지 위에 마우스를 올렸을 때</figcaption></figure>
+  <table>
+    <thead><tr><th style="width:50px">#</th><th style="width:170px">버튼</th><th>쓰임</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>빠른 반응</b></td><td>자주 쓰는 이모티콘 반응. 「확인했습니다」 대신 👍로 표시</td></tr>
+      <tr><td>2</td><td><b>반응 추가</b></td><td>다른 이모티콘 고르기 (회사에서 만든 이모티콘 포함)</td></tr>
+      <tr><td>3</td><td><b>대화목록에서 답장</b></td><td>이 메시지에 <b>스레드 답장</b>. 업무 회신은 이걸 씁니다</td></tr>
+      <tr><td>4</td><td><b>답장에서 인용</b></td><td>메시지를 인용해 새 메시지로 답하기</td></tr>
+      <tr><td>5</td><td><b>더보기 ⋮</b></td><td>수정, 삭제, 별표, 링크 복사, 읽지 않음으로 표시</td></tr>
+      <tr><td>6</td><td><b>답장</b></td><td>스레드에 달린 답장 열어보기</td></tr>
+    </tbody>
+  </table>
+
+  <h4>상태와 알림</h4>
+  <figure><img src="img/ch_status.png" width="320" alt="" loading="lazy"><figcaption>오른쪽 위 <b>상태</b> 버튼 · ① 자동(평소) ② 방해 금지 ③ 부재중 ④ 채팅 알림 설정</figcaption></figure>
+  <figure><img src="img/ch_roommenu.png" width="320" alt="" loading="lazy"><figcaption><b>방 이름을 눌렀을 때</b> · ① 이 방에서 검색 ② 구성원 관리 ③ 숨기기(알림 일시중지) ④ 알림</figcaption></figure>
+  <figure><img src="img/ch_notify.png" width="512" alt="" loading="lazy"><figcaption><b>방별 알림 설정</b></figcaption></figure>
+  <ul>
+    <li><b>방해 금지 모드</b>: 집중 작업 때 알림을 잠시 끕니다. 끝나면 다시 「자동」으로.</li>
+    <li><b>방별 알림</b>: 방 이름 클릭 → <b>알림</b>에서 「전체」「기본 대화」「추천」「없음」 중 고릅니다. 공지·뉴스처럼 나와 직접 관련 없는 방은 「추천」(@멘션과 내가 참여한 대화의 답장만 알림)이 적당합니다.</li>
+    <li>자리를 비운 동안 멘션을 받으면 <b>지메일로 알림 메일</b>이 옵니다 (「자리를 비운 동안 ○○님이 ○○에서 나를 멘션함」).</li>
+    <li>PC에서는 chat.google.com 접속 후 주소창 오른쪽 <b>설치</b> 아이콘으로 데스크톱 앱처럼 쓸 수 있습니다.</li>
+  </ul>
+</section>
+<!-- ============ PART 10 ============ -->
+<section id="p10">
+  <div class="sec-head"><span class="num">PART 10</span><h3>우리 회사 구글챗 업무 방식</h3><span class="lvchip c">회사</span></div>
+  <p class="lead">우리 회사는 업무 요청·보고·협업 대부분을 구글챗 <b>스페이스</b>에서 합니다. 방 이름 앞 숫자로 방의 성격을 구분하고, <b>한 건은 한 스레드에서 요청부터 완료 보고까지</b> 이어가는 것이 기본입니다.</p>
+
+  <h4>챗과 노션의 역할 나누기</h4>
+  <div class="cards">
+    <div class="card"><h6>구글챗 = 알리고 요청하는 곳</h6><ul><li>「확인 부탁드립니다」, 「완료했습니다」</li><li>급한 문의, 짧은 보고</li><li>생산·CS 등 다른 부서와 실시간 협업</li></ul></div>
+    <div class="card"><h6>노션 = 기록하고 남기는 곳</h6><ul><li>업무전달, 할 일, 회의록</li><li>긴 설명, 자료, 결정 내용</li><li>나중에 다시 찾아볼 내용</li></ul></div>
+  </div>
+  <div class="ctx"><span class="lb">우리 회사</span><span><b>2중 체크 원칙</b>: 노션·메일로 일을 맡겼으면 챗으로 「노션에 올려뒀습니다」를 알리고, 챗·전화로 정한 일은 노션·메일에 기록으로 남깁니다. 긴 지시는 노션에 한 장으로 정리하고 챗에는 <b>요약 + 노션 링크</b>만 보냅니다.</span></div>
+
+  <h4>스페이스 이름 규칙</h4>
+  <p>방 이름 앞 숫자가 방의 성격입니다. 아래는 <b>온라인본부 기준 예시</b>이며, 소속에 따라 참여하는 방이 다릅니다. 처음 입사하면 팀장이 필요한 방에 초대해 줍니다.</p>
+  <div class="smap">
+    <div class="sgrp g0"><div class="hd">0번대 · 전사 <small>전 직원</small></div><ul>
+      <li><b>0-1_전사 공지사항</b><span>전사 공지, 일일 매출 공지, 법인카드 정산 요청, 신규 입사자 자기소개</span></li>
+      <li><b>0-2_사진첩</b><span>행사·현장 사진</span></li>
+      <li><b>0-4_시설관리</b><span>시설 고장 신고, 수리 완료 공유</span></li>
+      <li><b>0-6_Chat News</b><span>업계 뉴스·트렌드 공유</span></li>
+    </ul></div>
+    <div class="sgrp g2"><div class="hd">2번대 · 온라인본부 <small>본부 내부</small></div><ul>
+      <li><b>2-1_온라인본부</b><span>대표님 보고·지시</span></li>
+      <li><b>2_4_온라인본부-소통</b><span>자사몰·마케팅 실무 요청, 처리 보고</span></li>
+      <li><b>2_5_외부몰 소통방</b><span>쿠팡·컬리·SSG 등 외부몰 업무, 프로모션</span></li>
+      <li><b>소규모 소통방</b><span>팀원끼리 가볍게 묻고 답하는 방</span></li>
+    </ul></div>
+    <div class="sgrp g3"><div class="hd">3번대 · 생산·물류 공지 <small>현장 현황</small></div><ul>
+      <li><b>3-5_DPC공지</b><span>출고 작업 현황 (새벽배송·택배 진행률)</span></li>
+    </ul></div>
+    <div class="sgrp g5"><div class="hd">5번대 · 부서 간 협업 <small>사내</small></div><ul>
+      <li><b>5-2_협업_생산&amp;온라인</b><span>생산 수량 문의·확정, 생산 특이사항, 품질·회송 이슈</span></li>
+      <li><b>5-6_협업_외포장반&amp;사무직</b><span>매일 생산 특이사항, 주문 건수</span></li>
+    </ul></div>
+    <div class="sgrp g6" style="grid-column:1/-1"><div class="hd">6번대 · 외부 협업 <small>외부 업체 직원이 함께 있는 방</small></div><ul>
+      <li><b>6-1_외부_CS · 6-2_외부_CS_온라인본부</b><span>CS 위탁 상담사가 고객 문의를 올리고 담당자가 답하는 방</span></li>
+      <li><b>6-6_외부_디자이너</b><span>외부 디자이너와 시안·수정 요청</span></li>
+      <li><b>6-8_외부_MIS 개발 · 6-12_외부_OMS 개발</b><span>사내 시스템 개발사와 오류·요청 사항</span></li>
+      <li><b>6-12_협업_(업체명)</b><span>협력사와 디자인·표시사항 등 공동 작업</span></li>
+      <li><b>6-13_명절_해피콜</b><span>명절 기간 해피콜(주문 확인 전화) 진행 현황</span></li>
+    </ul></div>
+  </div>
+  <div class="warn"><b>6번대 방에는 외부인이 있습니다</b><p>원가, 마진, 내부 평가, 다른 거래처 조건처럼 외부에 나가면 안 되는 이야기는 6번대 방에 쓰지 않습니다. 내부 논의는 2번대·5번대 방이나 1:1 대화에서 합니다.</p></div>
+
+  <h4>메시지 쓰는 형식</h4>
+  <p>요청·보고 메시지는 아래 순서를 기본으로 씁니다. 한 줄에 한 문장, 항목은 「·」로 나눕니다.</p>
+  <div class="flow">
+    <div class="step hi"><div class="t">@담당자</div><div class="d">받을 사람 태그</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">호칭·인사</div><div class="d">「지현님,」 「안녕하세요.」</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">용건</div><div class="d">무엇을 왜</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">세부 항목</div><div class="d">· 항목 : 내용</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">요청·기한</div><div class="d">「○일까지 부탁드립니다」</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">감사합니다.</div><div class="d">마무리</div></div>
+  </div>
+  <div class="msg-h">예시 · 업무 요청 (예시 문구)</div>
+<div class="msg"><span class="tag">@담당자</span>
+
+○○님, 안녕하세요.
+11월 무상 시딩 대상자 1명이 추가되어 공유드립니다.
+
+· 대상 : ○○○님 (인스타그램 계정)
+· 제품 : 정기식단 4회분
+· 수령 희망 : 11/24 새벽배송
+
+노션 발송 리스트에 추가하고 주문 등록 진행 부탁드립니다.
+진행되면 이 스레드에 수령일 공유 부탁드립니다.
+
+감사합니다.</div>
+  <div class="msg-h">예시 · 같은 스레드에 완료 보고</div>
+<div class="msg"><span class="tag">@요청자</span> 노션 발송 리스트에 추가했고, 11/24 새벽 수령으로 등록했습니다!</div>
+
+  <div class="do-dont">
+    <div class="do"><b class="t">이렇게 하세요</b><ul>
+      <li>받을 사람을 <b>@태그</b> (태그가 없으면 알림이 안 갈 수 있습니다)</li>
+      <li>진행·완료 보고는 원래 메시지의 <b>스레드 답장</b>으로</li>
+      <li>확인만 했을 때는 <b>👍 반응</b>으로 「확인함」 표시</li>
+      <li>숫자·날짜·주문번호는 줄을 나눠 정확히</li>
+      <li>상사에게는 직함 호칭 (대표님, 본부장님, 팀장님)</li>
+    </ul></div>
+    <div class="dont"><b class="t">이건 피하세요</b><ul>
+      <li>한 건을 여러 방·여러 메시지에 흩어 쓰기</li>
+      <li>같은 내용을 1:1과 방에 중복으로 보내기</li>
+      <li>비밀번호·계정 정보를 챗에 그대로 남기기</li>
+      <li>고객 전화번호·주소를 업무 방 밖으로 옮기거나 캡처해 공유하기</li>
+      <li>공지방(0-1)에 개인적인 대화 쓰기</li>
+    </ul></div>
+  </div>
+
+  <h4>자주 쓰는 업무 흐름</h4>
+
+  <h5>① 팀 내 업무 요청 → 완료 보고 (2_4, 2_5 방)</h5>
+  <div class="flow">
+    <div class="step"><div class="t">요청자</div><div class="d">@담당자 + 요청 + 필요하면 노션 링크</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">담당자 확인</div><div class="d">👍 반응 또는 「확인했습니다」</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">처리</div><div class="d">막히면 같은 스레드에 질문</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">완료 보고</div><div class="d">같은 스레드에 「완료했습니다」</div></div>
+  </div>
+
+  <h5>② 고객 문의(CS) 처리 (6-1, 6-2 방)</h5>
+  <div class="flow">
+    <div class="step"><div class="t">CS 상담사 접수</div><div class="d">주문번호 · 고객 · 상품·배송 · 문의 내용 · 요청 + 담당자 태그</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">담당 부서 확인</div><div class="d">온라인·생산·품질 중 해당 부서가 원인 확인</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">스레드에 답변</div><div class="d">처리 방안, 고객 안내 문구</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">상담사 안내 완료</div><div class="d">「고객님께 안내드렸습니다」</div></div>
+  </div>
+  <div class="note"><b>CS 방의 원칙</b><p>고객 개인정보가 오가는 방입니다. 태그된 담당자는 당일 안에 스레드로 답하고, 내용은 방 밖으로 옮기지 않습니다. 원인 분석이나 내부 논의가 길어지면 사내 방(5-2 등)으로 옮겨서 하고, 결론만 CS 방에 답합니다.</p></div>
+
+  <h5>③ 생산 부서와 협업 (5-2 방)</h5>
+  <table>
+    <thead><tr><th style="width:200px">방향</th><th>주로 오가는 내용</th></tr></thead>
+    <tbody>
+      <tr><td><b>온라인본부 → 생산</b></td><td>외부몰 발주 수량 확정 공유, 특정 주문 출고 요청, 품질 이슈 문의(사진 첨부), 회송 건 처리 요청</td></tr>
+      <tr><td><b>생산 → 온라인본부</b></td><td>매일 생산 특이사항(생산 종료·품절·출고 지연), 수량 확정 요청, 재고 공유</td></tr>
+    </tbody>
+  </table>
+  <div class="warn"><b>생산은 마감 시간이 있습니다</b><p>생산 계획을 세우는 날까지 수량이 확정되지 않으면 생산이 미뤄지거나 미출고가 생깁니다. 생산 부서가 물어본 수량·일정은 최우선으로 답합니다.</p></div>
+
+  <h5>④ 대표님께 보고 (2-1 방)</h5>
+  <div class="msg-h">예시 · 진행 상황 보고 (예시 문구)</div>
+<div class="msg"><span class="tag">@대표님</span>
+
+대표님,
+현재 ○○ 업무 진행 상황 공유드립니다.
+
+· 진행 : 견적 3곳 비교, 협의 중
+· 다음 : 차주 월~화 최종안 보고 가능
+
+특이사항이 생기면 추가로 보고드리겠습니다.
+감사합니다.</div>
+  <p>결과 먼저, 숫자와 다음 일정을 분명히, 결정이 필요하면 <b>무엇을 결정해 주셔야 하는지</b>를 한 줄로 적습니다. 사실과 의견은 섞지 않습니다.</p>
+
+  <h5>⑤ 신규 입사자 자기소개 (0-1 방)</h5>
+  <p>입사 첫날 <b>0-1_전사 공지사항</b> 방에 자기소개를 올립니다. 구글챗이 익숙하지 않으면 메모장에 먼저 쓰고 붙여넣으세요.</p>
+<div class="msg">안녕하세요, ○○본부 ○○○입니다.
+
+· 소속 / 직책 :
+· 직무 :
+· 입사일 :
+· 이메일 :
+· 연락처 :
+· 한 줄 소개 :
+
+앞으로 잘 부탁드립니다!</div>
+
+  <h5>⑥ 봇(자동 알림)</h5>
+  <p>앱 목록에 보이는 <b>MIS Bot</b>, <b>Daily Check Bot</b> 같은 봇은 사내 시스템이 자동으로 보내는 알림입니다. 봇 메시지에 답장해도 사람이 받지 않으니, 확인이 필요하면 담당자에게 직접 문의합니다.</p>
+</section>
+
+<!-- ============ PART 11 ============ -->
+<section id="p11">
+  <div class="sec-head"><span class="num">PART 11</span><h3>단축키 치트시트</h3><span class="lvchip u">범용</span></div>
+  <p class="lead">마우스 대신 키보드로 하면 훨씬 빨라집니다. 위쪽에서 Windows / Mac을 고르면 표기가 바뀝니다.</p>
+  <div class="note"><b>지메일 단축키는 먼저 켜야 합니다</b><p>설정 → 모든 설정 보기 → 기본설정 → <b>단축키 사용</b> 선택 → 맨 아래 변경사항 저장. 어느 화면에서든 <kbd class="sft">Shift</kbd>+<kbd>/</kbd> (?)를 누르면 전체 단축키 목록이 나옵니다.</p></div>
+  <div class="cards">
+    <div class="card"><h6>지메일</h6><table style="margin:6px 0 0"><tbody>
+      <tr><td><kbd>c</kbd></td><td>편지쓰기</td></tr>
+      <tr><td><kbd>r</kbd> / <kbd>a</kbd> / <kbd>f</kbd></td><td>답장 / 전체답장 / 전달</td></tr>
+      <tr><td><kbd>e</kbd></td><td>보관</td></tr>
+      <tr><td><kbd>s</kbd></td><td>별표</td></tr>
+      <tr><td><kbd>/</kbd></td><td>검색창으로</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd>+<kbd>Enter</kbd></td><td>보내기</td></tr>
+    </tbody></table></div>
+    <div class="card"><h6>캘린더</h6><table style="margin:6px 0 0"><tbody>
+      <tr><td><kbd>c</kbd></td><td>일정 만들기</td></tr>
+      <tr><td><kbd>d</kbd> / <kbd>w</kbd> / <kbd>m</kbd></td><td>일 / 주 / 월 보기</td></tr>
+      <tr><td><kbd>t</kbd></td><td>오늘로</td></tr>
+      <tr><td><kbd>j</kbd> / <kbd>k</kbd></td><td>다음 / 이전 기간</td></tr>
+      <tr><td><kbd>/</kbd></td><td>검색</td></tr>
+    </tbody></table></div>
+    <div class="card"><h6>구글챗</h6><table style="margin:6px 0 0"><tbody>
+      <tr><td><kbd>Enter</kbd></td><td>보내기</td></tr>
+      <tr><td><kbd class="sft">Shift</kbd>+<kbd>Enter</kbd></td><td>줄바꿈</td></tr>
+      <tr><td><kbd>@</kbd></td><td>멘션</td></tr>
+      <tr><td><kbd>↑</kbd></td><td>(빈 입력창에서) 방금 보낸 메시지 수정</td></tr>
+    </tbody></table></div>
+    <div class="card"><h6>문서 · 시트 공통</h6><table style="margin:6px 0 0"><tbody>
+      <tr><td><kbd class="mod">Ctrl</kbd>+<kbd class="alt">Alt</kbd>+<kbd>M</kbd></td><td>댓글</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd>+<kbd>K</kbd></td><td>링크 넣기</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd>+<kbd>F</kbd></td><td>찾기</td></tr>
+      <tr><td><kbd class="mod">Ctrl</kbd>+<kbd>Z</kbd></td><td>되돌리기</td></tr>
+    </tbody></table></div>
+  </div>
+</section>
+
+<!-- ============ PART 12 ============ -->
+<section id="p12">
+  <div class="sec-head"><span class="num">PART 12</span><h3>막혔을 때 Q&amp;A</h3><span class="lvchip u">범용</span></div>
+
+  <details class="qa"><summary>메일을 잘못 보냈어요</summary><div class="body"><p>보낸 직후 왼쪽 아래 <b>실행취소</b>를 누르면 회수됩니다. 이미 시간이 지났다면 회수할 방법이 없으니 바로 정정 메일을 보내고 팀장에게 알리세요. 미리 설정에서 보내기 취소 시간을 30초로 늘려두면 안전합니다.</p></div></details>
+  <details class="qa"><summary>지운 메일·파일을 되살리고 싶어요</summary><div class="body"><p>지메일은 <b>휴지통</b>, 드라이브도 <b>휴지통</b>에서 복원합니다. 둘 다 30일이 지나면 완전히 삭제됩니다. 구글 문서·시트의 내용을 잘못 지운 경우는 <b>파일 → 버전 기록</b>에서 이전 상태로 되돌립니다.</p></div></details>
+  <details class="qa"><summary>동료 캘린더가 안 보이거나 「바쁨」으로만 보여요</summary><div class="body"><p>아직 구독하지 않았거나(PART 05 STEP 5), 그 동료가 세부정보를 숨겨둔 경우입니다. 왼쪽 목록에서 체크가 꺼져 있지 않은지도 확인하세요.</p></div></details>
+  <details class="qa"><summary>공용·휴가 캘린더가 없어요</summary><div class="body"><p>공통 캘린더는 직접 만들지 않습니다. 경영지원HQ에 추가를 요청하세요.</p></div></details>
+  <details class="qa"><summary>회의실이 일정 화면에 안 나와요</summary><div class="body"><p>일정 만들기 화면의 <b>회의실</b> 탭에서 MegaFactory를 펼치면 나옵니다. 캘린더 화면에 예약 현황을 띄우려면 <b>＋ → 리소스 찾아보기</b>에서 회의실을 체크합니다.</p></div></details>
+  <details class="qa"><summary>업무 스페이스가 목록에 안 보여요</summary><div class="body"><p>초대받지 않은 방입니다. 팀장에게 필요한 방 초대를 요청하세요. <b>새 채팅 → 스페이스 탐색</b>에서 공개된 방을 직접 찾아 참여할 수도 있습니다.</p></div></details>
+  <details class="qa"><summary>챗 알림이 너무 많아요</summary><div class="body"><p>공지·뉴스 방은 방 이름 → 알림 → <b>추천</b>으로 바꾸세요. 내 업무 방은 「전체」나 「기본 대화」를 유지합니다. 집중할 때는 상태를 <b>방해 금지</b>로 두면 됩니다.</p></div></details>
+  <details class="qa"><summary>챗에서 Enter를 눌렀더니 메시지가 바로 가버려요</summary><div class="body"><p>줄바꿈은 <kbd class="sft">Shift</kbd>+<kbd>Enter</kbd>입니다. 보낸 메시지는 마우스를 올려 ⋮ → <b>수정</b>으로 고칠 수 있습니다.</p></div></details>
+  <details class="qa"><summary>드라이브 링크를 열면 「액세스 권한 필요」가 떠요</summary><div class="body"><p>권한이 없는 상태입니다. 화면의 <b>액세스 요청</b>을 누르면 소유자에게 요청 메일이 갑니다. 급하면 공유한 사람에게 챗으로도 알려주세요.</p></div></details>
+  <details class="qa"><summary>개인 지메일과 회사 메일이 섞여요</summary><div class="body"><p>크롬 프로필을 회사용으로 따로 만드세요 (PART 00). 메일을 보내기 전 오른쪽 위 프로필이 <b>집반찬연구소</b>인지 확인하는 습관을 들이세요.</p></div></details>
+  <details class="qa"><summary>첨부 파일이 너무 커서 안 붙어요</summary><div class="body"><p>25MB가 넘는 파일은 지메일이 자동으로 드라이브 링크로 바꿔 넣습니다. 이때 받는 사람에게 열람 권한을 줄지 묻는 창이 뜨면, 외부인이라면 그 사람만 지정해서 공유하세요.</p></div></details>
+</section>
+
+<!-- ============ PART 13 ============ -->
+<section id="p13">
+  <div class="sec-head"><span class="num">PART 13</span><h3>직접 해보기</h3><span class="lvchip b">기초</span></div>
+  <p class="lead">읽기만 하면 손에 남지 않습니다. 아래 과제를 하나씩 해보고 체크하세요. 메시지 연습은 본인에게 보내거나 사수와 1:1 대화에서 하면 됩니다.</p>
+  <div class="checklist" data-list="prac">
+    <div class="progress"><span class="pg-t">0 / 14</span><span class="bar"><i></i></span><button type="button" class="resetbtn">초기화</button></div>
+    <label class="chk"><input type="checkbox" data-k="p1"><span class="tx"><b>[공통]</b> 회사 계정 비밀번호 변경, 크롬 회사 프로필 만들기</span></label>
+    <label class="chk"><input type="checkbox" data-k="p2"><span class="tx"><b>[공통]</b> 휴대폰에 Gmail · Calendar · Chat · Drive 앱 설치</span></label>
+    <label class="chk"><input type="checkbox" data-k="p3"><span class="tx"><b>[메일]</b> 서명 등록 (새 메일·답장 모두)<span class="hint">PART 03</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="p4"><span class="tx"><b>[메일]</b> 나에게 「[집반찬연구소] 테스트의 건」 메일 보내고, 받은 메일에 전체답장</span></label>
+    <label class="chk"><input type="checkbox" data-k="p5"><span class="tx"><b>[메일]</b> <code>has:attachment</code> 검색으로 첨부 메일만 찾기</span></label>
+    <label class="chk"><input type="checkbox" data-k="p6"><span class="tx"><b>[메일]</b> 보내기 취소 시간을 30초로 바꾸기</span></label>
+    <label class="chk"><input type="checkbox" data-k="p7"><span class="tx"><b>[캘린더]</b> PART 05 세팅 체크리스트 9개 완료</span></label>
+    <label class="chk"><input type="checkbox" data-k="p8"><span class="tx"><b>[캘린더]</b> 사수를 초대해 대회의실을 넣은 30분 일정 만들기 (연습 후 삭제)</span></label>
+    <label class="chk"><input type="checkbox" data-k="p9"><span class="tx"><b>[캘린더]</b> 일 보기로 바꿔 구독한 동료 일정을 나란히 보기</span></label>
+    <label class="chk"><input type="checkbox" data-k="p10"><span class="tx"><b>[드라이브]</b> 소속 공유 드라이브를 찾아 폴더 구조 훑어보기</span></label>
+    <label class="chk"><input type="checkbox" data-k="p11"><span class="tx"><b>[드라이브]</b> 내 드라이브에 구글 시트 하나 만들고 사수에게 「댓글 작성자」로 공유</span></label>
+    <label class="chk"><input type="checkbox" data-k="p12"><span class="tx"><b>[챗]</b> 0-1_전사 공지사항 방에 자기소개 올리기</span></label>
+    <label class="chk"><input type="checkbox" data-k="p13"><span class="tx"><b>[챗]</b> 사수에게 @멘션으로 메시지 보내고, 받은 답장에 스레드로 회신 + 👍 반응</span></label>
+    <label class="chk"><input type="checkbox" data-k="p14"><span class="tx"><b>[챗]</b> 공지 방 하나의 알림을 「추천」으로 바꾸기</span></label>
+  </div>
+  <div class="tip">
+    <b>여기까지 다 됐다면</b>
+    <p>구글 도구 때문에 막힐 일은 거의 없습니다. 업무 방식이 헷갈리면 <a href="#p3">PART 03</a> · <a href="#p6">06</a> · <a href="#p8">08</a> · <a href="#p10">10</a>을 다시 보고, 노션 사용법은 <a href="../notion-guide/">노션 사용 설명서</a>를 보세요.</p>
+  </div>
+</section>
+
+<footer>
+  <p><b>집반찬연구소 · 주식회사 산너머남촌</b> · 신규 입사자용 구글 업무 도구 안내서</p>
+  <p>화면 캡처 기준: 크롬 · 한글 화면 · 2026년 11월 / 회사 방식 기준: 회사 노션 「신규입사자 첫 주 가이드」 「스케줄 및 업무 관리 마스터하기」 「회의실 캘린더 사용 안내」 「협업툴 변경안내」 「일하는 방법」 및 실제 업무 메일·구글챗 사용 패턴</p>
+  <p>내용에 빠진 부분이나 화면이 달라진 곳이 있으면 온라인본부로 알려주세요.</p>
+</footer>
+
+</main>
+</div>
+
+<script>
+(function(){
+  var MAP = { mod:['Ctrl','\u2318'], sft:['Shift','\u21e7'], alt:['Alt','\u2325'] };
+  var bw = document.getElementById('os-win'), bm = document.getElementById('os-mac');
+  function apply(os){
+    var i = (os === 'mac') ? 1 : 0;
+    ['mod','sft','alt'].forEach(function(c){ [].forEach.call(document.querySelectorAll('kbd.' + c), function(k){ k.textContent = MAP[c][i]; }); });
+    document.body.setAttribute('data-os', os);
+    bw.classList.toggle('on', os === 'win'); bm.classList.toggle('on', os === 'mac');
+    try { localStorage.setItem('gguide-os', os); } catch(e){}
+  }
+  var saved = null; try { saved = localStorage.getItem('gguide-os'); } catch(e){}
+  if (!saved) saved = /Mac|iPhone|iPad/i.test(navigator.platform + navigator.userAgent) ? 'mac' : 'win';
+  bw.addEventListener('click', function(){ apply('win'); }); bm.addEventListener('click', function(){ apply('mac'); });
+  apply(saved);
+})();
+(function(){
+  [].forEach.call(document.querySelectorAll('.checklist'), function(box){
+    var key = 'gguide-chk-' + box.getAttribute('data-list');
+    var st = {}; try { st = JSON.parse(localStorage.getItem(key) || '{}'); } catch(e){}
+    var inputs = [].slice.call(box.querySelectorAll('input[type=checkbox]'));
+    var t = box.querySelector('.pg-t'), bar = box.querySelector('.bar i');
+    function upd(){
+      var n = 0; inputs.forEach(function(i){ var on = i.checked; i.closest('.chk').classList.toggle('done', on); if(on) n++; st[i.getAttribute('data-k')] = on; });
+      t.textContent = n + ' / ' + inputs.length; bar.style.width = (n / inputs.length * 100) + '%';
+      try { localStorage.setItem(key, JSON.stringify(st)); } catch(e){}
+    }
+    inputs.forEach(function(i){ i.checked = !!st[i.getAttribute('data-k')]; i.addEventListener('change', upd); });
+    box.querySelector('.resetbtn').addEventListener('click', function(){ if(!confirm('체크한 내용을 모두 지울까요?')) return; inputs.forEach(function(i){ i.checked = false; }); upd(); });
+    upd();
+  });
+})();
+(function(){
+  var links = [].slice.call(document.querySelectorAll('nav.toc a'));
+  var secs = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  function onScroll(){ var y = window.scrollY + 120, idx = 0; for (var i=0;i<secs.length;i++){ if (secs[i] && secs[i].offsetTop <= y) idx = i; } links.forEach(function(a,i){ a.classList.toggle('active', i===idx); }); }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+})();
+</script>
+</body>
+</html>
