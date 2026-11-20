@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이카운트 기초 사용법 · 집반찬연구소</title><meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1c1b1a; --ink2:#4a4744; --ink3:#8a857f;
+  --line:#e6e3df; --line2:#f0eeeb;
+  --bg:#fffefc; --panel:#faf9f7;
+  --accent:#2f6f4e; --accent-l:#eaf3ee;
+  --warn:#b4552d; --warn-l:#fdf1eb;
+  --blue:#2b6cb0; --blue-l:#ebf3fb;
+  --radius:10px;
+  --nav:290px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;
+  color:var(--ink); background:var(--bg); line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+
+/* ---------- layout ---------- */
+.wrap{display:flex;align-items:flex-start;max-width:1400px;margin:0 auto}
+nav.toc{
+  width:var(--nav);flex:0 0 var(--nav);position:sticky;top:0;height:100vh;
+  overflow-y:auto;padding:34px 20px 60px 28px;border-right:1px solid var(--line);
+  background:var(--panel);
+}
+nav.toc .brand{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700;margin-bottom:6px}
+nav.toc h1{font-size:19px;line-height:1.45;font-weight:900;margin-bottom:4px}
+nav.toc .sub{font-size:12.5px;color:var(--ink3);margin-bottom:22px;line-height:1.6}
+nav.toc a{
+  display:block;font-size:13.5px;color:var(--ink2);text-decoration:none;
+  padding:7px 10px;border-radius:7px;margin-bottom:1px;transition:.15s;
+}
+nav.toc a:hover{background:#efece8;color:var(--ink)}
+nav.toc a.active{background:var(--accent);color:#fff;font-weight:700}
+nav.toc a .n{display:inline-block;width:26px;color:var(--ink3);font-weight:700;font-size:11.5px}
+nav.toc a.active .n{color:#cfe3d8}
+main{flex:1;min-width:0;padding:56px 60px 140px;max-width:900px}
+
+/* ---------- hero ---------- */
+.hero{border:1px solid var(--line);border-radius:14px;padding:34px 34px 30px;background:#fff;margin-bottom:54px}
+.hero .tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.1em;color:var(--accent);background:var(--accent-l);padding:5px 11px;border-radius:20px;margin-bottom:16px}
+.hero h2{font-size:31px;line-height:1.35;font-weight:900;letter-spacing:-.02em;margin-bottom:14px}
+.hero p{font-size:15px;color:var(--ink2);margin-bottom:10px}
+.hero .meta{margin-top:22px;padding-top:20px;border-top:1px solid var(--line2);display:flex;gap:34px;flex-wrap:wrap}
+.hero .meta div{font-size:12.5px;color:var(--ink3)}
+.hero .meta b{display:block;color:var(--ink);font-size:13.5px;font-weight:700;margin-top:3px}
+
+/* ---------- sections ---------- */
+section{margin-bottom:76px;scroll-margin-top:24px}
+.sec-head{display:flex;align-items:baseline;gap:14px;padding-bottom:14px;border-bottom:2px solid var(--ink);margin-bottom:26px}
+.sec-head .num{font-size:12px;font-weight:900;letter-spacing:.12em;color:var(--accent)}
+.sec-head h3{font-size:25px;font-weight:900;letter-spacing:-.02em}
+.lead{font-size:15.5px;color:var(--ink2);margin-bottom:26px}
+
+h4{font-size:17px;font-weight:700;margin:38px 0 12px;letter-spacing:-.01em}
+h4:first-of-type{margin-top:0}
+h5{font-size:14.5px;font-weight:700;margin:24px 0 8px;color:var(--ink2)}
+p{margin-bottom:12px;font-size:14.8px}
+ul,ol{margin:0 0 14px 20px}
+li{margin-bottom:6px;font-size:14.8px}
+code{background:var(--line2);padding:1.5px 6px;border-radius:4px;font-size:.9em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#a33}
+strong{font-weight:700}
+
+/* ---------- figure ---------- */
+figure{margin:20px 0 26px}
+figure img{border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+figure figcaption{font-size:12.5px;color:var(--ink3);margin-top:9px;padding-left:2px}
+figure figcaption b{color:var(--ink2)}
+figure img{width:auto;height:auto}
+figure.sm img{max-width:420px}
+figure.md img{max-width:620px}
+
+/* ---------- table ---------- */
+table{width:100%;border-collapse:collapse;margin:16px 0 24px;font-size:13.8px}
+th{background:var(--panel);text-align:left;font-weight:700;padding:10px 12px;border:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border:1px solid var(--line);vertical-align:top}
+td code{white-space:nowrap}
+tbody tr:nth-child(even){background:#fdfcfb}
+
+/* ---------- callouts ---------- */
+.note,.warn,.tip{border-radius:var(--radius);padding:15px 18px;margin:18px 0;font-size:14.2px;border:1px solid}
+.note{background:var(--blue-l);border-color:#cfe1f2}
+.warn{background:var(--warn-l);border-color:#f3d9c9}
+.tip{background:var(--accent-l);border-color:#cfe3d8}
+.note>b:first-child,.warn>b:first-child,.tip>b:first-child{display:block;margin-bottom:5px;font-size:13px;letter-spacing:.02em}
+.note>b:first-child{color:var(--blue)} .warn>b:first-child{color:var(--warn)} .tip>b:first-child{color:var(--accent)}
+.note p:last-child,.warn p:last-child,.tip p:last-child{margin-bottom:0}
+.note ul,.warn ul,.tip ul{margin-bottom:0}
+
+/* company context chip */
+.ctx{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px dashed #d6cfc4;border-radius:8px;padding:11px 14px;margin:14px 0;font-size:13.5px;color:var(--ink2)}
+.ctx .lb{flex:0 0 auto;font-size:11px;font-weight:700;color:#8a6d3b;background:#fdf6e5;border-radius:5px;padding:3px 8px;letter-spacing:.02em}
+
+/* ---------- flow diagram (pure CSS) ---------- */
+.flow{display:flex;align-items:stretch;flex-wrap:wrap;gap:0;margin:22px 0 26px}
+.flow .step{
+  flex:1 1 0;min-width:118px;border:1.5px solid var(--line);border-radius:9px;background:#fff;
+  padding:13px 12px;text-align:center;position:relative;
+}
+.flow .step .t{font-size:13.2px;font-weight:700;line-height:1.45}
+.flow .step .d{font-size:11.8px;color:var(--ink3);margin-top:5px;line-height:1.5}
+.flow .arrow{flex:0 0 30px;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:17px}
+.flow .step.hi{border-color:var(--accent);background:var(--accent-l)}
+.flow .step.hi .t{color:var(--accent)}
+.flow.v{flex-direction:column;gap:0}
+.flow.v .arrow{flex:0 0 26px;width:100%}
+
+/* state diagram */
+.states{display:flex;flex-wrap:wrap;align-items:center;gap:0;margin:20px 0 24px}
+.states .s{border:1.5px solid var(--line);border-radius:22px;padding:8px 17px;font-size:13.2px;font-weight:700;background:#fff}
+.states .s.a{border-color:#d9a441;background:#fdf6e5;color:#8a6d3b}
+.states .s.b{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.states .s.c{border-color:var(--accent);background:var(--accent-l);color:var(--accent)}
+.states .ar{flex:0 0 44px;text-align:center;color:var(--ink3);font-size:12px;line-height:1.3}
+
+/* two column cards */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 24px}
+.card{border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:#fff}
+.card h6{font-size:14px;font-weight:700;margin-bottom:7px}
+.card p{font-size:13.4px;color:var(--ink2);margin-bottom:0}
+.card ul{margin:6px 0 0 17px}
+.card li{font-size:13.4px}
+
+/* key badge */
+kbd{
+  display:inline-block;border:1px solid #d5d1cb;border-bottom-width:2px;border-radius:5px;
+  background:#fff;padding:1px 7px;font-size:12.2px;font-family:inherit;font-weight:500;
+  color:var(--ink);white-space:nowrap;min-width:22px;text-align:center
+}
+kbd.mod,kbd.sft,kbd.alt{border-color:#c3d8cb;background:#f4faf6;color:var(--accent);font-weight:700}
+
+/* OS switch */
+.osbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--line2)}
+.osbar .lbl{font-size:12.5px;color:var(--ink3);font-weight:500}
+.osbar .grp{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.osbar button{
+  appearance:none;border:0;background:#fff;cursor:pointer;font-family:inherit;
+  font-size:13px;font-weight:700;color:var(--ink2);padding:7px 16px;transition:.15s;
+}
+.osbar button + button{border-left:1px solid var(--line)}
+.osbar button.on{background:var(--accent);color:#fff}
+.osbar .hint{font-size:12px;color:var(--ink3)}
+.osonly{display:none}
+body[data-os="win"] .win-only{display:revert}
+body[data-os="mac"] .mac-only{display:revert}
+
+/* QA */
+.qa{border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;background:#fff}
+.qa summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:14.5px;list-style:none;display:flex;gap:10px;align-items:flex-start}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::before{content:"Q";flex:0 0 auto;color:var(--accent);font-weight:900;font-size:13px;margin-top:1px}
+.qa[open] summary{border-bottom:1px solid var(--line2);background:var(--panel)}
+.qa .body{padding:15px 18px 17px}
+.qa .body p{font-size:14.2px}
+.qa .body p:last-child{margin-bottom:0}
+
+footer{border-top:1px solid var(--line);padding-top:24px;font-size:12.5px;color:var(--ink3)}
+footer b{color:var(--ink2)}
+
+/* mobile nav toggle */
+.mobtop{display:none}
+@media (max-width:1080px){
+  main{padding:40px 34px 120px}
+  nav.toc{--nav:250px}
+}
+@media (max-width:860px){
+  .wrap{display:block}
+  nav.toc{position:static;width:auto;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:20px 22px}
+  nav.toc .links{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+  main{padding:30px 22px 90px;max-width:none}
+  .hero{padding:24px 22px}
+  .hero h2{font-size:24px}
+  .cards{grid-template-columns:1fr}
+  .flow{flex-direction:column}
+  .flow .arrow{flex:0 0 24px;transform:rotate(90deg)}
+  .sec-head h3{font-size:21px}
+  table{font-size:13px}
+  th,td{padding:8px 9px}
+  .states .ar{flex-basis:100%;transform:rotate(90deg);margin:2px 0}
+}
+
+/* added */
+.shot{position:relative;display:inline-block;max-width:100%}
+.shot img{display:block}
+.shot .bd{position:absolute;transform:translate(-80%,-80%);min-width:19px;height:19px;padding:0 4px;border-radius:10px;background:#e2553b;color:#fff;font-weight:900;font-size:11px;line-height:19px;text-align:center;box-shadow:0 0 0 2px #fff,0 2px 6px rgba(0,0,0,.25)}
+
+.shot .bd.lf{transform:translate(-135%,-50%)}
+ol.legend{list-style:none;margin:6px 0 18px 0;padding:0}
+ol.legend li{display:flex;gap:9px;align-items:flex-start;font-size:13.8px;margin-bottom:5px}
+ol.legend li .n{flex:0 0 22px;height:22px;border-radius:11px;background:#e2553b;color:#fff;font-weight:900;font-size:12px;line-height:22px;text-align:center;margin-top:1px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 26px}
+.kpi{border:1px solid var(--line);border-radius:10px;background:#fff;padding:14px 16px}
+.kpi .l{font-size:12px;color:var(--ink3)}
+.kpi .v{font-size:22px;font-weight:900;letter-spacing:-.02em;margin-top:2px}
+.kpi .s{font-size:11.8px;color:var(--ink3);margin-top:3px;line-height:1.5}
+.tg{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:1px 6px;margin-left:3px;vertical-align:1px}
+.tg.e{background:#fdf6e5;color:#8a6d3b}
+.tg.q{background:#fdf1eb;color:#b4552d}
+.chip{display:inline-block;font-size:11.5px;border-radius:5px;padding:1px 7px;font-weight:700}
+.chip.s{background:var(--accent-l);color:var(--accent)}
+.chip.m{background:#f1efec;color:var(--ink2)}
+.chip.t{background:var(--blue-l);color:var(--blue)}
+.chip.f{background:#fdf6e5;color:#8a6d3b}
+td.num,th.num{text-align:right;white-space:nowrap}
+table.small{font-size:12.8px}
+table.small td,table.small th{padding:7px 9px}
+.filter{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px;margin:6px 0 4px}
+.tblwrap{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.tblwrap table{margin:0}
+.tblwrap th{position:sticky;top:0;z-index:1}
+.chk{list-style:none;margin:0;padding:0}
+.chk li{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:9px;background:#fff;padding:11px 14px;margin-bottom:8px}
+.chk li input[type=checkbox]{margin-top:5px;width:16px;height:16px;flex:0 0 auto}
+.chk li .b{flex:1}
+.chk li .b b{display:block;font-size:14px}
+.chk li .b span{font-size:12.8px;color:var(--ink3)}
+.chk li textarea{width:100%;margin-top:7px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-family:inherit;font-size:13px;min-height:34px;resize:vertical}
+.chk li.done{background:#f6faf7;border-color:#cfe3d8}
+.bar{height:9px;border-radius:5px;background:var(--accent);display:inline-block;vertical-align:middle}
+.crosslink{display:block;border:1px solid #cfe1f2;background:var(--blue-l);border-radius:10px;padding:13px 16px;margin:16px 0;text-decoration:none;color:var(--ink)}
+.crosslink b{color:var(--blue)}
+.timeline{border-left:3px solid var(--line);margin:14px 0 24px 8px;padding-left:18px}
+.timeline .it{position:relative;margin-bottom:14px}
+.timeline .it::before{content:"";position:absolute;left:-25px;top:6px;width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px #fff}
+.timeline .it .d{font-size:12px;color:var(--ink3);font-weight:700}
+.timeline .it .t{font-size:14.2px}
+@media (max-width:860px){.kpis{grid-template-columns:1fr 1fr}}
+@media print{nav.toc{display:none}.wrap{display:block}main{max-width:none;padding:20px}.tblwrap{max-height:none;overflow:visible}section{page-break-inside:auto}figure{page-break-inside:avoid}.osbar{display:none}}
+</style></head><body>
+<div class="wrap"><nav class="toc"><div class="brand">집반찬연구소 · 산너머남촌</div><h1>이카운트 기초 사용법</h1><div class="sub">구매 · 발주 담당자를 위한 기능 교과서</div><div class="links"><a href="#p0"><span class="n">00</span>이카운트 첫 화면</a><a href="#p1"><span class="n">01</span>메뉴 지도</a><a href="#p2"><span class="n">02</span>모든 화면 공통 조작</a><a href="#p3"><span class="n">03</span>코드 읽는 법</a><a href="#p4"><span class="n">04</span>발주서 입력</a><a href="#p5"><span class="n">05</span>발주서 보내기 · 인쇄</a><a href="#p6"><span class="n">06</span>입고 후 구매입력</a><a href="#p7"><span class="n">07</span>진행 확인하기</a><a href="#p8"><span class="n">08</span>현황 보고서 보기</a><a href="#p9"><span class="n">09</span>품목 정보 찾기</a><a href="#p10"><span class="n">10</span>단축키 치트시트</a><a href="#p11"><span class="n">11</span>막혔을 때 Q&amp;A</a><a href="#p12"><span class="n">12</span>직접 해보기</a></div></nav>
+<main><div class="hero"><span class="tag">구매 담당 신규 인원용</span>
+<h2>이카운트, 구매 업무에 필요한 것만<br>골라서 익히기</h2>
+<p>이카운트의 모든 메뉴를 다루지 않습니다. <b>우리 회사 구매·발주 업무에서 실제로 쓰는 화면</b>만 골라, 처음 쓰는 사람도 발주서를 쓰고 입고를 처리할 수 있게 만든 기능 설명서입니다.</p>
+<p>화면 캡처는 전부 실제 우리 회사 이카운트 화면(2026년 11월 20일)입니다. 빨간 번호는 아래 설명 번호와 짝입니다.</p>
+<div class="meta"><div>읽는 데 걸리는 시간<b>약 25분</b></div><div>따라 하며 익히는 시간<b>약 1시간</b></div><div>기준 화면<b>이카운트 ERP 웹 (재고 I · 구매관리)</b></div></div>
+<div class="osbar"><span class="lbl">쓰고 계신 컴퓨터를 골라주세요</span><span class="grp"><button type="button" id="os-win">Windows</button><button type="button" id="os-mac">Mac</button></span><span class="hint">F키 표기가 바뀝니다 (맥은 fn 키를 같이 누름)</span></div></div>
+<div class="crosslink"><b>함께 보기 · 구매·발주 업무 인계서 (PDF, 사내 전달용)</b><br>정문채 전무님이 2026년에 실제로 하신 구매 업무(거래처·주기·발주 패턴)를 정리한 문서입니다. 온라인본부에 요청하세요.</div><section id="p0"><div class="sec-head"><span class="num">PART 00</span><h3>이카운트 첫 화면</h3></div>
+<p class="lead">이카운트는 회사의 <b>장부 겸 업무 기록장</b>입니다. 발주서를 쓰면 기록이 남고, 물건이 들어와 구매를 입력하면 재고가 늘고, 그 기록이 회계 장부로 넘어갑니다. 구매 담당이 입력한 숫자가 재고·원가·지급의 출발점입니다.</p>
+<div class="flow"><div class="step hi"><div class="t">발주서</div><div class="d">무엇을 언제 몇 개 받을지 주문 기록</div></div><div class="arrow">→</div><div class="step hi"><div class="t">구매</div><div class="d">실제로 들어온 물건 기록. 재고가 늘어남</div></div><div class="arrow">→</div><div class="step"><div class="t">회계 반영 · 지급</div><div class="d">월말에 장부로 넘어가고 대금이 나감</div></div></div>
+<h4>로그인</h4>
+<table><thead><tr><th style="width:140px">칸</th><th>입력값</th></tr></thead><tbody>
+<tr><td><b>회사코드</b></td><td><code>89445</code> (주식회사 산너머남촌)</td></tr>
+<tr><td><b>아이디 · 비밀번호</b></td><td>본인 계정. 계정 발급과 메뉴 권한은 회사 마스터(대표님·전무님·본부장님)가 줍니다</td></tr></tbody></table>
+<div class="note"><b>권한이 없다는 화면이 나오면</b><p>「권한없음」은 고장이 아니라 그 메뉴를 쓸 권한이 아직 없다는 뜻입니다. 구매 담당이라면 <b>발주서 · 구매 · 구매관리현황 · 품목등록(조회)</b> 권한이 필요합니다. 거래처등록·API 같은 메뉴는 마스터만 열 수 있습니다.</p></div>
+<h4>화면 구성</h4>
+<figure class=""><div class="shot"><img src="img/layout.jpg" alt="구매조회 화면. 모든 화면이 이 배치를 따릅니다."><span class="bd" style="left:35.22%;top:2.65%">1</span><span class="bd" style="left:29.36%;top:5.46%">2</span><span class="bd" style="left:1.65%;top:18.07%">3</span><span class="bd" style="left:16.38%;top:8.76%">4</span><span class="bd" style="left:38.35%;top:8.76%">5</span><span class="bd" style="left:85.3%;top:9.0%">6</span><span class="bd" style="left:16.4%;top:97.43%">7</span><span class="bd" style="left:20.72%;top:17.11%">8</span></div><figcaption>구매조회 화면. 모든 화면이 이 배치를 따릅니다.</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>상단 메뉴</b> · 큰 영역. 구매 업무는 거의 전부 <b>재고 I</b> 안에 있습니다</span></li><li><span class="n">2</span><span><b>하위 탭</b> · 재고 I 안의 묶음. 구매 업무는 <b>구매관리</b></span></li><li><span class="n">3</span><span><b>왼쪽 메뉴</b> · 실제 화면 이름. 펼침(›)을 눌러 하위 메뉴를 엽니다</span></li><li><span class="n">4</span><span><b>화면 제목과 별(☆)</b> · 별을 누르면 즐겨찾기에 등록됩니다</span></li><li><span class="n">5</span><span><b>상태 탭</b> · 전체 / 결재중 / 미확인 / 확인 등으로 목록을 거릅니다</span></li><li><span class="n">6</span><span><b>Search(F3)</b> · 기간·거래처 같은 검색 조건 열기</span></li><li><span class="n">7</span><span><b>하단 버튼줄</b> · 신규(F2), 인쇄, Excel 등 그 화면에서 할 수 있는 일</span></li><li><span class="n">8</span><span><b>전표 번호</b> · 파란 글씨를 누르면 그 기록이 열립니다</span></li></ol>
+<div class="warn"><b>번호를 누르면 바로 수정 화면이 열립니다</b><p>목록에서 전표 번호를 누르면 「발주서수정」「구매수정」처럼 <b>고칠 수 있는 상태</b>로 열립니다. 보기만 할 때는 아무것도 누르지 말고 오른쪽 위 <b>X</b>로 닫으세요. <b>저장(F8)을 누르지 않으면 바뀌지 않습니다.</b></p></div>
+</section><section id="p1"><div class="sec-head"><span class="num">PART 01</span><h3>메뉴 지도</h3></div>
+<p class="lead">구매 담당이 쓰는 메뉴는 <b>재고 I → 구매관리</b>와 <b>재고 I → 기초등록 · 출력물</b> 일부입니다. 아래 표의 「자주」 표시만 먼저 익히면 됩니다.</p>
+<table><thead><tr><th style="width:150px">위치</th><th style="width:170px">메뉴</th><th>하는 일</th><th style="width:70px">빈도</th></tr></thead><tbody>
+<tr><td rowspan="4">구매관리 › 발주서</td><td><b>발주서입력</b></td><td>거래처에 주문할 내용을 새로 씀</td><td><span class="chip s">매일</span></td></tr>
+<tr><td><b>발주서조회</b></td><td>쓴 발주서 목록. 보내기·인쇄·진행 확인</td><td><span class="chip s">매일</span></td></tr>
+<tr><td>발주서현황</td><td>발주 금액을 기간·거래처별로 합산한 보고서</td><td><span class="chip m">필요 시</span></td></tr>
+<tr><td><b>미구매현황</b></td><td>발주했는데 아직 구매(입고) 처리가 안 된 품목</td><td><span class="chip s">매일</span></td></tr>
+<tr><td rowspan="4">구매관리 › 구매</td><td><b>구매입력</b></td><td>실제로 들어온 물건을 기록 (재고 증가)</td><td><span class="chip s">매일</span></td></tr>
+<tr><td><b>구매조회</b></td><td>입력한 구매 목록. 수정도 여기서</td><td><span class="chip s">매일</span></td></tr>
+<tr><td>구매현황</td><td>구매 금액을 거래처·품목·월별로 합산한 보고서</td><td><span class="chip m">월 1회+</span></td></tr>
+<tr><td>구매단가일괄변경</td><td>이미 입력한 구매의 단가를 한 번에 바꿈</td><td><span class="chip m">드묾</span></td></tr>
+<tr><td>구매관리 › 구매일괄회계반영</td><td>구매일괄회계반영</td><td>한 달 구매를 거래처별로 회계 장부에 넘김</td><td><span class="chip t">월말</span></td></tr>
+<tr><td rowspan="3">구매관리 › 구매관리현황</td><td>거래처별채무</td><td>거래처별 매입 · 지급 · 남은 잔액</td><td><span class="chip t">월말</span></td></tr>
+<tr><td>지급현황</td><td>거래처에 돈을 낸 기록</td><td><span class="chip m">필요 시</span></td></tr>
+<tr><td>회계미반영현황 (구매)</td><td>아직 회계로 안 넘어간 구매</td><td><span class="chip t">월말</span></td></tr>
+<tr><td>기초등록</td><td>품목등록 · 거래처등록</td><td>품목코드·기본 구매처·단가 확인. 신규 등록은 권한 필요</td><td><span class="chip m">필요 시</span></td></tr>
+<tr><td>출력물 › 재고현황</td><td>재고현황 · 창고별재고현황 · 재고수불부</td><td>발주 전에 남은 재고 확인</td><td><span class="chip s">매일</span></td></tr></tbody></table>
+<div class="ctx"><span class="lb">우리 회사</span><span>전무님 구매 기록은 <b>발주서 → 구매</b> 두 단계로 남아 있습니다. 왼쪽 메뉴의 <b>발주요청 · 발주계획</b>은 이번 조사에서 열어 보지 못했습니다 (일부 「권한없음」) <span class="tg q">확인 필요</span>.</span></div>
+</section><section id="p2"><div class="sec-head"><span class="num">PART 02</span><h3>모든 화면 공통 조작</h3></div>
+<p class="lead">이카운트는 화면마다 생김새가 조금씩 달라도 <b>검색 조건 → 검색 → 결과</b> 순서는 같습니다. 이 다섯 가지만 손에 익히면 어느 화면이든 다룰 수 있습니다.</p>
+<h4>① 검색 조건 열고 검색하기</h4>
+<div class="flow"><div class="step"><div class="t">Search(<kbd class="fk" data-k="F3">F3</kbd>)</div><div class="d">오른쪽 위 파란 버튼. 조건 창이 열림</div></div><div class="arrow">→</div><div class="step"><div class="t">기간 · 거래처 등 입력</div><div class="d">비워 두면 전체</div></div><div class="arrow">→</div><div class="step hi"><div class="t">검색(<kbd class="fk" data-k="F8">F8</kbd>)</div><div class="d">왼쪽 아래 파란 버튼</div></div></div>
+<h4>② 날짜 바꾸기</h4>
+<p>연 · 월은 <b>드롭다운</b>을 눌러 고르고, 일은 칸을 눌러 숫자를 다시 씁니다. 조건 창 아래 <b>금일 · 전일 · 금월 · 전월 · 금년</b> 버튼을 누르면 기간이 한 번에 채워집니다.</p>
+<h4>③ 거래처 · 품목 · 담당자 넣기</h4>
+<table><thead><tr><th style="width:200px">방법</th><th>동작</th></tr></thead><tbody>
+<tr><td>이름 일부 입력 후 <kbd>Enter</kbd></td><td>맞는 것이 하나면 바로 들어가고, 여러 개면 목록 창이 뜸 → 골라서 클릭</td></tr>
+<tr><td>돋보기(🔍) 클릭</td><td>전체 목록 창이 열림. 창 안 검색칸에 입력 후 <kbd>Enter</kbd></td></tr>
+<tr><td>칩 지우기</td><td>조건 칸에 들어간 이름표(칩) 옆 ⊖ 또는 오른쪽 X</td></tr></tbody></table>
+<div class="tip"><b>검색 칸에서 SSG가 안 나온다면</b><p>거래처는 <b>등록된 이름</b>으로만 찾아집니다. 예: SSG는 「(주) 이마트」, 쿠팡은 「(주)포워드벤처스(쿠팡)」. 안 나오면 이름의 다른 부분이나 사업자번호로 찾아 보세요.</p></div>
+<h4>④ 목록 거르기 · 넘기기</h4>
+<p>목록 위 <b>상태 탭</b>(전체 / 진행중 / 완료 / 미확인)으로 거르고, 아래 페이지 번호로 넘깁니다. 오른쪽 위 작은 검색칸(입력 후 [Enter])은 지금 목록 안에서만 찾습니다.</p>
+<h4>⑤ 엑셀로 받기</h4>
+<p>목록 화면은 하단 <b>Excel</b>, 보고서 화면은 <b>Excel(화면)</b>. 화면에 보이는 조건 그대로 내려받습니다.</p>
+<div class="warn"><b>보고서 엑셀은 5,000줄에서 잘립니다</b><p>구매현황을 「라인별」로 1년치 받으면 중간에서 끊깁니다. 기간을 2~3개월씩 나누거나, <b>집계</b>로 바꿔서 받으세요. 잘렸는지는 마지막 줄에 <b>총합계</b>가 있는지로 확인합니다.</p></div>
+<h4>즐겨찾기</h4>
+<p>화면 제목 옆 <b>☆</b>을 누르면 별이 노랗게 바뀌고 즐겨찾기에 등록됩니다. 발주서입력 · 발주서조회 · 구매입력 · 미구매현황 네 개는 첫날 등록해 두세요.</p>
+</section><section id="p3"><div class="sec-head"><span class="num">PART 03</span><h3>코드 읽는 법</h3></div>
+<p class="lead">이카운트는 모든 것을 <b>코드</b>로 기억합니다. 화면에 이름이 같이 나오지만, 같은 이름이 여러 개일 때 구분하는 기준은 코드입니다.</p>
+<h4>품목코드 앞부분 = 품목의 종류</h4>
+<table><thead><tr><th style="width:110px">앞부분</th><th style="width:110px">품목구분</th><th>예시</th><th style="width:110px">주로 사는 사람</th></tr></thead><tbody>
+<tr><td><code>ZIP_M_</code></td><td>원재료</td><td>다진마늘_국내산, 깐양파_국내산, 살균전란, 샘표 국산콩간장</td><td>정문채 전무</td></tr>
+<tr><td><code>ZIP_S_</code></td><td>부재료</td><td>아이스박스, 무인쇄 박스, 파우치필름, 생수</td><td>천세원 · 유현순</td></tr>
+<tr><td><code>ZIP_E_</code></td><td>부재료 (소모품)</td><td>라벨지, 테이프, 장갑, 세척제</td><td>박은솔 · 정혜윤</td></tr>
+<tr><td><code>ZIP_C_</code></td><td>상품 (완제품 매입)</td><td>햇반, 셀렉스, 사보텐 돈카츠, 온올림 갈비</td><td>여러 명</td></tr>
+<tr><td><code>ZIP_H_</code> · <code>SAN_</code></td><td>반제품</td><td>맛간장_집반찬연구소, 제육소스 (직접 만들어 쓰는 것)</td><td>구매 대상 아님</td></tr>
+<tr><td><code>ZIP_P_</code></td><td>제품</td><td>우리가 만들어 파는 반찬 · 식단</td><td>구매 대상 아님</td></tr></tbody></table>
+<div class="ctx"><span class="lb">우리 회사</span><span>원재료 이름 끝에는 <b>원산지</b>가 붙습니다 (<code>_국내산</code>, <code>_중국산</code>, <code>_외국산</code>, <code>_수입산</code>). 같은 재료라도 원산지가 다르면 다른 코드입니다. 발주할 때 끝까지 확인하세요.</span></div>
+<h4>그 밖의 코드</h4>
+<table><thead><tr><th style="width:120px">항목</th><th style="width:210px">예시</th><th>읽는 법</th></tr></thead><tbody>
+<tr><td><b>거래처코드</b></td><td><code>2158754185</code> 유한회사대흥물산</td><td>대부분 거래처의 <b>사업자등록번호</b> 10자리</td></tr>
+<tr><td><b>담당자</b></td><td><code>SN02-09-01</code> 정문채</td><td>그 기록을 맡은 사람. 현황 보고서에서 사람별로 거를 때 씀</td></tr>
+<tr><td><b>입고창고</b></td><td><code>S01</code> 원/부/반제품 창고</td><td>원재료 발주 · 구매는 거의 전부 S01</td></tr>
+<tr><td><b>거래유형</b></td><td>세금계산서</td><td>기본값. 면세 품목(채소·육류 등)은 같은 유형 안에서 <b>부가세 0</b>으로 들어감</td></tr>
+<tr><td><b>전표번호</b></td><td><code>26/11/19-12</code></td><td>2026년 11월 19일의 12번째 기록. 날짜가 바뀌면 1번부터 다시 셈</td></tr></tbody></table>
+</section><section id="p4"><div class="sec-head"><span class="num">PART 04</span><h3>발주서 입력</h3></div>
+<p class="lead">발주서는 <b>거래처에 보내는 주문서이자, 나중에 구매입력을 빠르게 하기 위한 밑그림</b>입니다. 발주서를 제대로 써 두면 입고 날 「불러오기」 한 번으로 구매입력이 끝납니다.</p>
+<p>위치: <b>재고 I → 구매관리 → 발주서 → 발주서입력</b></p>
+<figure class=""><div class="shot"><img src="img/po_input.jpg" alt="발주서입력 빈 화면"><span class="bd" style="left:2.45%;top:16.0%">1</span><span class="bd" style="left:50.86%;top:16.0%">2</span><span class="bd" style="left:2.39%;top:22.06%">3</span><span class="bd" style="left:50.8%;top:22.06%">4</span><span class="bd" style="left:2.33%;top:34.32%">5</span><span class="bd" style="left:10.98%;top:61.94%">6</span><span class="bd" style="left:46.44%;top:61.94%">7</span><span class="bd" style="left:57.79%;top:56.0%">8</span><span class="bd" style="left:4.23%;top:94.97%">9</span></div><figcaption>발주서입력 빈 화면</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>일자</b> · 발주하는 날. 오늘 날짜가 자동으로 들어감</span></li><li><span class="n">2</span><span><b>거래처</b> · 이름 일부 입력 후 Enter</span></li><li><span class="n">3</span><span><b>담당자</b> · 본인 이름 (현황 보고서에서 내 발주만 거를 때 기준)</span></li><li><span class="n">4</span><span><b>입고창고</b> · 원재료는 <code>S01</code> 원/부/반제품 창고</span></li><li><span class="n">5</span><span><b>납기일자</b> · 물건을 받을 날. 품목 줄의 납기일자에 그대로 복사됨</span></li><li><span class="n">6</span><span><b>품목코드</b> · 코드나 품목명 일부 입력 후 Enter</span></li><li><span class="n">7</span><span><b>수량 · 단가</b> · 단가를 바꾸면 공급가액이 자동 계산</span></li><li><span class="n">8</span><span><b>도움 버튼</b> · 거래내역보기(발주), 전표불러오기, 재고불러오기, 품목별안전재고</span></li><li><span class="n">9</span><span><b>저장(F8)</b> · 눌러야 기록이 남음</span></li></ol>
+<h4>순서</h4>
+<div class="flow v"><div class="step"><div class="t">1. 재고 확인</div><div class="d">재고현황에서 남은 양 확인 (PART 08)</div></div><div class="arrow">↓</div><div class="step"><div class="t">2. 거래처 · 담당자 · 창고 · 납기일자</div><div class="d">위쪽 칸부터 채움</div></div><div class="arrow">↓</div><div class="step"><div class="t">3. 품목 줄 입력</div><div class="d">품목코드 → 수량 → 단가 확인. 한 거래처의 여러 품목을 한 장에</div></div><div class="arrow">↓</div><div class="step hi"><div class="t">4. 저장(<kbd class="fk" data-k="F8">F8</kbd>)</div><div class="d">발주서조회 목록 맨 위에 「진행중」으로 생김</div></div></div>
+<div class="tip"><b>지난번과 비슷하게 시킬 때</b><p><b>전표불러오기</b>로 예전 발주서를 불러와 수량만 고치면 빠릅니다. <b>거래내역보기(발주)</b>는 그 거래처에 예전에 무엇을 얼마에 시켰는지 보여줍니다. <span class="tg e">화면 버튼 이름 기준 설명</span></p></div>
+<h4>저장된 발주서는 이렇게 보입니다</h4>
+<figure class=""><div class="shot"><img src="img/po_detail.jpg" alt="실제 발주서 예시 (26/11/19-12, 유한회사대흥물산, 납기 11/23)"><span class="bd" style="left:50.92%;top:18.89%">1</span><span class="bd" style="left:4.17%;top:23.62%">2</span><span class="bd" style="left:3.17%;top:33.17%">3</span><span class="bd" style="left:6.5%;top:59.2%">4</span><span class="bd" style="left:47.62%;top:89.85%">5</span><span class="bd" style="left:5.75%;top:96.78%">6</span></div><figcaption>실제 발주서 예시 (26/11/19-12, 유한회사대흥물산, 납기 11/23)</figcaption></figure><ol class="legend"><li><span class="n">1</span><span>거래처</span></li><li><span class="n">2</span><span>담당자 (전무님 발주는 <code>SN02-09-01</code> 정문채)</span></li><li><span class="n">3</span><span>납기일자 · 물건 받을 날</span></li><li><span class="n">4</span><span>품목 줄 · 무 500KG × 500원 = 250,000원</span></li><li><span class="n">5</span><span>합계 · 수량 · 공급가액 · 부가세 · 합계</span></li><li><span class="n">6</span><span>저장(F8) · 고친 게 없으면 누르지 말고 X로 닫기</span></li></ol>
+<div class="warn"><b>단가는 거래처와 약속한 값인지 확인</b><p>품목을 고르면 품목등록에 적힌 입고단가가 먼저 들어오는 것으로 보입니다 (위 예시의 무 500원 · 당근 1,250원이 품목등록 입고단가와 같음) <span class="tg e">추정</span>. 시세가 바뀌는 채소 · 수산물은 거래처 견적과 다를 수 있으니, 저장 전에 단가를 한 번 보세요.</p></div>
+</section><section id="p5"><div class="sec-head"><span class="num">PART 05</span><h3>발주서 보내기 · 인쇄</h3></div>
+<p class="lead">저장만 해서는 거래처가 모릅니다. <b>보내기(Email · 카카오톡)</b>로 이카운트에서 바로 보내거나, 거래처가 정해 둔 다른 방법으로 주문합니다.</p>
+<figure class=""><div class="shot"><img src="img/po_list.jpg" alt="발주서조회 (전체 탭)"><span class="bd" style="left:5.95%;top:5.22%">1</span><span class="bd" style="left:6.81%;top:13.83%">2</span><span class="bd" style="left:61.6%;top:13.83%">3</span><span class="bd" style="left:85.95%;top:14.61%">4</span><span class="bd" style="left:94.11%;top:13.83%">5</span><span class="bd" style="left:42.33%;top:97.22%">6</span><span class="bd" style="left:6.96%;top:97.22%">7</span></div><figcaption>발주서조회 (전체 탭)</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>상태 탭</b> · 전체 / 진행중(아직 입고 처리 전) / 완료</span></li><li><span class="n">2</span><span><b>발주번호</b> · 누르면 발주서가 열림</span></li><li><span class="n">3</span><span><b>납기일자</b></span></li><li><span class="n">4</span><span><b>진행상태 조회</b> · 이 발주로 만든 구매 전표 확인 (PART 07)</span></li><li><span class="n">5</span><span><b>발송여부</b> · 이카운트로 보냈으면 「발송」, 아니면 「미발송」</span></li><li><span class="n">6</span><span><b>다른전표생성</b> · 발주서를 그대로 구매전표로 만드는 버튼</span></li><li><span class="n">7</span><span><b>Email</b> · 체크한 발주서를 메일로 보냄 (▲를 누르면 카카오톡)</span></li></ol>
+<figure class=""><div class="shot"><img src="img/po_email.jpg" alt="Email 버튼의 ▲를 누르면 카카오톡 보내기도 있습니다"><span class="bd" style="left:6.96%;top:84.39%">1</span><span class="bd" style="left:7.3%;top:64.39%">2</span></div><figcaption>Email 버튼의 ▲를 누르면 카카오톡 보내기도 있습니다</figcaption></figure><ol class="legend"><li><span class="n">1</span><span>Email · 거래처 메일로 발주서 발송</span></li><li><span class="n">2</span><span>카카오톡 · 카카오톡으로 발주서 발송</span></li></ol>
+<h4>보내는 순서</h4>
+<div class="flow"><div class="step"><div class="t">발주서조회</div><div class="d">보낼 발주서 왼쪽 칸 체크</div></div><div class="arrow">→</div><div class="step"><div class="t">Email 또는 ▲ 카카오톡</div><div class="d">받는 사람 확인 후 보내기</div></div><div class="arrow">→</div><div class="step hi"><div class="t">발송여부 = 발송</div><div class="d">목록에서 바로 확인</div></div></div>
+<div class="ctx"><span class="lb">우리 회사</span><span>2026년 전무님 발주서 3,679건 중 <b>발송 1,238건 (34%) · 미발송 2,441건 (66%)</b>. 거래처마다 거의 한 가지 방식으로 고정되어 있습니다. 미발송 거래처는 전화 · 문자 · 거래처 자체 주문 사이트 등 <b>이카운트 밖에서 주문</b>하는 것으로 보입니다 <span class="tg e">추정</span>. 거래처별 방식은 인계서 PART 04 표를 보세요.</span></div>
+<h4>인쇄</h4>
+<p>하단 <b>인쇄</b>로 발주서를 출력하거나 PDF로 저장합니다. 한 번 인쇄한 발주서는 목록의 「인쇄」 글자가 <b>주황색</b>으로 바뀝니다.</p>
+</section><section id="p6"><div class="sec-head"><span class="num">PART 06</span><h3>입고 후 구매입력</h3></div>
+<p class="lead">물건이 들어오면 <b>거래명세서와 실물을 대조한 뒤 구매입력</b>을 합니다. 구매입력을 해야 재고가 늘고, 월말 정산 · 지급의 근거가 됩니다. 발주서를 불러와서 입력하는 것이 기본입니다.</p>
+<p>위치: <b>재고 I → 구매관리 → 구매 → 구매입력</b></p>
+<figure class=""><div class="shot"><img src="img/pur_input.jpg" alt="구매입력 빈 화면"><span class="bd" style="left:2.45%;top:18.1%">1</span><span class="bd" style="left:50.86%;top:18.1%">2</span><span class="bd" style="left:21.35%;top:49.34%">3</span><span class="bd" style="left:9.57%;top:56.06%">4</span><span class="bd" style="left:4.23%;top:93.43%">5</span></div><figcaption>구매입력 빈 화면</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>일자</b> · <b>실제로 물건이 들어온 날</b> (입력하는 날이 아님)</span></li><li><span class="n">2</span><span><b>거래처</b></span></li><li><span class="n">3</span><span><b>발주</b> 버튼 · 발주서를 불러옴</span></li><li><span class="n">4</span><span><b>품목 줄</b> · 불러오면 자동으로 채워짐</span></li><li><span class="n">5</span><span><b>저장(F8)</b></span></li></ol>
+<figure class=""><div class="shot"><img src="img/pur_from_po.jpg" alt="「발주」 버튼을 누르면 뜨는 발주서조회 창"><span class="bd" style="left:16.3%;top:12.4%">1</span><span class="bd" style="left:2.57%;top:22.4%">2</span><span class="bd" style="left:10.87%;top:96.3%">3</span></div><figcaption>「발주」 버튼을 누르면 뜨는 발주서조회 창</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>진행중</b> 탭 · 아직 입고 처리가 안 된 발주서만 보임</span></li><li><span class="n">2</span><span>받은 발주서 왼쪽 칸 체크</span></li><li><span class="n">3</span><span><b>잔량적용(F8)</b> · 남은 수량을 구매입력 화면으로 가져옴</span></li></ol>
+<h4>순서</h4>
+<div class="flow v"><div class="step"><div class="t">1. 거래명세서 · 실물 확인</div><div class="d">수량 · 중량 · 상태 확인. 모자라거나 불량이면 메모</div></div><div class="arrow">↓</div><div class="step"><div class="t">2. 구매입력 → 발주 → 해당 발주서 체크 → 잔량적용(<kbd class="fk" data-k="F8">F8</kbd>)</div><div class="d">거래처 · 품목 · 수량 · 단가가 발주서 그대로 들어옴</div></div><div class="arrow">↓</div><div class="step"><div class="t">3. 일자를 입고일로 · 수량 · 단가를 명세서대로 고침</div><div class="d">덜 들어온 품목은 받은 만큼만</div></div><div class="arrow">↓</div><div class="step hi"><div class="t">4. 저장(<kbd class="fk" data-k="F8">F8</kbd>)</div><div class="d">발주서가 「완료」로 바뀜. 덜 들어왔으면 남은 수량은 「진행중」으로 남음</div></div></div>
+<h4>다른 방법 · 발주서조회에서 바로 만들기</h4>
+<figure class=""><div class="shot"><img src="img/po_convert.jpg" alt="발주서조회 하단 다른전표생성 ▲ → 구매전표"><span class="bd" style="left:58.17%;top:60.0%">1</span><span class="bd" style="left:57.5%;top:82.7%">2</span></div><figcaption>발주서조회 하단 다른전표생성 ▲ → 구매전표</figcaption></figure><ol class="legend"><li><span class="n">1</span><span>구매전표 · 체크한 발주서로 구매 전표를 만듦</span></li><li><span class="n">2</span><span>다른전표생성 버튼</span></li></ol>
+<div class="ctx"><span class="lb">우리 회사</span><span>전무님은 <b>입고 다음 날 오전(9~11시)</b>에 전날 들어온 것을 몰아서 입력하는 경우가 가장 많았습니다. 이때도 <b>일자는 입고일</b>로 넣습니다. (예: 26/11/19-12 전표는 11월 20일 오전 10:40에 작성)</span></div>
+<div class="warn"><b>발주서 없이 구매입력만 하지 마세요</b><p>불러오기 없이 새로 입력하면 발주서가 「진행중」으로 계속 남아 미구매현황이 지저분해집니다. 발주 없이 산 것(마트 현장 구매 등)만 직접 입력합니다.</p></div>
+</section><section id="p7"><div class="sec-head"><span class="num">PART 07</span><h3>진행 확인하기</h3></div>
+<p class="lead">「시켰는데 안 들어온 것」, 「들어왔는데 입력 안 한 것」을 매일 한 번 확인합니다. 이 두 가지가 구매 담당 실수의 대부분입니다.</p>
+<h4>발주서의 상태</h4>
+<div class="states"><span class="s a">진행중</span><span class="ar">구매입력<br>(전량)</span><span class="s c">완료</span><span class="ar"></span><span class="s a">진행중</span><span class="ar">일부만<br>입고</span><span class="s b">진행중 (잔량 남음)</span></div>
+<h4>미구매현황 · 아직 입고 처리 안 된 품목</h4>
+<figure class=""><div class="shot"><img src="img/unpurchased.jpg" alt="미구매현황 (화면 제목은 「미입고현황」으로 출력됨)"><span class="bd" style="left:34.36%;top:15.39%">1</span><span class="bd" style="left:42.73%;top:14.61%">2</span></div><figcaption>미구매현황 (화면 제목은 「미입고현황」으로 출력됨)</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>미구매수량</b> · 발주했지만 아직 구매입력이 안 된 수량</span></li><li><span class="n">2</span><span><b>품목별납기일자</b> · 이 날짜가 지났는데 남아 있으면 확인 대상</span></li></ol>
+<div class="tip"><b>매일 아침 미구매현황 보는 법</b><p>납기일자가 <b>어제 이전</b>인데 남아 있는 줄 → ① 물건이 안 왔는지 (거래처에 확인) ② 왔는데 입력을 안 했는지 (구매입력) ③ 취소된 건지 (발주서 정리) 셋 중 하나입니다.</p></div>
+<h4>이 발주로 만든 구매 전표 보기</h4>
+<figure class=""><div class="shot"><img src="img/po_progress.jpg" alt="발주서조회 → 진행상태 「조회」"><span class="bd" style="left:63.35%;top:24.64%">1</span><span class="bd" style="left:72.54%;top:24.64%">2</span><span class="bd" style="left:84.43%;top:24.64%">3</span></div><figcaption>발주서조회 → 진행상태 「조회」</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>잔량</b> · 아직 구매로 안 넘어간 수량</span></li><li><span class="n">2</span><span><b>생성한 전표</b> · 「구매」</span></li><li><span class="n">3</span><span><b>전표 번호</b> · 누르면 해당 구매 전표로 이동</span></li></ol>
+<h4>구매조회 · 입력한 구매 목록</h4>
+<figure class=""><div class="shot"><img src="img/pur_list.jpg" alt="구매조회"><span class="bd" style="left:2.85%;top:15.65%">1</span><span class="bd" style="left:15.77%;top:10.26%">2</span><span class="bd" style="left:92.02%;top:9.39%">3</span><span class="bd" style="left:58.22%;top:97.22%">4</span></div><figcaption>구매조회</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>구매번호</b> · 누르면 구매수정 화면</span></li><li><span class="n">2</span><span><b>최초작성일자</b> · 실제로 입력한 시각</span></li><li><span class="n">3</span><span><b>수령여부</b> · 체크 표시가 있는 건이 있음. 기준은 확인 필요 <span class="tg q">확인 필요</span></span></li><li><span class="n">4</span><span><b>이력조회</b> · 체크한 전표를 누가 언제 고쳤는지</span></li></ol>
+</section><section id="p8"><div class="sec-head"><span class="num">PART 08</span><h3>현황 보고서 보기</h3></div>
+<p class="lead">「현황」 메뉴는 입력한 기록을 <b>더해서 보여주는 보고서</b>입니다. 아무것도 바뀌지 않으니 마음껏 눌러 봐도 됩니다.</p>
+<h4>구매현황 · 집계로 보기</h4>
+<figure class=""><div class="shot"><img src="img/pstat_cond.jpg" alt="구매현황 검색 조건"><span class="bd" style="left:13.62%;top:11.17%">1</span><span class="bd" style="left:12.36%;top:19.06%">2</span><span class="bd" style="left:2.27%;top:38.5%">3</span><span class="bd" style="left:23.31%;top:56.43%">4</span><span class="bd" style="left:1.47%;top:96.15%">5</span></div><figcaption>구매현황 검색 조건</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>현황 / 집계</b> · 집계를 누르면 「무엇별로 더할지」 고를 수 있음</span></li><li><span class="n">2</span><span><b>집계조건</b> · 거래처별 · 품목별 · 월별 · 담당자별 등. 두 개까지 겹쳐 쓰면 「거래처 안의 품목」처럼 나뉨</span></li><li><span class="n">3</span><span><b>기준일자</b> · 기간</span></li><li><span class="n">4</span><span><b>담당자</b> · 본인 이름을 넣으면 내 구매만</span></li><li><span class="n">5</span><span><b>검색(F8)</b></span></li></ol>
+<figure class=""><div class="shot"><img src="img/pstat_result.jpg" alt="결과 · 거래처별 합계"><span class="bd" style="left:4.54%;top:14.43%">1</span><span class="bd" style="left:7.76%;top:19.74%">2</span><span class="bd" style="left:58.83%;top:14.43%">3</span></div><figcaption>결과 · 거래처별 합계</figcaption></figure><ol class="legend"><li><span class="n">1</span><span>거래처별</span></li><li><span class="n">2</span><span>거래처 계 · 그 거래처의 합계 줄</span></li><li><span class="n">3</span><span>합계 · 부가세 포함 금액</span></li></ol>
+<h4>거래처별채무 · 줄 돈이 얼마 남았나</h4>
+<figure class=""><div class="shot"><img src="img/payable.jpg" alt="거래처별채무"><span class="bd" style="left:32.76%;top:14.52%">1</span><span class="bd" style="left:40.37%;top:14.52%">2</span><span class="bd" style="left:78.71%;top:14.52%">3</span><span class="bd" style="left:95.09%;top:14.52%">4</span></div><figcaption>거래처별채무</figcaption></figure><ol class="legend"><li><span class="n">1</span><span>기초채무 · 기간 시작 때 남아 있던 금액</span></li><li><span class="n">2</span><span>재고매입 · 기간 중 구매입력한 금액</span></li><li><span class="n">3</span><span>지급합계 · 기간 중 낸 돈</span></li><li><span class="n">4</span><span>잔액 · 아직 안 낸 돈</span></li></ol>
+<h4>재고현황 · 발주 전에 남은 양 보기</h4>
+<figure class=""><div class="shot"><img src="img/stock.jpg" alt="출력물 → 재고현황 → 창고별재고현황"><span class="bd" style="left:13.25%;top:26.15%">1</span><span class="bd" style="left:2.58%;top:36.48%">2</span><span class="bd" style="left:2.58%;top:47.03%">3</span><span class="bd" style="left:7.67%;top:91.87%">4</span></div><figcaption>출력물 → 재고현황 → 창고별재고현황</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>기준일자</b> · 이 날짜 기준 재고</span></li><li><span class="n">2</span><span><b>창고</b> · <code>S01</code>로 거르면 원/부/반제품 창고만</span></li><li><span class="n">3</span><span><b>품목</b> · 품목 하나만 볼 때</span></li><li><span class="n">4</span><span><b>검색(F8)</b></span></li></ol>
+<div class="note"><b>재고 숫자가 실제와 다를 때</b><p>재고는 「구매입력 − 생산 사용 ± 재고조정」으로 계산됩니다. 구매입력이 밀리면 재고가 실제보다 적게 보입니다. 발주량을 정하기 전에 <b>미입력 구매가 없는지</b> 먼저 보세요.</p></div>
+<h4>구매일괄회계반영 · 월말 장부 넘기기</h4>
+<figure class=""><div class="shot"><img src="img/acct.jpg" alt="구매일괄회계반영 조건 화면"><span class="bd" style="left:13.62%;top:14.25%">1</span><span class="bd" style="left:13.25%;top:19.88%">2</span><span class="bd" style="left:12.82%;top:65.51%">3</span></div><figcaption>구매일괄회계반영 조건 화면</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>거래처별 / 전표별</b> · 한 달 구매를 거래처 단위로 묶어 회계 전표로 만듦</span></li><li><span class="n">2</span><span><b>기준일자</b> · 보통 한 달 (1일~말일)</span></li><li><span class="n">3</span><span><b>거래유형</b> · 세금계산서</span></li></ol>
+<div class="ctx"><span class="lb">우리 회사</span><span>2026년 1~4월 전무님 구매 5,000줄 중 91%는 회계전표일자가 <b>그 달 말일</b>입니다 (예: 1월 1일 구매 → 2026/01/31 회계전표). 월말에 한 번에 넘기는 방식입니다. 이 작업을 누가 하는지는 확인되지 않았습니다 <span class="tg q">확인 필요</span>.</span></div>
+</section><section id="p9"><div class="sec-head"><span class="num">PART 09</span><h3>품목 정보 찾기</h3></div>
+<p class="lead">품목등록에는 품목마다 <b>기본 구매처 · 입고단가 · 최소구매단위 · 보관 위치</b>가 적혀 있습니다. 처음 보는 원재료를 발주할 때 여기부터 봅니다.</p>
+<p>위치: <b>재고 I → 기초등록 → 품목등록</b></p>
+<figure class=""><div class="shot"><img src="img/item_master.jpg" alt="품목등록 리스트 · 검색칸에 ZIP_M_10 입력"><span class="bd" style="left:73.62%;top:0.96%">1</span><span class="bd" style="left:4.05%;top:8.0%">2</span><span class="bd" style="left:40.09%;top:8.0%">3</span><span class="bd" style="left:47.3%;top:8.0%">4</span><span class="bd" style="left:77.67%;top:8.0%">5</span><span class="bd" style="left:84.29%;top:7.13%">6</span></div><figcaption>품목등록 리스트 · 검색칸에 ZIP_M_10 입력</figcaption></figure><ol class="legend"><li><span class="n">1</span><span><b>검색칸</b> · 코드나 이름 일부 입력 후 Enter</span></li><li><span class="n">2</span><span><b>품목코드</b> · 누르면 상세 (수정 화면이니 조심)</span></li><li><span class="n">3</span><span><b>품목그룹3명</b> · 보관 위치 (예: 1F_원재료_냉장창고)</span></li><li><span class="n">4</span><span><b>입고단가</b> · 기본 매입 단가</span></li><li><span class="n">5</span><span><b>구매처명</b> · 기본 거래처</span></li><li><span class="n">6</span><span><b>최소구매단위</b> · 한 번에 시켜야 하는 최소 수량</span></li></ol>
+<div class="warn"><b>신규 품목 · 신규 거래처 등록</b><p>새 원재료나 새 거래처는 등록 권한이 있는 사람이 먼저 만들어야 발주서에 쓸 수 있습니다. 등록 절차와 담당은 인계서 PART 08 확인 목록에 있습니다.</p></div>
+</section><section id="p10"><div class="sec-head"><span class="num">PART 10</span><h3>단축키 치트시트</h3></div>
+<p class="lead">위의 네 개만 써도 마우스 이동이 절반으로 줄어듭니다. 맥에서는 F키를 누를 때 <b>fn</b>을 같이 누릅니다 (위에서 Mac을 고르면 표기가 바뀝니다).</p>
+<table><thead><tr><th style="width:170px">키</th><th>동작</th></tr></thead><tbody>
+<tr><td><kbd class="fk" data-k="F8">F8</kbd></td><td>검색 화면에서는 <b>검색</b>, 입력 화면에서는 <b>저장</b>, 불러오기 창에서는 <b>적용</b></td></tr>
+<tr><td><kbd class="fk" data-k="F3">F3</kbd></td><td>검색 조건 열기 (입력 화면에서는 품목 찾기)</td></tr>
+<tr><td><kbd class="fk" data-k="F2">F2</kbd></td><td>신규 (새 발주서 · 새 구매)</td></tr>
+<tr><td><kbd>Enter</kbd></td><td>코드 · 이름 입력 후 찾기 / 다음 칸으로</td></tr>
+<tr><td><kbd class="fk" data-k="F7">F7</kbd></td><td>저장/전표 · 저장하면서 전표 양식을 띄움 <span class="tg e">추정</span></td></tr>
+<tr><td><kbd>Tab</kbd></td><td>입력 칸 이동 (날짜의 일 칸을 고친 뒤 눌러 확정)</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>열린 목록 · 메뉴 닫기</td></tr></tbody></table>
+</section><section id="p11"><div class="sec-head"><span class="num">PART 11</span><h3>막혔을 때 Q&amp;A</h3></div><p class="lead">처음 쓰는 사람이 실제로 가장 자주 부딪히는 상황입니다.</p><details class="qa"><summary>목록에서 번호를 눌렀더니 수정 화면이 떠서 겁나요</summary><div class="body"><p>저장(F8)을 누르지 않았다면 아무것도 바뀌지 않습니다. 오른쪽 위 X로 닫으세요. 닫을 때 저장하겠냐고 물으면 「아니요」.</p></div></details><details class="qa"><summary>구매입력을 잘못 저장했어요</summary><div class="body"><p>구매조회에서 그 전표를 열어 고친 뒤 다시 저장하면 됩니다. 이미 월말 회계반영이 끝난 달이면 회계 담당에게 먼저 알리세요. 누가 언제 고쳤는지는 이력조회에 남습니다.</p></div></details><details class="qa"><summary>발주서가 계속 「진행중」으로 남아 있어요</summary><div class="body"><p>구매입력을 발주서 불러오기 없이 했거나, 일부만 입고되어 잔량이 남은 경우입니다. 진행상태 「조회」로 잔량을 보고, 더 안 들어올 물건이면 진행상태변경으로 정리합니다.</p></div></details><details class="qa"><summary>거래처나 품목이 검색에 안 나와요</summary><div class="body"><p>등록된 이름이 다를 수 있습니다 (예: SSG → 「(주) 이마트」). 이름 일부, 사업자번호로 다시 찾아 보고, 정말 없으면 신규 등록이 필요합니다.</p></div></details><details class="qa"><summary>엑셀로 받았더니 중간이 잘렸어요</summary><div class="body"><p>보고서는 약 5,000줄에서 끊깁니다. 기간을 나누거나 집계로 받으세요. 마지막 줄에 총합계가 있어야 다 받은 것입니다.</p></div></details><details class="qa"><summary>「권한없음」 화면이 나와요</summary><div class="body"><p>그 메뉴의 권한이 없는 것입니다. 필요한 메뉴 이름을 적어 회사 마스터에게 요청하세요.</p></div></details><details class="qa"><summary>날짜를 바꿨는데 검색 결과가 그대로예요</summary><div class="body"><p>일 칸을 고친 뒤 Tab을 눌러 확정했는지 보세요. 연 · 월은 드롭다운에서 클릭으로 골라야 적용됩니다.</p></div></details><details class="qa"><summary>같은 이름 품목이 두 개 나와요</summary><div class="body"><p>원산지나 규격이 다른 별개 품목입니다 (예: _국내산 / _중국산, KG / 1KG). 코드와 이름 끝부분을 끝까지 확인하세요.</p></div></details></section><section id="p12"><div class="sec-head"><span class="num">PART 12</span><h3>직접 해보기</h3></div>
+<p class="lead">이카운트에는 연습용 공간이 없습니다. 입력한 것은 전부 실제 장부에 남습니다. 그래서 연습은 <b>조회와 저장 전까지</b>만 합니다.</p>
+<table><thead><tr><th style="width:44px">#</th><th style="width:260px">과제</th><th>확인 포인트</th></tr></thead><tbody>
+<tr><td>1</td><td>발주서입력 · 발주서조회 · 구매입력 · 미구매현황을 즐겨찾기에 등록</td><td>제목 옆 별이 노랗게 바뀌는지</td></tr>
+<tr><td>2</td><td>발주서조회에서 「진행중」 탭만 보기</td><td>상태 탭이 바뀌는지</td></tr>
+<tr><td>3</td><td>발주서 하나를 열어 보고 저장 없이 X로 닫기</td><td>목록 내용이 그대로인지</td></tr>
+<tr><td>4</td><td>미구매현황에서 납기일자가 지난 줄 찾기</td><td>어떤 거래처 · 품목인지 말할 수 있는지</td></tr>
+<tr><td>5</td><td>진행상태 「조회」로 완료된 발주서의 구매 전표 번호 찾기</td><td>생성한 전표 = 구매</td></tr>
+<tr><td>6</td><td>구매현황을 집계 · 거래처별 · 이번 달로 검색</td><td>거래처 계 줄이 보이는지</td></tr>
+<tr><td>7</td><td>같은 조건에 담당자 = 본인(또는 정문채) 넣어 다시 검색</td><td>합계가 줄어드는지</td></tr>
+<tr><td>8</td><td>품목등록에서 <code>ZIP_M_1010</code> 찾기</td><td>무_국내산 · 구매처 인농 150번</td></tr>
+<tr><td>9</td><td>창고별재고현황에서 S01 창고 재고 보기</td><td>원재료 재고가 보이는지</td></tr>
+<tr><td>10</td><td>발주서입력에서 거래처 · 품목까지 채워 보고 <b>저장하지 않고</b> 「다시 작성」</td><td>빈 화면으로 돌아가는지</td></tr>
+<tr><td>11</td><td>구매조회 목록을 Excel로 받기</td><td>파일이 열리는지</td></tr>
+<tr><td>12</td><td>실제 첫 발주는 선임과 함께 입력 · 저장</td><td>발주서조회 맨 위에 「진행중」으로 생겼는지</td></tr></tbody></table>
+<div class="tip"><b>여기까지 다 됐다면</b><p>이카운트 때문에 막힐 일은 거의 없습니다. 남은 건 거래처마다 언제 무엇을 얼마나 시키는지인데, 그건 <b>구매·발주 업무 인계서 (PDF)</b>에 정리되어 있습니다.</p></div>
+</section><footer><p><b>집반찬연구소 · 주식회사 산너머남촌</b> · 구매 담당용 이카운트 기초 사용법</p><p>화면 캡처 기준: 이카운트 ERP 웹 화면 · 2026년 11월 20일 · 캡처 화면의 금액은 실제 거래 기록이므로 외부 공유 금지</p><p>「추정」 표시는 화면 이름이나 기록 패턴으로 짐작한 내용, 「확인 필요」는 담당자 확인이 필요한 내용입니다.</p></footer></main></div>
+<script>
+(function(){
+  var bw=document.getElementById('os-win'),bm=document.getElementById('os-mac');
+  function apply(os){
+    [].forEach.call(document.querySelectorAll('kbd.fk'),function(k){var key=k.getAttribute('data-k');k.textContent=(os==='mac'?'fn + ':'')+key;});
+    [].forEach.call(document.querySelectorAll('kbd.mod'),function(k){k.textContent=os==='mac'?'\u2318':'Ctrl';});
+    document.body.setAttribute('data-os',os);
+    if(bw){bw.classList.toggle('on',os==='win');bm.classList.toggle('on',os==='mac');}
+    try{localStorage.setItem('ecg-os',os);}catch(e){}
+  }
+  var s=null;try{s=localStorage.getItem('ecg-os');}catch(e){}
+  if(!s)s=/Mac|iPhone|iPad/i.test(navigator.platform+navigator.userAgent)?'mac':'win';
+  if(bw){bw.addEventListener('click',function(){apply('win');});bm.addEventListener('click',function(){apply('mac');});}
+  apply(s);
+})();
+(function(){
+  function fit(img){if(!img.naturalWidth)return;var w=img.naturalWidth/2;img.style.maxWidth=Math.min(w,800)+'px';img.style.width='100%';}
+  [].forEach.call(document.images,function(img){if(img.complete)fit(img);else img.addEventListener('load',function(){fit(img);});});
+})();
+(function(){
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  function onScroll(){var y=window.scrollY+120,idx=0;for(var i=0;i<secs.length;i++){if(secs[i]&&secs[i].offsetTop<=y)idx=i;}links.forEach(function(a,i){a.classList.toggle('active',i===idx);});}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+})();
+(function(){
+  [].forEach.call(document.querySelectorAll('input.filter'),function(inp){
+    var t=document.getElementById(inp.getAttribute('data-t'));
+    inp.addEventListener('input',function(){var q=inp.value.trim().toLowerCase();[].forEach.call(t.tBodies[0].rows,function(r){r.style.display=(!q||r.textContent.toLowerCase().indexOf(q)>=0)?'':'none';});});
+  });
+})();
+(function(){
+  [].forEach.call(document.querySelectorAll('.chk li'),function(li){
+    var id=li.getAttribute('data-id'),cb=li.querySelector('input'),ta=li.querySelector('textarea');
+    try{var v=JSON.parse(localStorage.getItem('ecg-chk-'+id)||'{}');cb.checked=!!v.c;if(ta)ta.value=v.m||'';}catch(e){}
+    li.classList.toggle('done',cb.checked);
+    function save(){li.classList.toggle('done',cb.checked);try{localStorage.setItem('ecg-chk-'+id,JSON.stringify({c:cb.checked,m:ta?ta.value:''}));}catch(e){}}
+    cb.addEventListener('change',save);if(ta)ta.addEventListener('input',save);
+  });
+})();
+</script>
+</body></html>
