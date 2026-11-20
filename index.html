@@ -1371,7 +1371,6 @@ select.fi{cursor:pointer;}
   <div class="sb-nav">
     <div class="sb-label">메뉴</div>
     <div class="nav-item" data-v="standup" onclick="nav('standup')"><span class="nav-dot"></span> 아침 회의</div>
-    <div class="nav-item briefing-nav" data-v="briefing" onclick="nav('briefing')"><span class="nav-dot"></span> 데일리 브리핑</div>
     <div class="nav-item" data-v="standup-log" onclick="nav('standup-log')"><span class="nav-dot"></span> 회의 로그</div>
     <div class="sb-label">분석</div>
     <div class="nav-item" data-v="dashboard" onclick="nav('dashboard')"><span class="nav-dot"></span> 대시보드</div>
@@ -1390,27 +1389,6 @@ select.fi{cursor:pointer;}
 </nav>
 
 <main class="main">
-
-  <!-- ════════════════════ DAILY BRIEFING ════════════════════ -->
-  <div id="view-briefing" class="view">
-    <div class="ph">
-      <div>
-        <div class="ph-title">데일리 브리핑</div>
-        <div class="ph-sub">구글챗 10개 스페이스 + 노션 업무전달·회의록·샘플주문 · 수집 18:00 / 브리핑 07:00</div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button class="btn" onclick="reloadBriefing()">새로고침</button>
-        <a class="btn" href="https://script.google.com/a/macros/sannamchon.co.kr/s/AKfycbyLG4LsN6g3j_18i1T4cM1E84KBDk9BGWvla3W5SgIT9aJTvfCsMA_oa0Ocgv6L4wyK/exec" target="_blank" rel="noopener">새 창으로 열기</a>
-      </div>
-    </div>
-    <div id="briefing-wrap" style="border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#f4f6f9;">
-      <div id="briefing-loading" style="padding:60px 20px;text-align:center;font-size:13px;color:var(--muted);">
-        브리핑을 불러오는 중입니다...
-      </div>
-      <iframe id="briefing-frame" title="데일리 브리핑"
-        style="width:100%;height:calc(100vh - 190px);min-height:600px;border:0;display:none;"></iframe>
-    </div>
-  </div>
 
   <!-- ════════════════════ DASHBOARD ════════════════════ -->
   <div id="view-dashboard" class="view">
@@ -2455,6 +2433,7 @@ function archiveBannerUpdate(){
 // Navigation
 // ══════════════════════════════════════
 function nav(v){
+  if(v==='briefing')v='standup';   // 데일리 브리핑 삭제(11/20) — 예전 링크·북마크는 아침 회의로
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
   const _vw=document.getElementById('view-'+v);if(!_vw)return;
@@ -2462,29 +2441,9 @@ function nav(v){
   const _ni=document.querySelector('.nav-item[data-v="'+v+'"]');if(_ni)_ni.classList.add('active');
   curView=v;document.body.dataset.view=v;renderV(v);mUpdateTopbar();
 }
-// ══════════════════════════════════════
-// DAILY BRIEFING (Apps Script 웹앱 임베드)
-// ══════════════════════════════════════
-var BRIEFING_URL = 'https://script.google.com/a/macros/sannamchon.co.kr/s/AKfycbyLG4LsN6g3j_18i1T4cM1E84KBDk9BGWvla3W5SgIT9aJTvfCsMA_oa0Ocgv6L4wyK/exec';
-var briefingLoaded = false;
-function renderBriefing(){
-  if(briefingLoaded) return;
-  var f = document.getElementById('briefing-frame');
-  var l = document.getElementById('briefing-loading');
-  f.onload = function(){ l.style.display='none'; f.style.display='block'; };
-  f.src = BRIEFING_URL;
-  briefingLoaded = true;
-}
-function reloadBriefing(){
-  var f = document.getElementById('briefing-frame');
-  var l = document.getElementById('briefing-loading');
-  f.style.display='none'; l.style.display='block'; l.textContent='브리핑을 불러오는 중입니다...';
-  f.src = BRIEFING_URL + '?t=' + Date.now();
-}
 
 function renderV(v){
   if(window._suEnsureFor)window._suEnsureFor(v); // 60일보다 오래된 회의 기록은 화면을 열 때 분기 단위로 불러옴
-  if(v==='briefing')renderBriefing();
   if(v==='dashboard')renderDash();
   if(v==='standup')renderStandup();
   if(v==='standup-log')renderLog();
