@@ -166,6 +166,7 @@ body[data-os="mac"] .mac-only{display:revert}
 .qa .body p{font-size:14.2px}
 .qa .body p:last-child{margin-bottom:0}
 
+main a{color:var(--accent);text-underline-offset:2px}
 footer{border-top:1px solid var(--line);padding-top:24px;font-size:12.5px;color:var(--ink3)}
 footer b{color:var(--ink2)}
 
@@ -208,11 +209,12 @@ footer b{color:var(--ink2)}
     <a href="#p5"><span class="n">05</span>데이터베이스 조작</a>
     <a href="#p6"><span class="n">06</span>협업 기능</a>
     <a href="#p7"><span class="n">07</span>공유와 권한</a>
-    <a href="#p8"><span class="n">08</span>찾기</a>
-    <a href="#p9"><span class="n">09</span>내보내기 · 인쇄</a>
-    <a href="#p10"><span class="n">10</span>단축키 치트시트</a>
-    <a href="#p11"><span class="n">11</span>막혔을 때 Q&amp;A</a>
-    <a href="#p12"><span class="n">12</span>직접 해보기</a>
+    <a href="#p8"><span class="n">08</span>우리 회사 노션 업무 방식</a>
+    <a href="#p9"><span class="n">09</span>찾기</a>
+    <a href="#p10"><span class="n">10</span>내보내기 · 인쇄</a>
+    <a href="#p11"><span class="n">11</span>단축키 치트시트</a>
+    <a href="#p12"><span class="n">12</span>막혔을 때 Q&amp;A</a>
+    <a href="#p13"><span class="n">13</span>직접 해보기</a>
   </div>
 </nav>
 
@@ -224,9 +226,13 @@ footer b{color:var(--ink2)}
   <p>이 문서는 노션의 모든 기능을 다루지 않습니다. <b>우리 회사 노션에서 실제로 쓰이는 기능</b>만 골라, 그 기능을 다룰 줄 알면 업무에 지장이 없도록 만든 기능 설명서입니다.</p>
   <p>화면 캡처는 전부 실제 우리 회사 노션 화면입니다. 순서대로 읽으면서 본인 노션을 같이 띄워두고 따라 해 보세요.</p>
   <div class="meta">
-    <div>읽는 데 걸리는 시간<b>약 25분</b></div>
+    <div>읽는 데 걸리는 시간<b>약 35분</b></div>
     <div>따라 하며 익히는 시간<b>약 1시간</b></div>
     <div>기준 화면<b>노션 한글 화면 (윈도우 · 맥 동일)</b></div>
+  </div>
+  <div class="tip" style="margin:20px 0 0">
+    <b>처음이라면 이 순서로 읽으세요</b>
+    <p><a href="#p0">00</a> → <a href="#p1">01</a> → <a href="#p4">04</a> → <a href="#p5">05</a> → <a href="#p6">06</a> → <a href="#p8"><b>08 우리 회사 노션 업무 방식</b></a>. 나머지 파트는 필요할 때 찾아보는 사전입니다.</p>
   </div>
   <div class="osbar">
     <span class="lbl">쓰고 계신 컴퓨터를 골라주세요</span>
@@ -439,7 +445,7 @@ footer b{color:var(--ink2)}
     <tbody>
       <tr><td><b>복제</b></td><td>똑같은 페이지를 하나 더 만듭니다. 남의 문서를 참고해 내 것을 만들 때 씁니다</td></tr>
       <tr><td><b>옮기기</b></td><td>페이지를 다른 위치(개인 페이지 ↔ 팀스페이스)로 이동합니다</td></tr>
-      <tr><td><b>휴지통으로 이동</b></td><td>삭제. 완전히 사라지지 않고 휴지통에 남습니다</td></tr>
+      <tr><td><b>휴지통으로 이동</b></td><td>삭제. 휴지통에 <b>30일</b> 보관된 뒤 자동으로 완전히 삭제됩니다</td></tr>
       <tr><td><b>버전 기록</b></td><td>과거 시점으로 되돌릴 수 있습니다. 실수했을 때의 안전장치</td></tr>
       <tr><td><b>내보내기</b></td><td>PDF · HTML · 마크다운으로 저장</td></tr>
       <tr><td><b>알림 받기</b></td><td>이 페이지에 변화가 생기면 알림을 받을지 결정</td></tr>
@@ -493,7 +499,8 @@ footer b{color:var(--ink2)}
     <thead><tr><th style="width:130px">속성 종류</th><th style="width:150px">입력 방식</th><th>예시</th></tr></thead>
     <tbody>
       <tr><td><b>텍스트</b></td><td>자유 입력</td><td>비고, 메모</td></tr>
-      <tr><td><b>선택</b></td><td>정해진 값 중 하나</td><td>진행상황(확인요청 / 진행중 / 완료), 긴급도</td></tr>
+      <tr><td><b>상태</b></td><td>진행 단계 중 하나</td><td>진행상황(시작 전 / 작성중 / 확인요청 / 반려 / 진행중 / 완료)</td></tr>
+      <tr><td><b>선택</b></td><td>정해진 값 중 하나</td><td>긴급도(매우높음 / 높음 / 보통 / 낮음), 유형, 분야</td></tr>
       <tr><td><b>다중 선택</b></td><td>여러 개 고르기</td><td>카테고리, 태그</td></tr>
       <tr><td><b>사람</b></td><td>구성원 검색해서 선택</td><td>담당자, 요청자, 참조자</td></tr>
       <tr><td><b>날짜</b></td><td>달력에서 선택</td><td>데드라인, 회의일시</td></tr>
@@ -503,7 +510,7 @@ footer b{color:var(--ink2)}
     </tbody>
   </table>
 
-  <div class="ctx"><span class="lb">우리 회사</span><div>회사의 <b>할 일/업무전달 DB</b>는 제목·진행상황·긴급도·요청자·담당자·유형·데드라인·참조자 속성으로 되어 있습니다. 위 표의 종류들이 그대로 쓰이고 있습니다.</div></div>
+  <div class="ctx"><span class="lb">우리 회사</span><div>회사의 <b>할 일/업무전달 DB</b>는 제목·유형·분야·진행상황·긴급도·요청자·담당자·데드라인·참조자와, 회의록·파트너사 미팅/출장을 잇는 관계형 칸으로 되어 있습니다. 실제 쓰는 법은 <a href="#p8">PART 08</a>에서 다룹니다.</div></div>
 
   <h4>뷰 — 같은 데이터를 다른 방식으로 보기</h4>
   <figure class="sm">
@@ -598,9 +605,13 @@ footer b{color:var(--ink2)}
     <figcaption>⚙ 버튼에서 <b>레이아웃 · 속성 표시 여부 · 그룹화 · 하위 항목</b>을 조정합니다. 화면이 복잡하면 안 쓰는 속성을 숨겨서 정리할 수 있습니다.</figcaption>
   </figure>
 
+  <div class="tip">
+    <b>필터 · 정렬은 내 화면에만 적용됩니다</b>
+    <p>함께 쓰는 데이터베이스에서 필터나 정렬을 바꿔도 동료 화면은 그대로입니다. 마음 놓고 써도 됩니다.</p>
+  </div>
   <div class="warn">
-    <b>주의 — 필터와 정렬은 함께 보는 사람에게도 적용됩니다</b>
-    <p>여러 명이 함께 보는 뷰에서 필터를 바꾸면 다른 사람 화면도 같이 바뀝니다. 나만 다르게 보고 싶다면 뷰를 하나 추가해서 쓰거나, 팀에 먼저 확인하세요.</p>
+    <b>단, 「모두 저장」은 누르지 마세요</b>
+    <p>필터나 정렬을 바꾸면 위쪽에 <b>초기화</b>와 <b>모두 저장</b>(화면에 따라 「모두에게 저장」) 버튼이 생깁니다. 「모두 저장」을 누르면 그 보기를 쓰는 <b>모든 사람의 화면</b>이 바뀝니다. 원래대로 돌리려면 「초기화」를 누르세요.</p>
   </div>
 
   <h4>새 항목 등록하기</h4>
@@ -725,7 +736,157 @@ footer b{color:var(--ink2)}
 
 <!-- ============ PART 8 ============ -->
 <section id="p8">
-  <div class="sec-head"><span class="num">PART 08</span><h3>찾기</h3></div>
+  <div class="sec-head"><span class="num">PART 08</span><h3>우리 회사 노션 업무 방식</h3></div>
+  <p class="lead">앞에서 배운 기능을 <b>우리 회사에서는 이렇게 씁니다.</b> 회사 노션 「노션 사용법」의 규칙을 한곳에 모았습니다. 입사 첫 주에 실제로 하게 되는 일들입니다.</p>
+
+  <h4>1. 입사 첫날 세팅 (5분)</h4>
+  <table>
+    <thead><tr><th style="width:130px">항목</th><th>할 일</th></tr></thead>
+    <tbody>
+      <tr><td><b>가입</b></td><td><b>회사 구글 계정</b>으로 가입 (개인 메일 X)</td></tr>
+      <tr><td><b>프로필</b></td><td>본인 사진 넣기</td></tr>
+      <tr><td><b>달력</b></td><td>설정에서 「월요일에 한 주 시작」 끄기</td></tr>
+      <tr><td><b>알림</b></td><td>모바일 · 데스크톱 푸시 <b>켜기</b> / 이메일 알림 <b>끄기</b> (켜 두면 메일이 계속 옴)</td></tr>
+      <tr><td><b>즐겨찾기</b></td><td>「노션 사용법」 페이지 별 누르기</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <b>내 본부 PRIVATE 영역이 안 보이면</b>
+    <p>그룹 배치가 아직 안 된 것입니다. 노션 담당자(인사담당자)에게 문의하세요.</p>
+  </div>
+
+  <h4>2. 꼭 지킬 규칙 3가지</h4>
+  <div class="warn">
+    <b>이것만은 지켜 주세요</b>
+    <ul>
+      <li><b>회사 DB에서 「속성 추가」는 절대 누르지 않습니다.</b> 모든 사람 화면에 새 열이 생기고, 전체 DB가 틀어질 수 있습니다. 실수로 생겼다면 열 이름 → 「속성 삭제」. 모르겠으면 혼자 해결하지 말고 바로 물어보세요.</li>
+      <li><b>팀스페이스 문서는 임의로 고치거나 복사하지 않습니다.</b> 모두가 같이 보는 원본입니다. 내가 쓸 문서는 아래 「개인 템플릿」을 복제해서 씁니다.</li>
+      <li><b>초안은 개인 페이지에서</b> 쓰고, 완성 후 팀스페이스로 옮깁니다. (<a href="#p7">PART 07</a>)</li>
+    </ul>
+  </div>
+
+  <h4>3. 회사 업무 DB 지도</h4>
+  <p>회사 일은 아래 네 개의 데이터베이스로 오갑니다. 서로 <b>관계형 칸</b>으로 이어져 있습니다.</p>
+  <div class="cards">
+    <div class="card"><h6>할 일/업무전달</h6><p>업무가 오가는 길. 내가 할 일, 남에게 요청하는 일을 모두 여기에 씁니다.</p></div>
+    <div class="card"><h6>회의록</h6><p>회의 안건 · 기록 · 결정. 결정 사항은 할 일/업무전달로 넘깁니다.</p></div>
+    <div class="card"><h6>파트너사 미팅/출장</h6><p>거래처 미팅 전 전략, 미팅 기록, 후속 할 일.</p></div>
+    <div class="card"><h6>의사결정</h6><p>상급자 결정이 필요한 건을 따로 모아 처리합니다.</p></div>
+  </div>
+  <div class="flow">
+    <div class="step"><div class="t">회의 · 미팅</div><div class="d">회의록 / 파트너사 미팅</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">결정</div><div class="d">간단하면 댓글, 크면 의사결정 DB</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">할 일/업무전달 등록</div><div class="d">담당자 · 데드라인 지정</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">관계형 칸 연결</div><div class="d">연관 회의록 · 미팅을 같이 입력</div></div>
+  </div>
+
+  <h4>4. 할 일 vs 업무전달</h4>
+  <table>
+    <thead><tr><th style="width:100px">구분</th><th>뜻</th><th style="width:150px">담당자</th><th style="width:120px">처음 상태</th></tr></thead>
+    <tbody>
+      <tr><td><b>할 일</b></td><td>내가 처리할 일</td><td>나</td><td>진행중</td></tr>
+      <tr><td><b>업무전달</b></td><td>다른 사람에게 요청하는 일</td><td>받는 사람 (가급적 1명)</td><td>확인요청</td></tr>
+    </tbody>
+  </table>
+  <div class="ctx"><span class="lb">우리 회사</span><div>잘게 쪼갠 루틴 업무는 DB에 쓰지 않고 개인 페이지에서 관리합니다.</div></div>
+
+  <h5>새 건을 만들 때 필수 칸 5개</h5>
+  <table>
+    <thead><tr><th style="width:130px">칸</th><th>쓰는 법</th></tr></thead>
+    <tbody>
+      <tr><td><b>제목</b></td><td>무슨 일인지 한 줄로</td></tr>
+      <tr><td><b>진행상황</b></td><td>시작 전 · 작성중 · 확인요청 · 반려 · 진행중 · 완료 중 하나</td></tr>
+      <tr><td><b>긴급도</b></td><td>매우높음 · 높음 · 보통 · 낮음</td></tr>
+      <tr><td><b>요청자</b></td><td>자동으로 들어감 (쓴 사람)</td></tr>
+      <tr><td><b>데드라인</b></td><td>날짜 + 리마인더 「당일」 (아래 참고)</td></tr>
+    </tbody>
+  </table>
+
+  <h5>업무전달이 오가는 순서</h5>
+  <div class="states">
+    <span class="s a">확인요청</span>
+    <span class="ar" style="flex:0 0 110px">담당자 확인<br>+ 1차 댓글</span>
+    <span class="s b">진행중</span>
+    <span class="ar" style="flex:0 0 70px">끝나면<br>즉시</span>
+    <span class="s c">완료</span>
+  </div>
+  <table>
+    <thead><tr><th style="width:110px">누가</th><th>할 일</th></tr></thead>
+    <tbody>
+      <tr><td><b>요청하는 사람</b></td><td>업무전달 작성 → 담당자 지정 → 진행상황 「확인요청」</td></tr>
+      <tr><td><b>받은 사람</b></td><td>받은 즉시 문서에 <b>1차 댓글</b>을 짧게 → 진행상황 「진행중」으로 변경</td></tr>
+      <tr><td><b>둘 다</b></td><td>일이 끝나면 바로 「완료」로 변경</td></tr>
+    </tbody>
+  </table>
+
+  <h5>데드라인 알림 받기</h5>
+  <div class="flow">
+    <div class="step"><div class="t">데드라인 칸 클릭</div><div class="d">날짜 선택창이 열림</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">날짜 고르기</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">리마인더 「당일(오전 9:00)」</div><div class="d">이걸 해야 푸시가 옴</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">그날 아침 9시 알림</div><div class="d">기한 전 파랑, 지나면 빨강</div></div>
+  </div>
+
+  <h4>5. 내 업무만 모아 보는 개인 템플릿 (My Home)</h4>
+  <p>회사 DB를 그냥 열면 모든 사람의 업무가 다 보입니다. 그래서 각자 <b>개인 템플릿</b>을 복제해 내 화면을 만들어 씁니다.</p>
+  <div class="flow">
+    <div class="step"><div class="t">팀스페이스의 개인 템플릿</div><div class="d">My Home(템플릿) 우클릭 → 복제</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">개인 페이지로 옮기기</div><div class="d">복사본을 사이드바 「개인 페이지」로 끌어 놓기</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="t">이름 바꾸기</div><div class="d">편한 이름으로</div></div>
+    <div class="arrow">→</div>
+    <div class="step hi"><div class="t">즐겨찾기</div><div class="d">매일 여기서 시작</div></div>
+  </div>
+  <p>안에 회사 할 일/업무전달 DB가 연결되어 있습니다. <b>정렬은 데드라인</b>, <b>필터는 담당자 · 요청자 · 참조자 = 나</b>로 걸면 내 일만 남습니다. 방법은 <a href="#p5">PART 05</a>와 같습니다.</p>
+  <div class="warn">
+    <b>원본은 고치지 않습니다</b>
+    <p>팀스페이스에 있는 템플릿 원본을 직접 고치면 모두의 원본이 바뀝니다. 복제본은 반드시 <b>개인 페이지</b>에 두세요. 팀스페이스에 두면 전 직원에게 보입니다.</p>
+  </div>
+
+  <h4>6. 회의록 · 파트너사 미팅 · 의사결정</h4>
+  <table>
+    <thead><tr><th style="width:130px">DB</th><th style="width:190px">필수 칸</th><th>순서</th></tr></thead>
+    <tbody>
+      <tr><td><b>회의록</b></td><td>회의일시 · 서기 · 참석자 · 불참자</td><td>참석자가 안건 미리 등록 → 서기가 2~3일 전 사전 준비 작성 · 배포 → 회의 중 바로 기록 → 최종 결정은 할 일/업무전달로 등록 → 회의매너 체크리스트</td></tr>
+      <tr><td><b>파트너사 미팅/출장</b></td><td>일시 · 장소 · 거래처 · 자사 담당자 · 거래처 담당자</td><td>「파트너사 미팅 양식」 템플릿으로 시작 → 2~3일 전 사전준비(미팅주제 · 기초정보 · 전략) → 미팅 기록은 바로 → 결정이 필요하면 상급자 보고(의사결정 등록) → 미팅매너 체크리스트</td></tr>
+      <tr><td><b>의사결정</b></td><td>진행상황 · 긴급도 · 요청자 · 의사결정자</td><td>간단한 결정은 문서 댓글로. 결정 전 궁금한 점도 댓글로</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <b>민감한 거래 내용은</b>
+    <p>의사결정에 민감한 내용이 들어간 미팅 자료는 이메일 등 보안 채널로 주고받습니다.</p>
+  </div>
+
+  <h4>7. 문서 모양 규칙</h4>
+  <table>
+    <thead><tr><th style="width:130px">블록</th><th>우리 회사 규칙</th></tr></thead>
+    <tbody>
+      <tr><td><b>제목 1</b></td><td>대제목 · I, II, III</td></tr>
+      <tr><td><b>제목 2</b></td><td>중제목 · 1, 2, 3</td></tr>
+      <tr><td><b>제목 3</b></td><td>소제목 · 1), 2), 3)</td></tr>
+      <tr><td><b>설명 콜아웃</b></td><td>전구 아이콘 · 회색 배경 · 보통 문서 위쪽</td></tr>
+      <tr><td><b>주의 콜아웃</b></td><td>⚠ 아이콘 · 빨간 글자 · 기본 배경</td></tr>
+    </tbody>
+  </table>
+  <div class="tip">
+    <b>이 구조를 지키면</b>
+    <p><code>/목차</code> 블록을 넣었을 때 제목이 그대로 목차가 됩니다.</p>
+  </div>
+
+  <h4>8. 연습은 「연습장」에서</h4>
+  <div class="ctx"><span class="lb">우리 회사</span><div>회사 노션 <a href="https://www.notion.so/zipbanchan/40eee780b0d880ed8353f3cc81052dbf" target="_blank" rel="noopener"><b>「노션 사용법 (ver. 2027)」</b></a> 페이지 맨 아래 <b>「연습장」</b> DB에서 할 일 · 업무전달 · 회의록 · 파트너사 미팅을 템플릿으로 직접 만들어 볼 수 있습니다. 제목은 <b>[연습] 내 이름_내용</b>. 실제 업무 DB에는 연습하지 않습니다.</div></div>
+</section>
+
+<!-- ============ PART 9 ============ -->
+<section id="p9">
+  <div class="sec-head"><span class="num">PART 09</span><h3>찾기</h3></div>
   <p class="lead">문서가 쌓이면 사이드바를 뒤지는 것보다 검색이 훨씬 빠릅니다. 노션을 잘 쓰는 사람은 사실상 검색으로만 이동합니다.</p>
 
   <figure class="md">
@@ -754,9 +915,9 @@ footer b{color:var(--ink2)}
   </div>
 </section>
 
-<!-- ============ PART 9 ============ -->
-<section id="p9">
-  <div class="sec-head"><span class="num">PART 09</span><h3>내보내기 · 인쇄</h3></div>
+<!-- ============ PART 10 ============ -->
+<section id="p10">
+  <div class="sec-head"><span class="num">PART 10</span><h3>내보내기 · 인쇄</h3></div>
   <p class="lead">회의에 종이로 들고 가거나 외부에 파일로 전달해야 할 때 씁니다.</p>
 
   <figure class="sm">
@@ -787,9 +948,9 @@ footer b{color:var(--ink2)}
   </div>
 </section>
 
-<!-- ============ PART 10 ============ -->
-<section id="p10">
-  <div class="sec-head"><span class="num">PART 10</span><h3>단축키 치트시트</h3></div>
+<!-- ============ PART 11 ============ -->
+<section id="p11">
+  <div class="sec-head"><span class="num">PART 11</span><h3>단축키 치트시트</h3></div>
   <p class="lead">전부 외울 필요는 없습니다. 위에서부터 다섯 개만 손에 익혀도 속도가 확 달라집니다.</p>
 
   <h5>가장 많이 쓰는 것</h5>
@@ -850,15 +1011,15 @@ footer b{color:var(--ink2)}
   </div>
 </section>
 
-<!-- ============ PART 11 ============ -->
-<section id="p11">
-  <div class="sec-head"><span class="num">PART 11</span><h3>막혔을 때 Q&amp;A</h3></div>
+<!-- ============ PART 12 ============ -->
+<section id="p12">
+  <div class="sec-head"><span class="num">PART 12</span><h3>막혔을 때 Q&amp;A</h3></div>
   <p class="lead">신규 입사자가 실제로 가장 자주 부딪히는 상황들입니다.</p>
 
   <details class="qa" open>
     <summary>실수로 페이지를 지웠어요</summary>
     <div class="body">
-      <p>바로 지웠다면 <kbd class="mod">Ctrl</kbd> + <kbd>Z</kbd>로 되돌아옵니다. 시간이 지났다면 사이드바 맨 아래 <b>휴지통</b>에서 찾아 복원하세요. 완전히 사라진 것이 아닙니다.</p>
+      <p>바로 지웠다면 <kbd class="mod">Ctrl</kbd> + <kbd>Z</kbd>로 되돌아옵니다. 시간이 지났다면 사이드바 맨 아래 <b>휴지통</b>에서 찾아 복원하세요. 삭제 후 <b>30일 이내</b>라면 완전히 사라진 것이 아닙니다.</p>
     </div>
   </details>
 
@@ -912,10 +1073,10 @@ footer b{color:var(--ink2)}
   </details>
 </section>
 
-<!-- ============ PART 12 ============ -->
-<section id="p12">
-  <div class="sec-head"><span class="num">PART 12</span><h3>직접 해보기</h3></div>
-  <p class="lead">읽기만 하면 손에 남지 않습니다. <b>개인 페이지</b>에 연습용 페이지를 하나 만들고 아래를 순서대로 해보세요. 아무도 보지 않으니 마음껏 망쳐도 됩니다.</p>
+<!-- ============ PART 13 ============ -->
+<section id="p13">
+  <div class="sec-head"><span class="num">PART 13</span><h3>직접 해보기</h3></div>
+  <p class="lead">읽기만 하면 손에 남지 않습니다. 1~10번은 <b>개인 페이지</b>에 연습용 페이지를 하나 만들어서, 11~14번은 <b>「연습장」</b> DB에서 해보세요. 마음껏 망쳐도 됩니다.</p>
 
   <table>
     <thead><tr><th style="width:50px">#</th><th style="width:230px">과제</th><th>확인 포인트</th></tr></thead>
@@ -930,20 +1091,22 @@ footer b{color:var(--ink2)}
       <tr><td>8</td><td>본인 이름을 <code>@</code>로 멘션해보기</td><td>수신함에 알림이 오는지</td></tr>
       <tr><td>9</td><td>페이지를 즐겨찾기에 등록하기</td><td>사이드바 즐겨찾기에 뜨는지</td></tr>
       <tr><td>10</td><td>페이지를 휴지통에 넣었다가 복원하기</td><td>휴지통에서 되살아나는지</td></tr>
-      <tr><td>11</td><td>회사 데이터베이스에서 담당자 = 나로 필터 걸어보기</td><td>내 업무만 남는지</td></tr>
-      <tr><td>12</td><td>페이지를 PDF로 내보내기</td><td>… → 내보내기</td></tr>
+      <tr><td>11</td><td>개인 템플릿(My Home)을 복제해 개인 페이지로 옮기기</td><td>원본은 그대로, 복사본이 <b>개인 페이지</b>에 있는지</td></tr>
+      <tr><td>12</td><td>연습장에 「할 일」 1건 만들기 (필수 칸 5개 + 리마인더 당일)</td><td>필수 칸이 다 찼는지, 「속성 추가」를 안 눌렀는지</td></tr>
+      <tr><td>13</td><td>연습장에 동료에게 「업무전달」 1건 → 받은 쪽은 1차 댓글 + 진행중 → 완료</td><td>진행상황이 확인요청 → 진행중 → 완료로 바뀌는지</td></tr>
+      <tr><td>14</td><td>페이지를 PDF(A3)로 내보내기</td><td>… → 내보내기</td></tr>
     </tbody>
   </table>
 
   <div class="tip">
     <b>여기까지 다 됐다면</b>
-    <p>회사에서 노션 때문에 막힐 일은 거의 없습니다. 남은 건 우리 팀이 어떤 문서를 어디에 쌓는지 익히는 것이고, 그건 실제 업무를 하면서 자연스럽게 익혀집니다.</p>
+    <p>회사에서 노션 때문에 막힐 일은 거의 없습니다. 헷갈리면 <a href="#p8">PART 08</a>과 회사 노션의 「노션 사용법」 페이지를 다시 보세요.</p>
   </div>
 </section>
 
 <footer>
   <p><b>집반찬연구소 · 주식회사 산너머남촌</b> — 신규 입사자용 노션 기능 안내서</p>
-  <p>화면 캡처 기준: 노션 한글 웹 화면 · 2026년 8월</p>
+  <p>화면 캡처 기준: 노션 한글 웹 화면 · 2026년 8월 / 회사 규칙 기준: 회사 노션 「노션 사용법」 · 2026년 11월</p>
   <p>내용에 빠진 부분이나 화면이 달라진 곳이 있으면 온라인본부로 알려주세요.</p>
 </footer>
 
